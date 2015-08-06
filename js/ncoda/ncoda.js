@@ -103,7 +103,9 @@ var NCoda = React.createClass({
 
 //
 
-pypyjs.ready().then(React.render(
-    <NCoda />,
-    document.getElementById("ncoda")
-));
+pypyjs.ready().then(function () {
+    React.render(
+        <NCoda />,
+        document.getElementById("ncoda"));
+    }
+);
