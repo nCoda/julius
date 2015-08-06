@@ -81,6 +81,9 @@ var NCoda = React.createClass({
         // Sets state so the Terminal component will output something new.
         // - thisText (str): the new text that should be added to the terminal
         // - thisIsInput (bool): whether this the text was inputted by the user (default is false)
+        if (null === thisText) {
+            return;
+        }
         if (true !== thisIsInput) {
             thisIsInput = false;
         }
