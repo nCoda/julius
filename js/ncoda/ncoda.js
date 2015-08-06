@@ -20,12 +20,43 @@ var TextEditor = React.createClass({
     }
 });
 
+var TerminalConsole = React.createClass({
+    getInitialState: function() {
+        return {theConsole: null};
+    },
+    componentDidMount: function() {
+        var theConsole = $("#console").jqconsole();
+        theConsole.Write(this.props.outputThis + "\n\n", "jqconsole-welcome");
+        this.setState({theConsole: theConsole});
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (null !== this.state.theConsole) {
+            var outputText = nextProps.outputThis + "\n";
+            var outputClass = "jqconsole-output";
+            if (nextProps.thisIsInput) {
+                outputClass = "jqconsole-input";
+            }
+            this.outputToConsole(outputText, outputClass);
+        }
+    },
+    outputToConsole: function(outputText, outputClass) {
+        this.state.theConsole.Write(outputText, outputClass);
+    },
+    render: function() {
+        return (
+            <div id="console"></div>
+        );
+    }
+});
+
 var Terminal = React.createClass({
     render: function() {
         return (
             <div className="ncoda-terminal">
                 <h2>Terminal</h2>
-                <textarea name="terminal" rows="20" cols="83" value={this.props.value} />
+                <TerminalConsole outputThis={this.props.outputThis}
+                                 thisIsInput={this.props.thisIsInput}
+                                 />
             </div>
         );
     }
@@ -33,7 +64,7 @@ var Terminal = React.createClass({
 
 var NCoda = React.createClass({
     getInitialState: function() {
-        return ({terminalText: "nCoda is ready for action!"});
+        return ({sendToConsole: "nCoda is ready for action!", sendingInputToConsole: false});
     },
     componentDidMount: function() {
         pypyjs.stdout = this.outputToTerminal;
@@ -43,17 +74,25 @@ var NCoda = React.createClass({
         if ("" === thisText || undefined === thisText) {
             return;
         }
-        this.outputToTerminal('>>> ' + thisText);
+        this.outputToTerminal('>>> ' + thisText, true);
         pypyjs.eval(thisText).then(this.outputToTerminal);
     },
-    outputToTerminal: function(thisText) {
-        this.setState({terminalText: this.state.terminalText + "\n" + thisText});
+    outputToTerminal: function(thisText, thisIsInput) {
+        // Sets state so the Terminal component will output something new.
+        // - thisText (str): the new text that should be added to the terminal
+        // - thisIsInput (bool): whether this the text was inputted by the user (default is false)
+        if (true !== thisIsInput) {
+            thisIsInput = false;
+        }
+        this.setState({sendToConsole: thisText, sendingInputToConsole: thisIsInput});
     },
     render: function() {
         return (
             <div className="ncoda">
                 <TextEditor submitToPyPy={this.submitToPyPy} />
-                <Terminal value={this.state.terminalText} />
+                <Terminal outputThis={this.state.sendToConsole}
+                          thisIsInput={this.state.sendingInputToConsole}
+                          />
             </div>
         );
     }
