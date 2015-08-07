@@ -43,8 +43,11 @@
 }
 /* Colour of the welcome message that starts an interactive session. */
 .jqconsole-welcome {
-    color: #6c71c4;
+    color: #cb4b16;
 }
+/* Colours for stdout() and stderr() output, respectively. */
+.jqconsole-stdout { color: #859900; }
+.jqconsole-stderr { color: #dc322f; }
 
 
 /*
