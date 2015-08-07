@@ -2,8 +2,8 @@
 
 var TextEditor = React.createClass({
     submitToPyPy: function(changeEvent) {
-        this.props.submitToPyPy(changeEvent.target[0].value);
         changeEvent.preventDefault();  // stop the default GET form submission
+        this.props.submitToPyPy(changeEvent.target[0].value);
     },
     render: function() {
         return (
