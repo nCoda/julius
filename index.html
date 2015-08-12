@@ -7,11 +7,6 @@
     <link rel="stylesheet" href="/js/codemirror/lib/codemirror.css"></link>
     <link rel="stylesheet" href="/css/ncoda/console.css"></link>
     <link rel="stylesheet" href="/css/ncoda/ncoda.css"></link>
-    <script src="/js/react/react-0.13.3.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/jquery/jquery.min-2.1.1.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/jquery/jqconsole-2.11.0.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/codemirror/lib/codemirror.js"></script>
-    <script src="/js/codemirror/mode/python/python.js"></script>
 </head>
 
 <body>
@@ -20,10 +15,20 @@
 
     <noscript>Unfortunately, nCoda uses JavaScript extensively, and cannot run without it.</noscript>
 
+    <!-- PyPy.js (load first so it compiles first) -->
     <script src="/js/pypyjs/lib/Promise.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/pypyjs/lib/FunctionPromise.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/pypyjs/lib/pypyjs.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/ncoda/ncoda.compiled.js" type="text/jsx" charset="utf-8"></script>
+    <!-- React.js -->
+    <script src="/js/react/react-0.13.3.js" type="text/javascript" charset="utf-8"></script>
+    <!-- jQuery and jqconsole -->
+    <script src="/js/jquery/jquery.min-2.1.1.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/jquery/jqconsole-2.11.0.min.js" type="text/javascript" charset="utf-8"></script>
+    <!-- CodeMirror -->
+    <script src="/js/codemirror/lib/codemirror.js" type="text/javascript"></script>
+    <script src="/js/codemirror/mode/python/python.js" type="text/javascript"></script>
+    <!-- nCoda (the React app) -->
+    <script src="/js/ncoda/ncoda.compiled.js" type="text/javascript" charset="utf-8"></script>
 </body>
 
 </html>
