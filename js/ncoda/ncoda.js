@@ -91,7 +91,7 @@ var TextEditor = React.createClass({
                 <form onSubmit={this.submitToPyPy}>
                     <label>
                         When you press "enter," this is sent to PyPy.js:&nbsp;
-                        <input type="text"></input>
+                        <ReactCodeMirror path="ncoda" value="value" />
                     </label>
                 </form>
             </div>

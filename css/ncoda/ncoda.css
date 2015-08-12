@@ -1,1 +1,5 @@
 /* This is the base file for nCoda CSS. */
+
+.ReactCodeMirror {
+    border: 1px black solid;
+}
