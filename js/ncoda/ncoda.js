@@ -85,13 +85,24 @@ var TextEditor = React.createClass({
         this.props.submitToPyPy(changeEvent.target[0].value);
     },
     render: function() {
+		var codeMirrorOptions = {
+			"mode": "python",
+			"theme": "solarized dark",
+			"indentUnit": 4,
+			"indentWithTabs": false,
+			"smartIndent": true,
+			"electricChars": true,
+			"lineNumbers": true,
+			"inputStyle": "contenteditable"  // NOTE: this usually defaults to "textarea" on
+			                                 // desktop and may not be so good for us, but it has
+											 // better IME and and screen reader support
+		};
         return (
             <div className="ncoda-text-editor">
                 <h2>Text Editor</h2>
                 <form onSubmit={this.submitToPyPy}>
                     <label>
-                        When you press "enter," this is sent to PyPy.js:&nbsp;
-                        <ReactCodeMirror path="ncoda" value="value" />
+                        <ReactCodeMirror path="ncoda" options={codeMirrorOptions} />
                     </label>
                 </form>
             </div>
@@ -100,6 +111,8 @@ var TextEditor = React.createClass({
 });
 
 var TerminalConsole = React.createClass({
+	// TODO: consider replacing this with a CodeMirror instance configured with "readOnly" set to
+	//       "nocursor," which is read-only and prevents the widget from accepting focus
     getInitialState: function() {
         return {theConsole: null};
     },
