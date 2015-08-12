@@ -80,9 +80,15 @@ var ReactCodeMirror = React.createClass({
 // NOTE: end of MIT code
 
 var TextEditor = React.createClass({
+	getInitialState: function() {
+		return {editorValue: ""};
+	},
+	updateEditorValue: function(withThis) {
+		// TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
+		this.setState({editorValue: withThis});
+	},
     submitToPyPy: function(changeEvent) {
-        changeEvent.preventDefault();  // stop the default GET form submission
-        this.props.submitToPyPy(changeEvent.target[0].value);
+        this.props.submitToPyPy(this.state.editorValue);
     },
     render: function() {
 		var codeMirrorOptions = {
@@ -100,11 +106,12 @@ var TextEditor = React.createClass({
         return (
             <div className="ncoda-text-editor">
                 <h2>Text Editor</h2>
-                <form onSubmit={this.submitToPyPy}>
-                    <label>
-                        <ReactCodeMirror path="ncoda" options={codeMirrorOptions} />
-                    </label>
-                </form>
+                <ReactCodeMirror path="ncoda"
+				                 options={codeMirrorOptions}
+								 value={this.state.editorValue}
+								 onChange={this.updateEditorValue}
+	                             />
+				<input type="button" value="Execute" onClick={this.submitToPyPy}></input>
             </div>
         );
     }
@@ -179,7 +186,7 @@ var NCoda = React.createClass({
             return;
         }
         this.outputToTerminal(">>> " + thisText, "input");
-        pypyjs.eval(thisText).then(this.outputToTerminal);
+        pypyjs.exec(thisText).then(this.outputToTerminal);
     },
     stdout: function(thisText) {
         this.outputToTerminal(thisText, "stdout");
