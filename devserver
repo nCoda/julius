@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+
+# Script to concurrently run "babel" and the SimpleHTTPServer module.
+
+from http import server
+import subprocess
+
+
+def the_script():
+    # see if we can find/use babel
+    try:
+        subprocess.check_output(['which', 'babel'])
+    except subprocess.CalledProcessError:
+        print('Could not find babel. Is it installed?')
+        raise SystemExit(1)
+
+    # try to run babel
+    try:
+        babel = subprocess.Popen(['babel', 'js/ncoda/ncoda.js', '--watch', '--out-file', 'js/ncoda/ncoda.compiled.js'])
+    except subprocess.CalledProcessError as cperr:
+        print('Encountered the following error while starting babel:\n{}'.format(cperr))
+        raise SystemExit(1)
+
+    # now run the SimpleHTTPServer
+    # we'll catch KeyboardInterrupt so we can try killing babel on the way out
+    try:
+        server_address = ('', 8000)
+        httpd = server.HTTPServer(server_address, server.SimpleHTTPRequestHandler)
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        babel.terminate()
+        babel.wait(timeout=30)
+        raise SystemExit(babel.returncode)
+
+
+if '__main__' == __name__:
+    the_script()
+else:
+    print('This script is only intended to be run from a commandline.')
