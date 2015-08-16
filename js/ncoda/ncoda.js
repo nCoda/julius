@@ -80,6 +80,9 @@ var ReactCodeMirror = React.createClass({
 // NOTE: end of MIT code
 
 var TextEditor = React.createClass({
+	propTypes: {
+		submitToPyPy: React.PropTypes.func.isRequired
+	},
 	getInitialState: function() {
 		return {editorValue: ""};
 	},
@@ -120,6 +123,13 @@ var TextEditor = React.createClass({
 var TerminalConsole = React.createClass({
 	// TODO: consider replacing this with a CodeMirror instance configured with "readOnly" set to
 	//       "nocursor," which is read-only and prevents the widget from accepting focus
+	propTypes: {
+		outputThis: React.PropTypes.string,
+		outputType: React.PropTypes.oneOf(["welcome", "input", "stdout", "stderr"])
+	},
+	getDefaultProps: function() {
+		return {outputThis: "", outputType: "stdout"};
+	},
     getInitialState: function() {
         return {theConsole: null};
     },
@@ -159,6 +169,13 @@ var TerminalConsole = React.createClass({
 });
 
 var Terminal = React.createClass({
+	propTypes: {
+		outputThis: React.PropTypes.string,
+		outputType: React.PropTypes.oneOf(["welcome", "input", "stdout", "stderr"])
+	},
+	getDefaultProps: function() {
+		return {outputThis: "", outputType: "stdout"};
+	},
     render: function() {
         return (
             <div className="ncoda-terminal">
