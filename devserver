@@ -16,7 +16,8 @@ def the_script():
 
     # try to run babel
     try:
-        babel = subprocess.Popen(['babel', 'js/ncoda/ncoda.js', '--watch', '--out-file', 'js/ncoda/ncoda.compiled.js'])
+        babel = subprocess.Popen(['babel', 'js/ncoda/ncoda.js', '--watch', '--modules', 'amd',
+                                  '--out-file', 'js/ncoda/ncoda.compiled.js'])
     except subprocess.CalledProcessError as cperr:
         print('Encountered the following error while starting babel:\n{}'.format(cperr))
         raise SystemExit(1)
