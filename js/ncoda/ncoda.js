@@ -1,7 +1,7 @@
 // This file starts nCoda
 // Copyright 2015 Christopher Antila
 
-import React from "/js/react/react-0.13.3.js";
+import React from "/js/react/react.js";
 
 // NOTE: this portion of the code is a copy of the "CodeMirror.js" file in this same directory which,
 //       unlike the rest of nCoda, is released with the MIT license.
