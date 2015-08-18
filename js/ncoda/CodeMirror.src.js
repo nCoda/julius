@@ -4,15 +4,18 @@
 // to change anyway.
 //
 // Thus, the following file is Copyright (c) 2015 Jed Watson, included here according to the MIT license.
+// This file has been modified by Christopher Antila.
 //
 // A copy of the MIT license is available in this repository in the file called "MIT_license.txt"
 //
 // https://github.com/JedWatson/react-codemirror/blob/f0c0fc50d2226f4757ccae4a7736ca9911902d9d/src/Codemirror.js
 
-var CM = require('codemirror');
-var React = require('react');
+import React from "/js/react/react.js";
+// import CodeMirror from "/js/codemirror/lib/codemirror.js";
+// import * as python from "/js/codemirror/mode/python/python.js";
 
-var CodeMirror = React.createClass({
+
+var ReactCodeMirror = React.createClass({
 
 	propTypes: {
 		onChange: React.PropTypes.func,
@@ -29,7 +32,7 @@ var CodeMirror = React.createClass({
 	},
 
 	componentDidMount () {
-		this.codeMirror = CM.fromTextArea(this.refs.codemirror.getDOMNode(), this.props.options);
+		this.codeMirror = CodeMirror.fromTextArea(this.refs.codemirror.getDOMNode(), this.props.options);
 		this.codeMirror.on('change', this.codemirrorValueChanged);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
@@ -86,4 +89,4 @@ var CodeMirror = React.createClass({
 
 });
 
-module.exports = CodeMirror;
+export default {ReactCodeMirror};
