@@ -3,6 +3,8 @@
 
 import React from "/js/react/react.js";
 import {ReactCodeMirror} from "/js/ncoda/CodeMirror.js";
+import $ from "jquery";
+import "jqconsole";
 
 var TextEditor = React.createClass({
 	propTypes: {
