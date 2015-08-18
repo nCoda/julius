@@ -6,6 +6,12 @@ from http import server
 import subprocess
 
 
+# list of the JS files that must be compiled with Babel; it's input filename, then output filename
+_COMPILE_WITH_BABEL = [
+    ('js/ncoda/ncoda.js', 'js/ncoda/ncoda.compiled.js')
+    ]
+
+
 def the_script():
     # see if we can find/use babel
     try:
@@ -14,24 +20,33 @@ def the_script():
         print('Could not find babel. Is it installed?')
         raise SystemExit(1)
 
-    # try to run babel
-    try:
-        babel = subprocess.Popen(['babel', 'js/ncoda/ncoda.js', '--watch', '--modules', 'amd',
-                                  '--out-file', 'js/ncoda/ncoda.compiled.js'])
-    except subprocess.CalledProcessError as cperr:
-        print('Encountered the following error while starting babel:\n{}'.format(cperr))
-        raise SystemExit(1)
+    # set up some Babel instances
+    babel_instances = []
+    for each_file in _COMPILE_WITH_BABEL:
+        print('Starting Babel for {}'.format(each_file[0]))
+        try:
+            babel_instances.append(subprocess.Popen(['babel', each_file[0], '--watch', '--modules',
+                                                     'amd', '--out-file', each_file[1]]))
+        except subprocess.CalledProcessError as cperr:
+            print('Encountered the following error while starting babel:\n{}'.format(cperr))
+            for each_instance in babel_instances:
+                each_instance.terminate()
+                each_instance.wait(timeout=30)
+            raise SystemExit(1)
 
     # now run the SimpleHTTPServer
     # we'll catch KeyboardInterrupt so we can try killing babel on the way out
     try:
+        print('Starting the HTTPServer')
         server_address = ('', 8000)
         httpd = server.HTTPServer(server_address, server.SimpleHTTPRequestHandler)
         httpd.serve_forever()
     except KeyboardInterrupt:
-        babel.terminate()
-        babel.wait(timeout=30)
-        raise SystemExit(babel.returncode)
+        print('')
+        for each_instance in babel_instances:
+            print('Terminating Babel with PID {}'.format(each_instance.pid))
+            each_instance.terminate()
+            each_instance.wait(timeout=30)
 
 
 if '__main__' == __name__:
