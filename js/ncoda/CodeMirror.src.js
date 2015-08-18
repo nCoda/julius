@@ -11,8 +11,8 @@
 // https://github.com/JedWatson/react-codemirror/blob/f0c0fc50d2226f4757ccae4a7736ca9911902d9d/src/Codemirror.js
 
 import React from "/js/react/react.js";
-// import CodeMirror from "/js/codemirror/lib/codemirror.js";
-// import * as python from "/js/codemirror/mode/python/python.js";
+import CodeMirror from "codemirror/lib/codemirror";
+import "codemirror/mode/python/python";
 
 
 var ReactCodeMirror = React.createClass({
