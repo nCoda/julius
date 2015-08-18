@@ -3,7 +3,7 @@
 
 
 // Remember not to use JSX in this file!
-define(["/js/react/react.js", "ncoda/ncoda.compiled"], function(React, NCoda) {
+define(["/js/react/react.js", "ncoda/ncoda"], function(React, NCoda) {
     pypyjs.ready().then(function () {
         React.render(
             React.createElement(NCoda.NCoda),

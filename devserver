@@ -8,7 +8,7 @@ import subprocess
 
 # list of the JS files that must be compiled with Babel; it's input filename, then output filename
 _COMPILE_WITH_BABEL = [
-    ('js/ncoda/ncoda.js', 'js/ncoda/ncoda.compiled.js'),
+    ('js/ncoda/ncoda.src.js', 'js/ncoda/ncoda.js'),
     ('js/ncoda/CodeMirror.src.js', 'js/ncoda/CodeMirror.js'),
     ]
 
