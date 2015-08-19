@@ -69,6 +69,11 @@ var Terminal = React.createClass({
 			this.setState({stdoutEditorValue: this.state.stdoutEditorValue + outputThis});
 		}
 	},
+	reRender: function() {
+		// By calling forceUpdate() without changing props or state, we're disallowing any of the
+		// user's input from reaching the CodeMirror widget.
+		this.forceUpdate();
+	},
     render: function() {
 		var codeMirrorOptions = {
 			"mode": "python",
@@ -88,10 +93,12 @@ var Terminal = React.createClass({
                 <ReactCodeMirror path="ncoda-output-stdin"
 				                 options={codeMirrorOptions}
 								 value={this.state.stdinEditorValue}
+								 onChange={this.reRender}  // make component read-only
 	                             />
 				<ReactCodeMirror path="ncoda-output-stdout"
 				                 options={codeMirrorOptions}
 								 value={this.state.stdoutEditorValue}
+								 onChange={this.reRender}  // make component read-only
 	                             />
             </div>
         );
