@@ -3,8 +3,6 @@
 
 import React from "/js/react/react.js";
 import {ReactCodeMirror} from "/js/ncoda/CodeMirror.js";
-import $ from "jquery";
-import "jqconsole";
 
 var TextEditor = React.createClass({
 	propTypes: {
@@ -35,62 +33,14 @@ var TextEditor = React.createClass({
 		};
         return (
             <div className="ncoda-text-editor">
-                <h2>Text Editor</h2>
-                <ReactCodeMirror path="ncoda"
+                <h2>Input</h2>
+                <ReactCodeMirror path="ncoda-editor"
 				                 options={codeMirrorOptions}
 								 value={this.state.editorValue}
 								 onChange={this.updateEditorValue}
 	                             />
 				<input type="button" value="Execute" onClick={this.submitToPyPy}></input>
             </div>
-        );
-    }
-});
-
-var TerminalConsole = React.createClass({
-	// TODO: consider replacing this with a CodeMirror instance configured with "readOnly" set to
-	//       "nocursor," which is read-only and prevents the widget from accepting focus
-	propTypes: {
-		outputThis: React.PropTypes.string,
-		outputType: React.PropTypes.oneOf(["welcome", "input", "stdout", "stderr"])
-	},
-	getDefaultProps: function() {
-		return {outputThis: "", outputType: "stdout"};
-	},
-    getInitialState: function() {
-        return {theConsole: null};
-    },
-    componentDidMount: function() {
-        var theConsole = $("#console").jqconsole();
-        theConsole.Write(this.props.outputThis + "\n\n", "jqconsole-welcome");
-        this.setState({theConsole: theConsole});
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (null !== this.state.theConsole) {
-            var outputText = nextProps.outputThis;
-            var outputClass = "jqconsole-output";
-            if ("welcome" === nextProps.outputType) {
-                outputClass = "jqconsole-welcome";
-                outputText += "\n";
-            } else if ("input" === nextProps.outputType) {
-                outputClass = "jqconsole-input";
-                outputText += "\n";
-            } else if ("stdout" === nextProps.outputType) {
-                outputClass = "jqconsole-stdout";
-            } else if ("stderr" === nextProps.outputType) {
-                outputClass = "jqconsole-stderr";
-            } else {
-                outputText += "\n";
-            }
-            this.outputToConsole(outputText, outputClass);
-        }
-    },
-    outputToConsole: function(outputText, outputClass) {
-        this.state.theConsole.Write(outputText, outputClass);
-    },
-    render: function() {
-        return (
-            <div id="console"></div>
         );
     }
 });
@@ -103,17 +53,51 @@ var Terminal = React.createClass({
 	getDefaultProps: function() {
 		return {outputThis: "", outputType: "stdout"};
 	},
+	getInitialState: function() {
+		return {stdinEditorValue: "", stdoutEditorValue: ""};
+	},
+	componentWillReceiveProps: function(nextProps) {
+		var outputThis = nextProps.outputThis;
+		if (false === outputThis.endsWith("\n")) {
+			console.log("rawr with " + outputThis);
+			outputThis += "\n";
+		}
+
+		if ("input" === nextProps.outputType) {
+			this.setState({stdinEditorValue: this.state.stdinEditorValue + outputThis});
+		} else {
+			this.setState({stdoutEditorValue: this.state.stdoutEditorValue + outputThis});
+		}
+	},
     render: function() {
+		var codeMirrorOptions = {
+			"mode": "python",
+			"theme": "solarized dark",
+			"indentUnit": 4,
+			"indentWithTabs": false,
+			"smartIndent": true,
+			"electricChars": true,
+			"lineNumbers": true,
+			"inputStyle": "contenteditable"  // NOTE: this usually defaults to "textarea" on
+			                                 // desktop and may not be so good for us, but it has
+											 // better IME and and screen reader support
+		};
         return (
-            <div className="ncoda-terminal">
-                <h2>Terminal</h2>
-                <TerminalConsole outputThis={this.props.outputThis}
-                                 outputType={this.props.outputType}
-                                 />
+            <div className="ncoda-text-output">
+                <h2>Output</h2>
+                <ReactCodeMirror path="ncoda-output-stdin"
+				                 options={codeMirrorOptions}
+								 value={this.state.stdinEditorValue}
+	                             />
+				<ReactCodeMirror path="ncoda-output-stdout"
+				                 options={codeMirrorOptions}
+								 value={this.state.stdoutEditorValue}
+	                             />
             </div>
         );
     }
 });
+
 
 var NCoda = React.createClass({
     getInitialState: function() {
@@ -129,7 +113,7 @@ var NCoda = React.createClass({
         if ("" === thisText || undefined === thisText) {
             return;
         }
-        this.outputToTerminal(">>> " + thisText, "input");
+        this.outputToTerminal(thisText, "input");
         pypyjs.exec(thisText).then(this.outputToTerminal);
     },
     stdout: function(thisText) {
