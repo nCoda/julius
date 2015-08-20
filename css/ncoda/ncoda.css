@@ -91,7 +91,7 @@ body {
     flex-grow: 0;
 }
 
-.ncoda-text-output {
+.ncoda-terminal-output {
     overflow: hidden;
     background: #fdf6e3;  /* solarized "base3" */
     display: flex;
@@ -100,7 +100,7 @@ body {
     flex-grow: 1;
 }
 
-.ncoda-text-output h2 {
+.ncoda-terminal-output h2 {
     margin: 0px;
     color: #657b83;  /* solarized "base00" */
 }

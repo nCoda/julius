@@ -22,9 +22,9 @@ var TextEditor = React.createClass({
     },
 	componentDidMount: function() {
 		// TODO: this is such a huge hack
-		var theLowerDiv = document.getElementById("ncoda-text-output");
+		var theLowerDiv = document.getElementById("ncoda-terminal-output");
 		theLowerDiv.style["flex-grow"] = 1;
-		this.setState({theLowerDiv: document.getElementById("ncoda-text-output")});
+		this.setState({theLowerDiv: document.getElementById("ncoda-terminal-output")});
 	},
 	resizeTerminal: function(event) {
 		if (this.state.theLowerDiv) {
@@ -68,7 +68,7 @@ var TextEditor = React.createClass({
 });
 
 
-var Terminal = React.createClass({
+var TerminalOutput = React.createClass({
 	propTypes: {
 		outputThis: React.PropTypes.string,
 		outputType: React.PropTypes.oneOf(["welcome", "input", "stdout", "stderr"])
@@ -111,7 +111,7 @@ var Terminal = React.createClass({
 											 // better IME and and screen reader support
 		};
         return (
-            <div id="ncoda-text-output" className="ncoda-text-output">
+            <div id="ncoda-terminal-output" className="ncoda-terminal-output">
                 <h2>Output</h2>
 				<div className="ncoda-output-terminals">
 	                <ReactCodeMirror path="ncoda-output-stdin"
@@ -180,9 +180,9 @@ var NCoda = React.createClass({
             <div className="ncoda">
                 <TextEditor submitToPyPy={this.submitToPyPy} />
 				<Separator />
-                <Terminal outputThis={this.state.sendToConsole}
-                          outputType={this.state.sendToConsoleType}
-                          />
+                <TerminalOutput outputThis={this.state.sendToConsole}
+                                outputType={this.state.sendToConsoleType}
+                />
             </div>
         );
     }
