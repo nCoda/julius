@@ -9,7 +9,9 @@ var TextEditor = React.createClass({
 		submitToPyPy: React.PropTypes.func.isRequired
 	},
 	getInitialState: function() {
-		return {editorValue: ""};
+		// NB: "theLowerDiv" is actually the <div> with the terminals in it; we use it in this
+		//     component for the resizing buttons.
+		return {editorValue: "", theLowerDiv: null};
 	},
 	updateEditorValue: function(withThis) {
 		// TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
@@ -18,6 +20,22 @@ var TextEditor = React.createClass({
     submitToPyPy: function(changeEvent) {
         this.props.submitToPyPy(this.state.editorValue);
     },
+	componentDidMount: function() {
+		// TODO: this is such a huge hack
+		var theLowerDiv = document.getElementById("ncoda-text-output");
+		theLowerDiv.style["flex-grow"] = 1;
+		this.setState({theLowerDiv: document.getElementById("ncoda-text-output")});
+	},
+	resizeTerminal: function(event) {
+		if (this.state.theLowerDiv) {
+			var currentValue = parseInt(this.state.theLowerDiv.style["flex-grow"], 10);
+			if (event.target.value === "Up") {
+				this.state.theLowerDiv.style["flex-grow"] = currentValue + 1;
+			} else {
+				this.state.theLowerDiv.style["flex-grow"] = currentValue - 1;
+			}
+		}
+	},
     render: function() {
 		var codeMirrorOptions = {
 			"mode": "python",
@@ -41,11 +59,14 @@ var TextEditor = React.createClass({
 	                             />
 				<div className="ncoda-pypyjs-controls">
 					<input type="button" value="Execute" onClick={this.submitToPyPy}></input>
+					<input type="button" value="Up"   onClick={this.resizeTerminal}></input>
+					<input type="button" value="Down" onClick={this.resizeTerminal}></input>
 				</div>
             </div>
         );
     }
 });
+
 
 var Terminal = React.createClass({
 	propTypes: {
@@ -90,7 +111,7 @@ var Terminal = React.createClass({
 											 // better IME and and screen reader support
 		};
         return (
-            <div className="ncoda-text-output">
+            <div id="ncoda-text-output" className="ncoda-text-output">
                 <h2>Output</h2>
 				<div className="ncoda-output-terminals">
 	                <ReactCodeMirror path="ncoda-output-stdin"
