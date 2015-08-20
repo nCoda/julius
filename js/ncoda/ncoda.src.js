@@ -119,6 +119,7 @@ var Terminal = React.createClass({
 									 value={this.state.stdinEditorValue}
 									 onChange={this.reRender}  // make component read-only
 		                             />
+					<Separator />
 					<ReactCodeMirror path="ncoda-output-stdout"
 					                 options={codeMirrorOptions}
 									 value={this.state.stdoutEditorValue}
@@ -129,6 +130,13 @@ var Terminal = React.createClass({
         );
     }
 });
+
+
+var Separator = React.createClass({
+	render: function() {
+		return ( <div className="ncoda-separator"></div> );
+	}
+})
 
 
 var NCoda = React.createClass({
@@ -171,7 +179,7 @@ var NCoda = React.createClass({
         return (
             <div className="ncoda">
                 <TextEditor submitToPyPy={this.submitToPyPy} />
-				<div className="ncoda-toplevel-separator"></div>
+				<Separator />
                 <Terminal outputThis={this.state.sendToConsole}
                           outputType={this.state.sendToConsoleType}
                           />

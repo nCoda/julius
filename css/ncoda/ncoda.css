@@ -83,14 +83,12 @@ body {
 /* ********************************************************************************************* */
 /* Things for the terminals (bottom) */
 
-.ncoda-toplevel-separator {
+.ncoda-separator {
     /* separator between main window and terminals */
     min-height: 0.5em;
-    /*background: -webkit-linear-gradient(darkslategray, lightgrey, darkslategray);
-    background:    -moz-linear-gradient(darkslategray, lightgrey, darkslategray);
-    background:      -o-linear-gradient(darkslategray, lightgrey, darkslategray);
-    background:         linear-gradient(darkslategray, lightgrey, darkslategray);*/
     background: #eee8d5;  /* solarized "base2" */
+    min-width: 0.5em;
+    flex-grow: 0;
 }
 
 .ncoda-text-output {
