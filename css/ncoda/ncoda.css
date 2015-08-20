@@ -88,6 +88,20 @@ body {
     height: 100%;
 }
 
+/* Verovio (middle-right) */
+.ncoda-verovio {
+    flex-grow: 1;
+    max-width: 50%;
+    max-height: 100%;
+    display: block;
+    overflow: scroll;
+}
+
+.ncoda-verovio svg {
+    height: 100%;
+    width: 100%;
+}
+
 /* ********************************************************************************************* */
 /* Things for the terminals (bottom) */
 

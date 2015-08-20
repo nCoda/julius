@@ -3,6 +3,7 @@
 
 import React from "/js/react/react.js";
 import {ReactCodeMirror} from "/js/ncoda/CodeMirror.js";
+// import verovio from "verovio";
 
 var TextEditor = React.createClass({
 	propTypes: {
@@ -69,6 +70,37 @@ var TextEditor = React.createClass({
 });
 
 
+var Verovio = React.createClass({
+	getInitialState: function() {
+		return {verovio: null};
+	},
+	componentDidMount: function() {
+		var zell = React.findDOMNode(this.refs.verovioFrame);
+		var theOptions = {
+			pageHeight: zell.clientHeight,
+			pageWidth: zell.clientWidth,
+		};
+		var newVerovio = new verovio.toolkit();  // TODO: destroy this instance when the component unmounts
+		newVerovio.setOptions(JSON.stringify(theOptions));
+		this.setState({verovio: newVerovio});
+	},
+	render: function() {
+		var innerHtml = "";
+		if (null !== this.state.verovio) {
+			var data = "@clef:G-2\n\
+			            @keysig:xFCGD\n\
+						@timesig:3/8\n\
+						@data:'6B/{8B+(6B''E'B})({AFD})/{6.E3G},8B-/({6'EGF})({FAG})({GEB})/";
+			var innerHtml = this.state.verovio.renderData(data, '{"inputFormat": "pae"}');
+		}
+		innerHtml = {"__html": innerHtml};
+		return (
+			<div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
+		);
+	}
+});
+
+
 var WorkTable = React.createClass({
 	propTypes: {
 		submitToPyPy: React.PropTypes.func.isRequired
@@ -76,7 +108,8 @@ var WorkTable = React.createClass({
 	render: function () {
 		return (
 			<div className="ncoda-work-table">
-				<TextEditor submitToPyPy={this.submitToPyPy} />
+				<TextEditor submitToPyPy={this.props.submitToPyPy} />
+				<Verovio />
 			</div>
 		);
 	}
@@ -97,7 +130,6 @@ var TerminalOutput = React.createClass({
 	componentWillReceiveProps: function(nextProps) {
 		var outputThis = nextProps.outputThis;
 		if (false === outputThis.endsWith("\n")) {
-			console.log("rawr with " + outputThis);
 			outputThis += "\n";
 		}
 
