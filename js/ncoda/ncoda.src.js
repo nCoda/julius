@@ -39,7 +39,9 @@ var TextEditor = React.createClass({
 								 value={this.state.editorValue}
 								 onChange={this.updateEditorValue}
 	                             />
-				<input type="button" value="Execute" onClick={this.submitToPyPy}></input>
+				<div className="ncoda-pypyjs-controls">
+					<input type="button" value="Execute" onClick={this.submitToPyPy}></input>
+				</div>
             </div>
         );
     }
@@ -90,17 +92,19 @@ var Terminal = React.createClass({
         return (
             <div className="ncoda-text-output">
                 <h2>Output</h2>
-                <ReactCodeMirror path="ncoda-output-stdin"
-				                 options={codeMirrorOptions}
-								 value={this.state.stdinEditorValue}
-								 onChange={this.reRender}  // make component read-only
-	                             />
-				<ReactCodeMirror path="ncoda-output-stdout"
-				                 options={codeMirrorOptions}
-								 value={this.state.stdoutEditorValue}
-								 onChange={this.reRender}  // make component read-only
-	                             />
-            </div>
+				<div className="ncoda-output-terminals">
+	                <ReactCodeMirror path="ncoda-output-stdin"
+					                 options={codeMirrorOptions}
+									 value={this.state.stdinEditorValue}
+									 onChange={this.reRender}  // make component read-only
+		                             />
+					<ReactCodeMirror path="ncoda-output-stdout"
+					                 options={codeMirrorOptions}
+									 value={this.state.stdoutEditorValue}
+									 onChange={this.reRender}  // make component read-only
+		                             />
+				</div>
+			</div>
         );
     }
 });
@@ -146,6 +150,7 @@ var NCoda = React.createClass({
         return (
             <div className="ncoda">
                 <TextEditor submitToPyPy={this.submitToPyPy} />
+				<div className="ncoda-toplevel-separator"></div>
                 <Terminal outputThis={this.state.sendToConsole}
                           outputType={this.state.sendToConsoleType}
                           />

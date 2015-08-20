@@ -1,1 +1,135 @@
 /* This is the base file for nCoda CSS. */
+
+html {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    overflow: hidden;
+    margin: 0px;
+    min-height: 100%;
+}
+
+/* ********************************************************************************************* */
+/* The top-level components (header and everything else) */
+
+.ncoda-header {
+    background: #fdf6e3;  /* solarized "base3" */
+    color: #b58900;  /* solarized "yellow" */
+    overflow: hidden;
+    height: 3em;
+}
+
+.ncoda-header h1 {
+    margin: 0px;
+}
+
+#ncoda {
+    background: -webkit-linear-gradient(from right, red, orange, yellow, green, blue, indigo, violet);
+    background:    -moz-linear-gradient(to left, red, orange, yellow, green, blue, indigo, violet);
+    background:      -o-linear-gradient(to left, red, orange, yellow, green, blue, indigo, violet);
+    background:         linear-gradient(to left, red, orange, yellow, green, blue, indigo, violet);
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* the #ncoda div contains another div with the "ncoda" class */
+.ncoda {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    background: darkgreen;
+}
+
+/* ********************************************************************************************* */
+/* Things for the text editor (middle-left) */
+
+.ncoda-text-editor {
+    overflow: hidden;
+    background: #fdf6e3;  /* solarized "base3" */
+    min-height: 15em;
+    flex-grow: 3;
+    /* for contents */
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+}
+
+.ncoda-text-editor h2 {
+    margin: 0px;
+    color: #657b83;  /* solarized "base00" */
+}
+
+.ncoda-pypyjs-controls {
+    background: #fdf6e3;  /* solarized "base3" */
+}
+
+.ncoda-pypyjs-controls input {
+    margin: 0.5em;
+}
+
+.ReactCodeMirror.ncoda-editor {
+    background: seagreen;
+    flex-grow: 1;
+}
+
+.ncoda-text-editor .CodeMirror {
+    height: 100%;
+}
+
+/* ********************************************************************************************* */
+/* Things for the terminals (bottom) */
+
+.ncoda-toplevel-separator {
+    /* separator between main window and terminals */
+    min-height: 0.5em;
+    /*background: -webkit-linear-gradient(darkslategray, lightgrey, darkslategray);
+    background:    -moz-linear-gradient(darkslategray, lightgrey, darkslategray);
+    background:      -o-linear-gradient(darkslategray, lightgrey, darkslategray);
+    background:         linear-gradient(darkslategray, lightgrey, darkslategray);*/
+    background: #eee8d5;  /* solarized "base2" */
+}
+
+.ncoda-text-output {
+    overflow: hidden;
+    background: #fdf6e3;  /* solarized "base3" */
+    display: flex;
+    flex-flow: column;
+    min-height: 15em;
+    flex-grow: 1;
+}
+
+.ncoda-text-output h2 {
+    margin: 0px;
+    color: #657b83;  /* solarized "base00" */
+}
+
+.ncoda-output-terminals {
+    background: red;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: row;
+}
+
+.ReactCodeMirror.ncoda-output-stdin {
+    flex-grow: 1;
+    height: 100%;
+    background: plum;
+}
+
+.ncoda-output-stdin .CodeMirror {
+    height: 100%;
+}
+
+.ReactCodeMirror.ncoda-output-stdout {
+    flex-grow: 1;
+    height: 100%;
+    background: palevioletred;
+}
+
+.ncoda-output-stdout .CodeMirror {
+    height: 100%;
+}
