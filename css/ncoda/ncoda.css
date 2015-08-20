@@ -45,14 +45,22 @@ body {
 }
 
 /* ********************************************************************************************* */
-/* Things for the text editor (middle-left) */
+/* Things for the WorkTable (middle) */
 
-.ncoda-text-editor {
+.ncoda-work-table {
     overflow: hidden;
     background: #fdf6e3;  /* solarized "base3" */
     min-height: 15em;
     flex-grow: 3;
     /* for contents */
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+}
+
+/* TextEditor (middle-left) */
+.ncoda-text-editor {
+    flex-grow: 1;
     display: flex;
     flex-flow: column;
     justify-content: space-between;

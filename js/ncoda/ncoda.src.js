@@ -49,6 +49,7 @@ var TextEditor = React.createClass({
 			                                 // desktop and may not be so good for us, but it has
 											 // better IME and and screen reader support
 		};
+		// TODO: the Up/Down buttons don't belong here at all
         return (
             <div className="ncoda-text-editor">
                 <h2>Input</h2>
@@ -65,6 +66,20 @@ var TextEditor = React.createClass({
             </div>
         );
     }
+});
+
+
+var WorkTable = React.createClass({
+	propTypes: {
+		submitToPyPy: React.PropTypes.func.isRequired
+	},
+	render: function () {
+		return (
+			<div className="ncoda-work-table">
+				<TextEditor submitToPyPy={this.submitToPyPy} />
+			</div>
+		);
+	}
 });
 
 
@@ -178,7 +193,7 @@ var NCoda = React.createClass({
     render: function() {
         return (
             <div className="ncoda">
-                <TextEditor submitToPyPy={this.submitToPyPy} />
+                <WorkTable submitToPyPy={this.submitToPyPy} />
 				<Separator />
                 <TerminalOutput outputThis={this.state.sendToConsole}
                                 outputType={this.state.sendToConsoleType}
