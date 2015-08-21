@@ -130,6 +130,14 @@ body {
     flex-grow: 0;
 }
 
+.ncoda-separator-horizontal {
+    cursor: ns-resize;
+}
+
+.ncoda-separator-vertical {
+    cursor: ew-resize;
+}
+
 .ncoda-terminal-output {
     overflow: hidden;
     background: #fdf6e3;  /* solarized "base3" */

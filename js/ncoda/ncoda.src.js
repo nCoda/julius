@@ -86,7 +86,7 @@ var WorkTable = React.createClass({
 		return (
 			<div className="ncoda-work-table">
 				<TextEditor submitToPyPy={this.props.submitToPyPy} />
-				<Separator />
+				<Separator direction="vertical" />
 				<Verovio />
 			</div>
 		);
@@ -144,7 +144,7 @@ var TerminalOutput = React.createClass({
 									 value={this.state.stdinEditorValue}
 									 onChange={this.reRender}  // make component read-only
 		                             />
-					<Separator />
+					<Separator direction="vertical" />
 					<ReactCodeMirror path="ncoda-output-stdout"
 					                 options={codeMirrorOptions}
 									 value={this.state.stdoutEditorValue}
@@ -158,8 +158,18 @@ var TerminalOutput = React.createClass({
 
 
 var Separator = React.createClass({
+	// TODO: let the caller submit two @id attributes, on which we'll set min- and max- properties,
+	//       different depending on whether it's horizontal or vertical. And without those props,
+	//       the resize cursor won't be shown.
+	propTypes: {
+		direction: React.PropTypes.oneOf(["horizontal", "vertical"])
+	},
+	getDefaultProps: function() {
+		return {direction: "horizontal"};
+	},
 	render: function() {
-		return ( <div className="ncoda-separator"></div> );
+		var className = "ncoda-separator ncoda-separator-" + this.props.direction;
+		return ( <div className={className}></div> );
 	}
 })
 
