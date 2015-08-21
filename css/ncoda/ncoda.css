@@ -23,6 +23,7 @@ body {
     align-items: center;
     background: #fdf6e3;  /* solarized "base3" */
     color: #93a1a1;  /* solarized "base1" */
+    cursor: wait;
 }
 
 #ncoda-loading i {
