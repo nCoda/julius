@@ -107,6 +107,7 @@ var WorkTable = React.createClass({
 		return (
 			<div className="ncoda-work-table">
 				<TextEditor submitToPyPy={this.props.submitToPyPy} />
+				<Separator />
 				<Verovio />
 			</div>
 		);
