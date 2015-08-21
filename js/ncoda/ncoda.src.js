@@ -10,9 +10,7 @@ var TextEditor = React.createClass({
 		submitToPyPy: React.PropTypes.func.isRequired
 	},
 	getInitialState: function() {
-		// NB: "theLowerDiv" is actually the <div> with the terminals in it; we use it in this
-		//     component for the resizing buttons.
-		return {editorValue: "", theLowerDiv: null};
+		return {editorValue: ""};
 	},
 	updateEditorValue: function(withThis) {
 		// TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
@@ -21,22 +19,6 @@ var TextEditor = React.createClass({
     submitToPyPy: function(changeEvent) {
         this.props.submitToPyPy(this.state.editorValue);
     },
-	componentDidMount: function() {
-		// TODO: this is such a huge hack
-		var theLowerDiv = document.getElementById("ncoda-terminal-output");
-		theLowerDiv.style["flex-grow"] = 1;
-		this.setState({theLowerDiv: document.getElementById("ncoda-terminal-output")});
-	},
-	resizeTerminal: function(event) {
-		if (this.state.theLowerDiv) {
-			var currentValue = parseInt(this.state.theLowerDiv.style["flex-grow"], 10);
-			if (event.target.value === "Up") {
-				this.state.theLowerDiv.style["flex-grow"] = currentValue + 1;
-			} else {
-				this.state.theLowerDiv.style["flex-grow"] = currentValue - 1;
-			}
-		}
-	},
     render: function() {
 		var codeMirrorOptions = {
 			"mode": "python",
@@ -50,7 +32,6 @@ var TextEditor = React.createClass({
 			                                 // desktop and may not be so good for us, but it has
 											 // better IME and and screen reader support
 		};
-		// TODO: the Up/Down buttons don't belong here at all
         return (
             <div className="ncoda-text-editor">
                 <h2>Input</h2>
@@ -61,8 +42,6 @@ var TextEditor = React.createClass({
 	                             />
 				<div className="ncoda-pypyjs-controls">
 					<input type="button" value="Execute" onClick={this.submitToPyPy}></input>
-					<input type="button" value="Up"   onClick={this.resizeTerminal}></input>
-					<input type="button" value="Down" onClick={this.resizeTerminal}></input>
 				</div>
             </div>
         );
