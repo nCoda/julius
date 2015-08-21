@@ -9,7 +9,7 @@ body {
     justify-content: space-between;
     overflow: hidden;
     margin: 0px;
-    min-height: 100%;
+    height: 100%;
 }
 
 /* ********************************************************************************************* */
@@ -20,6 +20,7 @@ body {
     color: #b58900;  /* solarized "yellow" */
     overflow: hidden;
     height: 3em;
+    flex-shrink: 0;
 }
 
 .ncoda-header h1 {
@@ -52,6 +53,7 @@ body {
     background: #fdf6e3;  /* solarized "base3" */
     min-height: 15em;
     flex-grow: 3;
+    max-height: 90%;
     /* for contents */
     display: flex;
     flex-flow: row;
@@ -91,15 +93,14 @@ body {
 /* Verovio (middle-right) */
 .ncoda-verovio {
     flex-grow: 1;
-    max-width: 50%;
+    max-width: 75%;
     max-height: 100%;
     display: block;
     overflow: scroll;
 }
 
 .ncoda-verovio svg {
-    height: 100%;
-    width: 100%;
+    max-width: 100%;
 }
 
 /* ********************************************************************************************* */

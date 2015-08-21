@@ -75,23 +75,21 @@ var Verovio = React.createClass({
 		return {verovio: null};
 	},
 	componentDidMount: function() {
-		var zell = React.findDOMNode(this.refs.verovioFrame);
-		var theOptions = {
-			pageHeight: zell.clientHeight,
-			pageWidth: zell.clientWidth,
-		};
 		var newVerovio = new verovio.toolkit();  // TODO: destroy this instance when the component unmounts
-		newVerovio.setOptions(JSON.stringify(theOptions));
 		this.setState({verovio: newVerovio});
 	},
 	render: function() {
 		var innerHtml = "";
 		if (null !== this.state.verovio) {
+			var theOptions = {
+				inputFormat: "pae"
+			};
 			var data = "@clef:G-2\n\
 			            @keysig:xFCGD\n\
 						@timesig:3/8\n\
 						@data:'6B/{8B+(6B''E'B})({AFD})/{6.E3G},8B-/({6'EGF})({FAG})({GEB})/";
-			var innerHtml = this.state.verovio.renderData(data, '{"inputFormat": "pae"}');
+			var innerHtml = this.state.verovio.renderData(data, JSON.stringify(theOptions));
+			console.log(this.state.verovio.getLog());
 		}
 		innerHtml = {"__html": innerHtml};
 		return (
