@@ -13,6 +13,23 @@ body {
 }
 
 /* ********************************************************************************************* */
+/* The loading screen, shown before PyPy.js and Verovio are compiled. */
+
+#ncoda-loading {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
+    align-items: center;
+    background: #fdf6e3;  /* solarized "base3" */
+    color: #93a1a1;  /* solarized "base1" */
+}
+
+#ncoda-loading i {
+    color: #268bd2;  /* solarized "blue" */
+}
+
+/* ********************************************************************************************* */
 /* The top-level components (header and everything else) */
 
 .ncoda-header {
@@ -21,6 +38,8 @@ body {
     overflow: hidden;
     height: 3em;
     flex-shrink: 0;
+    box-shadow: 0px 0px 7px black;
+    z-index: 1000;
 }
 
 .ncoda-header h1 {
@@ -28,10 +47,7 @@ body {
 }
 
 #ncoda {
-    background: -webkit-linear-gradient(from right, red, orange, yellow, green, blue, indigo, violet);
-    background:    -moz-linear-gradient(to left, red, orange, yellow, green, blue, indigo, violet);
-    background:      -o-linear-gradient(to left, red, orange, yellow, green, blue, indigo, violet);
-    background:         linear-gradient(to left, red, orange, yellow, green, blue, indigo, violet);
+    background: #fdf6e3;  /* solarized "base3" */
     flex-grow: 1;
     overflow: hidden;
 }
