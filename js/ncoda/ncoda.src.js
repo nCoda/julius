@@ -6,43 +6,43 @@ import {ReactCodeMirror} from "/js/ncoda/CodeMirror.js";
 // import verovio from "verovio";
 
 var TextEditor = React.createClass({
-	propTypes: {
-		submitToPyPy: React.PropTypes.func.isRequired
-	},
-	getInitialState: function() {
-		return {editorValue: ""};
-	},
-	updateEditorValue: function(withThis) {
-		// TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
-		this.setState({editorValue: withThis});
-	},
+    propTypes: {
+        submitToPyPy: React.PropTypes.func.isRequired
+    },
+    getInitialState: function() {
+        return {editorValue: ""};
+    },
+    updateEditorValue: function(withThis) {
+        // TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
+        this.setState({editorValue: withThis});
+    },
     submitToPyPy: function(changeEvent) {
         this.props.submitToPyPy(this.state.editorValue);
     },
     render: function() {
-		var codeMirrorOptions = {
-			"mode": "python",
-			"theme": "solarized dark",
-			"indentUnit": 4,
-			"indentWithTabs": false,
-			"smartIndent": true,
-			"electricChars": true,
-			"lineNumbers": true,
-			"inputStyle": "contenteditable"  // NOTE: this usually defaults to "textarea" on
-			                                 // desktop and may not be so good for us, but it has
-											 // better IME and and screen reader support
-		};
+        var codeMirrorOptions = {
+            "mode": "python",
+            "theme": "solarized dark",
+            "indentUnit": 4,
+            "indentWithTabs": false,
+            "smartIndent": true,
+            "electricChars": true,
+            "lineNumbers": true,
+            "inputStyle": "contenteditable"  // NOTE: this usually defaults to "textarea" on
+                                             // desktop and may not be so good for us, but it has
+                                             // better IME and and screen reader support
+        };
         return (
             <div className="ncoda-text-editor">
                 <h2>Input</h2>
                 <ReactCodeMirror path="ncoda-editor"
-				                 options={codeMirrorOptions}
-								 value={this.state.editorValue}
-								 onChange={this.updateEditorValue}
-	                             />
-				<div className="ncoda-pypyjs-controls">
-					<input type="button" value="Execute" onClick={this.submitToPyPy}></input>
-				</div>
+                                 options={codeMirrorOptions}
+                                 value={this.state.editorValue}
+                                 onChange={this.updateEditorValue}
+                                 />
+                <div className="ncoda-pypyjs-controls">
+                    <input type="button" value="Execute" onClick={this.submitToPyPy}></input>
+                </div>
             </div>
         );
     }
@@ -50,127 +50,127 @@ var TextEditor = React.createClass({
 
 
 var Verovio = React.createClass({
-	getInitialState: function() {
-		return {verovio: null};
-	},
-	componentDidMount: function() {
-		var newVerovio = new verovio.toolkit();  // TODO: destroy this instance when the component unmounts
-		this.setState({verovio: newVerovio});
-	},
-	render: function() {
-		var innerHtml = "";
-		if (null !== this.state.verovio) {
-			var theOptions = {
-				inputFormat: "pae"
-			};
-			var data = "@clef:G-2\n\
-			            @keysig:xFCGD\n\
-						@timesig:3/8\n\
-						@data:'6B/{8B+(6B''E'B})({AFD})/{6.E3G},8B-/({6'EGF})({FAG})({GEB})/";
-			var innerHtml = this.state.verovio.renderData(data, JSON.stringify(theOptions));
-			console.log(this.state.verovio.getLog());
-		}
-		innerHtml = {"__html": innerHtml};
-		return (
-			<div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
-		);
-	}
+    getInitialState: function() {
+        return {verovio: null};
+    },
+    componentDidMount: function() {
+        var newVerovio = new verovio.toolkit();  // TODO: destroy this instance when the component unmounts
+        this.setState({verovio: newVerovio});
+    },
+    render: function() {
+        var innerHtml = "";
+        if (null !== this.state.verovio) {
+            var theOptions = {
+                inputFormat: "pae"
+            };
+            var data = "@clef:G-2\n\
+                        @keysig:xFCGD\n\
+                        @timesig:3/8\n\
+                        @data:'6B/{8B+(6B''E'B})({AFD})/{6.E3G},8B-/({6'EGF})({FAG})({GEB})/";
+            var innerHtml = this.state.verovio.renderData(data, JSON.stringify(theOptions));
+            console.log(this.state.verovio.getLog());
+        }
+        innerHtml = {"__html": innerHtml};
+        return (
+            <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
+        );
+    }
 });
 
 
 var WorkTable = React.createClass({
-	propTypes: {
-		submitToPyPy: React.PropTypes.func.isRequired
-	},
-	render: function () {
-		return (
-			<div className="ncoda-work-table">
-				<TextEditor submitToPyPy={this.props.submitToPyPy} />
-				<Separator direction="vertical" />
-				<Verovio />
-			</div>
-		);
-	}
+    propTypes: {
+        submitToPyPy: React.PropTypes.func.isRequired
+    },
+    render: function () {
+        return (
+            <div className="ncoda-work-table">
+                <TextEditor submitToPyPy={this.props.submitToPyPy} />
+                <Separator direction="vertical" />
+                <Verovio />
+            </div>
+        );
+    }
 });
 
 
 var TerminalOutput = React.createClass({
-	propTypes: {
-		outputThis: React.PropTypes.string,
-		outputType: React.PropTypes.oneOf(["welcome", "input", "stdout", "stderr"])
-	},
-	getDefaultProps: function() {
-		return {outputThis: "", outputType: "stdout"};
-	},
-	getInitialState: function() {
-		return {stdinEditorValue: "", stdoutEditorValue: ""};
-	},
-	componentWillReceiveProps: function(nextProps) {
-		var outputThis = nextProps.outputThis;
-		if (false === outputThis.endsWith("\n")) {
-			outputThis += "\n";
-		}
+    propTypes: {
+        outputThis: React.PropTypes.string,
+        outputType: React.PropTypes.oneOf(["welcome", "input", "stdout", "stderr"])
+    },
+    getDefaultProps: function() {
+        return {outputThis: "", outputType: "stdout"};
+    },
+    getInitialState: function() {
+        return {stdinEditorValue: "", stdoutEditorValue: ""};
+    },
+    componentWillReceiveProps: function(nextProps) {
+        var outputThis = nextProps.outputThis;
+        if (false === outputThis.endsWith("\n")) {
+            outputThis += "\n";
+        }
 
-		if ("input" === nextProps.outputType) {
-			this.setState({stdinEditorValue: this.state.stdinEditorValue + outputThis});
-		} else {
-			this.setState({stdoutEditorValue: this.state.stdoutEditorValue + outputThis});
-		}
-	},
-	reRender: function() {
-		// By calling forceUpdate() without changing props or state, we're disallowing any of the
-		// user's input from reaching the CodeMirror widget.
-		this.forceUpdate();
-	},
+        if ("input" === nextProps.outputType) {
+            this.setState({stdinEditorValue: this.state.stdinEditorValue + outputThis});
+        } else {
+            this.setState({stdoutEditorValue: this.state.stdoutEditorValue + outputThis});
+        }
+    },
+    reRender: function() {
+        // By calling forceUpdate() without changing props or state, we're disallowing any of the
+        // user's input from reaching the CodeMirror widget.
+        this.forceUpdate();
+    },
     render: function() {
-		var codeMirrorOptions = {
-			"mode": "python",
-			"theme": "solarized dark",
-			"indentUnit": 4,
-			"indentWithTabs": false,
-			"smartIndent": true,
-			"electricChars": true,
-			"lineNumbers": true,
-			"inputStyle": "contenteditable"  // NOTE: this usually defaults to "textarea" on
-			                                 // desktop and may not be so good for us, but it has
-											 // better IME and and screen reader support
-		};
+        var codeMirrorOptions = {
+            "mode": "python",
+            "theme": "solarized dark",
+            "indentUnit": 4,
+            "indentWithTabs": false,
+            "smartIndent": true,
+            "electricChars": true,
+            "lineNumbers": true,
+            "inputStyle": "contenteditable"  // NOTE: this usually defaults to "textarea" on
+                                             // desktop and may not be so good for us, but it has
+                                             // better IME and and screen reader support
+        };
         return (
             <div id="ncoda-terminal-output" className="ncoda-terminal-output">
                 <h2>Output</h2>
-				<div className="ncoda-output-terminals">
-	                <ReactCodeMirror path="ncoda-output-stdin"
-					                 options={codeMirrorOptions}
-									 value={this.state.stdinEditorValue}
-									 onChange={this.reRender}  // make component read-only
-		                             />
-					<Separator direction="vertical" />
-					<ReactCodeMirror path="ncoda-output-stdout"
-					                 options={codeMirrorOptions}
-									 value={this.state.stdoutEditorValue}
-									 onChange={this.reRender}  // make component read-only
-		                             />
-				</div>
-			</div>
+                <div className="ncoda-output-terminals">
+                    <ReactCodeMirror path="ncoda-output-stdin"
+                                     options={codeMirrorOptions}
+                                     value={this.state.stdinEditorValue}
+                                     onChange={this.reRender}  // make component read-only
+                                     />
+                    <Separator direction="vertical" />
+                    <ReactCodeMirror path="ncoda-output-stdout"
+                                     options={codeMirrorOptions}
+                                     value={this.state.stdoutEditorValue}
+                                     onChange={this.reRender}  // make component read-only
+                                     />
+                </div>
+            </div>
         );
     }
 });
 
 
 var Separator = React.createClass({
-	// TODO: let the caller submit two @id attributes, on which we'll set min- and max- properties,
-	//       different depending on whether it's horizontal or vertical. And without those props,
-	//       the resize cursor won't be shown.
-	propTypes: {
-		direction: React.PropTypes.oneOf(["horizontal", "vertical"])
-	},
-	getDefaultProps: function() {
-		return {direction: "horizontal"};
-	},
-	render: function() {
-		var className = "ncoda-separator ncoda-separator-" + this.props.direction;
-		return ( <div className={className}></div> );
-	}
+    // TODO: let the caller submit two @id attributes, on which we'll set min- and max- properties,
+    //       different depending on whether it's horizontal or vertical. And without those props,
+    //       the resize cursor won't be shown.
+    propTypes: {
+        direction: React.PropTypes.oneOf(["horizontal", "vertical"])
+    },
+    getDefaultProps: function() {
+        return {direction: "horizontal"};
+    },
+    render: function() {
+        var className = "ncoda-separator ncoda-separator-" + this.props.direction;
+        return ( <div className={className}></div> );
+    }
 })
 
 
@@ -214,7 +214,7 @@ var NCoda = React.createClass({
         return (
             <div className="ncoda">
                 <WorkTable submitToPyPy={this.submitToPyPy} />
-				<Separator />
+                <Separator />
                 <TerminalOutput outputThis={this.state.sendToConsole}
                                 outputType={this.state.sendToConsoleType}
                 />
