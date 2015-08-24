@@ -5,6 +5,62 @@ import React from "/js/react/react.js";
 import {ReactCodeMirror} from "/js/ncoda/CodeMirror.js";
 // import verovio from "verovio";
 
+
+var handleSeparator = function(doThis, thisDirection, zeroElem, oneElem) {
+    // This function handles resizing elements separated by a Separator component.
+    //
+    // @param doThis (int): Move the element by this many pixels. (0, 0) is at the top-left.
+    // @param thisDirection (string): Either "horizontal" or "vertical," depending on the
+    //        intended direction of movement. Note this is the *opposite* of the Separator
+    //        component's "direction" prop.
+    // @param zeroElem (Element): The element closer to "zero" in the direction of movement. For
+    //        vertical movement, this is the higher Element; for horizontal movement this is the
+    //        Element on the left.
+    // @param oneEleme (Element): The other element that's being resized.
+
+    // get the existing span
+    var zeroStyleAttr;
+    var oneStyleAttr;
+    if ("vertical" === thisDirection) {
+        zeroStyleAttr = zeroElem.offsetHeight;
+        oneStyleAttr = oneElem.offsetHeight;
+    } else {
+        zeroStyleAttr = zeroElem.offsetWidth;
+        oneStyleAttr = oneElem.offsetWidth;
+    }
+
+    // Sometimes when things move too quickly, they can somehow get out of sync, and there will
+    // be spaces around the Separator. This ensures that won't happen.
+    var requiredTotal = zeroStyleAttr + oneStyleAttr;
+
+    // do the adjustment
+    zeroStyleAttr += doThis;
+    oneStyleAttr -= doThis;
+
+    // double-check it adds up
+    if ((zeroStyleAttr + oneStyleAttr) < requiredTotal) {
+        var magnitude = requiredTotal - (zeroStyleAttr + oneStyleAttr);
+        zeroStyleAttr += magnitude;
+    } else if ((zeroStyleAttr + oneStyleAttr) > requiredTotal) {
+        var magnitude = (zeroStyleAttr + oneStyleAttr) - requiredTotal;
+        zeroStyleAttr -= magnitude;
+    }
+
+    // make the CSS thing
+    if ("vertical" === thisDirection) {
+        var zeroStyleAttr = "height: " + zeroStyleAttr + "px;";
+        var oneStyleAttr = "height: " + oneStyleAttr + "px;";
+    } else {
+        var zeroStyleAttr = "width: " + zeroStyleAttr + "px;";
+        var oneStyleAttr = "width: " + oneStyleAttr + "px;";
+    }
+
+    // set everything
+    zeroElem.setAttribute("style", zeroStyleAttr);
+    oneElem.setAttribute("style", oneStyleAttr);
+};
+
+
 var TextEditor = React.createClass({
     propTypes: {
         submitToPyPy: React.PropTypes.func.isRequired
@@ -68,7 +124,6 @@ var Verovio = React.createClass({
                         @timesig:3/8\n\
                         @data:'6B/{8B+(6B''E'B})({AFD})/{6.E3G},8B-/({6'EGF})({FAG})({GEB})/";
             var innerHtml = this.state.verovio.renderData(data, JSON.stringify(theOptions));
-            console.log(this.state.verovio.getLog());
         }
         innerHtml = {"__html": innerHtml};
         return (
@@ -82,12 +137,17 @@ var WorkTable = React.createClass({
     propTypes: {
         submitToPyPy: React.PropTypes.func.isRequired
     },
+    handleSeparator: function(doThis, thisDirection) {
+        var wt = React.findDOMNode(this.refs.workTable);
+        handleSeparator(doThis, thisDirection, React.findDOMNode(this.refs.textEditor),
+                        React.findDOMNode(this.refs.verovio));
+    },
     render: function () {
         return (
-            <div className="ncoda-work-table">
-                <TextEditor submitToPyPy={this.props.submitToPyPy} />
-                <Separator direction="vertical" />
-                <Verovio />
+            <div ref="workTable" className="ncoda-work-table">
+                <TextEditor ref="textEditor" submitToPyPy={this.props.submitToPyPy} />
+                <Separator direction="vertical" movingFunction={this.handleSeparator} />
+                <Verovio ref="verovio" />
             </div>
         );
     }
@@ -122,6 +182,10 @@ var TerminalOutput = React.createClass({
         // user's input from reaching the CodeMirror widget.
         this.forceUpdate();
     },
+    handleSeparator: function(doThis, thisDirection) {
+        handleSeparator(doThis, thisDirection, React.findDOMNode(this.refs.theLeftBox),
+                        React.findDOMNode(this.refs.theRightBox));
+    },
     render: function() {
         var codeMirrorOptions = {
             "mode": "python",
@@ -140,12 +204,14 @@ var TerminalOutput = React.createClass({
                 <h2>Output</h2>
                 <div className="ncoda-output-terminals">
                     <ReactCodeMirror path="ncoda-output-stdin"
+                                     ref="theLeftBox"
                                      options={codeMirrorOptions}
                                      value={this.state.stdinEditorValue}
                                      onChange={this.reRender}  // make component read-only
                                      />
-                    <Separator direction="vertical" />
+                    <Separator direction="vertical" movingFunction={this.handleSeparator} />
                     <ReactCodeMirror path="ncoda-output-stdout"
+                                     ref="theRightBox"
                                      options={codeMirrorOptions}
                                      value={this.state.stdoutEditorValue}
                                      onChange={this.reRender}  // make component read-only
@@ -162,16 +228,56 @@ var Separator = React.createClass({
     //       different depending on whether it's horizontal or vertical. And without those props,
     //       the resize cursor won't be shown.
     propTypes: {
-        direction: React.PropTypes.oneOf(["horizontal", "vertical"])
+        direction: React.PropTypes.oneOf(["horizontal", "vertical"]),
+        movingFunction: React.PropTypes.func  // TODO: write explanation about this
     },
     getDefaultProps: function() {
         return {direction: "horizontal"};
     },
+    getInitialState: function() {
+        // - "mouseDown": set to "true" when the mouse is down
+        return {mouseDown: false, recentestObservation: null};
+    },
+    onMouseMove: function(event) {
+        if (this.state.mouseDown && this.props.movingFunction) {
+            var state = {};
+            var direction = null;  // this will be opposite of the Separator's direction
+            if ("vertical" === this.props.direction) {
+                state["recentestObservation"] = event.clientX;
+                direction = "horizontal";
+            } else {
+                state["recentestObservation"] = event.clientY;
+                direction = "vertical";
+            }
+            var magnitude = state.recentestObservation - this.state.recentestObservation;
+            this.setState(state);
+            this.props.movingFunction(magnitude, direction );
+        }
+    },
+    onMouseDown: function(event) {
+        var state = {mouseDown: true};
+        if ("vertical" === this.props.direction) {
+            state["recentestObservation"] = event.clientX;
+        } else {
+            state["recentestObservation"] = event.clientY;
+        }
+        this.setState(state);
+    },
+    onMouseUp: function(event) {
+        this.onMouseMove(event);
+        this.setState({mouseDown: false});
+    },
     render: function() {
         var className = "ncoda-separator ncoda-separator-" + this.props.direction;
-        return ( <div className={className}></div> );
+        if (this.state.mouseDown) {
+            className += " ncoda-separator-selected";
+        }
+        return ( <div className={className}
+                      onMouseDown={this.onMouseDown}
+                      onMouseUp={this.onMouseUp}
+                      onMouseMove={this.onMouseMove}></div> );
     }
-})
+});
 
 
 var NCoda = React.createClass({
@@ -210,12 +316,17 @@ var NCoda = React.createClass({
         }
         this.setState({sendToConsole: thisText, sendToConsoleType: outputType});
     },
+    handleSeparator: function(doThis, thisDirection) {
+        handleSeparator(doThis, thisDirection, React.findDOMNode(this.refs.workTable),
+                        React.findDOMNode(this.refs.terminalOutput));
+    },
     render: function() {
         return (
             <div className="ncoda">
-                <WorkTable submitToPyPy={this.submitToPyPy} />
-                <Separator />
-                <TerminalOutput outputThis={this.state.sendToConsole}
+                <WorkTable ref="workTable" submitToPyPy={this.submitToPyPy} />
+                <Separator movingFunction={this.handleSeparator} />
+                <TerminalOutput ref="terminalOutput"
+                                outputThis={this.state.sendToConsole}
                                 outputType={this.state.sendToConsoleType}
                 />
             </div>
