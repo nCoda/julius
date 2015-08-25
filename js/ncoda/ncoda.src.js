@@ -106,6 +106,12 @@ var TextEditor = React.createClass({
 
 
 var Verovio = React.createClass({
+    propTypes: {
+        meiToRender: React.PropTypes.string
+    },
+    getDefaultProps: function() {
+        return ( {meiToRender: ""} );
+    },
     getInitialState: function() {
         return {verovio: null};
     },
@@ -120,13 +126,10 @@ var Verovio = React.createClass({
         var innerHtml = "";
         if (null !== this.state.verovio) {
             var theOptions = {
-                inputFormat: "pae"
+                inputFormat: "mei"
             };
-            var data = "@clef:G-2\n\
-                        @keysig:xFCGD\n\
-                        @timesig:3/8\n\
-                        @data:'6B/{8B+(6B''E'B})({AFD})/{6.E3G},8B-/({6'EGF})({FAG})({GEB})/";
-            var innerHtml = this.state.verovio.renderData(data, JSON.stringify(theOptions));
+            var innerHtml = this.state.verovio.renderData(this.props.meiForVerovio,
+                                                          JSON.stringify(theOptions));
         }
         innerHtml = {"__html": innerHtml};
         return (
@@ -138,7 +141,11 @@ var Verovio = React.createClass({
 
 var WorkTable = React.createClass({
     propTypes: {
+        meiForVerovio: React.PropTypes.string,
         submitToPyPy: React.PropTypes.func.isRequired
+    },
+    getDefaultProps: function() {
+        return ( {meiForVerovio: ""} );
     },
     handleSeparator: function(doThis, thisDirection) {
         var wt = React.findDOMNode(this.refs.workTable);
@@ -150,7 +157,7 @@ var WorkTable = React.createClass({
             <div ref="workTable" className="ncoda-work-table">
                 <TextEditor ref="textEditor" submitToPyPy={this.props.submitToPyPy} />
                 <Separator direction="vertical" movingFunction={this.handleSeparator} />
-                <Verovio ref="verovio" />
+                <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
             </div>
         );
     }
@@ -284,6 +291,12 @@ var Separator = React.createClass({
 
 
 var NCoda = React.createClass({
+    propTypes: {
+        meiForVerovio: React.PropTypes.string
+    },
+    getDefaultProps: function() {
+        return ( {meiForVerovio: ""} );
+    },
     getInitialState: function() {
         return ({sendToConsole: "nCoda is ready for action!",
                  sendToConsoleType: "welcome",
@@ -326,7 +339,10 @@ var NCoda = React.createClass({
     render: function() {
         return (
             <div className="ncoda">
-                <WorkTable ref="workTable" submitToPyPy={this.submitToPyPy} />
+                <WorkTable ref="workTable"
+                           submitToPyPy={this.submitToPyPy}
+                           meiForVerovio={this.props.meiForVerovio}
+                           />
                 <Separator movingFunction={this.handleSeparator} />
                 <TerminalOutput ref="terminalOutput"
                                 outputThis={this.state.sendToConsole}
