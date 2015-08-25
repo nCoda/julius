@@ -110,8 +110,11 @@ var Verovio = React.createClass({
         return {verovio: null};
     },
     componentDidMount: function() {
-        var newVerovio = new verovio.toolkit();  // TODO: destroy this instance when the component unmounts
+        var newVerovio = new verovio.toolkit();
         this.setState({verovio: newVerovio});
+    },
+    componentWillUnmount: function() {
+        delete this.state.verovio;
     },
     render: function() {
         var innerHtml = "";
