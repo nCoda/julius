@@ -1,0 +1,17 @@
+{
+    "name": "nCoda",
+    "description": "Web application for formalized score control.",
+    "version": "0.0.1",
+    "author": "Christopher Antila <christopher@antila.ca>",
+    "license": "GPLv3+",
+    "dependencies": {
+        "react": "0.13.x",
+    },
+    "devDependencies": {
+        "browserify": "11.0.x",
+        "babelify": "6.2.x"
+    },
+    "browserify": {
+        "transform": ["babelify"]
+    }
+}

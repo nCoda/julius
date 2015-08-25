@@ -100,7 +100,7 @@ body {
     margin: 0.5em;
 }
 
-.ReactCodeMirror.ncoda-editor {
+.ncoda-text-editor .ReactCodeMirror {
     background: seagreen;
     flex-grow: 1;
 }
@@ -167,22 +167,20 @@ body {
     flex-flow: row;
 }
 
-.ReactCodeMirror.ncoda-output-stdin {
+.ncoda-output-stdin {
     width: 50%;
-    height: 100%;
     background: plum;
 }
 
-.ncoda-output-stdin .CodeMirror {
+.ncoda-output-stdin > .CodeMirror {
     height: 100%;
 }
 
-.ReactCodeMirror.ncoda-output-stdout {
+.ncoda-output-stdout {
     width: 50%;
-    height: 100%;
     background: palevioletred;
 }
 
-.ncoda-output-stdout .CodeMirror {
+.ncoda-output-stdout > .CodeMirror {
     height: 100%;
 }

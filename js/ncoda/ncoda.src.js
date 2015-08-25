@@ -1,10 +1,9 @@
 // This file starts nCoda
 // Copyright 2015 Christopher Antila
 
-import React from "/js/react/react.js";
-import {ReactCodeMirror} from "/js/ncoda/CodeMirror.js";
+import React from "react";
+import ReactCodeMirror from "./CodeMirror.src.js";
 // import verovio from "verovio";
-
 
 var handleSeparator = function(doThis, thisDirection, zeroElem, oneElem) {
     // This function handles resizing elements separated by a Separator component.
@@ -213,19 +212,23 @@ var TerminalOutput = React.createClass({
             <div id="ncoda-terminal-output" className="ncoda-terminal-output">
                 <h2>Output</h2>
                 <div className="ncoda-output-terminals">
-                    <ReactCodeMirror path="ncoda-output-stdin"
-                                     ref="theLeftBox"
-                                     options={codeMirrorOptions}
-                                     value={this.state.stdinEditorValue}
-                                     onChange={this.reRender}  // make component read-only
-                                     />
+                    <div className="ncoda-output-stdin">
+                        <ReactCodeMirror path="ncoda-output-stdin"
+                                         ref="theLeftBox"
+                                         options={codeMirrorOptions}
+                                         value={this.state.stdinEditorValue}
+                                         onChange={this.reRender}  // make component read-only
+                        />
+                    </div>
                     <Separator direction="vertical" movingFunction={this.handleSeparator} />
-                    <ReactCodeMirror path="ncoda-output-stdout"
-                                     ref="theRightBox"
-                                     options={codeMirrorOptions}
-                                     value={this.state.stdoutEditorValue}
-                                     onChange={this.reRender}  // make component read-only
-                                     />
+                    <div className="ncoda-output-stdout">
+                        <ReactCodeMirror path="ncoda-output-stdout"
+                                         ref="theRightBox"
+                                         options={codeMirrorOptions}
+                                         value={this.state.stdoutEditorValue}
+                                         onChange={this.reRender}  // make component read-only
+                        />
+                    </div>
                 </div>
             </div>
         );
@@ -355,4 +358,4 @@ var NCoda = React.createClass({
 
 //
 
-export {NCoda};
+export {NCoda, TextEditor, Verovio, WorkTable, TerminalOutput, Separator};
