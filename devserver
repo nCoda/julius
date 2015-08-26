@@ -1,36 +1,38 @@
 #!/usr/bin/env python3
 
-# Script to concurrently run "babel" and the SimpleHTTPServer module.
+# Script to concurrently run "watchify" and the SimpleHTTPServer module.
 
 from http import server
+import pathlib
 import subprocess
 
 
-# list of the JS files that must be compiled with Babel; it's input filename, then output filename
-_COMPILE_WITH_BABEL = [
-    ('js/ncoda/ncoda.src.js', 'js/ncoda/ncoda.js'),
-    ('js/ncoda/CodeMirror.src.js', 'js/ncoda/CodeMirror.js'),
-    ]
+# list of the JS files that must be compiled with Watchify; it's input filename, then output filename
+_COMPILE_WITH_WATCHIFY = [
+    ('js/ncoda-init.js', 'js/ncoda.js'),
+]
+
+_PATH_TO_WATCHIFY = 'node_modules/watchify/bin/cmd.js'
 
 
 def the_script():
-    # see if we can find/use babel
-    try:
-        subprocess.check_output(['which', 'babel'])
-    except subprocess.CalledProcessError:
-        print('Could not find babel. Is it installed?')
+    # see if we can find/use watchify
+    watchify = pathlib.Path(_PATH_TO_WATCHIFY)
+    if not watchify.exists():
+        print('Could not find Watchify. Is it installed?')
         raise SystemExit(1)
+    del watchify  # because this will be a long-running script
 
-    # set up some Babel instances
-    babel_instances = []
-    for each_file in _COMPILE_WITH_BABEL:
-        print('Starting Babel for {}'.format(each_file[0]))
+    # set up some Watchify instances
+    watchify_instances = []
+    for each_file in _COMPILE_WITH_WATCHIFY:
+        print('Starting Watchify for {}'.format(each_file[0]))
         try:
-            babel_instances.append(subprocess.Popen(['babel', each_file[0], '--watch', '--modules',
-                                                     'amd', '--out-file', each_file[1]]))
+            kummand = [_PATH_TO_WATCHIFY, each_file[0], '-o', each_file[1]]
+            watchify_instances.append(subprocess.Popen(kummand))
         except subprocess.CalledProcessError as cperr:
-            print('Encountered the following error while starting babel:\n{}'.format(cperr))
-            for each_instance in babel_instances:
+            print('Encountered the following error while starting Watchify:\n{}'.format(cperr))
+            for each_instance in watchify_instances:
                 each_instance.terminate()
                 each_instance.wait(timeout=30)
             raise SystemExit(1)
@@ -44,8 +46,8 @@ def the_script():
         httpd.serve_forever()
     except KeyboardInterrupt:
         print('')
-        for each_instance in babel_instances:
-            print('Terminating Babel with PID {}'.format(each_instance.pid))
+        for each_instance in watchify_instances:
+            print('Terminating Watchify with PID {}'.format(each_instance.pid))
             each_instance.terminate()
             each_instance.wait(timeout=30)
 

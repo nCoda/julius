@@ -5,13 +5,17 @@
     "author": "Christopher Antila <christopher@antila.ca>",
     "license": "GPLv3+",
     "dependencies": {
-        "react": "0.13.x",
+        "react": "0.13.x"
     },
     "devDependencies": {
+        "babelify": "6.2.x",
         "browserify": "11.0.x",
-        "babelify": "6.2.x"
+        "watchify": "3.3.x"
     },
     "browserify": {
         "transform": ["babelify"]
+        },
+    "scripts": {
+        "start": "python3 devserver"
     }
 }
