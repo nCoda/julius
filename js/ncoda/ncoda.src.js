@@ -3,7 +3,6 @@
 
 import React from "react";
 import ReactCodeMirror from "./CodeMirror.src.js";
-// import verovio from "verovio";
 
 var handleSeparator = function(doThis, thisDirection, zeroElem, oneElem) {
     // This function handles resizing elements separated by a Separator component.
@@ -164,9 +163,10 @@ var WorkTable = React.createClass({
 
 
 var TerminalOutput = React.createClass({
+    // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     propTypes: {
         outputThis: React.PropTypes.string,
-        outputType: React.PropTypes.oneOf(["welcome", "input", "stdout", "stderr"])
+        outputType: React.PropTypes.oneOf([null, "welcome", "input", "stdout", "stderr"])
     },
     getDefaultProps: function() {
         return {outputThis: "", outputType: "stdout"};
@@ -175,15 +175,17 @@ var TerminalOutput = React.createClass({
         return {stdinEditorValue: "", stdoutEditorValue: ""};
     },
     componentWillReceiveProps: function(nextProps) {
-        var outputThis = nextProps.outputThis;
-        if (false === outputThis.endsWith("\n")) {
-            outputThis += "\n";
-        }
+        if (null !== nextProps.outputType) {
+            var outputThis = nextProps.outputThis;
+            if (false === outputThis.endsWith("\n")) {
+                outputThis += "\n";
+            }
 
-        if ("input" === nextProps.outputType) {
-            this.setState({stdinEditorValue: this.state.stdinEditorValue + outputThis});
-        } else {
-            this.setState({stdoutEditorValue: this.state.stdoutEditorValue + outputThis});
+            if ("input" === nextProps.outputType) {
+                this.setState({stdinEditorValue: this.state.stdinEditorValue + outputThis});
+            } else {
+                this.setState({stdoutEditorValue: this.state.stdoutEditorValue + outputThis});
+            }
         }
     },
     reRender: function() {
@@ -295,45 +297,19 @@ var Separator = React.createClass({
 
 var NCoda = React.createClass({
     propTypes: {
-        meiForVerovio: React.PropTypes.string
+        meiForVerovio: React.PropTypes.string,
+        sendToConsole: React.PropTypes.string,
+        // TODO: find a better way to keep this "sendToConsoleType" in sync with that on TerminalOutput
+        sendToConsoleType: React.PropTypes.oneOf([null, "welcome", "input", "stdout", "stderr"]),
+        submitToPyPy: React.PropTypes.func
     },
     getDefaultProps: function() {
-        return ( {meiForVerovio: ""} );
+        return ( {meiForVerovio: "", sendToConsole: "", sendToConsoleType: null} );
     },
     getInitialState: function() {
         return ({sendToConsole: "nCoda is ready for action!",
                  sendToConsoleType: "welcome",
                  });
-    },
-    componentDidMount: function() {
-        pypyjs.stdout = this.stdout;
-        pypyjs.stderr = this.stderr;
-    },
-    submitToPyPy: function(thisText) {
-        if ("" === thisText || undefined === thisText) {
-            return;
-        }
-        this.outputToTerminal(thisText, "input");
-        pypyjs.exec(thisText).then(this.outputToTerminal);
-    },
-    stdout: function(thisText) {
-        this.outputToTerminal(thisText, "stdout");
-    },
-    stderr: function(thisText) {
-        this.outputToTerminal(thisText, "stderr");
-    },
-    outputToTerminal: function(thisText, outputType) {
-        // Sets state so the Terminal component will output something new.
-        // - thisText (str): the new text that should be added to the terminal
-        // - outputType (str): the type of output held in "thisText", one of "stdout," "stderr,"
-        //   "input," or "output." Any other value is interpreted as "output."
-        if ("" === thisText || null === thisText) {
-            return;
-        }
-        if (outputType !== "stdout" && outputType !== "stderr" && outputType !== "input") {
-            outputType = "output";
-        }
-        this.setState({sendToConsole: thisText, sendToConsoleType: outputType});
     },
     handleSeparator: function(doThis, thisDirection) {
         handleSeparator(doThis, thisDirection, React.findDOMNode(this.refs.workTable),
@@ -343,13 +319,13 @@ var NCoda = React.createClass({
         return (
             <div className="ncoda">
                 <WorkTable ref="workTable"
-                           submitToPyPy={this.submitToPyPy}
+                           submitToPyPy={this.props.submitToPyPy}
                            meiForVerovio={this.props.meiForVerovio}
                            />
                 <Separator movingFunction={this.handleSeparator} />
                 <TerminalOutput ref="terminalOutput"
-                                outputThis={this.state.sendToConsole}
-                                outputType={this.state.sendToConsoleType}
+                                outputThis={this.props.sendToConsole}
+                                outputType={this.props.sendToConsoleType}
                 />
             </div>
         );
