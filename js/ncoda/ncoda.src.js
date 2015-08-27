@@ -111,25 +111,27 @@ var Verovio = React.createClass({
         return ( {meiToRender: ""} );
     },
     getInitialState: function() {
-        return {verovio: null};
+        // - verovio: the instance of Verovio Toolkit
+        // - renderedMei: the current SVG score as a string
+        return {verovio: null, renderedMei: ""};
     },
     componentDidMount: function() {
         var newVerovio = new verovio.toolkit();
         this.setState({verovio: newVerovio});
     },
+    componentWillReceiveProps: function(nextProps) {
+        if (null !== this.state.verovio && "" !== nextProps.meiForVerovio) {
+            var theOptions = { inputFormat: "mei" };
+            theOptions = JSON.stringify(theOptions);
+            var renderedMei = this.state.verovio.renderData(nextProps.meiForVerovio, theOptions);
+            this.setState({renderedMei: renderedMei});
+        }
+    },
     componentWillUnmount: function() {
         delete this.state.verovio;
     },
     render: function() {
-        var innerHtml = "";
-        if (null !== this.state.verovio) {
-            var theOptions = {
-                inputFormat: "mei"
-            };
-            var innerHtml = this.state.verovio.renderData(this.props.meiForVerovio,
-                                                          JSON.stringify(theOptions));
-        }
-        innerHtml = {"__html": innerHtml};
+        var innerHtml = {"__html": this.state.renderedMei};
         return (
             <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
         );
