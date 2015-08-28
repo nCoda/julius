@@ -1,5 +1,13 @@
 /* This is the base file for nCoda CSS. */
 
+@solarized-blue: #268bd2;
+@solarized-magenta: #d33682;
+@solarized-yellow: #b58900;
+@solarized-base00: #657b83;
+@solarized-base1: #93a1a1;
+@solarized-base2: #eee8d5;
+@solarized-base3: #fdf6e3;
+
 html {
     height: 100%;
 }
@@ -21,21 +29,21 @@ body {
     flex-flow: column;
     justify-content: space-around;
     align-items: center;
-    background: #fdf6e3;  /* solarized "base3" */
-    color: #93a1a1;  /* solarized "base1" */
+    background: @solarized-base3;
+    color: @solarized-base1;
     cursor: wait;
 }
 
 #ncoda-loading i {
-    color: #268bd2;  /* solarized "blue" */
+    color: @solarized-blue;
 }
 
 /* ********************************************************************************************* */
 /* The top-level components (header and everything else) */
 
 .ncoda-header {
-    background: #fdf6e3;  /* solarized "base3" */
-    color: #b58900;  /* solarized "yellow" */
+    background: @solarized-base3;
+    color: @solarized-yellow;
     overflow: hidden;
     height: 3em;
     flex-shrink: 0;
@@ -48,7 +56,7 @@ body {
 }
 
 #ncoda {
-    background: #fdf6e3;  /* solarized "base3" */
+    background: @solarized-base3;
     flex-grow: 1;
     overflow: hidden;
 }
@@ -67,7 +75,7 @@ body {
 
 .ncoda-work-table {
     overflow: hidden;
-    background: #fdf6e3;  /* solarized "base3" */
+    background: @solarized-base3;
     min-height: 15em;
     height: 75%;
     max-height: 90%;
@@ -89,11 +97,11 @@ body {
 
 .ncoda-text-editor h2 {
     margin: 0px;
-    color: #657b83;  /* solarized "base00" */
+    color: @solarized-base00;
 }
 
 .ncoda-pypyjs-controls {
-    background: #fdf6e3;  /* solarized "base3" */
+    background: @solarized-base3;
 }
 
 .ncoda-pypyjs-controls input {
@@ -129,13 +137,13 @@ body {
 .ncoda-separator {
     /* separator between main window and terminals */
     min-height: 0.5em;
-    background: #eee8d5;  /* solarized "base2" */
+    background:  @solarized-base2;
     min-width: 0.5em;
     flex-grow: 0;
 }
 
 .ncoda-separator-selected {
-    background: #d33682;  /* solarized "magenta" */
+    background: @solarized-magenta;
 }
 
 .ncoda-separator-horizontal {
@@ -148,7 +156,7 @@ body {
 
 .ncoda-terminal-output {
     overflow: hidden;
-    background: #fdf6e3;  /* solarized "base3" */
+    background: @solarized-base3;
     display: flex;
     flex-flow: column;
     min-height: 15em;
@@ -157,7 +165,7 @@ body {
 
 .ncoda-terminal-output h2 {
     margin: 0px;
-    color: #657b83;  /* solarized "base00" */
+    color: @solarized-base00;
 }
 
 .ncoda-output-terminals {
