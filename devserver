@@ -12,7 +12,13 @@ _COMPILE_WITH_WATCHIFY = [
     ('js/ncoda-init.js', 'js/ncoda.js'),
 ]
 
+# list of the CSS files that must be compiled from LESS; it's input filename, then output filename
+_COMPILE_WITH_LESSC = [
+    ('css/ncoda/ncoda.less', 'css/ncoda/ncoda.css'),
+]
+
 _PATH_TO_WATCHIFY = 'node_modules/watchify/bin/cmd.js'
+_PATH_TO_LESSC = 'node_modules/less/bin/lessc'
 
 
 def the_script():
@@ -23,31 +29,68 @@ def the_script():
         raise SystemExit(1)
     del watchify  # because this will be a long-running script
 
-    # set up some Watchify instances
-    watchify_instances = []
-    for each_file in _COMPILE_WITH_WATCHIFY:
-        print('Starting Watchify for {}'.format(each_file[0]))
-        try:
-            kummand = [_PATH_TO_WATCHIFY, each_file[0], '-o', each_file[1]]
-            watchify_instances.append(subprocess.Popen(kummand))
-        except subprocess.CalledProcessError as cperr:
-            print('Encountered the following error while starting Watchify:\n{}'.format(cperr))
-            for each_instance in watchify_instances:
-                each_instance.terminate()
-                each_instance.wait(timeout=30)
-            raise SystemExit(1)
+    # see if we can find/use lessc
+    lessc = pathlib.Path(_PATH_TO_LESSC)
+    if not lessc.exists():
+        print('Could not find lessc. Is it installed?')
+        raise SystemExit(1)
+    del lessc  # because this will be a long-running script
 
-    # now run the SimpleHTTPServer
-    # we'll catch KeyboardInterrupt so we can try killing babel on the way out
+    # see if we can find/use inotifywait (used by "less_autocompiler.sh")
+    we_have_inotify = False
     try:
-        print('Starting the HTTPServer')
-        server_address = ('', 8000)
-        httpd = server.HTTPServer(server_address, server.SimpleHTTPRequestHandler)
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        print('')
-        for each_instance in watchify_instances:
-            print('Terminating Watchify with PID {}'.format(each_instance.pid))
+        subprocess.check_output(['which', 'inotifywait'])
+    except subprocess.CalledProcessError:
+        print('\n!! NOTICE: "inotifywait" not found, so LESS files won\'t update automatically !!\n')
+    else:
+        we_have_inotify = True
+
+    # hold the Popen instances
+    subprocesses = []
+
+    try:
+        # set up some Watchify instances
+        for each_file in _COMPILE_WITH_WATCHIFY:
+            print('Starting Watchify for {}'.format(each_file[0]))
+            try:
+                kummand = [_PATH_TO_WATCHIFY, each_file[0], '-o', each_file[1]]
+                subprocesses.append(subprocess.Popen(kummand))
+            except subprocess.CalledProcessError as cperr:
+                print('Encountered the following error while starting Watchify:\n{}'.format(cperr))
+                raise SystemExit(1)
+
+        # set up some lessc instances
+        for each_file in _COMPILE_WITH_LESSC:
+            if we_have_inotify:
+                print('Starting lessc for {}'.format(each_file[0]))
+                try:
+                    kummand = ['bash', 'less_autocompiler.sh', each_file[0], each_file[1]]
+                    subprocesses.append(subprocess.Popen(kummand))
+                except subprocess.CalledProcessError as cperr:
+                    print('Encountered the following error while starting lessc:\n{}'.format(cperr))
+                    raise SystemExit(1)
+            else:
+                print('Running lessc ONCE ONLY on {}'.format(each_file[0]))
+                try:
+                    kummand = [_PATH_TO_LESSC, '--clean-css', each_file[0], each_file[1]]
+                    subprocess.check_output(kummand)
+                except subprocess.CalledProcessError as cperr:
+                    print('Encountered the following error while starting lessc:\n{}'.format(cperr))
+                    raise SystemExit(1)
+
+        # now run the SimpleHTTPServer
+        # we'll catch KeyboardInterrupt so we can try killing babel on the way out
+        try:
+            print('Starting the HTTPServer')
+            server_address = ('', 8000)
+            httpd = server.HTTPServer(server_address, server.SimpleHTTPRequestHandler)
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print('')
+
+    finally:
+        for each_instance in subprocesses:
+            print('Terminating subprocess with PID {}'.format(each_instance.pid))
             each_instance.terminate()
             each_instance.wait(timeout=30)
 

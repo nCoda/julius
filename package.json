@@ -8,6 +8,8 @@
         "react": "0.13.x"
     },
     "devDependencies": {
+        "less": "2.5.x",
+        "less-plugin-clean-css": "1.5.x",
         "babelify": "6.2.x",
         "browserify": "11.0.x",
         "watchify": "3.3.x"
