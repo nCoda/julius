@@ -1,12 +1,42 @@
 /* This is the base file for nCoda CSS. */
 
-@solarized-blue: #268bd2;
+/* ********************************************************************************************* */
+/* Colour definitions */
+
+/* The "solarized" set. */
+@solarized-base03:  #002b36;
+@solarized-base02:  #073642;
+@solarized-base01:  #586e75;
+@solarized-base00:  #657b83;
+@solarized-base0:   #839496;
+@solarized-base1:   #93a1a1;
+@solarized-base2:   #eee8d5;
+@solarized-base3:   #fdf6e3;
+@solarized-yellow:  #b58900;
+@solarized-orange:  #cb4b16;
+@solarized-red:     #dc322f;
 @solarized-magenta: #d33682;
-@solarized-yellow: #b58900;
-@solarized-base00: #657b83;
-@solarized-base1: #93a1a1;
-@solarized-base2: #eee8d5;
-@solarized-base3: #fdf6e3;
+@solarized-violet:  #6c71c4;
+@solarized-blue:    #268bd2;
+@solarized-cyan:    #2aa198;
+@solarized-green:   #859900;
+
+/* Taken from the KDE Plasma 5 palette. */
+@cardboard-grey:    #eff0f1;
+@cardboard-gray:    @cardboard-grey;
+@paper-white:       #fcfcfc;
+@plasma-blue:       #3daee9;
+@charcoal-grey:     #31363b;
+@charcoal-gray:     @charcoal-grey;
+@shade-black:       #232629;
+@danger-red:        #ed1515;
+@beware-orange:     #f67400;
+@sunbeam-yellow:    #c9ce3b;
+@mellow-turquoise: #1cdc9a;
+@verdant-green:     #11d116;
+
+/* ********************************************************************************************* */
+/* Boring things */
 
 html {
     height: 100%;
@@ -29,26 +59,34 @@ body {
     flex-flow: column;
     justify-content: space-around;
     align-items: center;
-    background: @solarized-base3;
-    color: @solarized-base1;
+    background: @paper-white;
+    color: @shade-black;
     cursor: wait;
 }
 
 #ncoda-loading i {
-    color: @solarized-blue;
+    color: @plasma-blue;
 }
 
 /* ********************************************************************************************* */
 /* The top-level components (header and everything else) */
 
 .ncoda-header {
-    background: @solarized-base3;
-    color: @solarized-yellow;
+    background: @cardboard-grey;
     overflow: hidden;
     height: 3em;
     flex-shrink: 0;
-    box-shadow: 0px 0px 7px black;
+    box-shadow: 0px 0px 7px @shade-black;
     z-index: 1000;
+}
+
+.ncoda-logo {
+    color: @plasma-blue;
+}
+
+.ncoda-logo-n {
+    color: @mellow-turquoise;
+    display: inline;
 }
 
 .ncoda-header h1 {
@@ -56,7 +94,7 @@ body {
 }
 
 #ncoda {
-    background: @solarized-base3;
+    background: @paper-white;
     flex-grow: 1;
     overflow: hidden;
 }
@@ -75,7 +113,7 @@ body {
 
 .ncoda-work-table {
     overflow: hidden;
-    background: @solarized-base3;
+    background: @paper-white;
     min-height: 15em;
     height: 75%;
     max-height: 90%;
@@ -97,11 +135,11 @@ body {
 
 .ncoda-text-editor h2 {
     margin: 0px;
-    color: @solarized-base00;
+    color: @charcoal-grey;
 }
 
 .ncoda-pypyjs-controls {
-    background: @solarized-base3;
+    background: @paper-white;
 }
 
 .ncoda-pypyjs-controls input {
@@ -137,13 +175,22 @@ body {
 .ncoda-separator {
     /* separator between main window and terminals */
     min-height: 0.5em;
-    background:  @solarized-base2;
+    background:  @cardboard-grey;
     min-width: 0.5em;
     flex-grow: 0;
 }
 
+.ncoda-separator:hover {
+    background: lighten(@mellow-turquoise, 40%);
+}
+
 .ncoda-separator-selected {
-    background: @solarized-magenta;
+    // TODO: this is basically to alert the user of an nCoda bug...
+    background: @beware-orange;
+}
+
+.ncoda-separator-selected:hover {
+    background: @mellow-turquoise;
 }
 
 .ncoda-separator-horizontal {
@@ -154,9 +201,13 @@ body {
     cursor: ew-resize;
 }
 
+.ncoda-separator-console {
+    box-shadow: 0px 0px 3px @shade-black;
+}
+
 .ncoda-terminal-output {
     overflow: hidden;
-    background: @solarized-base3;
+    background: @paper-white;
     display: flex;
     flex-flow: column;
     min-height: 15em;
@@ -165,7 +216,7 @@ body {
 
 .ncoda-terminal-output h2 {
     margin: 0px;
-    color: @solarized-base00;
+    color: @charcoal-grey;
 }
 
 .ncoda-output-terminals {

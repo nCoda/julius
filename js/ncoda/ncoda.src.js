@@ -245,11 +245,12 @@ var Separator = React.createClass({
     //       different depending on whether it's horizontal or vertical. And without those props,
     //       the resize cursor won't be shown.
     propTypes: {
+        extraCssClass: React.PropTypes.string,  // to add a CSS class to this Separator
         direction: React.PropTypes.oneOf(["horizontal", "vertical"]),
         movingFunction: React.PropTypes.func  // TODO: write explanation about this
     },
     getDefaultProps: function() {
-        return {direction: "horizontal"};
+        return {direction: "horizontal", extraCssClass: null};
     },
     getInitialState: function() {
         // - "mouseDown": set to "true" when the mouse is down
@@ -286,6 +287,9 @@ var Separator = React.createClass({
     },
     render: function() {
         var className = "ncoda-separator ncoda-separator-" + this.props.direction;
+        if (null !== this.props.extraCssClass) {
+            className += " "  + this.props.extraCssClass;
+        }
         if (this.state.mouseDown) {
             className += " ncoda-separator-selected";
         }
@@ -323,8 +327,10 @@ var NCoda = React.createClass({
                 <WorkTable ref="workTable"
                            submitToPyPy={this.props.submitToPyPy}
                            meiForVerovio={this.props.meiForVerovio}
-                           />
-                <Separator movingFunction={this.handleSeparator} />
+                />
+                <Separator movingFunction={this.handleSeparator}
+                           extraCssClass="ncoda-separator-console"
+                />
                 <TerminalOutput ref="terminalOutput"
                                 outputThis={this.props.sendToConsole}
                                 outputType={this.props.sendToConsoleType}
