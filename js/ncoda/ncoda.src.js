@@ -178,7 +178,6 @@ var TerminalWindow = React.createClass({
     componentWillReceiveProps: function(nextProps) {
         if ("" !== nextProps.outputThis) {
             var outputThis = nextProps.outputThis;
-            console.log("before replacement: " + outputThis);
             // TODO: how to make this replace all occurrences?
             // TODO: how to avoid other possible attacks?
             while (outputThis.includes('<')) {
