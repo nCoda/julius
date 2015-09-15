@@ -206,10 +206,10 @@ body {
 }
 
 .ncoda-terminal-output {
+    // This contains the <h2> that says "output", plus the <div class="ncoda-output-terminals">
     overflow: hidden;
     background: @paper-white;
-    display: flex;
-    flex-flow: column;
+    display: block;
     min-height: 15em;
     height: 25%;
 }
@@ -217,29 +217,35 @@ body {
 .ncoda-terminal-output h2 {
     margin: 0px;
     color: @charcoal-grey;
+    flex-grow: 0;
+    height: 10%;
 }
 
 .ncoda-output-terminals {
+    // This contains the following three elements, layed out horizontally:
+    // - <div class="ncoda-terminal-window ncoda-output-stdin">
+    // - <div class="ncoda-separator ncoda-separator-vertical">
+    // - <div class="ncoda-terminal-window ncoda-output-stdin">
     background: red;
-    flex-grow: 1;
+    height: 90%;
     display: flex;
     flex-flow: row;
+    // align-items: stretch;
+}
+
+.ncoda-terminal-window {
+    // This is the terminal itself.
+    background-color: @solarized-base02;
+    color: @solarized-base0;
+    overflow: scroll;
+    padding: 3% 1em 0em;
+    height: 97%;
 }
 
 .ncoda-output-stdin {
     width: 50%;
-    background: plum;
-}
-
-.ncoda-output-stdin > .CodeMirror {
-    height: 100%;
 }
 
 .ncoda-output-stdout {
     width: 50%;
-    background: palevioletred;
-}
-
-.ncoda-output-stdout > .CodeMirror {
-    height: 100%;
 }

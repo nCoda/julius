@@ -164,6 +164,61 @@ var WorkTable = React.createClass({
 });
 
 
+var TerminalWindow = React.createClass({
+    propTypes: {
+        outputThis: React.PropTypes.string,
+        extraClass: React.PropTypes.string
+    },
+    getDefaultProps: function() {
+        return {outputThis: "", extraClass: ""};
+    },
+    getInitialState: function() {
+        return {terminalContents: ""};
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if ("" !== nextProps.outputThis) {
+            var outputThis = nextProps.outputThis;
+            console.log("before replacement: " + outputThis);
+            // TODO: how to make this replace all occurrences?
+            // TODO: how to avoid other possible attacks?
+            while (outputThis.includes('<')) {
+                outputThis = outputThis.replace('<', '&lt;');
+            }
+            while (outputThis.includes('>')) {
+                outputThis = outputThis.replace('>', '&gt;');
+            }
+
+            // convert newlines to <br/>
+            while (outputThis.includes('\n')) {
+                outputThis = outputThis.replace('\n', '<br/>');
+            }
+
+            // finally append our thing
+            if (!outputThis.endsWith("<br/>")) {
+                outputThis += "<br/>";
+            }
+
+            this.setState({terminalContents: this.state.terminalContents + outputThis});
+        }
+    },
+    componentDidUpdate: function(nextProps, prevState) {
+        // we need to scroll the updated text into view!
+        // this.refs.shit.getDOMNode().scrollIntoView();
+        // TODO: find a way to actually make the bottom of the text scroll into view when updated
+    },
+    render: function() {
+        var innerHtml = {__html: this.state.terminalContents};
+        var className = "ncoda-terminal-window";
+        if (this.props.extraClass.length > 0) {
+            className += " " + this.props.extraClass;
+        }
+        return (
+            <div className={className} dangerouslySetInnerHTML={innerHtml} ref="shit" />
+        );
+    }
+});
+
+
 var TerminalOutput = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     propTypes: {
@@ -178,15 +233,10 @@ var TerminalOutput = React.createClass({
     },
     componentWillReceiveProps: function(nextProps) {
         if (null !== nextProps.outputType) {
-            var outputThis = nextProps.outputThis;
-            if (false === outputThis.endsWith("\n")) {
-                outputThis += "\n";
-            }
-
             if ("input" === nextProps.outputType) {
-                this.setState({stdinEditorValue: this.state.stdinEditorValue + outputThis});
+                this.setState({stdinEditorValue: nextProps.outputThis, stdoutEditorValue: ""});
             } else {
-                this.setState({stdoutEditorValue: this.state.stdoutEditorValue + outputThis});
+                this.setState({stdoutEditorValue: nextProps.outputThis, stdinEditorValue: ""});
             }
         }
     },
@@ -200,39 +250,19 @@ var TerminalOutput = React.createClass({
                         React.findDOMNode(this.refs.theRightBox));
     },
     render: function() {
-        var codeMirrorOptions = {
-            "mode": "python",
-            "theme": "solarized dark",
-            "indentUnit": 4,
-            "indentWithTabs": false,
-            "smartIndent": true,
-            "electricChars": true,
-            "lineNumbers": true,
-            "inputStyle": "contenteditable"  // NOTE: this usually defaults to "textarea" on
-                                             // desktop and may not be so good for us, but it has
-                                             // better IME and and screen reader support
-        };
         return (
             <div id="ncoda-terminal-output" className="ncoda-terminal-output">
                 <h2>Output</h2>
                 <div className="ncoda-output-terminals">
-                    <div className="ncoda-output-stdin">
-                        <ReactCodeMirror path="ncoda-output-stdin"
-                                         ref="theLeftBox"
-                                         options={codeMirrorOptions}
-                                         value={this.state.stdinEditorValue}
-                                         onChange={this.reRender}  // make component read-only
-                        />
-                    </div>
+                    <TerminalWindow outputThis={this.state.stdinEditorValue}
+                                    extraClass="ncoda-output-stdin"
+                                    ref="theLeftBox"
+                    />
                     <Separator direction="vertical" movingFunction={this.handleSeparator} />
-                    <div className="ncoda-output-stdout">
-                        <ReactCodeMirror path="ncoda-output-stdout"
-                                         ref="theRightBox"
-                                         options={codeMirrorOptions}
-                                         value={this.state.stdoutEditorValue}
-                                         onChange={this.reRender}  // make component read-only
-                        />
-                    </div>
+                    <TerminalWindow outputThis={this.state.stdoutEditorValue}
+                                    extraClass="ncoda-output-stdout"
+                                    ref="theRightBox"
+                    />
                 </div>
             </div>
         );
