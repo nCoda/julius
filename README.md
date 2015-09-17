@@ -22,6 +22,10 @@ commands. From the nCoda root directory, run:
     $ npm install
     $ npm install --dev
 
+Also clone the PyPy.js submodule. From the nCoda root directory, run:
+
+    $ git submodule update
+
 Run
 ---
 
@@ -33,3 +37,5 @@ in three ways:
     $ ./devserver
     ... or...
     $ npm start
+
+Then check out http://localhost:8000 in your browser! It will take noticeable time to load nCoda.
