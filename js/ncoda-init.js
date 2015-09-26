@@ -1,9 +1,10 @@
 // ncoda-init.js
+// This initializes nCoda.
 // Copyright 2015 Christopher Antila
 
 
 import React from "react";
-import {NCoda} from "./ncoda/ncoda.src.js";
+import {Julius} from "./julius/julius.src.js";
 
 
 // PyPy.js stuff --------------------------------------------------------------
@@ -84,7 +85,7 @@ var renderNCoda = function(params) {
 
     // do the render
     React.render(
-        React.createElement(NCoda, props),
+        React.createElement(Julius, props),
         document.getElementById("ncoda")
     );
 };

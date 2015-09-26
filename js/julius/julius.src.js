@@ -1,4 +1,4 @@
-// This file starts nCoda
+// React components for Julius, the nCoda user interface
 // Copyright 2015 Christopher Antila
 
 import React from "react";
@@ -14,7 +14,7 @@ var handleSeparator = function(doThis, thisDirection, zeroElem, oneElem) {
     // @param zeroElem (Element): The element closer to "zero" in the direction of movement. For
     //        vertical movement, this is the higher Element; for horizontal movement this is the
     //        Element on the left.
-    // @param oneEleme (Element): The other element that's being resized.
+    // @param oneElem (Element): The other element that's being resized.
 
     // get the existing span
     var zeroStyleAttr;
@@ -330,7 +330,7 @@ var Separator = React.createClass({
 });
 
 
-var NCoda = React.createClass({
+var Julius = React.createClass({
     propTypes: {
         meiForVerovio: React.PropTypes.string,
         sendToConsole: React.PropTypes.string,
@@ -352,7 +352,7 @@ var NCoda = React.createClass({
     },
     render: function() {
         return (
-            <div className="ncoda">
+            <div className="julius">
                 <WorkTable ref="workTable"
                            submitToPyPy={this.props.submitToPyPy}
                            meiForVerovio={this.props.meiForVerovio}
@@ -371,4 +371,4 @@ var NCoda = React.createClass({
 
 //
 
-export {NCoda, TextEditor, Verovio, WorkTable, TerminalOutput, Separator};
+export {Julius, TextEditor, Verovio, WorkTable, TerminalOutput, Separator};

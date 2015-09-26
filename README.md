@@ -1,7 +1,7 @@
-nCoda
-=====
+Julius
+====
 
-This repository holds the nCoda app itself.
+This repository holds Julius, the user interface, and the nCoda app itself.
 
 License
 -------
