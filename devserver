@@ -62,9 +62,9 @@ def the_script():
         # set up some lessc instances
         for each_file in _COMPILE_WITH_LESSC:
             if we_have_inotify:
-                print('Starting lessc for {}'.format(each_file[0]))
+                print('Starting less_autocompiler.sh for {}'.format(each_file[0]))
                 try:
-                    kummand = ['bash', 'less_autocompiler.sh', each_file[0], each_file[1]]
+                    kummand = ['./less_autocompiler.sh', each_file[0], each_file[1]]
                     subprocesses.append(subprocess.Popen(kummand))
                 except subprocess.CalledProcessError as cperr:
                     print('Encountered the following error while starting lessc:\n{}'.format(cperr))
