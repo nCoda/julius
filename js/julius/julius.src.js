@@ -61,7 +61,8 @@ var handleSeparator = function(doThis, thisDirection, zeroElem, oneElem) {
 
 var TextEditor = React.createClass({
     propTypes: {
-        submitToPyPy: React.PropTypes.func.isRequired
+        submitToPyPy: React.PropTypes.func.isRequired,
+        submitToLychee: React.PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {editorValue: ""};
@@ -72,6 +73,9 @@ var TextEditor = React.createClass({
     },
     submitToPyPy: function(changeEvent) {
         this.props.submitToPyPy(this.state.editorValue);
+    },
+    submitToLychee: function(changeEvent) {
+        this.props.submitToLychee(this.state.editorValue);
     },
     render: function() {
         var codeMirrorOptions = {
@@ -95,7 +99,8 @@ var TextEditor = React.createClass({
                                  onChange={this.updateEditorValue}
                                  />
                 <div className="ncoda-pypyjs-controls">
-                    <input type="button" value="Execute" onClick={this.submitToPyPy}></input>
+                    <input type="button" value="Run as Python" onClick={this.submitToPyPy}></input>
+                    <input type="button" value="Display from LilyPond" onClick={this.submitToLychee}></input>
                 </div>
             </div>
         );
@@ -105,10 +110,10 @@ var TextEditor = React.createClass({
 
 var Verovio = React.createClass({
     propTypes: {
-        meiToRender: React.PropTypes.string
+        meiForVerovio: React.PropTypes.string
     },
     getDefaultProps: function() {
-        return ( {meiToRender: ""} );
+        return ( {meiForVerovio: ""} );
     },
     getInitialState: function() {
         // - verovio: the instance of Verovio Toolkit
@@ -142,7 +147,8 @@ var Verovio = React.createClass({
 var WorkTable = React.createClass({
     propTypes: {
         meiForVerovio: React.PropTypes.string,
-        submitToPyPy: React.PropTypes.func.isRequired
+        submitToPyPy: React.PropTypes.func.isRequired,
+        submitToLychee: React.PropTypes.func.isRequired
     },
     getDefaultProps: function() {
         return ( {meiForVerovio: ""} );
@@ -155,7 +161,9 @@ var WorkTable = React.createClass({
     render: function () {
         return (
             <div ref="workTable" className="ncoda-work-table">
-                <TextEditor ref="textEditor" submitToPyPy={this.props.submitToPyPy} />
+                <TextEditor ref="textEditor"
+                            submitToPyPy={this.props.submitToPyPy}
+                            submitToLychee={this.props.submitToLychee} />
                 <Separator direction="vertical" movingFunction={this.handleSeparator} />
                 <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
             </div>
@@ -336,7 +344,8 @@ var Julius = React.createClass({
         sendToConsole: React.PropTypes.string,
         // TODO: find a better way to keep this "sendToConsoleType" in sync with that on TerminalOutput
         sendToConsoleType: React.PropTypes.oneOf([null, "welcome", "input", "stdout", "stderr"]),
-        submitToPyPy: React.PropTypes.func
+        submitToPyPy: React.PropTypes.func.isRequired,
+        submitToLychee: React.PropTypes.func.isRequired
     },
     getDefaultProps: function() {
         return ( {meiForVerovio: "", sendToConsole: "", sendToConsoleType: null} );
@@ -355,6 +364,7 @@ var Julius = React.createClass({
             <div className="julius">
                 <WorkTable ref="workTable"
                            submitToPyPy={this.props.submitToPyPy}
+                           submitToLychee={this.props.submitToLychee}
                            meiForVerovio={this.props.meiForVerovio}
                 />
                 <Separator movingFunction={this.handleSeparator}

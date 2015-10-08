@@ -69,11 +69,12 @@ var renderNCoda = function(params) {
     // >>> js.globals['renderNCoda']()
 
     // prepare the props
-    var props = {submitToPyPy: pypyjsComms.stdin};
+    var props = {submitToPyPy: pypyjsComms.stdin, submitToLychee: submitToLychee};
 
     if (undefined !== params) {
         if (params.meiForVerovio) {
-            props.meiForVerovio = params.meiForVerovio;
+            var zell = '\<\?xml version=\"1.0\" encoding=\"UTF-8\"\?\>\n' + params.meiForVerovio;
+            props.meiForVerovio = zell;
         }
         if (params.sendToConsole) {
             props.sendToConsole = params.sendToConsole;
@@ -88,6 +89,48 @@ var renderNCoda = function(params) {
         React.createElement(Julius, props),
         document.getElementById("ncoda")
     );
+};
+
+
+// Lychee Stuff ---------------------------------------------------------------
+
+var submitToLychee = function(lilypondCode) {
+    // When given some LilyPond code, this function submits it to PyPy.js as a call to Lychee.
+    //
+    // @param lilypondCode (str): The LilyPond code to submit to Lychee.
+
+    var code =    "import lychee\n"
+                + "from lychee import signals\n"
+                + "from lychee.signals import outbound\n"
+                + "from xml.etree import ElementTree as etree\n"
+                + "import js\n"
+                + "import os\n"
+                + "if not os.path.exists('testrepo'):\n"
+                + "    os.mkdir('testrepo')\n"
+                + "\n"
+                + "_MEINS = '{http://www.music-encoding.org/ns/mei}'\n"
+                + "_MEINS_URL = 'http://www.music-encoding.org/ns/mei'\n"
+                + "\n"
+                + "def mei_listener(**kwargs):\n"
+                + "    outbound.I_AM_LISTENING.emit(dtype='mei')\n"
+                + "\n"
+                + "def mei_through_verovio(dtype, placement, document, **kwargs):\n"
+                + "   if 'mei' != dtype:\n"
+                + "       return\n"
+                + "   output_filename = 'testrepo/mei_for_verovio.xml'\n"
+                + "   document.set('xmlns', _MEINS_URL)\n"
+                + "   for elem in document.iter():\n"
+                + "       elem.tag = elem.tag.replace(_MEINS, '')\n"
+                + "   send_to_verovio = etree.tostring(document)\n"
+                + "   send_to_verovio = send_to_verovio.replace('\"', '\\\\\"')\n"
+                + "   kummand = 'renderNCoda({\"meiForVerovio\": \"' + send_to_verovio + '\"})'\n"
+                + "   js.eval(kummand)\n"
+                + "\n"
+                + "outbound.WHO_IS_LISTENING.connect(mei_listener)\n"
+                + "outbound.CONVERSION_FINISHED.connect(mei_through_verovio)\n"
+                + "lychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''" + lilypondCode + "''')";
+
+    pypyjsComms.stdin(code);
 };
 
 
