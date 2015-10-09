@@ -99,14 +99,13 @@ var submitToLychee = function(lilypondCode) {
     //
     // @param lilypondCode (str): The LilyPond code to submit to Lychee.
 
+    // NOTE: Lychee's Document.__init__() currently creates the "testrepo" directory for us
+
     var code =    "import lychee\n"
                 + "from lychee import signals\n"
                 + "from lychee.signals import outbound\n"
                 + "from xml.etree import ElementTree as etree\n"
                 + "import js\n"
-                + "import os\n"
-                + "if not os.path.exists('testrepo'):\n"
-                + "    os.mkdir('testrepo')\n"
                 + "\n"
                 + "_MEINS = '{http://www.music-encoding.org/ns/mei}'\n"
                 + "_MEINS_URL = 'http://www.music-encoding.org/ns/mei'\n"
