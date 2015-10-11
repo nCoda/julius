@@ -4,7 +4,7 @@
 import React from "react";
 import ReactCodeMirror from "./CodeMirror.src.js";
 
-var handleSeparator = function(doThis, thisDirection, zeroElem, oneElem) {
+function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {
     // This function handles resizing elements separated by a Separator component.
     //
     // @param doThis (int): Move the element by this many pixels. (0, 0) is at the top-left.
@@ -17,45 +17,35 @@ var handleSeparator = function(doThis, thisDirection, zeroElem, oneElem) {
     // @param oneElem (Element): The other element that's being resized.
 
     // get the existing span
-    var zeroStyleAttr;
-    var oneStyleAttr;
+    let zeroMagnitude;
+    let oneMagnitude;
     if ("vertical" === thisDirection) {
-        zeroStyleAttr = zeroElem.offsetHeight;
-        oneStyleAttr = oneElem.offsetHeight;
+        zeroMagnitude = zeroElem.offsetHeight;
+        oneMagnitude = oneElem.offsetHeight;
     } else {
-        zeroStyleAttr = zeroElem.offsetWidth;
-        oneStyleAttr = oneElem.offsetWidth;
+        zeroMagnitude = zeroElem.offsetWidth;
+        oneMagnitude = oneElem.offsetWidth;
     }
 
     // Sometimes when things move too quickly, they can somehow get out of sync, and there will
     // be spaces around the Separator. This ensures that won't happen.
-    var requiredTotal = zeroStyleAttr + oneStyleAttr;
+    const requiredTotal = zeroMagnitude + oneMagnitude;
 
     // do the adjustment
-    zeroStyleAttr += doThis;
-    oneStyleAttr -= doThis;
+    zeroMagnitude += doThis;
+    oneMagnitude -= doThis;
 
     // double-check it adds up
-    if ((zeroStyleAttr + oneStyleAttr) < requiredTotal) {
-        var magnitude = requiredTotal - (zeroStyleAttr + oneStyleAttr);
-        zeroStyleAttr += magnitude;
-    } else if ((zeroStyleAttr + oneStyleAttr) > requiredTotal) {
-        var magnitude = (zeroStyleAttr + oneStyleAttr) - requiredTotal;
-        zeroStyleAttr -= magnitude;
-    }
-
-    // make the CSS thing
-    if ("vertical" === thisDirection) {
-        var zeroStyleAttr = "height: " + zeroStyleAttr + "px;";
-        var oneStyleAttr = "height: " + oneStyleAttr + "px;";
-    } else {
-        var zeroStyleAttr = "width: " + zeroStyleAttr + "px;";
-        var oneStyleAttr = "width: " + oneStyleAttr + "px;";
+    if ((zeroMagnitude + oneMagnitude) < requiredTotal) {
+        zeroMagnitude += requiredTotal - (zeroMagnitude + oneMagnitude);
+    } else if ((zeroMagnitude + oneMagnitude) > requiredTotal) {
+        zeroMagnitude -= (zeroMagnitude + oneMagnitude) - requiredTotal;
     }
 
     // set everything
-    zeroElem.setAttribute("style", zeroStyleAttr);
-    oneElem.setAttribute("style", oneStyleAttr);
+    let dimension = ('vertical' === thisDirection) ? 'height' : 'width';
+    zeroElem.style[dimension] = zeroMagnitude + 'px';
+    oneElem.style[dimension] = oneMagnitude + 'px';
 };
 
 
