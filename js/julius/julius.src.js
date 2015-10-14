@@ -1,5 +1,5 @@
 // React components for Julius, the nCoda user interface
-// Copyright 2015 Christopher Antila
+// Copyright 2015 Christopher Antila, Wei Gao
 
 import React from "react";
 import ReactCodeMirror from "./CodeMirror.src.js";
@@ -204,7 +204,8 @@ var TerminalWindow = React.createClass({
             if (!outputThis.endsWith("<br/>")) {
                 outputThis += "<br/>";
             }
-
+            // wrap the output in <pre> tag to preserve spaces and tabs.
+            outputThis = `<pre>${outputThis}</pre>`;
             this.setState({terminalContents: this.state.terminalContents + outputThis});
         }
     },
