@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" lang="en-US">
+    <title>nCoda: StructureView Wonderland</title>
+
+    <link rel="stylesheet" href="/css/fira.css"></link>
+
+    <style>
+        html { height: 100%; overflow: hidden; }
+        body {
+            background: DimGray; height: 100%; margin: 0;
+            font-family: 'Fira Sans'; font-weight: 300;
+        }
+        * {
+            -webkit-box-sizing: border-box;
+               -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+        }
+        #ncoda-structureview {
+            height: 100%;
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* active section <article> */
+        .ncoda-active-sections {
+            z-index: 1;
+            max-width: 95%;
+            background: rgba(60, 179, 113, 1.0);
+            border: 1px solid rgba(240, 255, 255, 0.2);
+            box-shadow: 0 0 2px 2px DarkSlateGray;
+            border-radius: 5px;
+        }
+        .ncoda-active-sections > header {
+            height: 7%;
+            text-align: center;
+        }
+        .ncoda-active-sections > content{
+            padding: 1% 1%;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+            height: 93%;
+        }
+
+        /* <article> corresponding to an MEI <section> */
+        .ncoda-mei-section {
+            display: flex;
+            background: rgba(240, 255, 255, 0.6);
+            border: 1px solid rgba(240, 255, 255, 0.3);
+            /*filter: drop-shadow(0px 5px 5px DarkSlateGray);*/
+            z-index: 3;
+            height: 100%;
+            max-height: 20em;
+
+            flex-flow: column nowrap;
+            justify-content: space-between;
+        }
+        .ncoda-mei-section header { padding: 2% 5%; }
+        .ncoda-mei-section footer { margin: 5%; }
+        .ncoda-mei-section time { font-size: smaller; }
+        .ncoda-mei-section:hover { box-shadow: 0px 0px 0.5em 0.5em LightSkyBlue; }
+        .ncoda-mei-section.first-section { border-radius: 5px 0 0 5px; }
+        .ncoda-mei-section.first-section header { padding: 2% 5%; border-radius: 5px 0 0 0; }
+        .ncoda-mei-section.last-section { border-radius: 0 5px 5px 0; }
+        .ncoda-mei-section.last-section header { padding: 2% 5%; border-radius: 0 5px 0 0; }
+        .ncoda-mei-section-img { flex-grow: 1; width: 175px; display: block; overflow: hidden; }
+        .ncoda-mei-section img { width: 100%; }
+
+        /* section-specific things */
+        #section-a header {
+            background: rgba(0, 191, 255, 0.6);  /* DeepSkyBlue */
+        }
+        #section-ap header {
+            background: rgba(0, 191, 255, 0.6);  /* DeepSkyBlue */
+        }
+        #section-app header {
+            background: rgba(0, 191, 255, 0.6);  /* DeepSkyBlue */
+        }
+        #section-b header {
+            background: rgba(218, 165, 32, 0.6);  /* Goldenrod */
+        }
+        #section-c header {
+            background: rgba(255, 127, 80, 0.6);  /* Coral */
+        }
+
+        /* context menu when clicking on a <section>-corresponding <article> */
+        menu {
+            display: none;  /* display: flex; */
+            flex-flow: column nowrap;
+            justify-content: flex-start;
+            padding: 5px 0;
+            margin: 0;
+
+            background: rgba(240, 255, 255, 0.6);
+            border: 1px solid rgba(240, 255, 255, 0.3);
+            filter: drop-shadow(0px 10px 10px Black);
+            border-radius: 5px;
+
+            position: absolute;
+            left: 0%;
+            top: 0%;
+            z-index: 4;
+        }
+        menuitem {
+            padding: 0.25em 0.75em;
+            border-left: 5px rgba(61, 174, 233, 1.0) solid;
+            transition: border-left 0.5s, background 0.5s;
+        }
+        menuitem:hover {
+            border-left: 5px rgba(28, 220, 154, 1.0) solid;
+            background: rgba(28, 220, 154, 0.4);
+        }
+
+        /* page header (holding "header bar" and "expanded section part" */
+        .ncoda-structureview > header {
+            width: 100%;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+        }
+
+        .ncoda-headerbar > p {
+            padding: 0.4em 0.5em 0.5em;
+            background: rgba(240, 255, 255, 0.6);
+            border-right: 1px solid rgba(240, 255, 255, 0.3);
+            margin: 0;
+        }
+        .ncoda-headerbar > ul {
+            margin: 0;
+            list-style-type: none;
+            background: rgba(240, 255, 255, 0.6);
+            border-right: 1px solid rgba(240, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+            padding-top: 0.2em;
+        }
+        .ncoda-headerbar li {
+            margin-top: 0.2em;
+            background: rgba(240, 255, 255, 0.6);
+            border-right: 1px solid rgba(240, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+            padding: 0.2em 0.5em;
+        }
+        .ncoda-headerbar li:hover {
+            box-shadow: inset 0 0 1em MediumSeaGreen;
+            border-right: 1px solid rgba(240, 255, 255, 0);
+            border-bottom: 1px solid transparent;
+        }
+
+        /* page footer (holding "staves thing" and "collaboration bit" */
+        .ncoda-structureview > footer {
+            width: 100%;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            max-height: 50%;
+        }
+
+        .ncoda-scorestructure {
+            overflow: hidden;
+            max-height: 100%;
+            background: rgba(240, 255, 255, 0.6);
+            border-right: 1px solid rgba(240, 255, 255, 0.3);
+
+            display: flex;
+            flex-flow: column nowrap;
+        }
+        .ncoda-scorestructure ul {
+            list-style-type: none;
+            padding-left: 1em;
+        }
+        .ncoda-scorestructure > p {
+            padding: 0.4em 0.5em 0.5em;
+            margin: 0;
+            flex-grow: 0;
+        }
+        #scorestructure-instruments {
+            display: none;
+            overflow: scroll;
+            border-right: 1px solid rgba(240, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+            padding-top: 0.2em;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .ncoda-scorestructure li {
+            background: rgba(240, 255, 255, 0.6);
+            border-right: 1px solid rgba(240, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+            padding: 0.2em 0.5em;
+            margin-top: 0.2em;
+        }
+        .ncoda-scorestructure li:hover {
+            box-shadow: inset 0 0 1em MediumSeaGreen;
+            border-right: 1px solid rgba(240, 255, 255, 0);
+            border-bottom: 1px solid transparent;
+        }
+
+        .ncoda-collaboration {
+            background: rgba(240, 255, 255, 0.6);
+            border-left: 1px solid rgba(240, 255, 255, 0.3);
+            border-top: 1px solid rgba(240, 255, 255, 0.3);
+            padding: 1em;
+        }
+        .ncoda-collaboration p {
+            margin: 0 0 1em;  /* bottom is 1em */
+        }
+        .ncoda-collaboration-person address {
+            border-bottom: 1px solid rgba(240, 255, 255, 0.6);
+        }
+        .ncoda-collaboration-person ul {
+            margin: 0.5em 0;
+            list-style-type: none;
+            padding-left: 1em;
+        }
+    </style>
+
+    <script>
+        function registerClickEventOnMeiSectionContextMenu() {
+            // register whatever whatever
+            var itemOne = document.getElementById('ncoda-section-menu-item-1');
+            var itemTwo = document.getElementById('ncoda-section-menu-item-2');
+            var itemThree = document.getElementById('ncoda-section-menu-item-3');
+
+            itemOne.addEventListener('click', clickContextMenuMeiSection);
+            itemTwo.addEventListener('click', clickContextMenuMeiSection);
+            itemThree.addEventListener('click', clickContextMenuMeiSection);
+        }
+
+        function clickContextMenuMeiSection(event) {
+            // hide the context menu then show an alert acknowledging the click
+            var msg = event.target.label + '?\nWill do!';
+            var menu = document.getElementById('ncoda-section-menu');
+            menu.style.display = 'none';
+            alert(msg);
+        }
+
+        function registerClickEventOnMeiSection() {
+            // register showContextMenu() as the event listener for "click" events on the ...
+            var section_a = document.getElementById('section-a');
+            var section_b = document.getElementById('section-b');
+            var section_ap = document.getElementById('section-ap');
+            var section_c = document.getElementById('section-c');
+            var section_app = document.getElementById('section-app');
+
+            section_a.addEventListener('click', showContextMenuMeiSection);
+            section_b.addEventListener('click', showContextMenuMeiSection);
+            section_ap.addEventListener('click', showContextMenuMeiSection);
+            section_c.addEventListener('click', showContextMenuMeiSection);
+            section_app.addEventListener('click', showContextMenuMeiSection);
+        }
+
+        function showContextMenuMeiSection(event) {
+            // this displays the context menu under the cursor
+            var menu = document.getElementById('ncoda-section-menu');
+            menu.style.left = event.clientX + 'px';
+            menu.style.top = event.clientY + 'px';
+            menu.style.display = 'flex';
+        };
+
+        function registerClickEventOnHeaderBar() {
+            // register the "click" event for the "fields" in the Header Bar (author, title, ...)
+            var author = document.getElementById('header-author');
+            var title = document.getElementById('header-title');
+            var date = document.getElementById('header-date');
+            var add = document.getElementById('header-add');
+
+            author.addEventListener('click', clickHeaderBar);
+            title.addEventListener('click', clickHeaderBar);
+            date.addEventListener('click', clickHeaderBar);
+            add.addEventListener('click', clickHeaderBar);
+        };
+
+        function clickHeaderBar(event) {
+            if ('header-add' === event.target.id) {
+                alert('We add a new header field.');
+            } else {
+                alert('You\'ll be able to edit this field: ' + event.target.id);
+            }
+        };
+
+        function registerShowHideSSInstrs() {
+            var visButton = document.getElementById('scorestructure-visibility');
+            visButton.addEventListener('click', showHideScoreStructureInstruments);
+            // NOTE this is a hack to make the listening function work
+            document.getElementById('scorestructure-instruments').style.display = 'none';
+        };
+        function showHideScoreStructureInstruments() {
+            var instrList = document.getElementById('scorestructure-instruments');
+            var display = ('none' === instrList.style.display) ? 'block' : 'none';
+            instrList.style.display = display;
+        };
+
+        function registerShowHideHeaderBar() {
+            var visButton = document.getElementById('headerbar-visibility');
+            visButton.addEventListener('click', showHideHeaderBar);
+            // NOTE this is a hack to make the listening function work
+            document.getElementById('headerbar-list').style.display = 'none';
+        };
+        function showHideHeaderBar() {
+            var headerbar = document.getElementById('headerbar-list');
+            var display = ('none' === headerbar.style.display) ? 'block' : 'none';
+            headerbar.style.display = display;
+        };
+
+        function registerShowHideCollaborators() {
+            var visButton = document.getElementById('collaborators-visibility');
+            visButton.addEventListener('click', showHideHeaderBar);
+            // NOTE this is a hack to make the listening function work
+            document.getElementById('ncoda-collaborators-list').style.display = 'none';
+        };
+        function showHideHeaderBar() {
+            var list = document.getElementById('ncoda-collaborators-list');
+            var display = ('none' === list.style.display) ? 'block' : 'none';
+            list.style.display = display;
+        };
+
+        window.onload = function() {
+            // This function runs when the document has finished loading, so put init code here.
+            registerClickEventOnMeiSection();
+            registerClickEventOnMeiSectionContextMenu();
+            registerClickEventOnHeaderBar();
+            registerShowHideSSInstrs();
+            registerShowHideHeaderBar();
+            registerShowHideCollaborators();
+        };
+    </script>
+</head>
+
+<!--
+- <article> is a self-contained unit of content
+    - they can be nested; each <section> should be an <article>, and the active-score should be an <article> too
+    - inside, a <header> will contain navigational information
+    - inside, a <footer> will contain attribution (in <address>) and VCS information (like with <time>)
+- <aside> is connected tangentially to the main content, and can be considered separately
+- when a section is clicked, a context <menu> with <menuitem>s will be used
+-->
+
+<body>
+    <div id="ncoda-menus">
+        <menu id="ncoda-section-menu">
+            <menuitem id="ncoda-section-menu-item-1" label="Open in CodeScoreView">Open in CodeScoreView</menuitem>
+            <menuitem id="ncoda-section-menu-item-2" label="View Version History">View Version History</menuitem>
+            <menuitem id="ncoda-section-menu-item-3" label="Download Source File">Download Source File</menuitem>
+        </menu>
+    </div>
+    <div id="ncoda-structureview" class="ncoda-structureview">
+        <header>
+            <div class="ncoda-headerbar">
+                <p>Header Bar
+                    <button id="headerbar-visibility" name="headerbar-visibility" type="button">Show/Hide</button>
+                </p>
+                <ul id="headerbar-list" class="headers">
+                    <li id="header-author">Author</li>
+                    <li id="header-title">Title</li>
+                    <li id="header-date">Date</li>
+                    <li id="header-add">+</li>
+                </ul>
+            </div>
+            <div class="ncoda-expanded-section">
+                <p>Expanded Section View</p>
+            </div>
+        </header>
+
+        <article class="ncoda-active-sections">
+            <header>
+                Active Score
+            </header>
+
+            <content>
+                <article class="ncoda-mei-section first-section" id="section-a">
+                    <header>
+                        A
+                    </header>
+                    <div class="ncoda-mei-section-img">
+                        <img src="sectionA.png"/>
+                    </div>
+                    <footer>
+                        <address>Christopher Antila</address>
+                        <time datetime="2015-10-06 16:32">Tuesday</time>
+                    </footer>
+                </article>
+
+                <article class="ncoda-mei-section" id="section-b">
+                    <header>
+                        B
+                    </header>
+                    <div class="ncoda-mei-section-img">
+                        <img src="sectionB.png"/>
+                    </div>
+                    <footer>
+                        <address>Gloria Steinem</address>
+                        <time datetime="2015-10-09 17:00">Friday</time>
+                    </footer>
+                </article>
+
+                <article class="ncoda-mei-section" id="section-ap">
+                    <header>
+                        A&prime;
+                    </header>
+                    <div class="ncoda-mei-section-img">
+                        <img src="sectionA.png"/>
+                    </div>
+                    <footer>
+                        <address>Christopher Antila</address>
+                        <time datetime="2015-10-06 17:00">Tuesday</time>
+                    </footer>
+                </article>
+
+                <article class="ncoda-mei-section" id="section-c">
+                    <header>
+                        C
+                    </header>
+                    <div class="ncoda-mei-section-img">
+                        <img src="sectionC.png"/>
+                    </div>
+                    <footer>
+                        <address>卓文萱</address>
+                        <time datetime="2015-05-07 17:00">May 7th</time>
+                    </footer>
+                </article>
+
+                <article class="ncoda-mei-section last-section" id="section-app">
+                    <header>
+                        A&prime;&prime;
+                    </header>
+                    <div class="ncoda-mei-section-img">
+                        <img src="sectionA.png"/>
+                    </div>
+                    <footer>
+                        <address>Christopher Antila</address>
+                        <time datetime="2015-10-06 16:32">Tuesday</time>
+                    </footer>
+                </article>
+            </content>
+        </article>
+
+        <footer>
+            <div class="ncoda-scorestructure">
+                <p>Score Structure
+                    <button id="scorestructure-visibility" name="scorestructure-visibility" type="button">Show/Hide</button>
+                </p>
+                <ul id="scorestructure-instruments">
+                    <li><ul>
+                        <li>Flauto poccolo</li>
+                        <li>Flauto I</li>
+                        <li>Flauto II</li>
+                    </ul></li>
+                    <li><ul>
+                        <li>Oboe I</li>
+                        <li>Oboe II</li>
+                        <li>Corno inglese</li>
+                    </ul></li>
+                    <li><ul>
+                        <li>Clarinetto in B I</li>
+                        <li>Clarinetto in B II</li>
+                        <li>Clarinetto basso in B</li>
+                    </ul></li>
+                    <li><ul>
+                        <li>Fagotto I</li>
+                        <li>Fagotto II</li>
+                        <li>Contrafagotto</li>
+                    </ul></li>
+                    <li><ul>
+                        <li>Corno in F I</li>
+                        <li>Corno in F II</li>
+                        <li>Corno in F III</li>
+                        <li>Corno in F IV</li>
+                    </ul></li>
+                    <li><ul>
+                        <li>Tromba in B I</li>
+                        <li>Tromba in B II</li>
+                        <li>Tromba in B III</li>
+                    </li></ul>
+                    <li><ul>
+                        <li>Trombone I</li>
+                        <li>Trombone II</li>
+                        <li>Trombone III</li>
+                    </li></ul>
+                    <li><ul>
+                        <li>Timpani I</li>
+                        <li>Timpani II</li>
+                    </li></ul>
+                    <li>Stahlstäbe</li>
+                    <li>Triangolo</li>
+                    <li>2 Arpe</li>
+                    <li><ul>
+                        <li>Violino I</li>
+                        <li>Violino II</li>
+                    </li></ul>
+                    <li>Viola</li>
+                    <li>Violoncello</li>
+                    <li>Contrabasso</li>
+                </ul>
+            </div>
+
+            <div class="ncoda-collaboration">
+                <p>
+                    <button id="collaborators-visibility" name="collaborators-visibility" type="button">Show/Hide</button>
+                    Collaborators
+                </p>
+
+                <div id="ncoda-collaborators-list">
+                    <div class="ncoda-collaboration-person">
+                        <address>Christopher Antila</address>
+                        <ul>
+                            <li><time datetime="2015-10-06 17:00">Tuesday</time>: swapped outer voices</li>
+                            <li><time datetime="2015-09-14">September 14th</time>: corrected whatever blah</li>
+                            <li><time datetime="2015-12-22">December 2014</time>: who let the dogs out?</li>
+                        </ul>
+                    </div>
+                    <div class="ncoda-collaboration-person">
+                        <address>Gloria Steinem</address>
+                        <ul>
+                            <li><time datetime="2015-10-09">Friday</time>: added some notes</li>
+                            <li><time datetime="2015-10-08">Thursday</time>: put in some stuff</li>
+                            <li><time datetime="2015-05-05">May 5th</time>: clean up WenXuan&apos;s noodles</li>
+                        </ul>
+                    </div>
+                    <div class="ncoda-collaboration-person">
+                        <address>卓文萱</address>
+                        <ul>
+                            <li><time datetime="2015-05-07">May 7th</time>: 小心點</li>
+                            <li><time datetime="2015-05-04">May 4th</time>: 我买了面条</li>
+                            <li><time datetime="2014-12-20">December 2014</time>: 狗唱歌</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
