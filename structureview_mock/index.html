@@ -218,6 +218,26 @@
             list-style-type: none;
             padding-left: 1em;
         }
+
+        /* expanded structure view (the cool SVG thing) */
+        .ncoda-expanded-section {
+            background: rgba(240, 255, 255, 0.6);
+            border-left: 1px solid rgba(240, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+            max-width: 50%;
+        }
+        .ncoda-collaboration p {
+            margin: 0 0 1em;  /* bottom is 1em */
+        }
+        #ncoda-expanded-section-svg h2 {
+            margin: 0;
+            padding: 0.25em 0.5em;
+            background: rgba(0, 191, 255, 0.6);
+        }
+        #ncoda-expanded-section-svg img {
+            width: 100%;
+            padding: 0.5em 0 0.5em 0.5em;
+        }
     </style>
 
     <script>
@@ -310,12 +330,24 @@
 
         function registerShowHideCollaborators() {
             var visButton = document.getElementById('collaborators-visibility');
-            visButton.addEventListener('click', showHideHeaderBar);
+            visButton.addEventListener('click', showHideCollaborators);
             // NOTE this is a hack to make the listening function work
             document.getElementById('ncoda-collaborators-list').style.display = 'none';
         };
-        function showHideHeaderBar() {
+        function showHideCollaborators() {
             var list = document.getElementById('ncoda-collaborators-list');
+            var display = ('none' === list.style.display) ? 'block' : 'none';
+            list.style.display = display;
+        };
+
+        function registerExpandedSection() {
+            var visButton = document.getElementById('expanded-section-visibility');
+            visButton.addEventListener('click', showHideExpandedSection);
+            // NOTE this is a hack to make the listening function work
+            document.getElementById('ncoda-expanded-section-svg').style.display = 'none';
+        };
+        function showHideExpandedSection() {
+            var list = document.getElementById('ncoda-expanded-section-svg');
             var display = ('none' === list.style.display) ? 'block' : 'none';
             list.style.display = display;
         };
@@ -328,6 +360,7 @@
             registerShowHideSSInstrs();
             registerShowHideHeaderBar();
             registerShowHideCollaborators();
+            registerExpandedSection();
         };
     </script>
 </head>
@@ -362,8 +395,19 @@
                     <li id="header-add">+</li>
                 </ul>
             </div>
+
             <div class="ncoda-expanded-section">
-                <p>Expanded Section View</p>
+                <p>
+                    <button id="expanded-section-visibility" name="expanded-section-visibility" type="button">Show/Hide</button>
+                    Expanded Section View
+                </p>
+                <div id="ncoda-expanded-section-svg">
+                    <h2>A</h2>
+                    <img src="expanded_section_view.svg"></img>
+                    <!-- <svg width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="5"/>
+                    </svg> -->
+                </div>
             </div>
         </header>
 
