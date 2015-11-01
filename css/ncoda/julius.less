@@ -38,9 +38,7 @@
 /* ********************************************************************************************* */
 /* Boring things */
 
-html {
-    height: 100%;
-}
+html { height: 100%; overflow: hidden; }
 body {
     display: flex;
     flex-flow: column;
@@ -50,6 +48,12 @@ body {
     height: 100%;
 
     font-family: 'Fira Sans';
+    font-weight: 300;
+}
+* {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
 }
 
 /* ********************************************************************************************* */

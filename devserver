@@ -15,6 +15,7 @@ _COMPILE_WITH_WATCHIFY = [
 # list of the CSS files that must be compiled from LESS; it's input filename, then output filename
 _COMPILE_WITH_LESSC = [
     ('css/ncoda/julius.less', 'css/ncoda/julius.css'),
+    ('css/ncoda/structure_view.less', 'css/ncoda/structure_view.css'),
 ]
 
 _PATH_TO_WATCHIFY = 'node_modules/watchify/bin/cmd.js'
