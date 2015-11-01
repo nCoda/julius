@@ -198,60 +198,64 @@ var StructureViewMenus = React.createClass({
 });
 
 
+var StaffGroupOrStaff = React.createClass({
+    // Given either a StaffGroup or a Staff, this component returns the proper stuff.
+    //
+    // Props:
+    // - names (string, or array of string): The names of staves to render.
+    //
+    // If "names" is a string, this component renders a Staff. If "names" is an array of strings,
+    // this component renders a StaffGroup with each string as a contained Staff.
+
+    propTypes: {
+        names: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.arrayOf(React.PropTypes.string)
+        ]).isRequired
+    },
+    render: function() {
+        if ('string' === typeof this.props.names) {
+            return (
+                <li>{this.props.names}</li>
+            );
+        } else {
+            return (
+                <li><ul>
+                    {this.props.names.map(name =>
+                        <li key={name.toLowerCase()}>{name}</li>
+                    )}
+                </ul></li>
+            );
+        }
+    }
+})
+
+
 var PartsList = React.createClass({
     render: function() {
+        let partsList = [
+            ['Flauto piccolo', 'Flauto I', 'Flauto II'],
+            ['Oboe I', 'Oboe II', 'Corno ingelese'],
+            ['Clarinetto in B I', 'Clarinetto in B II', 'Clarinetto basso in B'],
+            ['Fagotto I', 'Fagotto II', 'Contrafagotto'],
+            ['Corno in F I', 'Corno in F II', 'Corno in F III', 'Corno in F IV'],
+            ['Tromba in B I', 'Tromba in B II', 'Tromba in B III'],
+            ['Trombone I', 'Trombone II', 'Trombone III'],
+            ['Timpani I', 'Timpani II'],
+            'Stahlstäbe',
+            'Triangolo',
+            '2 Arpe',
+            ['Violino I', 'Violino II'],
+            'Viola',
+            'Violoncello',
+            'Contrabasseo'
+        ];
+
         return (
             <ul id="scorestructure-instruments">
-                <li><ul>
-                    <li>Flauto poccolo</li>
-                    <li>Flauto I</li>
-                    <li>Flauto II</li>
-                </ul></li>
-                <li><ul>
-                    <li>Oboe I</li>
-                    <li>Oboe II</li>
-                    <li>Corno inglese</li>
-                </ul></li>
-                <li><ul>
-                    <li>Clarinetto in B I</li>
-                    <li>Clarinetto in B II</li>
-                    <li>Clarinetto basso in B</li>
-                </ul></li>
-                <li><ul>
-                    <li>Fagotto I</li>
-                    <li>Fagotto II</li>
-                    <li>Contrafagotto</li>
-                </ul></li>
-                <li><ul>
-                    <li>Corno in F I</li>
-                    <li>Corno in F II</li>
-                    <li>Corno in F III</li>
-                    <li>Corno in F IV</li>
-                </ul></li>
-                <li><ul>
-                    <li>Tromba in B I</li>
-                    <li>Tromba in B II</li>
-                    <li>Tromba in B III</li>
-                </ul></li>
-                <li><ul>
-                    <li>Trombone I</li>
-                    <li>Trombone II</li>
-                    <li>Trombone III</li>
-                </ul></li>
-                <li><ul>
-                    <li>Timpani I</li>
-                    <li>Timpani II</li>
-                </ul></li>
-                <li>Stahlstäbe</li>
-                <li>Triangolo</li>
-                <li>2 Arpe</li>
-                <li><ul>
-                    <li>Violino I</li>
-                    <li>Violino II</li>
-                </ul></li>
-                <li>Viola</li>
-                <li>Violoncello</li>
-                <li>Contrabasso</li>
+                {partsList.map(function(parts, index) {
+                    return (<StaffGroupOrStaff key={index} names={parts}/>);
+                })}
             </ul>
         );
     }
@@ -289,34 +293,81 @@ var ScoreStructure = React.createClass({
 });
 
 
-var CollaboratorList = React.createClass({
+var Changeset = React.createClass({
+    // Information about a changeset.
+    //
+    // Props:
+    // - date (string): The date of the changeset, YYYY-MM-DD.
+    // - message (string): The message associated with the changeset.
+    //
+
+    propTypes: {
+        date: React.PropTypes.string.isRequired,
+        message: React.PropTypes.string.isRequired
+    },
     render: function() {
         return (
+            <li><time dateTime={this.props.date}>{this.props.date}</time>: {this.props.message}</li>
+        );
+    }
+});
+
+
+var Collaborator = React.createClass({
+    // Information about a collaborator and their recent changesets.
+    //
+    // Props:
+    // - name (string): The collaborator's name, whether a username, their real name, or other.
+    // - changesets (list of object): A list of this person's recent changesets. Refer to the
+    //     "Changeset" component for a description of the "date" and "message" props.
+    //
+
+    propTypes: {
+        name: React.PropTypes.string,
+        changesets: React.PropTypes.arrayOf(
+            React.PropTypes.shape({
+                date: React.PropTypes.string,
+                message: React.PropTypes.string
+            }))
+    },
+    render: function() {
+        return (
+            <div className="ncoda-collaboration-person">
+                <address>{this.props.name}</address>
+                <ul>
+                    {this.props.changesets.map(changeset =>
+                        <Changeset date={changeset.date} message={changeset.message}/>
+                    )}
+                </ul>
+            </div>
+        );
+    }
+});
+
+
+var CollaboratorList = React.createClass({
+    render: function() {
+        let christopherChangesets = [
+            {date: '2015-10-06', message: 'swapped outer voices'},
+            {date: '2015-09-14', message: 'corrected whatever blah'},
+            {date: '2014-12-22', message: 'who let the dogs out?'}
+        ];
+        let gloriaChangesets = [
+            {date: '2015-10-09', message: 'added some notes'},
+            {date: '2015-10-08', message: 'put in some stuff'},
+            {date: '2015-05-05', message: 'clean up WenXuan\'s noodles'}
+        ];
+        let wenxuanChangesets = [
+            {date: '2015-05-07', message: '小心點'},
+            {date: '2015-05-04', message: '我买了面条'},
+            {date: '2014-12-20', message: '狗唱歌'}
+        ];
+
+        return (
             <div id="ncoda-collaborators-list">
-                <div className="ncoda-collaboration-person">
-                    <address>Christopher Antila</address>
-                    <ul>
-                        <li><time dateTime="2015-10-06 17:00">Tuesday</time>: swapped outer voices</li>
-                        <li><time dateTime="2015-09-14">September 14th</time>: corrected whatever blah</li>
-                        <li><time dateTime="2015-12-22">December 2014</time>: who let the dogs out?</li>
-                    </ul>
-                </div>
-                <div className="ncoda-collaboration-person">
-                    <address>Gloria Steinem</address>
-                    <ul>
-                        <li><time dateTime="2015-10-09">Friday</time>: added some notes</li>
-                        <li><time dateTime="2015-10-08">Thursday</time>: put in some stuff</li>
-                        <li><time dateTime="2015-05-05">May 5th</time>: clean up WenXuan&apos;s noodles</li>
-                    </ul>
-                </div>
-                <div className="ncoda-collaboration-person">
-                    <address>卓文萱</address>
-                    <ul>
-                        <li><time dateTime="2015-05-07">May 7th</time>: 小心點</li>
-                        <li><time dateTime="2015-05-04">May 4th</time>: 我买了面条</li>
-                        <li><time dateTime="2014-12-20">December 2014</time>: 狗唱歌</li>
-                    </ul>
-                </div>
+                <Collaborator name='Christopher Antila' changesets={christopherChangesets}/>
+                <Collaborator name='Gloria Steinem' changesets={gloriaChangesets}/>
+                <Collaborator name='卓文萱' changesets={wenxuanChangesets}/>
             </div>
         );
     }
