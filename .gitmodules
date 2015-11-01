@@ -1,6 +1,3 @@
 [submodule "js/pypyjs"]
 	path = js/pypyjs
 	url = git@jameson.adjectivenoun.ca:ncoda/pypyjs-release.git
-[submodule "js/codemirror"]
-	path = js/codemirror
-	url = https://github.com/codemirror/CodeMirror.git
