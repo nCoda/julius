@@ -427,12 +427,20 @@ var Section = React.createClass({
             date: React.PropTypes.string
         }),
         pathToImage: React.PropTypes.string,
-        onClick: React.PropTypes.func.isRequired
+        onClick: React.PropTypes.func.isRequired,
+        colour: React.PropTypes.string
+    },
+    getDefaultProps: function() {
+        return {colour: '#000'};
     },
     render: function() {
+        let headerStyleAttr = {background: this.props.colour};
+
         return (
             <article className="ncoda-mei-section" id={`section-${this.props.id}`} onClick={this.props.onClick}>
-                <header>{this.props.name}</header>
+                <header style={headerStyleAttr}>
+                    {this.props.name}
+                </header>
                 <div className="ncoda-mei-section-img">
                     <img src={this.props.pathToImage}/>
                 </div>
@@ -455,6 +463,9 @@ var ActiveSections = React.createClass({
         let aLastUpdated = {name: 'Christopher Antila', date: '2015-10-06'};
         let bLastUpdated = {name: 'Gloria Steinem', date: '2015-10-09'};
         let cLastUpdated = {name: '卓文萱', date: '2015-05-07'};
+        let aColour = 'rgba(0, 191, 255, 0.6)';
+        let bColour = 'rgba(218, 165, 32, 0.6)';
+        let cColour = 'rgba(255, 127, 80, 0.6)';
 
         return (
             <article className="ncoda-active-sections">
@@ -469,6 +480,7 @@ var ActiveSections = React.createClass({
                         lastUpdated={aLastUpdated}
                         pathToImage="../../structureview_mock/sectionA.png"
                         onClick={this.props.openContextMenu}
+                        colour={aColour}
                     />
                     <Section
                         id="b"
@@ -476,6 +488,7 @@ var ActiveSections = React.createClass({
                         lastUpdated={bLastUpdated}
                         pathToImage="../../structureview_mock/sectionB.png"
                         onClick={this.props.openContextMenu}
+                        colour={bColour}
                     />
                     <Section
                         id="ap"
@@ -483,6 +496,7 @@ var ActiveSections = React.createClass({
                         lastUpdated={aLastUpdated}
                         pathToImage="../../structureview_mock/sectionA.png"
                         onClick={this.props.openContextMenu}
+                        colour={aColour}
                     />
                     <Section
                         id="c"
@@ -490,6 +504,7 @@ var ActiveSections = React.createClass({
                         lastUpdated={cLastUpdated}
                         pathToImage="../../structureview_mock/sectionC.png"
                         onClick={this.props.openContextMenu}
+                        colour={cColour}
                     />
                     <Section
                         id="app"
@@ -497,6 +512,7 @@ var ActiveSections = React.createClass({
                         lastUpdated={aLastUpdated}
                         pathToImage="../../structureview_mock/sectionA.png"
                         onClick={this.props.openContextMenu}
+                        colour={aColour}
                     />
                 </content>
             </article>
