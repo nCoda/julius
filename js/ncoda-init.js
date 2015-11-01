@@ -181,25 +181,6 @@ window["renderNCoda"] = renderNCoda;
 
 // Temporary StructureView Stuff ----------------------------------------------
 // TODO: make sure this is all removed
-function registerClickEventOnMeiSectionContextMenu() {
-    // register whatever whatever
-    var itemOne = document.getElementById('ncoda-section-menu-item-1');
-    var itemTwo = document.getElementById('ncoda-section-menu-item-2');
-    var itemThree = document.getElementById('ncoda-section-menu-item-3');
-
-    itemOne.addEventListener('click', clickContextMenuMeiSection);
-    itemTwo.addEventListener('click', clickContextMenuMeiSection);
-    itemThree.addEventListener('click', clickContextMenuMeiSection);
-}
-
-function clickContextMenuMeiSection(event) {
-    // hide the context menu then show an alert acknowledging the click
-    var msg = event.target.label + '?\nWill do!';
-    var menu = document.getElementById('ncoda-section-menu');
-    menu.style.display = 'none';
-    alert(msg);
-}
-
 function registerClickEventOnMeiSection() {
     // register showContextMenu() as the event listener for "click" events on the ...
     var section_a = document.getElementById('section-a');
@@ -223,19 +204,6 @@ function showContextMenuMeiSection(event) {
     menu.style.display = 'flex';
 };
 
-function registerClickEventOnHeaderBar() {
-    // register the "click" event for the "fields" in the Header Bar (author, title, ...)
-    var author = document.getElementById('header-author');
-    var title = document.getElementById('header-title');
-    var date = document.getElementById('header-date');
-    var add = document.getElementById('header-add');
-
-    author.addEventListener('click', clickHeaderBar);
-    title.addEventListener('click', clickHeaderBar);
-    date.addEventListener('click', clickHeaderBar);
-    add.addEventListener('click', clickHeaderBar);
-};
-
 function clickHeaderBar(event) {
     if ('header-add' === event.target.id) {
         alert('We add a new header field.');
@@ -243,58 +211,7 @@ function clickHeaderBar(event) {
         alert('You\'ll be able to edit this field: ' + event.target.id);
     }
 };
-
-function registerShowHideSSInstrs() {
-    var visButton = document.getElementById('scorestructure-visibility');
-    visButton.addEventListener('click', showHideScoreStructureInstruments);
-    // NOTE this is a hack to make the listening function work
-    document.getElementById('scorestructure-instruments').style.display = 'none';
-};
-function showHideScoreStructureInstruments() {
-    var instrList = document.getElementById('scorestructure-instruments');
-    var display = ('none' === instrList.style.display) ? 'block' : 'none';
-    instrList.style.display = display;
-};
-
-function registerShowHideHeaderBar() {
-    var visButton = document.getElementById('headerbar-visibility');
-    visButton.addEventListener('click', showHideHeaderBar);
-    // NOTE this is a hack to make the listening function work
-    document.getElementById('headerbar-list').style.display = 'none';
-};
-function showHideHeaderBar() {
-    var headerbar = document.getElementById('headerbar-list');
-    var display = ('none' === headerbar.style.display) ? 'block' : 'none';
-    headerbar.style.display = display;
-};
-
-function registerShowHideCollaborators() {
-    var visButton = document.getElementById('collaborators-visibility');
-    visButton.addEventListener('click', showHideCollaborators);
-    // NOTE this is a hack to make the listening function work
-    document.getElementById('ncoda-collaborators-list').style.display = 'none';
-};
-function showHideCollaborators() {
-    var list = document.getElementById('ncoda-collaborators-list');
-    var display = ('none' === list.style.display) ? 'block' : 'none';
-    list.style.display = display;
-};
-
-function registerExpandedSection() {
-    var visButton = document.getElementById('expanded-section-visibility');
-    visButton.addEventListener('click', showHideExpandedSection);
-    // NOTE this is a hack to make the listening function work
-    document.getElementById('ncoda-expanded-section-svg').style.display = 'none';
-};
-function showHideExpandedSection() {
-    var list = document.getElementById('ncoda-expanded-section-svg');
-    var display = ('none' === list.style.display) ? 'block' : 'none';
-    list.style.display = display;
-};
 // NOTE: end of Temporary StructureView Stuff ---------------------------------
-
-
-
 
 React.render(
     React.createElement(StructureView),
@@ -302,11 +219,5 @@ React.render(
     function() {
         // This function runs when React has finished rendering.
         registerClickEventOnMeiSection();
-        registerClickEventOnMeiSectionContextMenu();
-        registerClickEventOnHeaderBar();
-        registerShowHideSSInstrs();
-        registerShowHideHeaderBar();
-        registerShowHideCollaborators();
-        registerExpandedSection();
     }
 );
