@@ -151,73 +151,7 @@ window["renderNCoda"] = renderNCoda;
 **/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Temporary StructureView Stuff ----------------------------------------------
-// TODO: make sure this is all removed
-function registerClickEventOnMeiSection() {
-    // register showContextMenu() as the event listener for "click" events on the ...
-    var section_a = document.getElementById('section-a');
-    var section_b = document.getElementById('section-b');
-    var section_ap = document.getElementById('section-ap');
-    var section_c = document.getElementById('section-c');
-    var section_app = document.getElementById('section-app');
-
-    section_a.addEventListener('click', showContextMenuMeiSection);
-    section_b.addEventListener('click', showContextMenuMeiSection);
-    section_ap.addEventListener('click', showContextMenuMeiSection);
-    section_c.addEventListener('click', showContextMenuMeiSection);
-    section_app.addEventListener('click', showContextMenuMeiSection);
-}
-
-function showContextMenuMeiSection(event) {
-    // this displays the context menu under the cursor
-    var menu = document.getElementById('ncoda-section-menu');
-    menu.style.left = event.clientX + 'px';
-    menu.style.top = event.clientY + 'px';
-    menu.style.display = 'flex';
-};
-
-function clickHeaderBar(event) {
-    if ('header-add' === event.target.id) {
-        alert('We add a new header field.');
-    } else {
-        alert('You\'ll be able to edit this field: ' + event.target.id);
-    }
-};
-// NOTE: end of Temporary StructureView Stuff ---------------------------------
-
 React.render(
     React.createElement(StructureView),
-    document.getElementById('ncoda'),
-    function() {
-        // This function runs when React has finished rendering.
-        registerClickEventOnMeiSection();
-    }
+    document.getElementById('ncoda')
 );

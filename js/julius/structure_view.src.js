@@ -166,7 +166,7 @@ var MenuItem = React.createClass({
 });
 
 
-var SectionMenu = React.createClass({
+var SectionContextMenu = React.createClass({
     // The context menu that appears when users click on a Section.
     handleClick: function(event) {
         // Hide the context menu then show an alert acknowledging the click.
@@ -191,7 +191,7 @@ var StructureViewMenus = React.createClass({
     render: function() {
         return (
             <div id="ncoda-menus">
-                <SectionMenu/>
+                <SectionContextMenu/>
             </div>
         );
     }
@@ -418,7 +418,7 @@ var StructureViewFooter = React.createClass({
 });
 
 
-var ActiveSection = React.createClass({
+var Section = React.createClass({
     propTypes: {
         name: React.PropTypes.string,
         id: React.PropTypes.string,
@@ -426,11 +426,12 @@ var ActiveSection = React.createClass({
             name: React.PropTypes.string,
             date: React.PropTypes.string
         }),
-        pathToImage: React.PropTypes.string
+        pathToImage: React.PropTypes.string,
+        onClick: React.PropTypes.func.isRequired
     },
     render: function() {
         return (
-            <article className="ncoda-mei-section" id={`section-${this.props.id}`}>
+            <article className="ncoda-mei-section" id={`section-${this.props.id}`} onClick={this.props.onClick}>
                 <header>{this.props.name}</header>
                 <div className="ncoda-mei-section-img">
                     <img src={this.props.pathToImage}/>
@@ -446,6 +447,10 @@ var ActiveSection = React.createClass({
 
 
 var ActiveSections = React.createClass({
+    propTypes: {
+        // A function that, when called with no argument, opens the SectionContextMenu in the right place.
+        openContextMenu: React.PropTypes.func.isRequired
+    },
     render: function() {
         let aLastUpdated = {name: 'Christopher Antila', date: '2015-10-06'};
         let bLastUpdated = {name: 'Gloria Steinem', date: '2015-10-09'};
@@ -458,35 +463,40 @@ var ActiveSections = React.createClass({
                 </header>
 
                 <content>
-                    <ActiveSection
+                    <Section
                         id="a"
                         name="A"
                         lastUpdated={aLastUpdated}
                         pathToImage="../../structureview_mock/sectionA.png"
+                        onClick={this.props.openContextMenu}
                     />
-                    <ActiveSection
+                    <Section
                         id="b"
                         name="B"
                         lastUpdated={bLastUpdated}
                         pathToImage="../../structureview_mock/sectionB.png"
+                        onClick={this.props.openContextMenu}
                     />
-                    <ActiveSection
+                    <Section
                         id="ap"
                         name={"A\u2032"}
                         lastUpdated={aLastUpdated}
                         pathToImage="../../structureview_mock/sectionA.png"
+                        onClick={this.props.openContextMenu}
                     />
-                    <ActiveSection
+                    <Section
                         id="c"
                         name="C"
                         lastUpdated={cLastUpdated}
                         pathToImage="../../structureview_mock/sectionC.png"
+                        onClick={this.props.openContextMenu}
                     />
-                    <ActiveSection
+                    <Section
                         id="app"
                         name={"A\u2032\u2032"}
                         lastUpdated={aLastUpdated}
                         pathToImage="../../structureview_mock/sectionA.png"
+                        onClick={this.props.openContextMenu}
                     />
                 </content>
             </article>
@@ -496,13 +506,20 @@ var ActiveSections = React.createClass({
 
 
 var StructureView = React.createClass({
+    showSectionContextMenu: function(event) {
+        // Display the context menu under the cursor.
+        let menu = document.getElementById('ncoda-section-menu');
+        menu.style.left = event.clientX + 'px';
+        menu.style.top = event.clientY + 'px';
+        menu.style.display = 'flex';
+    },
     render: function() {
         return (
             <div className="ncoda-structureview-frame">
                 <StructureViewMenus/>
                 <div id="ncoda-structureview" className="ncoda-structureview">
                     <StructureViewHeader/>
-                    <ActiveSections/>
+                    <ActiveSections openContextMenu={this.showSectionContextMenu}/>
                     <StructureViewFooter/>
                 </div>
             </div>
