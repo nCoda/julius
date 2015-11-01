@@ -418,6 +418,83 @@ var StructureViewFooter = React.createClass({
 });
 
 
+var ActiveSection = React.createClass({
+    propTypes: {
+        name: React.PropTypes.string,
+        id: React.PropTypes.string,
+        lastUpdated: React.PropTypes.shape({
+            name: React.PropTypes.string,
+            date: React.PropTypes.string
+        }),
+        pathToImage: React.PropTypes.string
+    },
+    render: function() {
+        return (
+            <article className="ncoda-mei-section" id={`section-${this.props.id}`}>
+                <header>{this.props.name}</header>
+                <div className="ncoda-mei-section-img">
+                    <img src={this.props.pathToImage}/>
+                </div>
+                <footer>
+                    <address>{this.props.lastUpdated.name}</address>
+                    <time dateTime={this.props.lastUpdated.date}>{this.props.lastUpdated.date}</time>
+                </footer>
+            </article>
+        );
+    }
+});
+
+
+var ActiveSections = React.createClass({
+    render: function() {
+        let aLastUpdated = {name: 'Christopher Antila', date: '2015-10-06'};
+        let bLastUpdated = {name: 'Gloria Steinem', date: '2015-10-09'};
+        let cLastUpdated = {name: '卓文萱', date: '2015-05-07'};
+
+        return (
+            <article className="ncoda-active-sections">
+                <header>
+                    Active Score
+                </header>
+
+                <content>
+                    <ActiveSection
+                        id="a"
+                        name="A"
+                        lastUpdated={aLastUpdated}
+                        pathToImage="../../structureview_mock/sectionA.png"
+                    />
+                    <ActiveSection
+                        id="b"
+                        name="B"
+                        lastUpdated={bLastUpdated}
+                        pathToImage="../../structureview_mock/sectionB.png"
+                    />
+                    <ActiveSection
+                        id="ap"
+                        name={"A\u2032"}
+                        lastUpdated={aLastUpdated}
+                        pathToImage="../../structureview_mock/sectionA.png"
+                    />
+                    <ActiveSection
+                        id="c"
+                        name="C"
+                        lastUpdated={cLastUpdated}
+                        pathToImage="../../structureview_mock/sectionC.png"
+                    />
+                    <ActiveSection
+                        id="app"
+                        name={"A\u2032\u2032"}
+                        lastUpdated={aLastUpdated}
+                        pathToImage="../../structureview_mock/sectionA.png"
+                    />
+                </content>
+            </article>
+        );
+    }
+});
+
+
 var StructureView = React.createClass({
     render: function() {
         return (
@@ -425,79 +502,7 @@ var StructureView = React.createClass({
                 <StructureViewMenus/>
                 <div id="ncoda-structureview" className="ncoda-structureview">
                     <StructureViewHeader/>
-
-                    <article className="ncoda-active-sections">
-                        <header>
-                            Active Score
-                        </header>
-
-                        <content>
-                            <article className="ncoda-mei-section first-section" id="section-a">
-                                <header>
-                                    A
-                                </header>
-                                <div className="ncoda-mei-section-img">
-                                    <img src="../../structureview_mock/sectionA.png"/>
-                                </div>
-                                <footer>
-                                    <address>Christopher Antila</address>
-                                    <time dateTime="2015-10-06 16:32">Tuesday</time>
-                                </footer>
-                            </article>
-
-                            <article className="ncoda-mei-section" id="section-b">
-                                <header>
-                                    B
-                                </header>
-                                <div className="ncoda-mei-section-img">
-                                    <img src="../../structureview_mock/sectionB.png"/>
-                                </div>
-                                <footer>
-                                    <address>Gloria Steinem</address>
-                                    <time dateTime="2015-10-09 17:00">Friday</time>
-                                </footer>
-                            </article>
-
-                            <article className="ncoda-mei-section" id="section-ap">
-                                <header>
-                                    A&prime;
-                                </header>
-                                <div className="ncoda-mei-section-img">
-                                    <img src="../../structureview_mock/sectionA.png"/>
-                                </div>
-                                <footer>
-                                    <address>Christopher Antila</address>
-                                    <time dateTime="2015-10-06 17:00">Tuesday</time>
-                                </footer>
-                            </article>
-
-                            <article className="ncoda-mei-section" id="section-c">
-                                <header>
-                                    C
-                                </header>
-                                <div className="ncoda-mei-section-img">
-                                    <img src="../../structureview_mock/sectionC.png"/>
-                                </div>
-                                <footer>
-                                    <address>卓文萱</address>
-                                    <time dateTime="2015-05-07 17:00">May 7th</time>
-                                </footer>
-                            </article>
-
-                            <article className="ncoda-mei-section last-section" id="section-app">
-                                <header>
-                                    A&prime;&prime;
-                                </header>
-                                <div className="ncoda-mei-section-img">
-                                    <img src="../../structureview_mock/sectionA.png"/>
-                                </div>
-                                <footer>
-                                    <address>Christopher Antila</address>
-                                    <time dateTime="2015-10-06 16:32">Tuesday</time>
-                                </footer>
-                            </article>
-                        </content>
-                    </article>
+                    <ActiveSections/>
                     <StructureViewFooter/>
                 </div>
             </div>
