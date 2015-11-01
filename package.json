@@ -3,7 +3,8 @@
     "description": "Web application for formalized score control.",
     "version": "0.0.1",
     "author": "Christopher Antila <christopher@antila.ca>",
-    "license": "GPLv3+",
+    "license": "GPL-3.0",
+    "repository": "https://jameson.adjectivenoun.ca:ncoda/julius.git",
     "dependencies": {
         "react": "0.13.x",
         "codemirror": "5.8.0"
