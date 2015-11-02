@@ -133,25 +133,25 @@ menuitem:hover {
     justify-content: space-between;
 }
 
-.ncoda-headerbar > p {
+.ncoda-headerbar {
+    background: @cardboard-gray;
+}
+.ncoda-headerbar .header {
+    cursor: default;
     padding: 0.4em 0.5em 0.5em;
-    background: rgba(240, 255, 255, 0.6);
+    // background: rgba(240, 255, 255, 0.6);
     border-right: 1px solid rgba(240, 255, 255, 0.3);
     margin: 0;
 }
 .ncoda-headerbar > ul {
     margin: 0;
     list-style-type: none;
-    background: rgba(240, 255, 255, 0.6);
-    border-right: 1px solid rgba(240, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(240, 255, 255, 0.3);
     padding-top: 0.2em;
 }
 .ncoda-headerbar li {
     margin-top: 0.2em;
-    background: rgba(240, 255, 255, 0.6);
-    border-right: 1px solid rgba(240, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+    border-right: 1px solid @cardboard-gray;
+    border-bottom: 1px solid @cardboard-gray;
     padding: 0.2em 0.5em;
 }
 .ncoda-headerbar li:hover {
