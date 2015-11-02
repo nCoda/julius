@@ -60,9 +60,9 @@ var HeaderBar = React.createClass({
 
         return (
             <div className="ncoda-headerbar">
-                <p>Header Bar
-                    <ShowOrHideButton func={this.showOrHide}/>
-                </p>
+                <div className="header">Header Bar
+                    <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showHeaderList}/>
+                </div>
                 {headerList}
             </div>
         );
@@ -104,7 +104,7 @@ var ExpandedSectionView = React.createClass({
         return (
             <div className="ncoda-expanded-section">
                 <p>
-                    <ShowOrHideButton func={this.showOrHide}/>
+                    <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showGraph}/>
                     Expanded Section View
                 </p>
                 {graph}
@@ -122,14 +122,53 @@ var ShowOrHideButton = React.createClass({
     //
     // Props:
     // - func (function) This function is called without arguments when the button is clicked.
+    // - isShown (boolean) Whether the component shown/hidden by this button is currently shown.
+    // - expands (string) Either 'up,' 'down', 'left', or 'right', depending on the direction the
+    //     shown/hidden component moves when it expands.
     //
 
     propTypes: {
-        func: React.PropTypes.func.isRequired
+        func: React.PropTypes.func.isRequired,
+        isShown: React.PropTypes.bool,
+        expands: React.PropTypes.oneOf(['up', 'down', 'left', 'right', 'expand'])
+    },
+    getDefaultProps: function() {
+        return {expands: 'expand'};
     },
     render: function() {
+        let className = '';
+
+        if ('expand' === this.props.expands) {
+            className = 'fa-expand';
+        } else if (false === this.props.isShown) {
+            // the chevron points in the direction of this.props.expands
+            className = `fa-chevron-${this.props.expands}`;
+        } else if (true === this.props.isShown) {
+            // the chevron points opposite the direction of this.props.expands
+            switch (this.props.expands) {
+                case 'up':
+                    className = 'fa-chevron-down';
+                    break;
+                case 'down':
+                    className = 'fa-chevron-up';
+                    break;
+                case 'left':
+                    className = 'fa-chevron-right';
+                    break;
+                case 'right':
+                    className = 'fa-chevron-left';
+                    break;
+            }
+        } else {
+            className = 'fa-expand';
+        }
+
+        className = `fa ${className}`;
+
         return (
-            <button name="show-or-hide-button" type="button" onClick={this.props.func}>Show/Hide</button>
+            <button name="show-or-hide-button" className="show-or-hide-button" type="button" onClick={this.props.func}>
+                <i className={className}></i>
+            </button>
         );
     }
 });
@@ -284,7 +323,7 @@ var ScoreStructure = React.createClass({
         return (
             <div className="ncoda-scorestructure">
                 <p>Score Structure
-                    <ShowOrHideButton func={this.showOrHide}/>
+                    <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showParts}/>
                 </p>
                 {partsList}
             </div>
@@ -396,7 +435,7 @@ var Collaboration = React.createClass({
         return (
             <div className="ncoda-collaboration">
                 <p>
-                    <ShowOrHideButton func={this.showOrHide}/>
+                    <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showCollaborators}/>
                     Collaborators
                 </p>
                 {collabList}
