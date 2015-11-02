@@ -5,8 +5,9 @@
     "author": "Christopher Antila <christopher@antila.ca>",
     "license": "GPLv3+",
     "dependencies": {
-        "react": "0.13.x",
-        "codemirror": "5.8.0"
+        "codemirror": "5.8.x",
+        "nuclear-js": "1.2.x",
+        "react": "0.13.x"
     },
     "devDependencies": {
         "less": "2.5.x",
