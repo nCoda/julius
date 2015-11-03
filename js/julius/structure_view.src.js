@@ -5,34 +5,66 @@
 //
 // Copyright 2015 Christopher Antila
 
-import React from "react";
+import React from 'react';
+import reactor from './reactor.src';
+import getters from './getters.src';
+import signals from './signals.src';
 
 
 var MetadataField = React.createClass({
+    //
+
     propTypes: {
         // The name of this metadata field.
-        fieldName: React.PropTypes.string.isRequired
+        name: React.PropTypes.string,
+        // The value of this metadata field.
+        value: React.PropTypes.string
     },
-    onClick: function() {
-        alert(`You will be able to edit the ${this.props.fieldName}`);
+    getDefaultProps: function() {
+        return {name: '', value: ''};
+    },
+    editHeader: function() {
+        let value = prompt('Enter the new value.');
+        if (null !== value && value.length > 0) {
+            signals.emitters.changeHeader(this.props.name, value);
+        }
+    },
+    removeHeader: function(event) {
+        event.stopPropagation();
+        signals.emitters.removeHeader(this.props.name);
     },
     render: function() {
-        let id = `header-${this.props.fieldName.toLocaleLowerCase()}`;
+        let display = `${this.props.name}: ${this.props.value}`;
         return (
-            <li id={id} onClick={this.onClick}>{this.props.fieldName}</li>
+            <li onClick={this.editHeader}>
+                <i className="fa fa-minus-square" onClick={this.removeHeader}></i>
+                {display}
+            </li>
         );
     }
 });
 
 
 var HeaderList = React.createClass({
+    //
+
+    mixins: [reactor.ReactMixin],
+    getDataBindings: function() {
+        return {headers: getters.meiHeadersList};
+    },
+    addNewHeader: function() {
+        // Does whatever's required to add a new header.
+        let name = prompt('Put in the field name.');
+        let value = prompt('Put in the field value.');
+        signals.emitters.addHeader(name, value);
+    },
     render: function() {
         return (
             <ul id="headerbar-list" className="headers">
-                <MetadataField fieldName="Author"/>
-                <MetadataField fieldName="Title"/>
-                <MetadataField fieldName="Date"/>
-                <MetadataField fieldName="+"/>
+                {this.state.headers.map(field =>
+                    <MetadataField name={field.get('name')} value={field.get('value')}/>
+                )}
+                <li onClick={this.addNewHeader}><i className="fa fa-plus-square"></i></li>
             </ul>
         );
     }

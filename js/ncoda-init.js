@@ -7,6 +7,13 @@ import React from "react";
 import {Julius} from "./julius/julius.src.js";
 import StructureView from './julius/structure_view.src.js';
 
+import reactor from './julius/reactor.src';
+import headerMetadataStores from './julius/stores/headerMetadata.src';
+
+// TODO: remove these, they're just temporary
+import signals from './julius/signals.src';
+
+
 
 // PyPy.js stuff --------------------------------------------------------------
 
@@ -150,6 +157,16 @@ window["renderNCoda"] = renderNCoda;
 
 **/
 
+
+// register our NuclearJS stores
+reactor.registerStores({
+    'headerMetadata': headerMetadataStores.MetadataHeaders
+});
+
+// TODO: this is temporary... it's just setting up the default data
+signals.emitters.addHeader('Author', 'Kitty Cat');
+signals.emitters.addHeader('Title', 'Meowmeow');
+signals.emitters.addHeader('Date', '42nd of Telephone');
 
 React.render(
     React.createElement(StructureView),
