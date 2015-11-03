@@ -9,9 +9,7 @@
 
 // This gets an ImmutableJS List with ImmutableJS Maps with two fields for the "name" and "value"
 // of each MEI header in the List.
-const meiHeadersList = ['headerMetadata'];
-
-
 export default {
-    meiHeadersList: meiHeadersList
+    meiHeadersList: ['headerMetadata'],
+    hgChangesetHistory: ['hgChangesetHistory']
 };

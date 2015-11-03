@@ -9,6 +9,7 @@ import StructureView from './julius/structure_view.src.js';
 
 import reactor from './julius/reactor.src';
 import headerMetadataStores from './julius/stores/headerMetadata.src';
+import mercurial from './julius/stores/mercurial.src';
 
 // TODO: remove these, they're just temporary
 import signals from './julius/signals.src';
@@ -160,13 +161,25 @@ window["renderNCoda"] = renderNCoda;
 
 // register our NuclearJS stores
 reactor.registerStores({
-    'headerMetadata': headerMetadataStores.MetadataHeaders
+    'headerMetadata': headerMetadataStores.MetadataHeaders,
+    'hgChangesetHistory': mercurial.ChangesetHistory
 });
 
 // TODO: this is temporary... it's just setting up the default data
-signals.emitters.addHeader('Author', 'Kitty Cat');
-signals.emitters.addHeader('Title', 'Meowmeow');
-signals.emitters.addHeader('Date', '42nd of Telephone');
+// signals.emitters.addHeader('Author', 'Kitty Cat');
+// signals.emitters.addHeader('Title', 'Meowmeow');
+// signals.emitters.addHeader('Date', '42nd of Telephone');
+signals.emitters.hgAddChangeset({name: 'Christopher Antila', date: '2015-10-06', summary: 'swapped outer voices'});
+signals.emitters.hgAddChangeset({name: 'Christopher Antila', date: '2015-09-14', summary: 'corrected whatever blah'});
+signals.emitters.hgAddChangeset({name: 'Christopher Antila', date: '2014-12-22', summary: 'who let the dogs out?'});
+signals.emitters.hgAddChangeset({name: 'Honoré de Balzac', date: '2015-10-09', summary: 'added some notes'});
+signals.emitters.hgAddChangeset({name: 'Honoré de Balzac', date: '2015-10-08', summary: 'put in some stuff'});
+signals.emitters.hgAddChangeset({name: 'Honoré de Balzac', date: '2015-05-05', summary: 'clean up WenXuan\'s noodles'});
+signals.emitters.hgAddChangeset({name: '卓文萱', date: '2015-05-07', summary: '小心點'});
+signals.emitters.hgAddChangeset({name: '卓文萱', date: '2015-05-04', summary: '我买了面条'});
+signals.emitters.hgAddChangeset({name: '卓文萱', date: '2014-12-20', summary: '狗唱歌'});
+
+
 
 React.render(
     React.createElement(StructureView),

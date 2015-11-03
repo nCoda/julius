@@ -407,7 +407,7 @@ var Collaborator = React.createClass({
                 <address>{this.props.name}</address>
                 <ul>
                     {this.props.changesets.map(changeset =>
-                        <Changeset date={changeset.date} message={changeset.message}/>
+                        <Changeset date={changeset.get('date')} message={changeset.get('summary')}/>
                     )}
                 </ul>
             </div>
@@ -417,28 +417,34 @@ var Collaborator = React.createClass({
 
 
 var CollaboratorList = React.createClass({
+    //
+
+    mixins: [reactor.ReactMixin],
+    getDataBindings: function() {
+        return {history: getters.hgChangesetHistory};
+    },
     render: function() {
-        let christopherChangesets = [
-            {date: '2015-10-06', message: 'swapped outer voices'},
-            {date: '2015-09-14', message: 'corrected whatever blah'},
-            {date: '2014-12-22', message: 'who let the dogs out?'}
-        ];
-        let gloriaChangesets = [
-            {date: '2015-10-09', message: 'added some notes'},
-            {date: '2015-10-08', message: 'put in some stuff'},
-            {date: '2015-05-05', message: 'clean up WenXuan\'s noodles'}
-        ];
-        let wenxuanChangesets = [
-            {date: '2015-05-07', message: '小心點'},
-            {date: '2015-05-04', message: '我买了面条'},
-            {date: '2014-12-20', message: '狗唱歌'}
-        ];
+        // who has changesets in this repository?
+        let names = [];
+        this.state.history.forEach(function(changeset) {
+            let name = changeset.get('name');
+            if (undefined !== name && name.length > 0 && -1 === names.indexOf(name)) {
+                names.push(name);
+            }
+        });
+
+        // build collaborator-specific collections of changesets
+        let collaborators = names.map(name =>
+            this.state.history.filter(changeset =>
+                (changeset.get('name') === name) ? true : false
+            )
+        );
 
         return (
             <div id="ncoda-collaborators-list">
-                <Collaborator name='Christopher Antila' changesets={christopherChangesets}/>
-                <Collaborator name='Gloria Steinem' changesets={gloriaChangesets}/>
-                <Collaborator name='卓文萱' changesets={wenxuanChangesets}/>
+                {collaborators.map(person =>
+                    <Collaborator name={person.get(0).get('name')} changesets={person}/>
+                )}
             </div>
         );
     }

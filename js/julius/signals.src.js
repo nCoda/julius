@@ -21,7 +21,9 @@ var names = keyMirror({
     // HeaderBar
     ADD_HEADER: null,
     CHANGE_HEADER: null,
-    REMOVE_HEADER: null
+    REMOVE_HEADER: null,
+    // Mercurial stuff
+    HG_ADD_CHANGESET: null
 });
 
 
@@ -43,6 +45,27 @@ emitters['changeHeader'] = function(name, value) {
 emitters['removeHeader'] = function(name) {
     // The name of an existing header.
     reactor.dispatch(names.REMOVE_HEADER, {name: name})
+};
+
+// Mercurial stuff
+emitters['hgAddChangeset'] = function(changeset) {
+    // The argument may have any of the following fields:
+    //     changeset: '',
+    //     tag: '',
+    //     name: '',
+    //     email: '',
+    //     username: '',
+    //     date: '',
+    //     summary: '',
+    //     parents: [],
+    //     children: [],
+    //     files: [],
+    //     diffAdded: 0,
+    //     diffRemoved: 0
+    //
+
+    reactor.dispatch(names.HG_ADD_CHANGESET, changeset);
+
 };
 
 
