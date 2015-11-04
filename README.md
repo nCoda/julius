@@ -14,7 +14,7 @@ Install
 
 If you didn't do a recursive clone of the repository, you'll have to clone the git submodules:
 
-    $ git submodule update
+    $ git submodule update --init --recursive
 
 You need to install NodeJS and the NPM (Node Package Manager). This may be available through your
 distribution's package management system, but you can also download it from the NodeJS website,
