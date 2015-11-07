@@ -49,20 +49,6 @@ var ChangesetHistory = Store({
     //
 
     getInitialState() {
-        // return toImmutable({
-        //     changeset: '',
-        //     tag: '',
-        //     name: '',
-        //     email: '',
-        //     username: '',
-        //     date: '',
-        //     summary: '',
-        //     parents: [],
-        //     children: [],
-        //     files: [],
-        //     diffAdded: 0,
-        //     diffRemoved: 0
-        // });
         return toImmutable([]);
     },
     initialize() {
@@ -72,7 +58,10 @@ var ChangesetHistory = Store({
 
 
 function addChangeset(previousState, payload) {
+    // Make a new changeset and put it in the ChangesetHistory store.
     //
+    // Payload: An object that may have any of the fields defined for a ChangesetHistory object.
+    //     Other fields are ignored.
     //
 
     let cset = {

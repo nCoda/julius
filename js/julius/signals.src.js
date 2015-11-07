@@ -29,6 +29,7 @@ var names = keyMirror({
 
 // TODO: const?????
 // "emitters" is NuclearJS "actions."
+// They're added all throughout this file.
 var emitters = {};
 
 
@@ -49,19 +50,7 @@ emitters['removeHeader'] = function(name) {
 
 // Mercurial stuff
 emitters['hgAddChangeset'] = function(changeset) {
-    // The argument may have any of the following fields:
-    //     changeset: '',
-    //     tag: '',
-    //     name: '',
-    //     email: '',
-    //     username: '',
-    //     date: '',
-    //     summary: '',
-    //     parents: [],
-    //     children: [],
-    //     files: [],
-    //     diffAdded: 0,
-    //     diffRemoved: 0
+    // The argument may have any of the fields defined for the mercurial.ChangesetHistory store.
     //
 
     reactor.dispatch(names.HG_ADD_CHANGESET, changeset);
