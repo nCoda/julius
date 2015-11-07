@@ -372,4 +372,5 @@ var Julius = React.createClass({
 
 //
 
-export {Julius, TextEditor, Verovio, WorkTable, TerminalOutput, Separator};
+// export {Julius, TextEditor, Verovio, WorkTable, TerminalOutput, Separator};
+export default Julius;

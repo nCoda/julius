@@ -98,7 +98,8 @@
 .ncoda-mei-section img { width: 100%; }
 
 /* context menu when clicking on a <section>-corresponding <article> */
-menu {
+// TODO: consolidate these with the "menu" stuff in julius.less
+#nocda-section-menu {
     display: none;  /* display: flex; */
     flex-flow: column nowrap;
     justify-content: flex-start;
@@ -115,12 +116,12 @@ menu {
     top: 0%;
     z-index: 4;
 }
-menuitem {
+#nocda-section-menu menuitem {
     padding: 0.25em 0.75em;
     border-left: 5px rgba(61, 174, 233, 1.0) solid;
     transition: border-left 0.5s, background 0.5s;
 }
-menuitem:hover {
+#nocda-section-menu menuitem:hover {
     border-left: 5px rgba(28, 220, 154, 1.0) solid;
     background: rgba(28, 220, 154, 0.4);
 }

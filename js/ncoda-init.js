@@ -3,9 +3,10 @@
 // Copyright 2015 Christopher Antila
 
 
-import React from "react";
-import {Julius} from "./julius/julius.src.js";
-import StructureView from './julius/structure_view.src.js';
+import React from 'react';
+// import {Julius} from "./julius/julius.src.js";
+import StructureView from './julius/structure_view.src';
+import NCoda from './julius/ncoda.src';
 
 import reactor from './julius/reactor.src';
 import headerMetadataStores from './julius/stores/headerMetadata.src';
@@ -216,6 +217,6 @@ signals.emitters.addInstrument({label: 'Contrabasso'});
 
 
 React.render(
-    React.createElement(StructureView),
-    document.getElementById('ncoda')
+    React.createElement(NCoda),
+    document.getElementById('julius-goes-here')
 );
