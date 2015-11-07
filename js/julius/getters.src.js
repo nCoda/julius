@@ -11,5 +11,6 @@
 // of each MEI header in the List.
 export default {
     meiHeadersList: ['headerMetadata'],
-    hgChangesetHistory: ['hgChangesetHistory']
+    hgChangesetHistory: ['hgChangesetHistory'],
+    listOfInstruments: ['instruments'],
 };

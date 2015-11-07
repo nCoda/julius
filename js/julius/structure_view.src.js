@@ -5,6 +5,8 @@
 //
 // Copyright 2015 Christopher Antila
 
+import immutable from 'immutable';
+
 import React from 'react';
 import reactor from './reactor.src';
 import getters from './getters.src';
@@ -273,27 +275,27 @@ var StaffGroupOrStaff = React.createClass({
     // Given either a StaffGroup or a Staff, this component returns the proper stuff.
     //
     // Props:
-    // - names (string, or array of string): The names of staves to render.
+    // - names (Map, or List of Map): The names of staves to render.
     //
-    // If "names" is a string, this component renders a Staff. If "names" is an array of strings,
+    // If "names" is a Map, this component renders a Staff. If "names" is an Array of Maps,
     // this component renders a StaffGroup with each string as a contained Staff.
 
     propTypes: {
         names: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.arrayOf(React.PropTypes.string)
+            React.PropTypes.instanceOf(immutable.Map),
+            React.PropTypes.instanceOf(immutable.List),
         ]).isRequired
     },
     render: function() {
-        if ('string' === typeof this.props.names) {
+        if (immutable.Map.isMap(this.props.names)) {
             return (
-                <li>{this.props.names}</li>
+                <li>{this.props.names.get('label')}</li>
             );
         } else {
             return (
                 <li><ul>
                     {this.props.names.map(name =>
-                        <li key={name.toLowerCase()}>{name}</li>
+                        <li key={name.get('label').toLowerCase()}>{name}</li>
                     )}
                 </ul></li>
             );
@@ -303,28 +305,14 @@ var StaffGroupOrStaff = React.createClass({
 
 
 var PartsList = React.createClass({
+    mixins: [reactor.ReactMixin],
+    getDataBindings: function() {
+        return {partsList: getters.listOfInstruments};
+    },
     render: function() {
-        let partsList = [
-            ['Flauto piccolo', 'Flauto I', 'Flauto II'],
-            ['Oboe I', 'Oboe II', 'Corno ingelese'],
-            ['Clarinetto in B I', 'Clarinetto in B II', 'Clarinetto basso in B'],
-            ['Fagotto I', 'Fagotto II', 'Contrafagotto'],
-            ['Corno in F I', 'Corno in F II', 'Corno in F III', 'Corno in F IV'],
-            ['Tromba in B I', 'Tromba in B II', 'Tromba in B III'],
-            ['Trombone I', 'Trombone II', 'Trombone III'],
-            ['Timpani I', 'Timpani II'],
-            'Stahlstäbe',
-            'Triangolo',
-            '2 Arpe',
-            ['Violino I', 'Violino II'],
-            'Viola',
-            'Violoncello',
-            'Contrabasseo'
-        ];
-
         return (
             <ul id="scorestructure-instruments">
-                {partsList.map(function(parts, index) {
+                {this.state.partsList.map(function(parts, index) {
                     return (<StaffGroupOrStaff key={index} names={parts}/>);
                 })}
             </ul>

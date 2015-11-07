@@ -23,7 +23,10 @@ var names = keyMirror({
     CHANGE_HEADER: null,
     REMOVE_HEADER: null,
     // Mercurial stuff
-    HG_ADD_CHANGESET: null
+    HG_ADD_CHANGESET: null,
+    // MEI Document Stuff
+    SCOREDEF_INSTR_ADD: null,  // to add an instrument to the score
+    SCOREDEF_INSTRGRP_ADD: null,  // to add a group of instruments to the score
 });
 
 
@@ -51,10 +54,21 @@ emitters['removeHeader'] = function(name) {
 // Mercurial stuff
 emitters['hgAddChangeset'] = function(changeset) {
     // The argument may have any of the fields defined for the mercurial.ChangesetHistory store.
-    //
-
     reactor.dispatch(names.HG_ADD_CHANGESET, changeset);
+};
 
+
+// MEI Document Stuff
+emitters['addInstrument'] = function(instrument) {
+    // Add an instrument to the active document.
+    // Fields for the "instrument" object are defined for the document.scoreDef.Instrument store.
+    reactor.dispatch(names.SCOREDEF_INSTR_ADD, instrument);
+};
+emitters['addInstrumentGroup'] = function(instruments) {
+    // Add an instrument to the active document.
+    // The "instruments" argument should be an array of objects as defined for the
+    // document.scoreDef.Instrument store.
+    reactor.dispatch(names.SCOREDEF_INSTRGRP_ADD, instruments);
 };
 
 
