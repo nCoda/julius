@@ -38,18 +38,27 @@
 /* ********************************************************************************************* */
 /* Boring things */
 
-html {
-    height: 100%;
-}
+html { height: 100%; overflow: hidden; }
 body {
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
     overflow: hidden;
     margin: 0px;
     height: 100%;
 
     font-family: 'Fira Sans';
+    font-weight: 300;
+
+    cursor: default;
+}
+* {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+#julius-goes-here {
+    height: 100%;
+}
+#ncoda {
+    height: 100%;
 }
 
 /* ********************************************************************************************* */
@@ -61,9 +70,6 @@ body {
     flex-flow: column;
     justify-content: space-around;
     align-items: center;
-    background: @paper-white;
-    color: @shade-black;
-    cursor: wait;
 }
 
 #ncoda-loading i {
@@ -73,13 +79,20 @@ body {
 /* ********************************************************************************************* */
 /* The top-level components (header and everything else) */
 
-.ncoda-header {
-    background: @cardboard-grey;
+#ncoda-global-header {
+    background: @charcoal-grey;
     overflow: hidden;
-    height: 3em;
     flex-shrink: 0;
+    flex-grow: 0;
     box-shadow: 0px 0px 7px @shade-black;
     z-index: 1000;
+    color: @cardboard-grey;
+    border-bottom: 3px solid @plasma-blue;
+
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .ncoda-logo {
@@ -91,17 +104,59 @@ body {
 .ncoda-logo-n {
     color: @mellow-turquoise;
     display: inline;
-    font-style: italic;
 }
 
-.ncoda-header h1 {
+#ncoda-global-header button {
+    margin: 0 0 0 1em;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    border: 1px solid @mellow-turquoise;
+    background: inherit;
+    color: @plasma-blue;
+}
+#ncoda-global-header button:hover {
+    background: @mellow-turquoise;
+}
+
+#ncoda-global-header h1 {
+    // display: inline;
     margin: 0px;
 }
 
-#ncoda {
-    background: @paper-white;
-    flex-grow: 1;
+/*************************/
+/* nCoda Menus Generally */
+
+menu {
+    background: @charcoal-gray;
+    color: @cardboard-gray;
+    margin: 0;
+    padding: 0;
+    min-width: 10em;
+}
+menuitem {
+    display: block;
+    padding: 0.25em 1.25em;
+    border-left: 3px solid @charcoal-gray;
+    transition: border-left 0.25s ease-in-out;
+}
+menuitem:hover {
+    border-left: 3px solid @mellow-turquoise;
+}
+
+#ncoda-global-menu {
+    position: absolute;
+    z-index: 900;
+    transition: display 0.5s ease-out;
+}
+
+#ncoda-content {
+    background: @cardboard-gray;
+    color: @shade-black;
     overflow: hidden;
+    height: 100%;
+
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
 }
 
 /* the #ncoda div contains another div with the "julius" class */

@@ -3,8 +3,19 @@
 // Copyright 2015 Christopher Antila
 
 
-import React from "react";
-import {Julius} from "./julius/julius.src.js";
+import React from 'react';
+// import {Julius} from "./julius/julius.src.js";
+import StructureView from './julius/structure_view.src';
+import NCoda from './julius/ncoda.src';
+
+import reactor from './julius/reactor.src';
+import headerMetadataStores from './julius/stores/headerMetadata.src';
+import mercurial from './julius/stores/mercurial.src';
+import documentModule from './julius/stores/document.src';
+
+// TODO: remove these, they're just temporary
+import signals from './julius/signals.src';
+
 
 
 // PyPy.js stuff --------------------------------------------------------------
@@ -135,6 +146,8 @@ var submitToLychee = function(lilypondCode) {
 
 // Actual Loading Stuff -------------------------------------------------------
 
+/**
+// TODO: uncomment this stuff
 // initial rendering on load
 pypyjs.ready().then(renderNCoda);
 
@@ -144,3 +157,66 @@ pypyjs.ready().then(pypyjs.repl(function() { return _pyromise; }));
 // Set the renderNCoda function so it can be used by anyone. But set it now, so that it's not
 // available for others (to mess up) until after the initial rendering.
 window["renderNCoda"] = renderNCoda;
+
+**/
+
+
+// register our NuclearJS stores
+reactor.registerStores({
+    'headerMetadata': headerMetadataStores.MetadataHeaders,
+    'hgChangesetHistory': mercurial.ChangesetHistory,
+    'instruments': documentModule.scoreDef.Instruments
+});
+
+// TODO: this is temporary... it's just setting up the default data
+signals.emitters.addHeader('Author', 'Kitty Cat');
+signals.emitters.addHeader('Title', 'Meowmeow');
+signals.emitters.addHeader('Date', '42nd of Telephone');
+signals.emitters.hgAddChangeset({name: 'Christopher Antila', date: '2015-10-06', summary: 'swapped outer voices'});
+signals.emitters.hgAddChangeset({name: 'Christopher Antila', date: '2015-09-14', summary: 'corrected whatever blah'});
+signals.emitters.hgAddChangeset({name: 'Christopher Antila', date: '2014-12-22', summary: 'who let the dogs out?'});
+signals.emitters.hgAddChangeset({name: 'Honoré de Balzac', date: '2015-10-09', summary: 'added some notes'});
+signals.emitters.hgAddChangeset({name: 'Honoré de Balzac', date: '2015-10-08', summary: 'put in some stuff'});
+signals.emitters.hgAddChangeset({name: 'Honoré de Balzac', date: '2015-05-05', summary: 'clean up WenXuan\'s noodles'});
+signals.emitters.hgAddChangeset({name: '卓文萱', date: '2015-05-07', summary: '小心點'});
+signals.emitters.hgAddChangeset({name: '卓文萱', date: '2015-05-04', summary: '我买了面条'});
+signals.emitters.hgAddChangeset({name: '卓文萱', date: '2014-12-20', summary: '狗唱歌'});
+signals.emitters.addInstrumentGroup([{label: 'Flauto piccolo'},
+    {label: 'Flauto I'},
+    {label: 'Flauto II'}]);
+signals.emitters.addInstrumentGroup([{label: 'Oboe I'},
+    {label: 'Oboe II'},
+    {label: 'Corno ingelese'}]);
+signals.emitters.addInstrumentGroup([{label: 'Clarinetto in B I'},
+    {label: 'Clarinetto in B II'},
+    {label: 'Clarinetto basso in B'}]);
+signals.emitters.addInstrumentGroup([{label: 'Fagotto I'},
+    {label: 'Fagotto II'},
+    {label: 'Contrafagotto'}]);
+signals.emitters.addInstrumentGroup([{label: 'Corno in F I'},
+    {label: 'Corno in F II'},
+    {label: 'Corno in F III'},
+    {label: 'Corno in F IV'}]);
+signals.emitters.addInstrumentGroup([{label: 'Tromba in B I'},
+    {label: 'Tromba in B II'},
+    {label: 'Tromba in B III'}]);
+signals.emitters.addInstrumentGroup([{label: 'Trombone I'},
+    {label: 'Trombone II'},
+    {label: 'Trombone III'}]);
+signals.emitters.addInstrumentGroup([{label: 'Timpani I'},
+    {label: 'Timpani II'}]);
+signals.emitters.addInstrument({label: 'Stahlstäbe'});
+signals.emitters.addInstrument({label: 'Triangolo'});
+signals.emitters.addInstrument({label: '2 Arpe'});
+signals.emitters.addInstrumentGroup([{label: 'Violino I'},
+    {label: 'Violino II'}]);
+signals.emitters.addInstrument({label: 'Viola'});
+signals.emitters.addInstrument({label: 'Violoncello'});
+signals.emitters.addInstrument({label: 'Contrabasso'});
+
+
+
+React.render(
+    React.createElement(NCoda),
+    document.getElementById('julius-goes-here')
+);

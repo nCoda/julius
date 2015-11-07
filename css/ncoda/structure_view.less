@@ -1,0 +1,257 @@
+/**
+* LESS file for the Julius StructureView component.
+*/
+
+
+/* ********************************************************************************************* */
+/* Colour definitions */
+
+/* The "solarized" set. */
+@solarized-base03:  #002b36;
+@solarized-base02:  #073642;
+@solarized-base01:  #586e75;
+@solarized-base00:  #657b83;
+@solarized-base0:   #839496;
+@solarized-base1:   #93a1a1;
+@solarized-base2:   #eee8d5;
+@solarized-base3:   #fdf6e3;
+@solarized-yellow:  #b58900;
+@solarized-orange:  #cb4b16;
+@solarized-red:     #dc322f;
+@solarized-magenta: #d33682;
+@solarized-violet:  #6c71c4;
+@solarized-blue:    #268bd2;
+@solarized-cyan:    #2aa198;
+@solarized-green:   #859900;
+
+/* Taken from the KDE Plasma 5 palette. */
+@cardboard-grey:    #eff0f1;
+@cardboard-gray:    @cardboard-grey;
+@paper-white:       #fcfcfc;
+@plasma-blue:       #3daee9;
+@charcoal-grey:     #31363b;
+@charcoal-gray:     @charcoal-grey;
+@shade-black:       #232629;
+@danger-red:        #ed1515;
+@beware-orange:     #f67400;
+@sunbeam-yellow:    #c9ce3b;
+@mellow-turquoise: #1cdc9a;
+@verdant-green:     #11d116;
+
+
+.ncoda-structureview-frame {
+    /* This contains the menus and #ncoda-structureview. It exists basically to ensure that the
+     * menus don't interfere with the StructureView flexbox layout.
+     */
+    height: 100%;
+}
+
+#ncoda-structureview {
+    background: DimGray; height: 100%; margin: 0;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* active section <article> */
+.ncoda-active-sections {
+    z-index: 1;
+    max-width: 95%;
+    background: rgba(60, 179, 113, 1.0);
+    border: 1px solid rgba(240, 255, 255, 0.2);
+    box-shadow: 0 0 2px 2px DarkSlateGray;
+    border-radius: 5px;
+}
+.ncoda-active-sections > header {
+    height: 7%;
+    text-align: center;
+}
+.ncoda-active-sections > content{
+    padding: 1% 1%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    height: 93%;
+}
+
+/* <article> corresponding to an MEI <section> */
+.ncoda-mei-section {
+    display: flex;
+    background: rgba(240, 255, 255, 0.6);
+    border: 1px solid rgba(240, 255, 255, 0.3);
+    /*filter: drop-shadow(0px 5px 5px DarkSlateGray);*/
+    z-index: 3;
+    height: 100%;
+    max-height: 20em;
+
+    flex-flow: column nowrap;
+    justify-content: space-between;
+}
+.ncoda-mei-section header { padding: 2% 5%; }
+.ncoda-mei-section footer { margin: 5%; }
+.ncoda-mei-section time { font-size: smaller; }
+.ncoda-mei-section:hover { box-shadow: 0px 0px 0.5em 0.5em LightSkyBlue; }
+.ncoda-mei-section-img { flex-grow: 1; width: 175px; display: block; overflow: hidden; }
+.ncoda-mei-section img { width: 100%; }
+
+/* context menu when clicking on a <section>-corresponding <article> */
+// TODO: consolidate these with the "menu" stuff in julius.less
+#nocda-section-menu {
+    display: none;  /* display: flex; */
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    padding: 5px 0;
+    margin: 0;
+
+    background: rgba(240, 255, 255, 0.6);
+    border: 1px solid rgba(240, 255, 255, 0.3);
+    filter: drop-shadow(0px 10px 10px Black);
+    border-radius: 5px;
+
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    z-index: 4;
+}
+#nocda-section-menu menuitem {
+    padding: 0.25em 0.75em;
+    border-left: 5px rgba(61, 174, 233, 1.0) solid;
+    transition: border-left 0.5s, background 0.5s;
+}
+#nocda-section-menu menuitem:hover {
+    border-left: 5px rgba(28, 220, 154, 1.0) solid;
+    background: rgba(28, 220, 154, 0.4);
+}
+
+/* page header (holding "header bar" and "expanded section part" */
+.ncoda-structureview > header {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.ncoda-headerbar {
+    background: @cardboard-gray;
+}
+.ncoda-headerbar .header {
+    cursor: default;
+    padding: 0.4em 0.5em 0.5em;
+    // background: rgba(240, 255, 255, 0.6);
+    border-right: 1px solid rgba(240, 255, 255, 0.3);
+    margin: 0;
+}
+.ncoda-headerbar > ul {
+    margin: 0;
+    list-style-type: none;
+    padding-top: 0.2em;
+}
+.ncoda-headerbar li {
+    margin-top: 0.2em;
+    border-right: 1px solid @cardboard-gray;
+    border-bottom: 1px solid @cardboard-gray;
+    padding: 0.2em 0.5em;
+}
+.ncoda-headerbar li:hover {
+    box-shadow: inset 0 0 1em MediumSeaGreen;
+    border-right: 1px solid rgba(240, 255, 255, 0);
+    border-bottom: 1px solid transparent;
+}
+
+/* page footer (holding "staves thing" and "collaboration bit" */
+.ncoda-structureview > footer {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    max-height: 50%;
+}
+
+.ncoda-scorestructure {
+    overflow: hidden;
+    max-height: 100%;
+    background: rgba(240, 255, 255, 0.6);
+    border-right: 1px solid rgba(240, 255, 255, 0.3);
+
+    display: flex;
+    flex-flow: column nowrap;
+}
+.ncoda-scorestructure ul {
+    list-style-type: none;
+    padding-left: 1em;
+}
+.ncoda-scorestructure > p {
+    padding: 0.4em 0.5em 0.5em;
+    margin: 0;
+    flex-grow: 0;
+}
+#scorestructure-instruments {
+    overflow: scroll;
+    border-right: 1px solid rgba(240, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+    padding-top: 0.2em;
+    margin: 0;
+    flex-grow: 1;
+}
+.ncoda-scorestructure li {
+    background: rgba(240, 255, 255, 0.6);
+    border-right: 1px solid rgba(240, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+    padding: 0.2em 0.5em;
+    margin-top: 0.2em;
+}
+.ncoda-scorestructure li:hover {
+    box-shadow: inset 0 0 1em MediumSeaGreen;
+    border-right: 1px solid rgba(240, 255, 255, 0);
+    border-bottom: 1px solid transparent;
+}
+
+.ncoda-collaboration {
+    background: rgba(240, 255, 255, 0.6);
+    border-left: 1px solid rgba(240, 255, 255, 0.3);
+    border-top: 1px solid rgba(240, 255, 255, 0.3);
+    padding: 1em;
+}
+.ncoda-collaboration p {
+    margin: 0 0 1em;  /* bottom is 1em */
+}
+.ncoda-collaboration-person address {
+    border-bottom: 1px solid rgba(240, 255, 255, 0.6);
+}
+.ncoda-collaboration-person ul {
+    margin: 0.5em 0;
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+/* expanded structure view (the cool SVG thing) */
+.ncoda-expanded-section {
+    background: rgba(240, 255, 255, 0.6);
+    border-left: 1px solid rgba(240, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(240, 255, 255, 0.3);
+    max-width: 50%;
+}
+.ncoda-collaboration p {
+    margin: 0 0 1em;  /* bottom is 1em */
+}
+#ncoda-expanded-section-svg h2 {
+    margin: 0;
+    padding: 0.25em 0.5em;
+    background: rgba(0, 191, 255, 0.6);
+}
+#ncoda-expanded-section-svg img {
+    width: 100%;
+    padding: 0.5em 0 0.5em 0.5em;
+}
+
+/* The "show or hide" button */
+.show-or-hide-button {
+    background: @cardboard-gray;
+    border: none;
+}
+.show-or-hide-button:hover {
+    background: @plasma-blue;
+}
