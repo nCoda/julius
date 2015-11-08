@@ -7,10 +7,12 @@
     "repository": "https://jameson.adjectivenoun.ca:ncoda/julius.git",
     "dependencies": {
         "codemirror": "5.8.x",
+        "history": "^1.12.0",
         "immutable": "^3.7.3",
         "nuclear-js": "1.2.x",
         "react": "0.14.x",
-        "react-dom": "0.14.x"
+        "react-dom": "0.14.x",
+        "react-router": "1.0.*"
     },
     "devDependencies": {
         "less": "2.5.x",
