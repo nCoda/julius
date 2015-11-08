@@ -125,21 +125,26 @@ body {
 /*************************/
 /* nCoda Menus Generally */
 
-menu {
+nav {
     background: @charcoal-gray;
     color: @cardboard-gray;
     margin: 0;
     padding: 0;
     min-width: 10em;
 }
-menuitem {
+nav ul { padding: 0; margin: 0; }
+nav li {
     display: block;
     padding: 0.25em 1.25em;
     border-left: 3px solid @charcoal-gray;
     transition: border-left 0.25s ease-in-out;
 }
-menuitem:hover {
+nav li:hover {
     border-left: 3px solid @mellow-turquoise;
+}
+nav li a {
+    color: inherit;
+    text-decoration: inherit;
 }
 
 #ncoda-global-menu {

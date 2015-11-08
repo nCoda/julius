@@ -3,10 +3,18 @@
 // Copyright 2015 Christopher Antila
 
 
+// third-party libraries
 import React from 'react';
 import ReactDOM from 'react-dom';
-import NCoda from './julius/ncoda.src';
+import {Router, IndexRoute, Route} from 'react-router';
 
+// Julius React components
+import NCoda from './julius/ncoda.src';
+import {MainScreen} from './julius/ncoda.src';
+import StructureView from './julius/structure_view.src';
+import CodeScoreView from './julius/code_score_view.src';
+
+// NuclearJS things
 import reactor from './julius/reactor.src';
 import headerMetadataStores from './julius/stores/headerMetadata.src';
 import mercurial from './julius/stores/mercurial.src';
@@ -214,8 +222,12 @@ signals.emitters.addInstrument({label: 'Violoncello'});
 signals.emitters.addInstrument({label: 'Contrabasso'});
 
 
-
-ReactDOM.render(
-    React.createElement(NCoda),
-    document.getElementById('julius-goes-here')
-);
+ReactDOM.render((
+    <Router>
+        <Route path="/" component={NCoda}>
+            <IndexRoute component={MainScreen}/>
+            <Route path="codescore" component={CodeScoreView}/>
+            <Route path="structure" component={StructureView}/>
+        </Route>
+    </Router>
+), document.getElementById('julius-goes-here'));

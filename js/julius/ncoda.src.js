@@ -8,8 +8,7 @@
 
 
 import React from 'react';
-import StructureView from './structure_view.src';
-import CodeScoreView from './code_score_view.src';
+import {Link} from 'react-router';
 
 
 var MainScreen = React.createClass({
@@ -33,14 +32,18 @@ var MenuItem = React.createClass({
         id: React.PropTypes.string,
         // The @label and text of the <menuitem>
         label: React.PropTypes.string,
-        // The function to call when the <menuitem> is clicked.
-        onClick: React.PropTypes.func
+        // The URL to redirect to when this <menuitem> is selected.
+        linkTo: React.PropTypes.string,
+        // A function that closes the menu once a menu item has been chosen.
+        closeThatMenu: React.PropTypes.func,
     },
     render: function() {
         return (
-            <menuitem id={this.props.id} label={this.props.label} onClick={this.props.onClick}>
-                {this.props.label}
-            </menuitem>
+            <li id={this.props.id} onClick={this.props.closeThatMenu}>
+                <Link to={this.props.linkTo}>
+                    {this.props.label}
+                </Link>
+            </li>
         );
     }
 });
@@ -50,30 +53,11 @@ var GlobalMenu = React.createClass({
     propTypes: {
         // Whether the menu is currently shown.
         showMenu: React.PropTypes.bool,
-        // A function with which to change the currently active main view.
-        changeView: React.PropTypes.func,
+        // A function that closes the menu once a menu item has been chosen.
+        closeThatMenu: React.PropTypes.func,
     },
     getDefaultProps: function() {
         return {showMenu: false};
-    },
-    handleMenuSelection: function(event) {
-        let switchTo = '';
-
-        switch (event.target.id) {
-            case 'global-0':
-                switchTo = 'default';
-                break;
-
-            case 'global-1':
-                switchTo = 'CodeScoreView';
-                break;
-
-            case 'global-2':
-                switchTo = 'StructureView';
-                break;
-        };
-
-        this.props.changeView(switchTo);
     },
     render: function() {
         let globalMenuStyle = {};
@@ -84,11 +68,13 @@ var GlobalMenu = React.createClass({
         }
 
         return (
-            <menu id="ncoda-global-menu" style={globalMenuStyle}>
-                <MenuItem id="global-0" label="Home" onClick={this.handleMenuSelection}/>
-                <MenuItem id="global-1" label="Open CodeScoreView" onClick={this.handleMenuSelection}/>
-                <MenuItem id="global-2" label="Open StructureView" onClick={this.handleMenuSelection}/>
-            </menu>
+            <nav id="ncoda-global-menu" style={globalMenuStyle}>
+                <ul>
+                    <MenuItem id="global-0" label="Home" linkTo="/" closeThatMenu={this.props.closeThatMenu}/>
+                    <MenuItem id="global-1" label="Open CodeScoreView" linkTo="/codescore" closeThatMenu={this.props.closeThatMenu}/>
+                    <MenuItem id="global-2" label="Open StructureView" linkTo="/structure" closeThatMenu={this.props.closeThatMenu}/>
+                </ul>
+            </nav>
         );
     }
 });
@@ -110,44 +96,10 @@ var NCoda = React.createClass({
         //
         this.setState({menuShown: !this.state.menuShown});
     },
-    changeActiveView: function(toWhich) {
-        // Change the currently-active primary view component to another.
-        //
-        // View Currently Supported:
-        // - default
-        // - CodeScoreView
-        // - StructureView
-        //
-        // If the new view is not recognized, this function logs a message to the console and quits.
-        //
-
-        if ('default' === toWhich || 'CodeScoreView' === toWhich || 'StructureView' === toWhich) {
-            this.setState({activeView: toWhich, menuShown: false});
-        } else {
-            let msg = `NCoda.changeActiveView() called with unknown view ("${toWhich}")`;
-            console.error(msg);
-        }
-    },
     render: function() {
         // TODO: figure out the accessibility stuff for the main menu button
         let viewName = '';
         let activeScreen = '';
-
-        switch (this.state.activeView) {
-            case 'CodeScoreView':
-                viewName = 'CodeScoreView';
-                activeScreen = <CodeScoreView/>;
-                break;
-
-            case 'StructureView':
-                viewName = 'StructureView';
-                activeScreen = <StructureView/>;
-                break;
-
-            default:
-                viewName = 'Home';
-                activeScreen = <MainScreen/>;
-        };
 
         return (
             <div id="ncoda">
@@ -162,8 +114,8 @@ var NCoda = React.createClass({
                 </div>
 
                 <div id="ncoda-content">
-                    <GlobalMenu showMenu={this.state.menuShown} changeView={this.changeActiveView}/>
-                    {activeScreen}
+                    <GlobalMenu showMenu={this.state.menuShown} closeThatMenu={this.showOrHideGlobalMenu}/>
+                    {this.props.children}
                 </div>
             </div>
         );
@@ -172,3 +124,4 @@ var NCoda = React.createClass({
 
 
 export default NCoda;
+export {MainScreen};
