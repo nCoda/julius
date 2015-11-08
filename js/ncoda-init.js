@@ -4,8 +4,7 @@
 
 
 import React from 'react';
-// import {Julius} from "./julius/julius.src.js";
-import StructureView from './julius/structure_view.src';
+import ReactDOM from 'react-dom';
 import NCoda from './julius/ncoda.src';
 
 import reactor from './julius/reactor.src';
@@ -216,7 +215,7 @@ signals.emitters.addInstrument({label: 'Contrabasso'});
 
 
 
-React.render(
+ReactDOM.render(
     React.createElement(NCoda),
     document.getElementById('julius-goes-here')
 );

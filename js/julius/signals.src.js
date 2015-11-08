@@ -11,23 +11,22 @@
 //
 
 
-import keyMirror from 'react/lib/keyMirror';
 import reactor from './reactor.src';
 
 
 // TODO: should be "const" but Atom's symbol-list sidebar doesn't pick that up yet
 // "names" is NuclearJS "actionTypes."
-var names = keyMirror({
+var names = {
     // HeaderBar
-    ADD_HEADER: null,
-    CHANGE_HEADER: null,
-    REMOVE_HEADER: null,
+    ADD_HEADER: 1,
+    CHANGE_HEADER: 2,
+    REMOVE_HEADER: 3,
     // Mercurial stuff
-    HG_ADD_CHANGESET: null,
+    HG_ADD_CHANGESET: 4,
     // MEI Document Stuff
-    SCOREDEF_INSTR_ADD: null,  // to add an instrument to the score
-    SCOREDEF_INSTRGRP_ADD: null,  // to add a group of instruments to the score
-});
+    SCOREDEF_INSTR_ADD: 5,  // to add an instrument to the score
+    SCOREDEF_INSTRGRP_ADD: 6,  // to add a group of instruments to the score
+};
 
 
 // TODO: const?????

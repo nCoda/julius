@@ -9,7 +9,8 @@
         "codemirror": "5.8.x",
         "immutable": "^3.7.3",
         "nuclear-js": "1.2.x",
-        "react": "0.13.x"
+        "react": "0.14.x",
+        "react-dom": "0.14.x"
     },
     "devDependencies": {
         "less": "2.5.x",
