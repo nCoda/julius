@@ -16,11 +16,11 @@ import signals from '../signals.src';
 const MeiForVerovio = Store({
     // Representing the MEI document to send to Verovio.
     //
-    // This should be a single-element List with a string in it.
+    // This should be a string.
     //
 
     getInitialState() {
-        return toImmutable([]);
+        return toImmutable('');
     },
     initialize() {
         this.on(signals.names.RENDER_TO_VEROVIO, renderToVerovio);
@@ -29,7 +29,7 @@ const MeiForVerovio = Store({
 
 
 function renderToVerovio(previousState, payload) {
-    return toImmutable([payload]);
+    return toImmutable(payload);
 };
 
 

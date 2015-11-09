@@ -79,6 +79,7 @@ pypyjs.stderr = pypyjsComms.stderr;
 
 // Lychee Stuff ---------------------------------------------------------------
 
+window['renderToVerovio'] = signals.emitters.renderToVerovio;  // NOTE: this is used in the call to Lychee
 var submitToLychee = function(lilypondCode) {
     // When given some LilyPond code, this function submits it to PyPy.js as a call to Lychee.
     //
@@ -107,7 +108,7 @@ var submitToLychee = function(lilypondCode) {
                 + "       elem.tag = elem.tag.replace(_MEINS, '')\n"
                 + "   send_to_verovio = etree.tostring(document)\n"
                 + "   send_to_verovio = send_to_verovio.replace('\"', '\\\\\"')\n"
-                + "   kummand = 'renderNCoda({\"meiForVerovio\": \"' + send_to_verovio + '\"})'\n"
+                + "   kummand = 'renderToVerovio(\"' + send_to_verovio + '\")'\n"
                 + "   js.eval(kummand)\n"
                 + "\n"
                 + "outbound.WHO_IS_LISTENING.connect(mei_listener)\n"
@@ -180,10 +181,6 @@ signals.emitters.addInstrumentGroup([{label: 'Violino I'},
 signals.emitters.addInstrument({label: 'Viola'});
 signals.emitters.addInstrument({label: 'Violoncello'});
 signals.emitters.addInstrument({label: 'Contrabasso'});
-
-signals.emitters.stdin('ballz on stdin');
-signals.emitters.stdout('ballz on stdout');
-signals.emitters.stderr('ballz on stderr');
 
 
 ReactDOM.render((

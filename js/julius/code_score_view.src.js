@@ -129,10 +129,6 @@ var Verovio = React.createClass({
         // TODO: move all the interaction with Verovio to part of the model
         //
 
-        if (immutable.List.isList(renderThis)) {
-            renderThis = renderThis.get(0);
-        }
-
         if (null === this.state.verovio) {
             return 'Waiting on Verovio to become ready.';
         } else if (null === renderThis) {
