@@ -1,6 +1,8 @@
 // React components for the Julius CodeScoreView.
 // Copyright 2015 Christopher Antila, Wei Gao
 
+import immutable from 'immutable';
+
 import React from "react";
 import ReactCodeMirror from "./CodeMirror.src.js";
 
@@ -103,34 +105,67 @@ var TextEditor = React.createClass({
 
 
 var Verovio = React.createClass({
-    propTypes: {
-        meiForVerovio: React.PropTypes.string
-    },
-    getDefaultProps: function() {
-        return ( {meiForVerovio: ""} );
+    //
+    // State
+    // =====
+    // - meiForVerovio
+    // - renderedMei
+    // - verovio
+    //
+
+    mixins: [reactor.ReactMixin],
+    getDataBindings: function() {
+        return {meiForVerovio: getters.meiForVerovio};
     },
     getInitialState: function() {
         // - verovio: the instance of Verovio Toolkit
         // - renderedMei: the current SVG score as a string
-        return {verovio: null, renderedMei: ""};
+        // - meiForVerovio: do NOT set in this function (set by the ReactMixin)
+        return {verovio: null, renderedMei: ''};
+    },
+    renderWithVerovio: function(renderThis) {
+        // Ensure there's an instance of Verovio available, and use it to render "renderThis."
+        //
+        // TODO: move all the interaction with Verovio to part of the model
+        //
+
+        if (immutable.List.isList(renderThis)) {
+            renderThis = renderThis.get(0);
+        }
+
+        if (null === this.state.verovio) {
+            return 'Waiting on Verovio to become ready.';
+        } else if (null === renderThis) {
+            return 'Received no MEI to render.';
+        } else {
+            let theOptions = {inputFormat: 'mei'};
+            theOptions = JSON.stringify(theOptions);
+            let rendered = this.state.verovio.renderData(renderThis, theOptions)
+            return rendered;
+        }
+    },
+    makeVerovio: function() {
+        if (null === this.state.verovio) {
+            try {
+                this.setState({verovio: new verovio.toolkit()});
+            } catch (error) {
+                if ('ReferenceError' === error.name) {
+                    console.error('Verovio was not loaded properly.');
+                } else {
+                    throw error;
+                }
+            }
+        }
     },
     componentDidMount: function() {
-        var newVerovio = new verovio.toolkit();
-        this.setState({verovio: newVerovio});
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (null !== this.state.verovio && "" !== nextProps.meiForVerovio) {
-            var theOptions = { inputFormat: "mei" };
-            theOptions = JSON.stringify(theOptions);
-            var renderedMei = this.state.verovio.renderData(nextProps.meiForVerovio, theOptions);
-            this.setState({renderedMei: renderedMei});
-        }
+        // TODO: attach this to Verovio, not PyPy.js...
+        pypyjs.ready().then(this.makeVerovio);
     },
     componentWillUnmount: function() {
         delete this.state.verovio;
     },
     render: function() {
-        var innerHtml = {"__html": this.state.renderedMei};
+        let innerHtml = {'__html': this.renderWithVerovio(this.state.meiForVerovio)};
         return (
             <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
         );

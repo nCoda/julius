@@ -21,4 +21,5 @@ export default {
     stdin: [['stdin'], stdioConcatter],
     stdout: [['stdout'], stdioConcatter],
     stderr: [['stderr'], stdioConcatter],
+    meiForVerovio: ['meiForVerovio'],
 };

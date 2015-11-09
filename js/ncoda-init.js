@@ -20,6 +20,7 @@ import headerMetadataStores from './julius/stores/headerMetadata.src';
 import mercurial from './julius/stores/mercurial.src';
 import documentModule from './julius/stores/document.src';
 import stdio from './julius/stores/stdio.src';
+import verovio from './julius/stores/verovio.src';
 
 // TODO: remove these, they're just temporary
 import signals from './julius/signals.src';
@@ -131,6 +132,7 @@ reactor.registerStores({
     'stdin': stdio.Stdin,
     'stdout': stdio.Stdout,
     'stderr': stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView
+    'meiForVerovio': verovio.MeiForVerovio,
 });
 
 // TODO: this is temporary... it's just setting up the default data

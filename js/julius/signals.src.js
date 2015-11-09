@@ -30,6 +30,8 @@ var names = {
     STDIN: 7,
     STDOUT: 8,
     STDERR: 9,
+    // Verovio
+    RENDER_TO_VEROVIO: 10,
 };
 
 
@@ -84,6 +86,12 @@ emitters['stdout'] = function(string) {
 };
 emitters['stderr'] = function(string) {
     reactor.dispatch(names.STDERR, string);
+};
+
+
+// Verovio
+emitters['renderToVerovio'] = function(mei) {
+    reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
 };
 
 
