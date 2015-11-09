@@ -33,7 +33,7 @@ var ReactCodeMirror = React.createClass({
     },
 
     componentDidMount () {
-        this.codeMirror = CodeMirror.fromTextArea(this.refs.codemirror.getDOMNode(), this.props.options);
+        this.codeMirror = CodeMirror.fromTextArea(this.refs.codemirror, this.props.options);
         this.codeMirror.on('change', this.codemirrorValueChanged);
         this.codeMirror.on('focus', this.focusChanged.bind(this, true));
         this.codeMirror.on('blur', this.focusChanged.bind(this, false));
