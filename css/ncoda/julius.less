@@ -59,6 +59,8 @@ body {
 }
 #ncoda {
     height: 100%;
+    display: flex;
+    flex-flow: column;
 }
 
 /* ********************************************************************************************* */
@@ -157,7 +159,7 @@ nav li a {
     background: @cardboard-gray;
     color: @shade-black;
     overflow: hidden;
-    height: 100%;
+    flex-grow: 1;
 
     display: flex;
     flex-flow: column;
@@ -306,7 +308,6 @@ nav li a {
     color: @solarized-base0;
     overflow: scroll;
     padding: 3% 1em 0em;
-    height: 97%;
 }
 
 .ncoda-output-stdin {
