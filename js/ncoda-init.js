@@ -19,6 +19,7 @@ import reactor from './julius/reactor.src';
 import headerMetadataStores from './julius/stores/headerMetadata.src';
 import mercurial from './julius/stores/mercurial.src';
 import documentModule from './julius/stores/document.src';
+import stdio from './julius/stores/stdio.src';
 
 // TODO: remove these, they're just temporary
 import signals from './julius/signals.src';
@@ -70,6 +71,7 @@ var pypyjsComms = {
 
 
 // hook up the "pypyjsComms" functions
+window['submitToPyPy'] = pypyjsComms.stdin;
 pypyjs.stdout = pypyjsComms.stdout;
 pypyjs.stderr = pypyjsComms.stderr;
 
@@ -149,6 +151,7 @@ var submitToLychee = function(lilypondCode) {
 
     pypyjsComms.stdin(code);
 };
+window['submitToLychee'] = submitToLychee;
 
 
 // Actual Loading Stuff -------------------------------------------------------
@@ -172,7 +175,10 @@ window["renderNCoda"] = renderNCoda;
 reactor.registerStores({
     'headerMetadata': headerMetadataStores.MetadataHeaders,
     'hgChangesetHistory': mercurial.ChangesetHistory,
-    'instruments': documentModule.scoreDef.Instruments
+    'instruments': documentModule.scoreDef.Instruments,
+    'stdin': stdio.Stdin,
+    'stdout': stdio.Stdout,
+    'stderr': stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView
 });
 
 // TODO: this is temporary... it's just setting up the default data
@@ -220,6 +226,10 @@ signals.emitters.addInstrumentGroup([{label: 'Violino I'},
 signals.emitters.addInstrument({label: 'Viola'});
 signals.emitters.addInstrument({label: 'Violoncello'});
 signals.emitters.addInstrument({label: 'Contrabasso'});
+
+signals.emitters.stdin('ballz on stdin');
+signals.emitters.stdout('ballz on stdout');
+signals.emitters.stderr('ballz on stderr');
 
 
 ReactDOM.render((

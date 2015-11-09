@@ -1,8 +1,12 @@
-// React components for Julius, the nCoda user interface
+// React components for the Julius CodeScoreView.
 // Copyright 2015 Christopher Antila, Wei Gao
 
 import React from "react";
 import ReactCodeMirror from "./CodeMirror.src.js";
+
+import getters from './getters.src';
+import reactor from './reactor.src';
+
 
 function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {
     // This function handles resizing elements separated by a Separator component.
@@ -168,50 +172,42 @@ var TerminalWindow = React.createClass({
         extraClass: React.PropTypes.string
     },
     getDefaultProps: function() {
-        return {outputThis: "", extraClass: ""};
+        return {outputThis: '', extraClass: ''};
     },
-    getInitialState: function() {
-        return {terminalContents: ""};
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if ("" !== nextProps.outputThis) {
-            var outputThis = nextProps.outputThis;
-            // TODO: how to make this replace all occurrences?
-            // TODO: how to avoid other possible attacks?
-            while (outputThis.includes('<')) {
-                outputThis = outputThis.replace('<', '&lt;');
-            }
-            while (outputThis.includes('>')) {
-                outputThis = outputThis.replace('>', '&gt;');
-            }
+    formatStringForOutput: function(outputThis) {
+        // Formats a string properly so it can be outputted in the window as dangerouslySetInnerHTML.
+        //
 
-            // convert newlines to <br/>
-            while (outputThis.includes('\n')) {
-                outputThis = outputThis.replace('\n', '<br/>');
-            }
-
-            // finally append our thing
-            if (!outputThis.endsWith("<br/>")) {
-                outputThis += "<br/>";
-            }
-            // wrap the output in <pre> tag to preserve spaces and tabs.
-            outputThis = `<pre>${outputThis}</pre>`;
-            this.setState({terminalContents: this.state.terminalContents + outputThis});
+        // TODO: how to make this replace all occurrences?
+        // TODO: how to avoid other possible attacks?
+        while (outputThis.includes('<')) {
+            outputThis = outputThis.replace('<', '&lt;');
         }
-    },
-    componentDidUpdate: function(nextProps, prevState) {
-        // we need to scroll the updated text into view!
-        // this.refs.shit.getDOMNode().scrollIntoView();
-        // TODO: find a way to actually make the bottom of the text scroll into view when updated
+        while (outputThis.includes('>')) {
+            outputThis = outputThis.replace('>', '&gt;');
+        }
+
+        // convert newlines to <br/>
+        while (outputThis.includes('\n')) {
+            outputThis = outputThis.replace('\n', '<br/>');
+        }
+
+        // finally append our thing
+        if (!outputThis.endsWith('<br/>')) {
+            outputThis += '<br/>';
+        }
+        // wrap the output in <pre> tag to preserve spaces and tabs.
+        outputThis = `<pre>${outputThis}</pre>`;
+        return outputThis;
     },
     render: function() {
-        var innerHtml = {__html: this.state.terminalContents};
+        var innerHtml = {__html: this.formatStringForOutput(this.props.outputThis)};
         var className = "ncoda-terminal-window";
         if (this.props.extraClass.length > 0) {
             className += " " + this.props.extraClass;
         }
         return (
-            <div className={className} dangerouslySetInnerHTML={innerHtml} ref="shit" />
+            <div className={className} dangerouslySetInnerHTML={innerHtml}/>
         );
     }
 });
@@ -219,29 +215,9 @@ var TerminalWindow = React.createClass({
 
 var TerminalOutput = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
-    propTypes: {
-        outputThis: React.PropTypes.string,
-        outputType: React.PropTypes.oneOf([null, "welcome", "input", "stdout", "stderr"])
-    },
-    getDefaultProps: function() {
-        return {outputThis: "", outputType: "stdout"};
-    },
-    getInitialState: function() {
-        return {stdinEditorValue: "", stdoutEditorValue: ""};
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (null !== nextProps.outputType) {
-            if ("input" === nextProps.outputType) {
-                this.setState({stdinEditorValue: nextProps.outputThis, stdoutEditorValue: ""});
-            } else {
-                this.setState({stdoutEditorValue: nextProps.outputThis, stdinEditorValue: ""});
-            }
-        }
-    },
-    reRender: function() {
-        // By calling forceUpdate() without changing props or state, we're disallowing any of the
-        // user's input from reaching the CodeMirror widget.
-        this.forceUpdate();
+    mixins: [reactor.ReactMixin],
+    getDataBindings: function() {
+        return {stdout: getters.stdout, stderr: getters.stderr, stdin: getters.stdin};
     },
     handleSeparator: function(doThis, thisDirection) {
         handleSeparator(doThis, thisDirection, React.findDOMNode(this.refs.theLeftBox),
@@ -252,12 +228,12 @@ var TerminalOutput = React.createClass({
             <div id="ncoda-terminal-output" className="ncoda-terminal-output">
                 <h2>Output</h2>
                 <div className="ncoda-output-terminals">
-                    <TerminalWindow outputThis={this.state.stdinEditorValue}
+                    <TerminalWindow outputThis={this.state.stdin}
                                     extraClass="ncoda-output-stdin"
                                     ref="theLeftBox"
                     />
                     <Separator direction="vertical" movingFunction={this.handleSeparator} />
-                    <TerminalWindow outputThis={this.state.stdoutEditorValue}
+                    <TerminalWindow outputThis={this.state.stdout}
                                     extraClass="ncoda-output-stdout"
                                     ref="theRightBox"
                     />
@@ -329,14 +305,9 @@ var Separator = React.createClass({
 });
 
 
-var Julius = React.createClass({
+var CodeScoreView = React.createClass({
     propTypes: {
         meiForVerovio: React.PropTypes.string,
-        sendToConsole: React.PropTypes.string,
-        // TODO: find a better way to keep this "sendToConsoleType" in sync with that on TerminalOutput
-        sendToConsoleType: React.PropTypes.oneOf([null, "welcome", "input", "stdout", "stderr"]),
-        submitToPyPy: React.PropTypes.func.isRequired,
-        submitToLychee: React.PropTypes.func.isRequired
     },
     getDefaultProps: function() {
         return ( {meiForVerovio: "", sendToConsole: "", sendToConsoleType: null} );
@@ -354,17 +325,14 @@ var Julius = React.createClass({
         return (
             <div className="julius">
                 <WorkTable ref="workTable"
-                           submitToPyPy={this.props.submitToPyPy}
-                           submitToLychee={this.props.submitToLychee}
+                           submitToPyPy={window['submitToPyPy']}
+                           submitToLychee={window['submitToLychee']}
                            meiForVerovio={this.props.meiForVerovio}
                 />
                 <Separator movingFunction={this.handleSeparator}
                            extraCssClass="ncoda-separator-console"
                 />
-                <TerminalOutput ref="terminalOutput"
-                                outputThis={this.props.sendToConsole}
-                                outputType={this.props.sendToConsoleType}
-                />
+                <TerminalOutput ref="terminalOutput"/>
             </div>
         );
     }
@@ -372,5 +340,5 @@ var Julius = React.createClass({
 
 //
 
-// export {Julius, TextEditor, Verovio, WorkTable, TerminalOutput, Separator};
-export default Julius;
+// export {CodeScoreView, TextEditor, Verovio, WorkTable, TerminalOutput, Separator};
+export default CodeScoreView;

@@ -26,6 +26,10 @@ var names = {
     // MEI Document Stuff
     SCOREDEF_INSTR_ADD: 5,  // to add an instrument to the score
     SCOREDEF_INSTRGRP_ADD: 6,  // to add a group of instruments to the score
+    // Standard I/O
+    STDIN: 7,
+    STDOUT: 8,
+    STDERR: 9,
 };
 
 
@@ -68,6 +72,18 @@ emitters['addInstrumentGroup'] = function(instruments) {
     // The "instruments" argument should be an array of objects as defined for the
     // document.scoreDef.Instrument store.
     reactor.dispatch(names.SCOREDEF_INSTRGRP_ADD, instruments);
+};
+
+
+// Standard I/O
+emitters['stdin'] = function(string) {
+    reactor.dispatch(names.STDIN, string);
+};
+emitters['stdout'] = function(string) {
+    reactor.dispatch(names.STDOUT, string);
+};
+emitters['stderr'] = function(string) {
+    reactor.dispatch(names.STDERR, string);
 };
 
 

@@ -7,10 +7,18 @@
 //
 
 
-// This gets an ImmutableJS List with ImmutableJS Maps with two fields for the "name" and "value"
-// of each MEI header in the List.
+function stdioConcatter(output) {
+    // Concatenates a List of strings into a single string.
+    //
+    return output.join('\n');
+};
+
+
 export default {
     meiHeadersList: ['headerMetadata'],
     hgChangesetHistory: ['hgChangesetHistory'],
     listOfInstruments: ['instruments'],
+    stdin: [['stdin'], stdioConcatter],
+    stdout: [['stdout'], stdioConcatter],
+    stderr: [['stderr'], stdioConcatter],
 };
