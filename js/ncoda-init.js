@@ -54,16 +54,16 @@ var pypyjsComms = {
         }
     },
     _outputTheInput: function(suite) {
-        renderNCoda({sendToConsole: suite, sendToConsoleType: "input"});
+        signals.emitters.stdin(suite);
     },
     stdout: function(message) {
-        renderNCoda({sendToConsole: message, sendToConsoleType: "stdout"});
+        signals.emitters.stdout(message);
     },
     stderr: function(message) {
         // PyPy.js doesn't buffer its stderr, so we'll do it.
         _stderr_buffer.push(message);
         if (message === "\n" || _stderr_buffer.length >= 128) {
-            renderNCoda({sendToConsole: _stderr_buffer.join(""), sendToConsoleType: "stderr"});
+            signals.emitters.stdout(_stderr_buffer.join(''));
             _stderr_buffer = [];
         }
     }
@@ -74,42 +74,6 @@ var pypyjsComms = {
 window['submitToPyPy'] = pypyjsComms.stdin;
 pypyjs.stdout = pypyjsComms.stdout;
 pypyjs.stderr = pypyjsComms.stderr;
-
-
-// nCoda Interface Stuff ------------------------------------------------------
-
-var renderNCoda = function(params) {
-    // The top-level function to render nCoda with React.
-    //
-    // @param params (object): With all the props that might be sent to the NCoda component.
-    //     - meiForVerovio (string): an MEI file that Verovio will render
-    //
-    // This function can be called from Python:
-    // >>> import js
-    // >>> js.globals['renderNCoda']()
-
-    // prepare the props
-    var props = {submitToPyPy: pypyjsComms.stdin, submitToLychee: submitToLychee};
-
-    if (undefined !== params) {
-        if (params.meiForVerovio) {
-            var zell = '\<\?xml version=\"1.0\" encoding=\"UTF-8\"\?\>\n' + params.meiForVerovio;
-            props.meiForVerovio = zell;
-        }
-        if (params.sendToConsole) {
-            props.sendToConsole = params.sendToConsole;
-        }
-        if (params.sendToConsoleType) {
-            props.sendToConsoleType = params.sendToConsoleType;
-        }
-    }
-
-    // do the render
-    React.render(
-        React.createElement(Julius, props),
-        document.getElementById("ncoda")
-    );
-};
 
 
 // Lychee Stuff ---------------------------------------------------------------
@@ -156,20 +120,8 @@ window['submitToLychee'] = submitToLychee;
 
 // Actual Loading Stuff -------------------------------------------------------
 
-/**
-// TODO: uncomment this stuff
-// initial rendering on load
-pypyjs.ready().then(renderNCoda);
-
 // start the PyPy.js REPL
 pypyjs.ready().then(pypyjs.repl(function() { return _pyromise; }));
-
-// Set the renderNCoda function so it can be used by anyone. But set it now, so that it's not
-// available for others (to mess up) until after the initial rendering.
-window["renderNCoda"] = renderNCoda;
-
-**/
-
 
 // register our NuclearJS stores
 reactor.registerStores({
