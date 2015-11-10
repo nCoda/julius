@@ -26,72 +26,79 @@ import verovio from './julius/stores/verovio.src';
 import signals from './julius/signals.src';
 
 
+// PyPy (Fujian) Stuff --------------------------------------------------------
 
-// PyPy.js stuff --------------------------------------------------------------
+function pypyRequestFailed(event) {
+    //
 
-// PyPy.js doesn't buffer its stderr, so we'll do it.
-var _stderr_buffer = [];
-
-// Set up the stuff needed for the PyPy.js REPL
-var _pyromise = null;  // holds the Promise that PyPy.js will ask for
-var _pypyjsResolver = null;  // holds the resolve() function for that Promise
-var _makePyromise = function() {
-    _pyromise = new Promise(function(resolve, reject) {
-        // TODO: what happens with "reject"????
-        _pypyjsResolver = resolve;
-    });
+    console.error('The request to PyPy (Fujian) failed.');
+    console.error(event);
 };
-_makePyromise();  // must be sure to setup a Promise right away!
 
-var pypyjsComms = {
-    // This object has members that manage communication with PyPy.js.
-    // Specifically, it has functions for "stdin," "stdout," and "stderr".
-    stdin: function(suite) {
-        // This function submits a new suite to PyPy.js.
-        if ("" !== suite || undefined !== suite) {
-            pypyjsComms._outputTheInput(suite);
-            _pypyjsResolver(suite);
-            _makePyromise();
-        }
-    },
-    _outputTheInput: function(suite) {
-        signals.emitters.stdin(suite);
-    },
-    stdout: function(message) {
-        signals.emitters.stdout(message);
-    },
-    stderr: function(message) {
-        // PyPy.js doesn't buffer its stderr, so we'll do it.
-        _stderr_buffer.push(message);
-        if (message === "\n" || _stderr_buffer.length >= 128) {
-            signals.emitters.stdout(_stderr_buffer.join(''));
-            _stderr_buffer = [];
+function pypyRequestError(event) {
+    // When the request fails on the server, display the traceback.
+    // This function can work for all sorts of requests.
+    //
+
+    let response = JSON.parse(event.target.response);
+    signals.emitters.stdout(response.traceback);
+};
+
+function pypyRequestSuccessed(event) {
+    //
+
+    if (200 !== event.target.status) {
+        return pypyRequestError(event);
+    } else {
+        let response = JSON.parse(event.target.response);
+        signals.emitters.stdout(response.stdout);
+        if (response.return.length > 0) {
+            console.log(`PyPy (Fujian) additionally returned the following:\n${response.return}`);
         }
     }
 };
 
+function submitToPyPy(code) {
+    //
 
-// hook up the "pypyjsComms" functions
-window['submitToPyPy'] = pypyjsComms.stdin;
-pypyjs.stdout = pypyjsComms.stdout;
-pypyjs.stderr = pypyjsComms.stderr;
+    let request = new XMLHttpRequest();
+    request.addEventListener('error', pypyRequestFailed);
+    request.addEventListener('load', pypyRequestSuccessed);
+    request.open('POST', 'http://localhost:1987');
+    request.send(code);
+
+    signals.emitters.stdin(code);
+};
+
+window['submitToPyPy'] = submitToPyPy;
 
 
 // Lychee Stuff ---------------------------------------------------------------
 
+function requestSuccessedLychee(event) {
+    if (200 !== event.target.status) {
+        return pypyRequestError(event);
+    } else {
+        let response = JSON.parse(event.target.response);
+        signals.emitters.stdout(response.stdout);
+        signals.emitters.renderToVerovio(`<?xml version="1.0" encoding="UTF-8"?>\n${response.return}`);
+    }
+};
+
 window['renderToVerovio'] = signals.emitters.renderToVerovio;  // NOTE: this is used in the call to Lychee
 var submitToLychee = function(lilypondCode) {
+    // TODO: this should probably be moved somewhere to the "signals" module
+    // TODO: or consolidate it into submitToPyPy() ... and still into the signals
     // When given some LilyPond code, this function submits it to PyPy.js as a call to Lychee.
     //
     // @param lilypondCode (str): The LilyPond code to submit to Lychee.
 
     // NOTE: Lychee's Document.__init__() currently creates the "testrepo" directory for us
 
-    var code =    "import lychee\n"
+    let code =    "import lychee\n"
                 + "from lychee import signals\n"
                 + "from lychee.signals import outbound\n"
                 + "from xml.etree import ElementTree as etree\n"
-                + "import js\n"
                 + "\n"
                 + "_MEINS = '{http://www.music-encoding.org/ns/mei}'\n"
                 + "_MEINS_URL = 'http://www.music-encoding.org/ns/mei'\n"
@@ -100,6 +107,7 @@ var submitToLychee = function(lilypondCode) {
                 + "    outbound.I_AM_LISTENING.emit(dtype='mei')\n"
                 + "\n"
                 + "def mei_through_verovio(dtype, placement, document, **kwargs):\n"
+                + "   global fujian_return\n"
                 + "   if 'mei' != dtype:\n"
                 + "       return\n"
                 + "   output_filename = 'testrepo/mei_for_verovio.xml'\n"
@@ -107,23 +115,24 @@ var submitToLychee = function(lilypondCode) {
                 + "   for elem in document.iter():\n"
                 + "       elem.tag = elem.tag.replace(_MEINS, '')\n"
                 + "   send_to_verovio = etree.tostring(document)\n"
-                + "   send_to_verovio = send_to_verovio.replace('\"', '\\\\\"')\n"
-                + "   kummand = 'renderToVerovio(\"' + send_to_verovio + '\")'\n"
-                + "   js.eval(kummand)\n"
+                + "   fujian_return = send_to_verovio\n"
                 + "\n"
                 + "outbound.WHO_IS_LISTENING.connect(mei_listener)\n"
                 + "outbound.CONVERSION_FINISHED.connect(mei_through_verovio)\n"
                 + "lychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''" + lilypondCode + "''')";
 
-    pypyjsComms.stdin(code);
+    let request = new XMLHttpRequest();
+    request.addEventListener('error', pypyRequestFailed);
+    request.addEventListener('load', requestSuccessedLychee);
+    request.open('POST', 'http://localhost:1987');
+    request.send(code);
+
+    signals.emitters.stdin(code);
 };
 window['submitToLychee'] = submitToLychee;
 
 
 // Actual Loading Stuff -------------------------------------------------------
-
-// start the PyPy.js REPL
-pypyjs.ready().then(pypyjs.repl(function() { return _pyromise; }));
 
 // register our NuclearJS stores
 reactor.registerStores({
