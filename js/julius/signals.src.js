@@ -12,6 +12,7 @@
 
 
 import reactor from './reactor.src';
+import {fujianStart, fujianStop} from '../ncoda-init';
 
 
 // TODO: should be "const" but Atom's symbol-list sidebar doesn't pick that up yet
@@ -32,6 +33,10 @@ var names = {
     STDERR: 9,
     // Verovio
     RENDER_TO_VEROVIO: 10,
+    // Fujian PyPy Server (currently doesn't affect NuclearJS)
+    FUJIAN_START_WS: 11,
+    FUJIAN_RESTAT_WS: 12,
+    FUJIAN_CLOSE_WS: 13,
 };
 
 
@@ -94,5 +99,17 @@ emitters['renderToVerovio'] = function(mei) {
     reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
 };
 
+
+// Fujian PyPy Server (currently doesn't affect NuclearJS)
+emitters['fujianStartWS'] = function() {
+    fujianStart();
+};
+emitters['fujianRestartWS'] = function() {
+    fujianStop();
+    fujianStart();
+};
+emitters['fujianStopWS'] = function() {
+    fujianStop();
+};
 
 export default {names: names, emitters: emitters};
