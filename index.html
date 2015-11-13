@@ -18,12 +18,6 @@
 
     <noscript>Unfortunately, nCoda uses JavaScript extensively, and cannot run without it.</noscript>
 
-    <!-- PyPy.js (load first so it compiles first) -->
-    <!-- TODO: load these with Browserify -->
-    <script src="/js/pypyjs/lib/Promise.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/pypyjs/lib/FunctionPromise.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/pypyjs/lib/pypyjs.js" type="text/javascript" charset="utf-8"></script>
-
     <!-- NOTE: we're not loading this with Browserify because, if we did, we couldn't do it
          asynchronously, so *everything* would have to wait while the browser compiles Verovio.
     -->
