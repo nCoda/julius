@@ -141,21 +141,21 @@ var Verovio = React.createClass({
         }
     },
     makeVerovio: function() {
-        if (null === this.state.verovio) {
-            try {
-                this.setState({verovio: new verovio.toolkit()});
-            } catch (error) {
-                if ('ReferenceError' === error.name) {
-                    console.error('Verovio was not loaded properly.');
-                } else {
-                    throw error;
-                }
+        // TODO: consider whether we should be making a global instance? (I'm thinking one per
+        //       Verovio component is good though)
+
+        try {
+            this.setState({verovio: new verovio.toolkit()});
+        } catch (err) {
+            if ('ReferenceError' !== err.name) {
+                throw err;
+            } else {
+                window.setTimeout(this.makeVerovio, 250);
             }
         }
     },
     componentDidMount: function() {
-        // TODO: attach this to Verovio, not PyPy.js...
-        pypyjs.ready().then(this.makeVerovio);
+        this.makeVerovio();
     },
     componentWillUnmount: function() {
         delete this.state.verovio;

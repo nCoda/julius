@@ -24,9 +24,10 @@
     <script src="/js/pypyjs/lib/FunctionPromise.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/pypyjs/lib/pypyjs.js" type="text/javascript" charset="utf-8"></script>
 
-    <!-- TODO: load this with Browserify -->
+    <!-- NOTE: we're not loading this with Browserify because, if we did, we couldn't do it
+         asynchronously, so *everything* would have to wait while the browser compiles Verovio.
+    -->
     <script async src="/js/verovio-toolkit-0.9.9.js" type="text/javascript" charset="utf-8"></script>
-
     <script src="/js/ncoda.js" type="text/javascript" charset="utf-8"></script>
 </body>
 
