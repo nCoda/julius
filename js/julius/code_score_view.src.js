@@ -130,7 +130,7 @@ var Verovio = React.createClass({
         //
 
         if (null === this.state.verovio) {
-            return 'Waiting on Verovio to become ready.';
+            return '<div class="verovio-waiting"><i class="fa fa-spinner fa-5x fa-spin"></i><div>Loading ScoreView</div></div>';
         } else if (null === renderThis) {
             return 'Received no MEI to render.';
         } else {
