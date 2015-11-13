@@ -526,7 +526,7 @@ var ActiveSections = React.createClass({
     },
     render: function() {
         let aLastUpdated = {name: 'Christopher Antila', date: '2015-10-06'};
-        let bLastUpdated = {name: 'Gloria Steinem', date: '2015-10-09'};
+        let bLastUpdated = {name: 'Honoré de Balzac', date: '2015-10-09'};
         let cLastUpdated = {name: '卓文萱', date: '2015-05-07'};
         let aColour = 'rgba(0, 191, 255, 0.6)';
         let bColour = 'rgba(218, 165, 32, 0.6)';

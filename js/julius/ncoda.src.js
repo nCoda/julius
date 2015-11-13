@@ -9,6 +9,7 @@
 
 import React from 'react';
 import {Link} from 'react-router';
+import signals from './signals.src';
 
 
 var MainScreen = React.createClass({
@@ -19,6 +20,35 @@ var MainScreen = React.createClass({
         return (
             <div id="ncoda-loading">
                 <div>Use the <i className="fa fa-bars"></i> button in the top-left corner to open the menu.</div>
+            </div>
+        );
+    }
+});
+
+
+var GlobalHeader = React.createClass({
+    // This is the header bar that should always appear at the top of the screen.
+    //
+    // Props:
+    // - showHideMenu (func): Called without arguments to show or hide the main menu.
+    // - showHideDevel (func): Called without arguments to show or hide the developer menu.
+
+    propTypes: {
+        showHideMenu: React.PropTypes.func.isRequired,
+        showHideDevel: React.PropTypes.func,
+    },
+    render: function() {
+        return (
+            <div id="ncoda-global-header">
+                <button onClick={this.props.showHideMenu}>
+                    <i className="fa fa-bars fa-2x"></i>
+                </button>
+                <h1 className="ncoda-logo">
+                    <div className="ncoda-logo-n">n</div>Coda
+                </h1>
+                <button onClick={this.props.showHideDevel}>
+                    <i className="fa fa-wrench fa-2x"></i>
+                </button>
             </div>
         );
     }
@@ -80,15 +110,66 @@ var GlobalMenu = React.createClass({
 });
 
 
+var DeveloperMenu = React.createClass({
+    propTypes: {
+        // Whether the menu is currently shown.
+        showMenu: React.PropTypes.bool,
+        // A function that closes the menu once a menu item has been chosen.
+        closeThatMenu: React.PropTypes.func.isRequired,
+    },
+    getDefaultProps: function() {
+        return {showMenu: false};
+    },
+    onClick: function(event) {
+        // Handle a click on the menu items.
+
+        this.props.closeThatMenu();
+        switch (event.target.id) {
+            case 'devel-0':
+                signals.emitters.fujianStartWS();
+                break;
+            case 'devel-1':
+                signals.emitters.fujianRestartWS();
+                break;
+            case 'devel-2':
+                signals.emitters.fujianStopWS();
+                break;
+        }
+    },
+    render: function() {
+        let globalMenuStyle = {};
+        if (this.props.showMenu) {
+            globalMenuStyle['display'] = 'block';
+        } else {
+            globalMenuStyle['display'] = 'none';
+        }
+
+        return (
+            <nav id="ncoda-devel-menu" style={globalMenuStyle}>
+                <ul>
+                    <li>nCoda Developer Menu</li>
+                    <hr/>
+                    <h4>Fujian WebSocket Connection</h4>
+                    <li id="devel-0" onClick={this.onClick}>Start</li>
+                    <li id="devel-1" onClick={this.onClick}>Restart</li>
+                    <li id="devel-2" onClick={this.onClick}>Stop</li>
+                </ul>
+            </nav>
+        );
+    }
+});
+
+
 var NCoda = React.createClass({
     //
     // State:
     // - menuShown (boolean): Whether the menu is shown. Obviously.
+    // - develMenuShown (boolean): Whether the developer menu is shown.
     // - activeView (str): Currently active main view. Default is "default."
     //
 
     getInitialState: function() {
-        return ({menuShown: false, activeView: 'default'});
+        return ({menuShown: false, develMenuShown: false, activeView: 'default'});
     },
     showOrHideGlobalMenu: function() {
         // If the global menu is shown, hide it.
@@ -96,25 +177,21 @@ var NCoda = React.createClass({
         //
         this.setState({menuShown: !this.state.menuShown});
     },
+    showOrHideDevelMenu: function() {
+        // If the developer menu is shown, hide it.
+        // If the developer menu is hidden, show it.
+        //
+        this.setState({develMenuShown: !this.state.develMenuShown});
+    },
     render: function() {
         // TODO: figure out the accessibility stuff for the main menu button
-        let viewName = '';
-        let activeScreen = '';
-
         return (
             <div id="ncoda">
-                <div id="ncoda-global-header">
-                    <button onClick={this.showOrHideGlobalMenu}>
-                        <i className="fa fa-bars fa-2x"></i>
-                    </button>
-                    <h1 className="ncoda-logo">
-                        <div className="ncoda-logo-n">n</div>Coda
-                    </h1>
-                    <div className="ncoda-view-name">{viewName}</div>
-                </div>
+                <GlobalHeader showHideMenu={this.showOrHideGlobalMenu} showHideDevel={this.showOrHideDevelMenu}/>
 
                 <div id="ncoda-content">
                     <GlobalMenu showMenu={this.state.menuShown} closeThatMenu={this.showOrHideGlobalMenu}/>
+                    <DeveloperMenu showMenu={this.state.develMenuShown} closeThatMenu={this.showOrHideDevelMenu}/>
                     {this.props.children}
                 </div>
             </div>
