@@ -45,8 +45,10 @@ function fujianStart() {
 function fujianStop() {
     // Close an existing connection to the Fujian PyPy server.
 
-    if (null !== fujian && fujian.readyState < 2) {
-        fujian.close(1000);
+    if (null !== fujian) {
+        if (fujian.readyState < 2) {
+            fujian.close(1000);
+        }
         fujian = null;
     } else {
         console.error('fujianStop(): Fujian was not running');
