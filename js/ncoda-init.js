@@ -74,6 +74,27 @@ function receiveFujian(event) {
     if (undefined !== response.return && response.return.length > 0) {
         console.log(`PyPy (Fujian) additionally returned the following:\n${response.return}`);
     }
+    if (response.signal) {
+        // handle signals
+        switch (response.signal) {
+            case 'outbound.CONVERSION_ERROR':
+                signals.emitters.stdout(`${response.signal}:\n${response.msg}\n`);
+                break;
+
+            case 'outbound.CONVERSION_FINISHED':
+                if ('mei' === response.dtype) {
+                    // TODO: this weird bit simply removes the namespaces from the tags...
+                    //       maybe, hopefully, there will be a better way to do that?
+                    let doc = response.document
+                    while (doc.includes('mei:')) {
+                        doc = doc.replace('mei:', '');
+                    }
+                    doc = `<?xml version="1.0" encoding="UTF-8"?>\n${doc}`;
+                    signals.emitters.renderToVerovio(doc);
+                }
+                break;
+        }
+    }
 };
 
 function submitToFujianWs(code) {
@@ -161,36 +182,14 @@ var submitToLychee = function(lilypondCode) {
     let code =    "import lychee\n"
                 + "from lychee import signals\n"
                 + "from lychee.signals import outbound\n"
-                + "from xml.etree import ElementTree as etree\n"
-                + "\n"
-                + "_MEINS = '{http://www.music-encoding.org/ns/mei}'\n"
-                + "_MEINS_URL = 'http://www.music-encoding.org/ns/mei'\n"
                 + "\n"
                 + "def mei_listener(**kwargs):\n"
                 + "    outbound.I_AM_LISTENING.emit(dtype='mei')\n"
                 + "\n"
-                + "def mei_through_verovio(dtype, placement, document, **kwargs):\n"
-                + "   global fujian_return\n"
-                + "   if 'mei' != dtype:\n"
-                + "       return\n"
-                + "   output_filename = 'testrepo/mei_for_verovio.xml'\n"
-                + "   document.set('xmlns', _MEINS_URL)\n"
-                + "   for elem in document.iter():\n"
-                + "       elem.tag = elem.tag.replace(_MEINS, '')\n"
-                + "   send_to_verovio = etree.tostring(document)\n"
-                + "   fujian_return = send_to_verovio\n"
-                + "\n"
                 + "outbound.WHO_IS_LISTENING.connect(mei_listener)\n"
-                + "outbound.CONVERSION_FINISHED.connect(mei_through_verovio)\n"
                 + "lychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''" + lilypondCode + "''')";
 
-    let request = new XMLHttpRequest();
-    request.addEventListener('error', pypyRequestFailed);
-    request.addEventListener('load', requestSuccessedLychee);
-    request.open('POST', 'http://localhost:1987');
-    request.send(code);
-
-    signals.emitters.stdin(code);
+    submitToFujianWs(code);
 };
 window['submitToLychee'] = submitToLychee;
 
