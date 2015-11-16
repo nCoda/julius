@@ -61,6 +61,9 @@ function receiveFujian(event) {
     console.log(event);
 
     let response = JSON.parse(event.data);
+    if (response.traceback && response.traceback.length > 0) {
+        signals.emitters.stdout(response.traceback);
+    }
     if (undefined !== response.stdout && response.stdout.length > 0) {
         signals.emitters.stdout(response.stdout);
     }
