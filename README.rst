@@ -26,12 +26,17 @@ commands. From the nCoda root directory, run:
     $ npm install
     $ npm install --dev
 
-Also clone the PyPy.js submodule. From the nCoda root directory, run:
+We recommend running the automated test suites before starting development.
 
-    $ git submodule update
+Install Fujian
+--------------
 
-Run
----
+TODO: write these instructions
+
+Run nCoda
+---------
+
+TODO: how to run Fujian?
 
 Run the development version of nCoda with with ``devserver`` script for Python 3.4+. You can run it
 in three ways:
@@ -43,6 +48,11 @@ in three ways:
     $ npm start
 
 Then check out http://localhost:8000 in your browser! It will take noticeable time to load nCoda.
+
+Run the Test Suites
+-------------------
+
+TODO: write this section
 
 Troubleshooting Problems
 ------------------------
