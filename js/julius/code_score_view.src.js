@@ -358,9 +358,7 @@ var CodeScoreView = React.createClass({
                            submitToLychee={window['submitToLychee']}
                            meiForVerovio={this.props.meiForVerovio}
                 />
-                <Separator movingFunction={this.handleSeparator}
-                           extraCssClass="ncoda-separator-console"
-                />
+                <Separator movingFunction={this.handleSeparator}/>
                 <TerminalOutput ref="terminalOutput"/>
             </div>
         );
