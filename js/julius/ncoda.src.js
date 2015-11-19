@@ -202,3 +202,4 @@ var NCoda = React.createClass({
 
 export default NCoda;
 export {MainScreen};
+export {MenuItem};

@@ -22,6 +22,7 @@ export default {
     stdout: [['stdout'], stdioConcatter],
     stderr: [['stderr'], stdioConcatter],
     meiForVerovio: ['meiForVerovio'],
+    sectionContextMenu: ['sectionContextMenu'],
 };
 
 export {stdioConcatter};

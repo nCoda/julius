@@ -12,6 +12,8 @@ import reactor from './reactor.src';
 import getters from './getters.src';
 import signals from './signals.src';
 
+import {MenuItem} from './ncoda.src';
+
 
 var MetadataField = React.createClass({
     //
@@ -220,41 +222,27 @@ var StructureViewHeader = React.createClass({
 });
 
 
-var MenuItem = React.createClass({
-    propTypes: {
-        // The @id attribute to set on the <menuitem>
-        id: React.PropTypes.string,
-        // The @label and text of the <menuitem>
-        label: React.PropTypes.string,
-        // The function to call when the <menuitem> is clicked.
-        onClick: React.PropTypes.func
-    },
-    render: function() {
-        return (
-            <menuitem id={this.props.id} label={this.props.label} onClick={this.props.onClick}>
-                {this.props.label}
-            </menuitem>
-        );
-    }
-});
-
-
 var SectionContextMenu = React.createClass({
-    // The context menu that appears when users click on a Section.
-    handleClick: function(event) {
-        // Hide the context menu then show an alert acknowledging the click.
-        let msg = `${event.target.label}?\nWill do!`;
-        let menu = document.getElementById('ncoda-section-menu');
-        menu.style.display = 'none';
-        alert(msg);
+    // This menu appears when users click on a Section component.
+    //
+
+    mixins: [reactor.ReactMixin],
+    getDataBindings: function() {
+        return {style: getters.sectionContextMenu};
+    },
+    closeMenu: function(event) {
+        // Handle a click on the menu items.
+        signals.emitters.sectionContextMenu({show: false});
     },
     render: function() {
         return (
-            <menu id="ncoda-section-menu">
-                <MenuItem id="ncoda-section-menu-item-1" label="Open in CodeScoreView" onClick={this.handleClick}/>
-                <MenuItem id="ncoda-section-menu-item-2" label="View Version History" onClick={this.handleClick}/>
-                <MenuItem id="ncoda-section-menu-item-3" label="Download Source File" onClick={this.handleClick}/>
-            </menu>
+            <nav id="ncoda-section-menu" style={this.state.style.toObject()}>
+                <ul>
+                    <MenuItem id="ncoda-section-menu-1" label="Open CodeScoreView" linkTo="/structure" closeThatMenu={this.closeMenu}/>
+                    <MenuItem id="ncoda-section-menu-2" label="View Version History" linkTo="/structure" closeThatMenu={this.closeMenu}/>
+                    <MenuItem id="ncoda-section-menu-3" label="Download Source File" linkTo="/structure" closeThatMenu={this.closeMenu}/>
+                </ul>
+            </nav>
         );
     }
 });
@@ -492,17 +480,23 @@ var Section = React.createClass({
             date: React.PropTypes.string
         }),
         pathToImage: React.PropTypes.string,
-        onClick: React.PropTypes.func.isRequired,
         colour: React.PropTypes.string
     },
     getDefaultProps: function() {
         return {colour: '#000'};
     },
+    onClick: function(event) {
+        // Set the NuclearJS state required to show the context menu.
+        let style = {show: true};
+        style.left = event.clientX + 'px';
+        style.top = event.clientY + 'px';
+        signals.emitters.sectionContextMenu(style);
+    },
     render: function() {
         let headerStyleAttr = {background: this.props.colour};
 
         return (
-            <article className="ncoda-mei-section" id={`section-${this.props.id}`} onClick={this.props.onClick}>
+            <article className="ncoda-mei-section" id={`section-${this.props.id}`} onClick={this.onClick}>
                 <header style={headerStyleAttr}>
                     {this.props.name}
                 </header>
