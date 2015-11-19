@@ -1,28 +1,28 @@
 {
     "name": "julius",
     "description": "Web application for formalized score control.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Christopher Antila <christopher@antila.ca>",
     "license": "GPL-3.0",
     "repository": "https://jameson.adjectivenoun.ca:ncoda/julius.git",
     "dependencies": {
         "codemirror": "5.8.x",
-        "history": "^1.12.0",
-        "immutable": "^3.7.3",
+        "history": "1.12.x",
+        "immutable": "3.7.x",
         "nuclear-js": "1.2.x",
         "react": "0.14.x",
         "react-dom": "0.14.x",
-        "react-router": "1.0.*"
+        "react-router": "1.0.x"
     },
     "devDependencies": {
         "less": "2.5.x",
         "less-plugin-clean-css": "1.5.x",
         "babelify": "^7.0",
-        "babel-preset-es2015": "^6.1.18",
-        "babel-preset-react": "^6.1.18",
-        "watchify": "~3.6.1",
-        "jest-cli": "*",
-        "babel-jest": "*",
+        "babel-preset-es2015": "6.1.x",
+        "babel-preset-react": "6.1.x",
+        "watchify": "3.6.x",
+        "jest-cli": "0.7.x",
+        "babel-jest": "6.x",
         "react-addons-test-utils": "0.14.x"
     },
     "browserify": {
