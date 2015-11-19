@@ -26,6 +26,8 @@ commands. From the nCoda root directory, run:
     $ npm install
     $ npm install --dev
 
+.. note:: You should re-run these commands after you run ``git pull``.
+
 We recommend running the automated test suites before starting development.
 
 Install Fujian

@@ -23,3 +23,5 @@ export default {
     stderr: [['stderr'], stdioConcatter],
     meiForVerovio: ['meiForVerovio'],
 };
+
+export {stdioConcatter};

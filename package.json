@@ -34,13 +34,18 @@
     },
     "jest": {
         "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+        "testFileExtensions": ["es6", "js"],
+        "moduleFileExtensions": ["js", "json", "es6"],
         "unmockedModulePathPatterns": [
             "<rootDir>/node_modules/react",
             "<rootDir>/node_modules/react-dom",
             "<rootDir>/node_modules/react-addons-test-utils"
-        ]
+        ],
+        "testDirectoryName": "tests"
     },
     "babel": {
-        "presets": ["es2015", "react"]
+        "presets": ["es2015", "react"],
+        "comments": true,
+        "compact": false
     }
 }
