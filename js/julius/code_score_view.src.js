@@ -1,8 +1,6 @@
 // React components for the Julius CodeScoreView.
 // Copyright 2015 Christopher Antila, Wei Gao
 
-import immutable from 'immutable';
-
 import React from "react";
 import ReactCodeMirror from "./CodeMirror.src.js";
 

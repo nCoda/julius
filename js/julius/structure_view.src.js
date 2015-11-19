@@ -5,7 +5,7 @@
 //
 // Copyright 2015 Christopher Antila
 
-import immutable from 'immutable';
+import {Immutable} from 'nuclear-js';
 
 import React from 'react';
 import reactor from './reactor.src';
@@ -282,12 +282,12 @@ var StaffGroupOrStaff = React.createClass({
 
     propTypes: {
         names: React.PropTypes.oneOfType([
-            React.PropTypes.instanceOf(immutable.Map),
-            React.PropTypes.instanceOf(immutable.List),
+            React.PropTypes.instanceOf(Immutable.Map),
+            React.PropTypes.instanceOf(Immutable.List),
         ]).isRequired
     },
     render: function() {
-        if (immutable.Map.isMap(this.props.names)) {
+        if (Immutable.Map.isMap(this.props.names)) {
             return (
                 <li>{this.props.names.get('label')}</li>
             );
