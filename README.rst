@@ -12,10 +12,6 @@ be found in the LICENSE file.
 Install
 -------
 
-If you didn't do a recursive clone of the repository, you'll have to clone the git submodules:
-
-    $ git submodule update --init --recursive
-
 You need to install NodeJS and the NPM (Node Package Manager). This may be available through your
 distribution's package management system, but you can also download it from the NodeJS website,
 https://nodejs.org/ .
@@ -28,23 +24,40 @@ commands. From the nCoda root directory, run:
 
 .. note:: You should re-run these commands after you run ``git pull``.
 
-If it's not obvious, the first command installs Julius' dependencies, and the second tries to factor
-out common dependencies between the installed dependencies.
+The first command installs Julius' dependencies, and the second tries to factor out common
+dependencies between the installed dependencies.
 
 We recommend running the automated test suites before starting development.
 
-Install Fujian
---------------
+Install Fujian and Lychee
+-------------------------
 
-TODO: write these instructions
+Most Julius functionality requires a data source, for which nCoda's *Julius* and *Lychee* are the
+only known solutions.
+
+Clone the *Lychee* repository into a directory *other than* the the Julius directory, then follow
+the installation instructions in the *Lychee* README file. At the end of the installation process
+you should have these top-level directories all beside each other:
+
+- julius
+- lychee
+- fujian
+- abjad
+
+If you installed *Abjad* without cloning the repository, of course, it will not have a directory.
+
+The *Lychee* repository URL is git@jameson.adjectivenoun.ca:lychee/lychee.git
 
 Run nCoda
 ---------
 
-TODO: how to run Fujian?
+.. important:: Start *Fujian* before you start *Julius*.
 
-Run the development version of nCoda with with ``devserver`` script for Python 3.4+. You can run it
-in three ways:
+Open two terminal windows. In one window, activate the Fujian/Lychee virtualenv, then start *Fujian*
+by running ``python -m fujian``.
+
+In the other window, run the development version of nCoda with with ``devserver`` script for
+Python 3.4+. You can run it in three ways:
 
     $ python3 devserver
     ... or...
@@ -52,12 +65,13 @@ in three ways:
     ... or...
     $ npm start
 
-Then check out http://localhost:8000 in your browser! It will take noticeable time to load nCoda.
+Then visit http://localhost:8000 in your browser! It will take noticeable time to load nCoda.
 
 Run the Test Suites
 -------------------
 
-TODO: write this section
+Run the *Julius* test suite with the ``npm test`` command. Run the *Lychee* and *Fujian* test suites
+with the ``py.test`` command. All test commands must be issued from the project's respective directory.
 
 Troubleshooting Problems
 ------------------------
