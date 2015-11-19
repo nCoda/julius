@@ -23,10 +23,13 @@ https://nodejs.org/ .
 Then you need to use NPM to install nCoda's JavaScript dependencies. If this works, it's two simple
 commands. From the nCoda root directory, run:
 
-    $ npm install
     $ npm install --dev
+    $ npm dedupe --dev
 
 .. note:: You should re-run these commands after you run ``git pull``.
+
+If it's not obvious, the first command installs Julius' dependencies, and the second tries to factor
+out common dependencies between the installed dependencies.
 
 We recommend running the automated test suites before starting development.
 
