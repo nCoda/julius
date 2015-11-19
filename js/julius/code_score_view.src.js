@@ -92,9 +92,9 @@ var TextEditor = React.createClass({
                                  value={this.state.editorValue}
                                  onChange={this.updateEditorValue}
                                  />
-                <div className="ncoda-pypyjs-controls">
-                    <input type="button" value="Run as Python" onClick={this.submitToPyPy}></input>
-                    <input type="button" value="Display from LilyPond" onClick={this.submitToLychee}></input>
+                <div className="ncoda-text-editor-controls">
+                    <button className="btn" value="Run as Python" onClick={this.submitToPyPy}>Run as Python</button>
+                    <button className="btn" value="Display as LilyPond" onClick={this.submitToLychee}>Submit as LilyPond</button>
                 </div>
             </div>
         );
