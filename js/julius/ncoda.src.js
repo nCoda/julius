@@ -26,6 +26,27 @@ var MainScreen = React.createClass({
 });
 
 
+var Colophon = React.createClass({
+    //
+    //
+
+    render: function() {
+        return (
+            <div id="ncoda-colophon">
+                <img src="/img/nCoda-temporary_logo_square-180x180.png" alt="nCoda logo"></img>
+                <div>
+                    <h2>About nCoda</h2>
+                    <p>Many people contribute to nCoda. Learn about them at URL.</p>
+                    <p>You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.</p>
+                    <p>The nCoda source code is available at no direct cost from URL.</p>
+                    <p>We use many third-party software components to build nCoda. Learn about them at URL.</p>
+                </div>
+            </div>
+        );
+    }
+});
+
+
 var GlobalHeader = React.createClass({
     // This is the header bar that should always appear at the top of the screen.
     //
@@ -103,6 +124,8 @@ var GlobalMenu = React.createClass({
                     <MenuItem id="global-0" label="Home" linkTo="/" closeThatMenu={this.props.closeThatMenu}/>
                     <MenuItem id="global-1" label="Open CodeScoreView" linkTo="/codescore" closeThatMenu={this.props.closeThatMenu}/>
                     <MenuItem id="global-2" label="Open StructureView" linkTo="/structure" closeThatMenu={this.props.closeThatMenu}/>
+                    <hr/>
+                    <MenuItem id="global-3" label="About nCoda" linkTo="/colophon" closeThatMenu={this.props.closeThatMenu}/>
                 </ul>
             </nav>
         );
@@ -201,5 +224,8 @@ var NCoda = React.createClass({
 
 
 export default NCoda;
-export {MainScreen};
-export {MenuItem};
+export {
+    Colophon,
+    MainScreen,
+    MenuItem,
+};

@@ -10,7 +10,7 @@ import {Router, IndexRoute, Route} from 'react-router';
 
 // Julius React components
 import NCoda from './julius/ncoda.src';
-import {MainScreen} from './julius/ncoda.src';
+import {MainScreen, Colophon} from './julius/ncoda.src';
 import StructureView from './julius/structure_view.src';
 import CodeScoreView from './julius/code_score_view.src';
 
@@ -262,6 +262,7 @@ ReactDOM.render((
             <IndexRoute component={MainScreen}/>
             <Route path="codescore" component={CodeScoreView}/>
             <Route path="structure" component={StructureView}/>
+            <Route path="colophon" component={Colophon}/>
         </Route>
     </Router>
 ), document.getElementById('julius-goes-here'));
