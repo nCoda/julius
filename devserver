@@ -12,10 +12,10 @@ _COMPILE_WITH_WATCHIFY = [
     ('js/ncoda-init.js', 'js/ncoda.js'),
 ]
 
-# list of the CSS files that must be compiled from LESS; it's input filename, then output filename
+# list of the CSS files that must be compiled from LESS; it's the shell path we should call
+# inotifywatch with, the input filename, and the output filename
 _COMPILE_WITH_LESSC = [
-    ('css/ncoda/julius.less', 'css/ncoda/julius.css'),
-    ('css/ncoda/structure_view.less', 'css/ncoda/structure_view.css'),
+    ('css/ncoda/*.less', 'css/ncoda/julius.less', 'css/ncoda/julius.css'),
 ]
 
 _PATH_TO_WATCHIFY = 'node_modules/watchify/bin/cmd.js'
@@ -63,17 +63,17 @@ def the_script():
         # set up some lessc instances
         for each_file in _COMPILE_WITH_LESSC:
             if we_have_inotify:
-                print('Starting less_autocompiler.sh for {}'.format(each_file[0]))
+                print('Starting less_autocompiler.sh for {}'.format(each_file[1]))
                 try:
-                    kummand = ['./less_autocompiler.sh', each_file[0], each_file[1]]
+                    kummand = ['./less_autocompiler.sh', each_file[0], each_file[1], each_file[2]]
                     subprocesses.append(subprocess.Popen(kummand))
                 except subprocess.CalledProcessError as cperr:
                     print('Encountered the following error while starting lessc:\n{}'.format(cperr))
                     raise SystemExit(1)
             else:
-                print('Running lessc ONCE ONLY on {}'.format(each_file[0]))
+                print('Running lessc ONCE ONLY on {}'.format(each_file[1]))
                 try:
-                    kummand = [_PATH_TO_LESSC, '--clean-css', each_file[0], each_file[1]]
+                    kummand = [_PATH_TO_LESSC, '--clean-css', each_file[1], each_file[2]]
                     subprocess.check_output(kummand)
                 except subprocess.CalledProcessError as cperr:
                     print('Encountered the following error while starting lessc:\n{}'.format(cperr))
