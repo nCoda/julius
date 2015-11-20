@@ -2,10 +2,10 @@
 // Copyright 2015 Christopher Antila, Wei Gao
 
 import React from "react";
-import ReactCodeMirror from "./CodeMirror.src.js";
+import ReactCodeMirror from "./CodeMirror";
 
-import getters from './getters.src';
-import reactor from './reactor.src';
+import getters from './getters';
+import reactor from './reactor';
 
 
 function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {

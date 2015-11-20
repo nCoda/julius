@@ -8,11 +8,11 @@
 import {Immutable} from 'nuclear-js';
 
 import React from 'react';
-import reactor from './reactor.src';
-import getters from './getters.src';
-import signals from './signals.src';
+import reactor from './reactor';
+import getters from './getters';
+import signals from './signals';
 
-import {MenuItem} from './ncoda.src';
+import {MenuItem} from './ncoda';
 
 
 var MetadataField = React.createClass({

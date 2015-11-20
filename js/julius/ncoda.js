@@ -9,7 +9,7 @@
 
 import React from 'react';
 import {Link} from 'react-router';
-import signals from './signals.src';
+import signals from './signals';
 
 
 var MainScreen = React.createClass({

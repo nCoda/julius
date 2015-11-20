@@ -7,7 +7,7 @@
 //
 
 import {Store, toImmutable} from 'nuclear-js';
-import signals from '../signals.src';
+import signals from '../signals';
 
 
 var Stdin = Store({

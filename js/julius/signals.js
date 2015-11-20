@@ -11,7 +11,7 @@
 //
 
 
-import reactor from './reactor.src';
+import reactor from './reactor';
 import {fujianStart, fujianStop} from '../ncoda-init';
 
 
