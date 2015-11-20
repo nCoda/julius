@@ -41,7 +41,7 @@ var GlobalHeader = React.createClass({
         return (
             <div id="ncoda-global-header">
                 <button onClick={this.props.showHideMenu}>
-                    <i className="fa fa-bars fa-2x"></i>
+                    <i className="fa fa-th fa-2x"></i>
                 </button>
                 <h1 className="ncoda-logo">
                     <div className="ncoda-logo-n">n</div>Coda
