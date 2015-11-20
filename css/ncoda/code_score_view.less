@@ -116,11 +116,18 @@
     flex-flow: column;
 }
 
-.ncoda-terminal-output h2 {
+.ncoda-terminal-output h3 {
     margin: 0px;
     color: @charcoal-grey;
     flex-grow: 0;
     flex-shrink: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.ncoda-terminal-output h3 div {
+    display: inline;
 }
 
 .ncoda-terminal-output pre {

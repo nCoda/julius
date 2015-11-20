@@ -86,7 +86,7 @@ var TextEditor = React.createClass({
         };
         return (
             <div className="ncoda-text-editor">
-                <h2>Input</h2>
+                <h2>Text Editor</h2>
                 <ReactCodeMirror path="ncoda-editor"
                                  options={codeMirrorOptions}
                                  value={this.state.editorValue}
@@ -255,7 +255,7 @@ var TerminalOutput = React.createClass({
     render: function() {
         return (
             <div id="ncoda-terminal-output" className="ncoda-terminal-output">
-                <h2>Output</h2>
+                <h3><div>Your Input</div><div>Python Output</div></h3>
                 <div className="ncoda-output-terminals">
                     <TerminalWindow outputThis={this.state.stdin}
                                     extraClass="ncoda-output-stdin"
