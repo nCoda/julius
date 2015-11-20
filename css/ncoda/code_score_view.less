@@ -110,16 +110,23 @@
 .ncoda-terminal-output {
     // This contains the <h2> that says "output", plus the <div class="ncoda-output-terminals">
     overflow: hidden;
-    display: block;
-    min-height: 15em;
+    display: flex;
+    min-height: 5rem;
     height: 25%;
+    flex-flow: column;
 }
 
 .ncoda-terminal-output h2 {
     margin: 0px;
     color: @charcoal-grey;
     flex-grow: 0;
-    height: 10%;
+    flex-shrink: 0;
+}
+
+.ncoda-terminal-output pre {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .ncoda-output-terminals {
@@ -127,10 +134,10 @@
     // - <div class="ncoda-terminal-window ncoda-output-stdin">
     // - <div class="ncoda-separator ncoda-separator-vertical">
     // - <div class="ncoda-terminal-window ncoda-output-stdin">
-    height: 90%;
     display: flex;
     flex-flow: row;
-    // align-items: stretch;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
 .ncoda-terminal-window {
