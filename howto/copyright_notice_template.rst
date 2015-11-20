@@ -1,12 +1,19 @@
+Copyright Notice Template
+=========================
+
+Use this template at the top of every file to add the copyright notice. Be sure to fill out the
+filename, purpose, and copyright holder!
+
+
 // -*- coding: utf-8 -*-
 //-------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/reactor.js
-// Purpose:                NuclearJS reactor for Julius.
+// Filename:               ?
+// Purpose:                ?
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015 ?
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -21,14 +28,3 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
-
-
-import {Reactor} from 'nuclear-js';
-
-
-const reactor = new Reactor({
-    // debug: true
-});
-
-
-export default reactor;
