@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/stores/structure_view.js
+// Filename:               js/nuclear/stores/structure_view.js
 // Purpose:                NuclearJS Stores related to StructureView.
 //
 // Copyright (C) 2015 Christopher Antila

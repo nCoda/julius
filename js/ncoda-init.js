@@ -29,26 +29,26 @@ import ReactDOM from 'react-dom';
 import {Router, IndexRoute, Route} from 'react-router';
 
 // log!
-import log from './julius/log';
+import log from './util/log';
 
 // Julius React components
-import NCoda from './julius/ncoda';
-import {MainScreen, Colophon} from './julius/ncoda';
-import StructureView from './julius/structure_view';
-import CodeScoreView from './julius/code_score_view';
+import NCoda from './react/ncoda';
+import {MainScreen, Colophon} from './react/ncoda';
+import StructureView from './react/structure_view';
+import CodeScoreView from './react/code_score_view';
 
 // NuclearJS things
-import reactor from './julius/reactor';
-import headerMetadataStores from './julius/stores/headerMetadata';
-import mercurial from './julius/stores/mercurial';
-import documentModule from './julius/stores/document';
-import stdio from './julius/stores/stdio';
-import verovio from './julius/stores/verovio';
-import structure_view from './julius/stores/structure_view';
-import {stores as juliusStores} from './julius/stores/julius';
+import reactor from './nuclear/reactor';
+import headerMetadataStores from './nuclear/stores/headerMetadata';
+import mercurial from './nuclear/stores/mercurial';
+import documentModule from './nuclear/stores/document';
+import stdio from './nuclear/stores/stdio';
+import verovio from './nuclear/stores/verovio';
+import structure_view from './nuclear/stores/structure_view';
+import {stores as juliusStores} from './nuclear/stores/julius';
 
 // TODO: remove these, they're just temporary
-import signals from './julius/signals';
+import signals from './nuclear/signals';
 
 
 // PyPy (Fujian) WebSocket ----------------------------------------------------

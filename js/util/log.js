@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/log.js
+// Filename:               js/util/log.js
 // Purpose:                Application logging facilities for Julius.
 //
 // Copyright (C) 2015 Christopher Antila
@@ -22,8 +22,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-import {getters} from './getters';
-import {reactor} from './reactor';
+import {getters} from '../nuclear/getters';
+import {reactor} from '../nuclear/reactor';
 
 
 const LEVELS = {

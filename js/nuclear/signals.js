@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/signals.js
+// Filename:               js/nuclear/signals.js
 // Purpose:                NuclearJS Actions and ActionTypes.
 //
 // Copyright (C) 2015 Christopher Antila
@@ -138,4 +138,6 @@ const emitters = {
 };
 
 
-export default {names: names, emitters: emitters};
+const signals = {names: names, emitters: emitters};
+export {signals};
+export default signals;

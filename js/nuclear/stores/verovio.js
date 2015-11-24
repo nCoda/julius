@@ -3,8 +3,8 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/stores/stdio.
-// Purpose:                NuclearJS Stores related to stdin, stdout, and stderr.
+// Filename:               js/nuclear/stores/verovio.js
+// Purpose:                NuclearJS Stores related to Verovio.
 //
 // Copyright (C) 2015 Christopher Antila
 //
@@ -27,52 +27,29 @@ import {Store, toImmutable} from 'nuclear-js';
 import signals from '../signals';
 
 
-var Stdin = Store({
-    // Representing everything that has been written to stdin during an editing session.
+// TODO: move all the Verovio-rendering stuff to here.
+
+
+const MeiForVerovio = Store({
+    // Representing the MEI document to send to Verovio.
+    //
+    // This should be a string.
     //
 
     getInitialState() {
-        return toImmutable([]);
+        return toImmutable('');
     },
     initialize() {
-        this.on(signals.names.STDIN, stdioAppender);
+        this.on(signals.names.RENDER_TO_VEROVIO, renderToVerovio);
     }
-});
-var Stdout = Store({
-    // Representing everything that has been written to stdout during an editing session.
-    //
-
-    getInitialState() {
-        return toImmutable([]);
-    },
-    initialize() {
-        this.on(signals.names.STDOUT, stdioAppender);
-    }
-});
-var Stderr = Store({
-    // Representing everything that has been written to stderr during an editing session.
-    //
-
-    getInitialState() {
-        return toImmutable([]);
-    },
-    initialize() {
-        this.on(signals.names.STDERR, stdioAppender);
-    }
-});
+    });
 
 
-function stdioAppender(previousState, payload) {
-    // Append the payload to the current state.
-    //
-    // Payload: A string to append to state.
-    //
-
-    return previousState.push(payload);
+function renderToVerovio(previousState, payload) {
+    return toImmutable(payload);
 };
 
+
 export default {
-    Stdin: Stdin,
-    Stdout: Stdout,
-    Stderr: Stderr,
+    MeiForVerovio: MeiForVerovio
 };

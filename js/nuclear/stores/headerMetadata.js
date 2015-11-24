@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/stores/
+// Filename:               js/nuclear/stores/headerMetadata.js
 // Purpose:                NuclearJS Stores related to MEI header metadata.
 //
 // Copyright (C) 2015 Christopher Antila

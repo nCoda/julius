@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/ncoda.js
+// Filename:               js/react/ncoda.js
 // Purpose:                React components for nCoda in general.
 //
 // Copyright (C) 2015 Christopher Antila
@@ -25,7 +25,7 @@
 
 import React from 'react';
 import {Link} from 'react-router';
-import signals from './signals';
+import signals from '../nuclear/signals';
 
 
 var MainScreen = React.createClass({

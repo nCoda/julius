@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/code_score_view.js
+// Filename:               js/react/code_score_view.js
 // Purpose:                React components for CodeScoreView.
 //
 // Copyright (C) 2015 Christopher Antila, Wei Gao
@@ -26,8 +26,8 @@
 import React from "react";
 import ReactCodeMirror from "./CodeMirror";
 
-import getters from './getters';
-import reactor from './reactor';
+import getters from '../nuclear/getters';
+import reactor from '../nuclear/reactor';
 
 
 function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {

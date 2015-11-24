@@ -3,8 +3,8 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/stores/verovio.js
-// Purpose:                NuclearJS Stores related to Verovio.
+// Filename:               js/nuclear/reactor.js
+// Purpose:                NuclearJS reactor for Julius.
 //
 // Copyright (C) 2015 Christopher Antila
 //
@@ -23,33 +23,13 @@
 //-------------------------------------------------------------------------------------------------
 
 
-import {Store, toImmutable} from 'nuclear-js';
-import signals from '../signals';
+import {Reactor} from 'nuclear-js';
 
 
-// TODO: move all the Verovio-rendering stuff to here.
+const reactor = new Reactor({
+    // debug: true
+});
 
 
-const MeiForVerovio = Store({
-    // Representing the MEI document to send to Verovio.
-    //
-    // This should be a string.
-    //
-
-    getInitialState() {
-        return toImmutable('');
-    },
-    initialize() {
-        this.on(signals.names.RENDER_TO_VEROVIO, renderToVerovio);
-    }
-    });
-
-
-function renderToVerovio(previousState, payload) {
-    return toImmutable(payload);
-};
-
-
-export default {
-    MeiForVerovio: MeiForVerovio
-};
+export {reactor};
+export default reactor;

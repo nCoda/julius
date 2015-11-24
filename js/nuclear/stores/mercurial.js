@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/stores/mercurial.js
+// Filename:               js/nuclear/stores/mercurial.js
 // Purpose:                NuclearJS Stores related to Mercurial.
 //
 // Copyright (C) 2015 Christopher Antila

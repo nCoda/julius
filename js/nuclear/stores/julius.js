@@ -3,8 +3,8 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/getters.js
-// Purpose:                NuclearJS getters.
+// Filename:               js/nuclear/stores/julius.js
+// Purpose:                Julius-specific Stores, like for logging.
 //
 // Copyright (C) 2015 Christopher Antila
 //
@@ -23,24 +23,37 @@
 //-------------------------------------------------------------------------------------------------
 
 
-function stdioConcatter(output) {
-    // Concatenates a List of strings into a single string.
-    //
-    return output.join('\n');
+import {Store, toImmutable} from 'nuclear-js';
+import {log, LEVELS} from '../../util/log';
+import {signals} from '../signals';
+
+
+const setters = {
+    setLogLevel(previous, next) {
+        if (LEVELS.ERROR === next ||
+            LEVELS.WARN  === next ||
+            LEVELS.INFO  === next ||
+            LEVELS.DEBUG === next) {
+
+            return next;
+        }
+
+        log.warn('setLogLevel() received an invalid log level');
+        return previous;
+    },
 };
 
 
-const getters = {
-    meiHeadersList: ['headerMetadata'],
-    hgChangesetHistory: ['hgChangesetHistory'],
-    listOfInstruments: ['instruments'],
-    stdin: [['stdin'], stdioConcatter],
-    stdout: [['stdout'], stdioConcatter],
-    stderr: [['stderr'], stdioConcatter],
-    meiForVerovio: ['meiForVerovio'],
-    sectionContextMenu: ['sectionContextMenu'],
-    logLevel: ['logLevel'],
+const stores = {
+    LogLevel: Store({
+        getInitialState() {
+            return LEVELS.WARN;
+        },
+        initialize() {
+            this.on(signals.names.SET_LOG_LEVEL, setters.setLogLevel);
+        },
+    }),
 };
 
-export {getters, stdioConcatter};
-export default getters;
+
+export {stores, setters};

@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/structure_view.js
+// Filename:               js/react/structure_view.js
 // Purpose:                React components for StructureView.
 //
 // Copyright (C) 2015 Christopher Antila
@@ -26,9 +26,9 @@
 import {Immutable} from 'nuclear-js';
 
 import React from 'react';
-import reactor from './reactor';
-import getters from './getters';
-import signals from './signals';
+import reactor from '../nuclear/reactor';
+import getters from '../nuclear/getters';
+import signals from '../nuclear/signals';
 
 import {MenuItem} from './ncoda';
 

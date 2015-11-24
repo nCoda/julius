@@ -99,3 +99,15 @@ This should be ``-rwxr-xr-x`` so you need to fix it. Do this:
     $ chmod +x node_modules/less/bin/lessc
 
 Try running ``devserver`` again, and that error message should disappear.
+
+Directory Structure
+-------------------
+
+The "js" directory of the Julius repository is subdivided into three:
+
+    #. The "nuclear" directory holds NuclearJS stores, getters, and so on, which manage data flow.
+    #. The "react" directory holds React components, which constitute the user interface.
+    #. The "util" directory holds other modules, for tasks such as logging and connecting to Fujian.
+
+Tests for a module belong in a subdirectory of that module. For example, the tests for
+``js/nuclear/getters.js`` are in ``js/nuclear/tests/getters.js``.
