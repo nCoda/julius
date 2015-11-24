@@ -9,7 +9,7 @@ import subprocess
 
 # list of the JS files that must be compiled with Watchify; it's input filename, then output filename
 _COMPILE_WITH_WATCHIFY = [
-    ('js/ncoda-init.js', 'js/ncoda.js'),
+    ('js/ncoda-init.js', 'js/ncoda-compiled.js'),
 ]
 
 # list of the CSS files that must be compiled from LESS; it's the shell path we should call
