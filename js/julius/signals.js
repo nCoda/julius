@@ -34,7 +34,7 @@ import {fujianStart, fujianStop} from '../ncoda-init';
 
 // TODO: should be "const" but Atom's symbol-list sidebar doesn't pick that up yet
 // "names" is NuclearJS "actionTypes."
-var names = {
+const names = {
     // HeaderBar
     ADD_HEADER: 1,
     CHANGE_HEADER: 2,
@@ -61,90 +61,80 @@ var names = {
 };
 
 
-// TODO: const?????
 // "emitters" is NuclearJS "actions."
-// They're added all throughout this file.
-var emitters = {};
+const emitters = {
+    // MEI headers
+    addHeader(name, value) {
+        // The name and value of the header to add.
+        reactor.dispatch(names.ADD_HEADER, {name: name, value: value});
+    },
+    changeHeader(name, value) {
+        // The name of an existing header and its new value.
+        reactor.dispatch(names.CHANGE_HEADER, {name: name, value: value});
+    },
+    removeHeader(name) {
+        // The name of an existing header.
+        reactor.dispatch(names.REMOVE_HEADER, {name: name})
+    },
 
+    // Mercurial stuff
+    hgAddChangeset(changeset) {
+        // The argument may have any of the fields defined for the mercurial.ChangesetHistory store.
+        reactor.dispatch(names.HG_ADD_CHANGESET, changeset);
+    },
 
-emitters['addHeader'] = function(name, value) {
-    // The name and value of the header to add.
-    reactor.dispatch(names.ADD_HEADER, {name: name, value: value});
-};
+    // MEI Document Stuff
+    addInstrument(instrument) {
+        // Add an instrument to the active document.
+        // Fields for the "instrument" object are defined for the document.scoreDef.Instrument store.
+        reactor.dispatch(names.SCOREDEF_INSTR_ADD, instrument);
+    },
+    addInstrumentGroup(instruments) {
+        // Add an instrument to the active document.
+        // The "instruments" argument should be an array of objects as defined for the
+        // document.scoreDef.Instrument store.
+        reactor.dispatch(names.SCOREDEF_INSTRGRP_ADD, instruments);
+    },
 
-emitters['changeHeader'] = function(name, value) {
-    // The name of an existing header and its new value.
-    reactor.dispatch(names.CHANGE_HEADER, {name: name, value: value});
-};
+    // Standard I/O
+    stdin(string) {
+        reactor.dispatch(names.STDIN, string);
+    },
+    stdout(string) {
+        reactor.dispatch(names.STDOUT, string);
+    },
+    stderr(string) {
+        reactor.dispatch(names.STDERR, string);
+    },
 
-emitters['removeHeader'] = function(name) {
-    // The name of an existing header.
-    reactor.dispatch(names.REMOVE_HEADER, {name: name})
-};
+    // Verovio
+    renderToVerovio(mei) {
+        reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
+    },
 
-// Mercurial stuff
-emitters['hgAddChangeset'] = function(changeset) {
-    // The argument may have any of the fields defined for the mercurial.ChangesetHistory store.
-    reactor.dispatch(names.HG_ADD_CHANGESET, changeset);
-};
+    // Fujian PyPy Server (currently doesn't affect NuclearJS)
+    fujianStartWS() {
+        fujianStart();
+    },
+    fujianRestartWS() {
+        fujianStop();
+        fujianStart();
+    },
+    fujianStopWS() {
+        fujianStop();
+    },
 
+    // StructureView GUI state
+    sectionContextMenu(style) {
+        // Call this with an object that has "show" (boolean) and "left" and "top" (in pixels).
+        //
+        reactor.dispatch(names.SECTION_CONTEXT_MENU, style);
+    },
 
-// MEI Document Stuff
-emitters['addInstrument'] = function(instrument) {
-    // Add an instrument to the active document.
-    // Fields for the "instrument" object are defined for the document.scoreDef.Instrument store.
-    reactor.dispatch(names.SCOREDEF_INSTR_ADD, instrument);
-};
-emitters['addInstrumentGroup'] = function(instruments) {
-    // Add an instrument to the active document.
-    // The "instruments" argument should be an array of objects as defined for the
-    // document.scoreDef.Instrument store.
-    reactor.dispatch(names.SCOREDEF_INSTRGRP_ADD, instruments);
-};
-
-
-// Standard I/O
-emitters['stdin'] = function(string) {
-    reactor.dispatch(names.STDIN, string);
-};
-emitters['stdout'] = function(string) {
-    reactor.dispatch(names.STDOUT, string);
-};
-emitters['stderr'] = function(string) {
-    reactor.dispatch(names.STDERR, string);
-};
-
-
-// Verovio
-emitters['renderToVerovio'] = function(mei) {
-    reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
-};
-
-
-// Fujian PyPy Server (currently doesn't affect NuclearJS)
-emitters['fujianStartWS'] = function() {
-    fujianStart();
-};
-emitters['fujianRestartWS'] = function() {
-    fujianStop();
-    fujianStart();
-};
-emitters['fujianStopWS'] = function() {
-    fujianStop();
-};
-
-
-// StructureView GUI state
-emitters['sectionContextMenu'] = function(style) {
-    // Call this with an object that has "show" (boolean) and "left" and "top" (in pixels).
-    //
-    reactor.dispatch(names.SECTION_CONTEXT_MENU, style);
-};
-
-
-// Logging
-emitters['setLogLevel'] = function(to) {
-    reactor.dispatch(names.SET_LOG_LEVEL, to);
+    // Logging
+    setLogLevel(to) {
+        reactor.dispatch(names.SET_LOG_LEVEL, to);
+    },
 };
 
 
