@@ -24,6 +24,22 @@
 
 @import "colours.less";
 
+/*************************************************************************************************/
+/* StructureView colour definitions */
+@strv-widget-background: @solarized-base2;
+@strv-widget-border: @solarized-base2;
+@strv-widget-shadow: @solarized-base0;
+@strv-inner-line: @solarized-base1;  // a line in a widget
+@strv-text: @solarized-base0;
+// highlighting colours
+@strv-primary: @solarized-blue;
+@strv-secondary: @solarized-cyan;
+@strv-tertiary: @solarized-violet;
+@strv-quaternary: @solarized-magenta;
+
+
+/*************************************************************************************************/
+/* Shared stuff */
 
 .ncoda-structureview-frame {
     /* This contains the menus and #ncoda-structureview. It exists basically to ensure that the
@@ -33,26 +49,46 @@
 }
 
 #ncoda-structureview {
-    background: DimGray; height: 100%; margin: 0;
+    background: @solarized-base02;
+    margin: 0;
     height: 100%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
     align-items: center;
+    color: @strv-text;
 }
 
+.ncoda-structureview > header {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.ncoda-structureview > footer {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    max-height: 50%;
+}
+
+
+/*************************************************************************************************/
 /* active section <article> */
 .ncoda-active-sections {
     z-index: 1;
     max-width: 95%;
-    background: rgba(60, 179, 113, 1.0);
-    border: 1px solid rgba(240, 255, 255, 0.2);
-    box-shadow: 0 0 2px 2px DarkSlateGray;
+    background: @strv-widget-background;
+    border: 1px solid @strv-widget-border;
+    box-shadow: 0 0 1rem @strv-widget-shadow;
     border-radius: 5px;
 }
 .ncoda-active-sections > header {
     height: 7%;
     text-align: center;
+    font-size: x-large;
 }
 .ncoda-active-sections > content{
     padding: 1% 1%;
@@ -63,25 +99,41 @@
     height: 93%;
 }
 
+/*************************************************************************************************/
 /* <article> corresponding to an MEI <section> */
 .ncoda-mei-section {
     display: flex;
-    background: rgba(240, 255, 255, 0.6);
-    border: 1px solid rgba(240, 255, 255, 0.3);
-    /*filter: drop-shadow(0px 5px 5px DarkSlateGray);*/
+    background: @strv-widget-background;
+    border: 1px solid @strv-inner-line;
+    border-top: 5px solid @strv-widget-background;
     z-index: 3;
     height: 100%;
     max-height: 20em;
 
     flex-flow: column nowrap;
     justify-content: space-between;
+    transition: border-top 0.25s;
 }
-.ncoda-mei-section header { padding: 2% 5%; }
+.ncoda-mei-section header {
+    padding: 2% 5%;
+    border-top: 1px solid @strv-inner-line;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+}
 .ncoda-mei-section footer { margin: 5%; }
 .ncoda-mei-section time { font-size: smaller; }
-.ncoda-mei-section:hover { box-shadow: 0px 0px 0.5em 0.5em LightSkyBlue; }
+.ncoda-mei-section:hover { border-top-color: @strv-primary; }
 .ncoda-mei-section-img { flex-grow: 1; width: 175px; display: block; overflow: hidden; }
 .ncoda-mei-section img { width: 100%; }
+
+.ncoda-section-colour {
+    min-width: 1rem;
+    max-width: 8rem;
+    height: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
 
 /* context menu when clicking on a <section>-corresponding <article> */
 #ncoda-section-menu {
@@ -93,132 +145,100 @@
     cursor: default;
 }
 
-/* page header (holding "header bar" and "expanded section part" */
-.ncoda-structureview > header {
-    width: 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
+/*************************************************************************************************/
+/* StructureView menus */
+.nc-strv-menu {
+    background: @strv-widget-background;
 }
-
-.ncoda-headerbar {
-    background: @cardboard-gray;
-}
-.ncoda-headerbar .header {
+.nc-strv-menu .header {
     cursor: default;
-    padding: 0.4em 0.5em 0.5em;
-    // background: rgba(240, 255, 255, 0.6);
-    border-right: 1px solid rgba(240, 255, 255, 0.3);
+    padding: 0.4rem 0.5rem 0.5rem;
     margin: 0;
-}
-.ncoda-headerbar > ul {
-    margin: 0;
-    list-style-type: none;
-    padding-top: 0.2em;
-}
-.ncoda-headerbar li {
-    margin-top: 0.2em;
-    border-right: 1px solid @cardboard-gray;
-    border-bottom: 1px solid @cardboard-gray;
-    padding: 0.2em 0.5em;
-}
-.ncoda-headerbar li:hover {
-    box-shadow: inset 0 0 1em MediumSeaGreen;
-    border-right: 1px solid rgba(240, 255, 255, 0);
-    border-bottom: 1px solid transparent;
-}
-
-/* page footer (holding "staves thing" and "collaboration bit" */
-.ncoda-structureview > footer {
-    width: 100%;
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row;
     justify-content: space-between;
-    max-height: 50%;
+    align-items: center;
 }
-
-.ncoda-scorestructure {
-    overflow: hidden;
-    max-height: 100%;
-    background: rgba(240, 255, 255, 0.6);
-    border-right: 1px solid rgba(240, 255, 255, 0.3);
-
-    display: flex;
-    flex-flow: column nowrap;
+.nc-strv-menu .header span {
+    margin: 0 1rem 0 0.5rem;
 }
-.ncoda-scorestructure ul {
+.nc-strv-menu > ul {
+    margin: 0;
     list-style-type: none;
-    padding-left: 1em;
+    padding: 0.2rem;
 }
-.ncoda-scorestructure > p {
-    padding: 0.4em 0.5em 0.5em;
-    margin: 0;
-    flex-grow: 0;
+.nc-strv-menu li {
+    margin-top: 0.2rem;
+    border-right: 1px solid @strv-widget-background;
+    border-bottom: 1px solid @strv-widget-background;
+    padding: 0.2rem 0.5rem;
 }
-#scorestructure-instruments {
-    overflow: scroll;
-    border-right: 1px solid rgba(240, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(240, 255, 255, 0.3);
-    padding-top: 0.2em;
-    margin: 0;
-    flex-grow: 1;
-}
-.ncoda-scorestructure li {
-    background: rgba(240, 255, 255, 0.6);
-    border-right: 1px solid rgba(240, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(240, 255, 255, 0.3);
-    padding: 0.2em 0.5em;
-    margin-top: 0.2em;
-}
-.ncoda-scorestructure li:hover {
-    box-shadow: inset 0 0 1em MediumSeaGreen;
-    border-right: 1px solid rgba(240, 255, 255, 0);
-    border-bottom: 1px solid transparent;
-}
-
-.ncoda-collaboration {
-    background: rgba(240, 255, 255, 0.6);
-    border-left: 1px solid rgba(240, 255, 255, 0.3);
-    border-top: 1px solid rgba(240, 255, 255, 0.3);
-    padding: 1em;
-}
-.ncoda-collaboration p {
-    margin: 0 0 1em;  /* bottom is 1em */
-}
-.ncoda-collaboration-person address {
-    border-bottom: 1px solid rgba(240, 255, 255, 0.6);
-}
-.ncoda-collaboration-person ul {
-    margin: 0.5em 0;
-    list-style-type: none;
-    padding-left: 1em;
-}
-
-/* expanded structure view (the cool SVG thing) */
-.ncoda-expanded-section {
-    background: rgba(240, 255, 255, 0.6);
-    border-left: 1px solid rgba(240, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(240, 255, 255, 0.3);
-    max-width: 50%;
-}
-.ncoda-collaboration p {
-    margin: 0 0 1em;  /* bottom is 1em */
-}
-#ncoda-expanded-section-svg h2 {
-    margin: 0;
-    padding: 0.25em 0.5em;
-    background: rgba(0, 191, 255, 0.6);
-}
-#ncoda-expanded-section-svg img {
-    width: 100%;
-    padding: 0.5em 0 0.5em 0.5em;
+.nc-strv-menu li:hover {
+    border-right-color: @strv-primary;
+    border-bottom-color: @strv-primary;
 }
 
 /* The "show or hide" button */
 .show-or-hide-button {
-    background: @cardboard-gray;
-    border: none;
+    background: inherit;
+    border: 0.1rem solid @strv-primary;
+    border-radius: 0.2rem;
+    color: @strv-primary;
 }
 .show-or-hide-button:hover {
-    background: @plasma-blue;
+    border-color: @strv-secondary;
+    color: @strv-secondary;
+}
+
+
+//////////////////////////////////////////////////////////
+// Expanded Section View
+#nc-strv-expanded-section {
+    max-width: 50%;
+}
+#ncoda-expanded-section-svg h2 {
+    margin: 0;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 191, 255, 0.6);
+}
+#ncoda-expanded-section-svg img {
+    width: 100%;
+    padding: 0.5rem 0 0.5rem 0.5rem;
+}
+
+
+//////////////////////////////////////////////////////////
+// Collaborators
+.nc-strv-collaboration address {
+    border-bottom: 1px solid @strv-inner-line;
+}
+.nc-strv-collaboration > div {
+    margin: 1rem;
+}
+.nc-strv-collaboration ul {
+    margin: 0.5rem 0;
+    list-style-type: none;
+    padding-left: 1rem;
+}
+.nc-strv-collaboration li:hover {
+    border-color: @strv-widget-background;
+}
+
+
+//////////////////////////////////////////////////////////
+// Staves Structure
+.nc-strv-staves ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 1rem;
+    border-left: 0.2rem solid @strv-primary;
+}
+#staves-instruments {
+    overflow: scroll;
+    height: 100%;
+}
+#staves-instruments ul {
+    padding: 0;
+    margin-left: 0;
+    border-left: 0.2rem solid @strv-secondary;
 }

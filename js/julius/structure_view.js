@@ -113,8 +113,9 @@ var HeaderBar = React.createClass({
         }
 
         return (
-            <div className="ncoda-headerbar">
-                <div className="header">Header Bar
+            <div className="nc-strv-menu">
+                <div className="header">
+                    Header Bar
                     <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showHeaderList}/>
                 </div>
                 {headerList}
@@ -156,11 +157,11 @@ var ExpandedSectionView = React.createClass({
         }
 
         return (
-            <div className="ncoda-expanded-section">
-                <p>
+            <div className="nc-strv-menu" id="nc-strv-expanded-section">
+                <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showGraph}/>
                     Expanded Section View
-                </p>
+                </div>
                 {graph}
             </div>
         );
@@ -317,7 +318,7 @@ var PartsList = React.createClass({
     },
     render: function() {
         return (
-            <ul id="scorestructure-instruments">
+            <ul id="staves-instruments">
                 {this.state.partsList.map(function(parts, index) {
                     return (<StaffGroupOrStaff key={index} names={parts}/>);
                 })}
@@ -327,8 +328,8 @@ var PartsList = React.createClass({
 });
 
 
-var ScoreStructure = React.createClass({
-    // ScoreStructure
+var StavesStructure = React.createClass({
+    // StavesStructure
     //
     // State
     // - showParts: whether the list of parts is visible (true) or invisible (false)
@@ -347,10 +348,11 @@ var ScoreStructure = React.createClass({
         }
 
         return (
-            <div className="ncoda-scorestructure">
-                <p>Score Structure
+            <div className="nc-strv-menu nc-strv-staves">
+                <div className="header">
+                    Staves Structure
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showParts}/>
-                </p>
+                </div>
                 {partsList}
             </div>
         );
@@ -397,7 +399,7 @@ var Collaborator = React.createClass({
     },
     render: function() {
         return (
-            <div className="ncoda-collaboration-person">
+            <div>
                 <address>{this.props.name}</address>
                 <ul>
                     {this.props.changesets.map(changeset =>
@@ -435,7 +437,7 @@ var CollaboratorList = React.createClass({
         );
 
         return (
-            <div id="ncoda-collaborators-list">
+            <div>
                 {collaborators.map(person =>
                     <Collaborator name={person.get(0).get('name')} changesets={person}/>
                 )}
@@ -465,11 +467,11 @@ var Collaboration = React.createClass({
         }
 
         return (
-            <div className="ncoda-collaboration">
-                <p>
+            <div className="nc-strv-menu nc-strv-collaboration">
+                <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showCollaborators}/>
                     Collaborators
-                </p>
+                </div>
                 {collabList}
             </div>
         );
@@ -481,7 +483,7 @@ var StructureViewFooter = React.createClass({
     render: function() {
         return (
             <footer>
-                <ScoreStructure/>
+                <StavesStructure/>
                 <Collaboration/>
             </footer>
         );
@@ -515,8 +517,9 @@ var Section = React.createClass({
 
         return (
             <article className="ncoda-mei-section" id={`section-${this.props.id}`} onClick={this.onClick}>
-                <header style={headerStyleAttr}>
+                <header>
                     {this.props.name}
+                    <div className="ncoda-section-colour" style={headerStyleAttr}></div>
                 </header>
                 <div className="ncoda-mei-section-img">
                     <img src={this.props.pathToImage}/>
