@@ -27,9 +27,9 @@
 //       the names of signals, and "actions" are effectively the signals' "emit" functions.
 //
 
-
+import {log} from '../util/log';
 import reactor from './reactor';
-import {fujianStart, fujianStop} from '../ncoda-init';
+import {fujianStart, fujianStop, submitToFujianWs, submitToFujianAjax} from '../util/fujian';
 
 
 // TODO: should be "const" but Atom's symbol-list sidebar doesn't pick that up yet
@@ -122,6 +122,41 @@ const emitters = {
     },
     fujianStopWS() {
         fujianStop();
+    },
+    submitToLychee(data, format) {
+        // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
+        // currently-active score/section.
+        //
+        // Parameters:
+        // - data (string) Data to submit to Lychee.
+        // - format (string) The string "lilypond".
+        //
+
+        if ('string' !== typeof data) {
+            log.error('submitToLychee() received a "data" argument that is not a string.');
+            return;
+        }
+
+        if ('lilypond' === format) {
+            let code =    "import lychee\n"
+                        + "from lychee import signals\n"
+                        + "from lychee.signals import outbound\n"
+                        + "\n"
+                        + "def mei_listener(**kwargs):\n"
+                        + "    outbound.I_AM_LISTENING.emit(dtype='mei')\n"
+                        + "\n"
+                        + "outbound.WHO_IS_LISTENING.connect(mei_listener)\n"
+                        + "lychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''" + data + "''')";
+
+            submitToFujianWs(code);
+        } else {
+            log.error('submitToLychee() received an unknown "format" argument.');
+        }
+    },
+    submitToPyPy(code) {
+        // For code being submitted by the human user.
+        //
+        submitToFujianAjax(code);
     },
 
     // StructureView GUI state

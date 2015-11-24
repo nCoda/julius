@@ -28,6 +28,7 @@ import ReactCodeMirror from "./CodeMirror";
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
+import signals from '../nuclear/signals';
 
 
 function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {
@@ -91,7 +92,7 @@ var TextEditor = React.createClass({
         this.props.submitToPyPy(this.state.editorValue);
     },
     submitToLychee: function(changeEvent) {
-        this.props.submitToLychee(this.state.editorValue);
+        this.props.submitToLychee(this.state.editorValue, 'lilypond');
     },
     render: function() {
         var codeMirrorOptions = {
@@ -376,8 +377,8 @@ var CodeScoreView = React.createClass({
         return (
             <div className="julius">
                 <WorkTable ref="workTable"
-                           submitToPyPy={window['submitToPyPy']}
-                           submitToLychee={window['submitToLychee']}
+                           submitToPyPy={signals.emitters.submitToPyPy}
+                           submitToLychee={signals.emitters.submitToLychee}
                            meiForVerovio={this.props.meiForVerovio}
                 />
                 <Separator movingFunction={this.handleSeparator}/>

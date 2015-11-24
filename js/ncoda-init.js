@@ -26,12 +26,13 @@
 // third-party libraries
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router, IndexRoute, Route} from 'react-router';
+import {Router, IndexRoute, Route} from 'react-router';  // TODO: move to submodule
 
 // log!
 import log from './util/log';
 
 // Julius React components
+// TODO: these won't be needed when the react-router stuff is in a submodule
 import NCoda from './react/ncoda';
 import {MainScreen, Colophon} from './react/ncoda';
 import StructureView from './react/structure_view';
@@ -47,181 +48,13 @@ import verovio from './nuclear/stores/verovio';
 import structure_view from './nuclear/stores/structure_view';
 import {stores as juliusStores} from './nuclear/stores/julius';
 
-// TODO: remove these, they're just temporary
+
 import signals from './nuclear/signals';
+signals.emitters.setLogLevel(log.LEVELS.DEBUG);
+signals.emitters.fujianStartWS();
 
 
-// PyPy (Fujian) WebSocket ----------------------------------------------------
-
-const FUJIAN_URL = 'ws://localhost:1987/websocket/';
-let fujian = null;
-
-function fujianStart() {
-    // Open a connection to the Fujian PyPy server. Called on application start below.
-
-    if (null === fujian) {
-        fujian = new WebSocket(FUJIAN_URL);
-        fujian.onmessage = receiveFujian;
-    } else {
-        console.error(`fujianStart(): Fujian was already connected (status ${fujian.readyState})`);
-    }
-};
-
-function fujianStop() {
-    // Close an existing connection to the Fujian PyPy server.
-
-    if (null !== fujian) {
-        if (fujian.readyState < 2) {
-            fujian.close(1000);
-        }
-        fujian = null;
-    } else {
-        console.error('fujianStop(): Fujian was not running');
-    }
-};
-
-function receiveFujian(event) {
-    // Called to handle a message from Fujian received over the WebSocket connection.
-
-    console.log(event);
-
-    let response = JSON.parse(event.data);
-    if (response.traceback && response.traceback.length > 0) {
-        signals.emitters.stdout(response.traceback);
-    }
-    if (undefined !== response.stdout && response.stdout.length > 0) {
-        signals.emitters.stdout(response.stdout);
-    }
-    if (undefined !== response.stderr && response.stderr.length > 0) {
-        // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
-        signals.emitters.stdout(response.stderr);
-    }
-    if (undefined !== response.return && response.return.length > 0) {
-        console.log(`PyPy (Fujian) additionally returned the following:\n${response.return}`);
-    }
-    if (response.signal) {
-        // handle signals
-        switch (response.signal) {
-            case 'outbound.CONVERSION_ERROR':
-                signals.emitters.stdout(`${response.signal}:\n${response.msg}\n`);
-                break;
-
-            case 'outbound.CONVERSION_FINISHED':
-                if ('mei' === response.dtype) {
-                    // TODO: this weird bit simply removes the namespaces from the tags...
-                    //       maybe, hopefully, there will be a better way to do that?
-                    let doc = response.document
-                    while (doc.includes('mei:')) {
-                        doc = doc.replace('mei:', '');
-                    }
-                    doc = `<?xml version="1.0" encoding="UTF-8"?>\n${doc}`;
-                    signals.emitters.renderToVerovio(doc);
-                }
-                break;
-        }
-    }
-};
-
-function submitToFujianWs(code) {
-    // Send some Python code to Fujian over the WebSocket connection.
-
-    if (null !== fujian && 1 === fujian.readyState) {
-        fujian.send(code);
-    } else {
-        console.error(`Fujian WebSocket connection is in state ${fujian.readyState}\nData not sent.`);
-    }
-};
-
-fujianStart();
-
-
-// PyPy (Fujian) AJAX ---------------------------------------------------------
-
-function pypyRequestFailed(event) {
-    //
-
-    console.error('The request to PyPy (Fujian) failed.');
-    console.error(event);
-};
-
-function pypyRequestError(event) {
-    // When the request fails on the server, display the traceback.
-    // This function can work for all sorts of requests.
-    //
-
-    let response = JSON.parse(event.target.response);
-    signals.emitters.stdout(response.traceback);
-};
-
-function pypyRequestSuccessed(event) {
-    //
-
-    if (200 !== event.target.status) {
-        return pypyRequestError(event);
-    } else {
-        let response = JSON.parse(event.target.response);
-        signals.emitters.stdout(response.stdout);
-        if (response.return.length > 0) {
-            console.log(`PyPy (Fujian) additionally returned the following:\n${response.return}`);
-        }
-    }
-};
-
-function submitToFujianAjax(code) {
-    //
-
-    let request = new XMLHttpRequest();
-    request.addEventListener('error', pypyRequestFailed);
-    request.addEventListener('load', pypyRequestSuccessed);
-    request.open('POST', 'http://localhost:1987');
-    request.send(code);
-
-    signals.emitters.stdin(code);
-};
-
-window['submitToPyPy'] = submitToFujianWs;
-
-
-// Lychee Stuff ---------------------------------------------------------------
-
-function requestSuccessedLychee(event) {
-    if (200 !== event.target.status) {
-        return pypyRequestError(event);
-    } else {
-        let response = JSON.parse(event.target.response);
-        signals.emitters.stdout(response.stdout);
-        signals.emitters.renderToVerovio(`<?xml version="1.0" encoding="UTF-8"?>\n${response.return}`);
-    }
-};
-
-window['renderToVerovio'] = signals.emitters.renderToVerovio;  // NOTE: this is used in the call to Lychee
-var submitToLychee = function(lilypondCode) {
-    // TODO: this should probably be moved somewhere to the "signals" module
-    // TODO: or consolidate it into submitToPyPy() ... and still into the signals
-    // When given some LilyPond code, this function submits it to PyPy.js as a call to Lychee.
-    //
-    // @param lilypondCode (str): The LilyPond code to submit to Lychee.
-
-    // NOTE: Lychee's Document.__init__() currently creates the "testrepo" directory for us
-
-    let code =    "import lychee\n"
-                + "from lychee import signals\n"
-                + "from lychee.signals import outbound\n"
-                + "\n"
-                + "def mei_listener(**kwargs):\n"
-                + "    outbound.I_AM_LISTENING.emit(dtype='mei')\n"
-                + "\n"
-                + "outbound.WHO_IS_LISTENING.connect(mei_listener)\n"
-                + "lychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''" + lilypondCode + "''')";
-
-    submitToFujianWs(code);
-};
-window['submitToLychee'] = submitToLychee;
-
-
-// Actual Loading Stuff -------------------------------------------------------
-
-// register our NuclearJS stores
+// Register the NuclearJS Stores ----------------------------------------------
 reactor.registerStores({
     'headerMetadata': headerMetadataStores.MetadataHeaders,
     'hgChangesetHistory': mercurial.ChangesetHistory,
@@ -280,8 +113,8 @@ signals.emitters.addInstrument({label: 'Viola'});
 signals.emitters.addInstrument({label: 'Violoncello'});
 signals.emitters.addInstrument({label: 'Contrabasso'});
 
-signals.emitters.setLogLevel(log.LEVELS.DEBUG);
-
+// Render the react-router components -----------------------------------------
+// TODO: move this to a submodule
 ReactDOM.render((
     <Router>
         <Route path="/" component={NCoda}>
@@ -292,7 +125,3 @@ ReactDOM.render((
         </Route>
     </Router>
 ), document.getElementById('julius-goes-here'));
-
-
-// TODO: this is a sign that these things don't belong in the "init" file!
-export {fujianStart, fujianStop};
