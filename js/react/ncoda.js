@@ -49,7 +49,7 @@ var Colophon = React.createClass({
     render: function() {
         return (
             <div id="ncoda-colophon">
-                <img src="/img/nCoda-temporary_logo_square-180x180.png" alt="nCoda logo"></img>
+                <img src="img/nCoda-temporary_logo_square-180x180.png" alt="nCoda logo"></img>
                 <div>
                     <h2>About nCoda</h2>
                     <p>Many people contribute to nCoda. Learn about them at URL.</p>

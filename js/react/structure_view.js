@@ -130,7 +130,7 @@ var ExpandedSectionViewGraph = React.createClass({
         return (
             <div id="ncoda-expanded-section-svg">
                 <h2>A</h2>
-                <img src="../../structureview_mock/expanded_section_view.svg"></img>
+                <img src="structureview_mock/expanded_section_view.svg"></img>
             </div>
         );
     }
@@ -558,7 +558,7 @@ var ActiveSections = React.createClass({
                         id="a"
                         name="A"
                         lastUpdated={aLastUpdated}
-                        pathToImage="../../structureview_mock/sectionA.png"
+                        pathToImage="structureview_mock/sectionA.png"
                         onClick={this.props.openContextMenu}
                         colour={aColour}
                     />
@@ -566,7 +566,7 @@ var ActiveSections = React.createClass({
                         id="b"
                         name="B"
                         lastUpdated={bLastUpdated}
-                        pathToImage="../../structureview_mock/sectionB.png"
+                        pathToImage="structureview_mock/sectionB.png"
                         onClick={this.props.openContextMenu}
                         colour={bColour}
                     />
@@ -574,7 +574,7 @@ var ActiveSections = React.createClass({
                         id="ap"
                         name={"A\u2032"}
                         lastUpdated={aLastUpdated}
-                        pathToImage="../../structureview_mock/sectionA.png"
+                        pathToImage="structureview_mock/sectionA.png"
                         onClick={this.props.openContextMenu}
                         colour={aColour}
                     />
@@ -582,7 +582,7 @@ var ActiveSections = React.createClass({
                         id="c"
                         name="C"
                         lastUpdated={cLastUpdated}
-                        pathToImage="../../structureview_mock/sectionC.png"
+                        pathToImage="structureview_mock/sectionC.png"
                         onClick={this.props.openContextMenu}
                         colour={cColour}
                     />
@@ -590,7 +590,7 @@ var ActiveSections = React.createClass({
                         id="app"
                         name={"A\u2032\u2032"}
                         lastUpdated={aLastUpdated}
-                        pathToImage="../../structureview_mock/sectionA.png"
+                        pathToImage="structureview_mock/sectionA.png"
                         onClick={this.props.openContextMenu}
                         colour={aColour}
                     />

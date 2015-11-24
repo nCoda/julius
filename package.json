@@ -5,8 +5,10 @@
     "author": "Christopher Antila <christopher@antila.ca>",
     "license": "GPL-3.0",
     "repository": "https://jameson.adjectivenoun.ca:ncoda/julius.git",
+    "main": "js/electron_main.js",
     "dependencies": {
         "codemirror": "5.8.x",
+        "electron-prebuilt": "0.34.4",
         "history": "1.12.x",
         "nuclear-js": "1.2.x",
         "react": "0.14.x",
