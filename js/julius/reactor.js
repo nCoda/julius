@@ -31,4 +31,5 @@ const reactor = new Reactor({
 });
 
 
+export {reactor};
 export default reactor;

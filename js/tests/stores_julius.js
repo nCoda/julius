@@ -3,8 +3,8 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/julius/getters.js
-// Purpose:                NuclearJS getters.
+// Filename:               js/tests/stores_julius.js
+// Purpose:                Tests for the "julius" NuclearJS Stores.
 //
 // Copyright (C) 2015 Christopher Antila
 //
@@ -23,24 +23,24 @@
 //-------------------------------------------------------------------------------------------------
 
 
-function stdioConcatter(output) {
-    // Concatenates a List of strings into a single string.
-    //
-    return output.join('\n');
-};
+jest.dontMock('../julius/log');
+const log = require('../julius/log');
+jest.dontMock('../julius/stores/julius');
+const setters = require('../julius/stores/julius').setters;
 
 
-const getters = {
-    meiHeadersList: ['headerMetadata'],
-    hgChangesetHistory: ['hgChangesetHistory'],
-    listOfInstruments: ['instruments'],
-    stdin: [['stdin'], stdioConcatter],
-    stdout: [['stdout'], stdioConcatter],
-    stderr: [['stderr'], stdioConcatter],
-    meiForVerovio: ['meiForVerovio'],
-    sectionContextMenu: ['sectionContextMenu'],
-    logLevel: ['logLevel'],
-};
+describe('setLogLevel()', () => {
+    it('works on the four valid values', () => {
+        expect(setters.setLogLevel(-12, log.LEVELS.ERROR)).toBe(log.LEVELS.ERROR);
+        expect(setters.setLogLevel(-12, log.LEVELS.WARN)).toBe(log.LEVELS.WARN);
+        expect(setters.setLogLevel(-12, log.LEVELS.INFO)).toBe(log.LEVELS.INFO);
+        expect(setters.setLogLevel(-12, log.LEVELS.DEBUG)).toBe(log.LEVELS.DEBUG);
+    });
 
-export {getters, stdioConcatter};
-export default getters;
+    it('fails with some invalid values', () => {
+        expect(setters.setLogLevel(-12, 400)).toBe(-12);
+        expect(setters.setLogLevel(-12, '400')).toBe(-12);
+        expect(setters.setLogLevel(-12, {a: 400})).toBe(-12);
+        expect(setters.setLogLevel(-12, [4, 0, 0])).toBe(-12);
+    });
+});

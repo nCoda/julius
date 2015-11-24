@@ -56,6 +56,8 @@ var names = {
     FUJIAN_CLOSE_WS: 13,
     // StructureView stuff
     SECTIO_CONTEXT_MENU: 14,
+    // Logging
+    SET_LOG_LEVEL: 15,
 };
 
 
@@ -137,6 +139,12 @@ emitters['sectionContextMenu'] = function(style) {
     // Call this with an object that has "show" (boolean) and "left" and "top" (in pixels).
     //
     reactor.dispatch(names.SECTION_CONTEXT_MENU, style);
+};
+
+
+// Logging
+emitters['setLogLevel'] = function(to) {
+    reactor.dispatch(names.SET_LOG_LEVEL, to);
 };
 
 

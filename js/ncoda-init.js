@@ -28,6 +28,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Router, IndexRoute, Route} from 'react-router';
 
+// log!
+import log from './julius/log';
+
 // Julius React components
 import NCoda from './julius/ncoda';
 import {MainScreen, Colophon} from './julius/ncoda';
@@ -42,6 +45,7 @@ import documentModule from './julius/stores/document';
 import stdio from './julius/stores/stdio';
 import verovio from './julius/stores/verovio';
 import structure_view from './julius/stores/structure_view';
+import {stores as juliusStores} from './julius/stores/julius';
 
 // TODO: remove these, they're just temporary
 import signals from './julius/signals';
@@ -227,6 +231,7 @@ reactor.registerStores({
     'stderr': stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView
     'meiForVerovio': verovio.MeiForVerovio,
     'sectionContextMenu': structure_view.SectionContextMenu,
+    'logLevel': juliusStores.LogLevel,
 });
 
 // TODO: this is temporary... it's just setting up the default data
@@ -275,6 +280,7 @@ signals.emitters.addInstrument({label: 'Viola'});
 signals.emitters.addInstrument({label: 'Violoncello'});
 signals.emitters.addInstrument({label: 'Contrabasso'});
 
+signals.emitters.setLogLevel(log.LEVELS.DEBUG);
 
 ReactDOM.render((
     <Router>
