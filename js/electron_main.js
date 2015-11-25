@@ -61,3 +61,27 @@ app.on('ready', function() {
         mainWindow = null;
     });
 });
+
+
+var Menu = require('menu');
+var template = [
+    {
+        label: 'nCoda',
+        submenu: [
+            {
+                label: 'Hi!',
+            },
+            {
+                type: 'separator',
+            },
+            {
+                label: 'Quit',
+                accelerator: 'CmdOrCtrl+Q',
+                role: 'close',
+            },
+        ],
+    },
+];
+
+menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
