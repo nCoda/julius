@@ -1,10 +1,23 @@
 #!/usr/bin/env python3
 
+# Development Server for nCoda
+#
+# This script can concurrently run the following services:
+# - lessc (compiles LESS to CSS)
+# - watchify (compiles ES6 and JSX to ES5 JavaScript)
+# - Electron (the user agent shell for nCoda)
+# - HTTPServer (Python's built-in HTTP server)
+#
+# The script checks whether Electron is installed, and will prefer to open it instead of starting
+# an HTTPServer. If Electron is not installed, the HTTPServer will be started.
+
+
 # Script to concurrently run "watchify" and the SimpleHTTPServer module.
 
 from http import server
 import pathlib
 import subprocess
+import time
 
 
 # list of the JS files that must be compiled with Watchify; it's input filename, then output filename
@@ -18,8 +31,35 @@ _COMPILE_WITH_LESSC = [
     ('css/ncoda/*.less', 'css/ncoda/julius.less', 'css/ncoda/julius.css'),
 ]
 
-_PATH_TO_WATCHIFY = 'node_modules/watchify/bin/cmd.js'
-_PATH_TO_LESSC = 'node_modules/less/bin/lessc'
+_PATH_TO_WATCHIFY = 'node_modules/.bin/watchify'
+_PATH_TO_LESSC = 'node_modules/.bin/lessc'
+_PATH_TO_ELECTRON = 'node_modules/.bin/electron'
+
+_HTTP_PORT = 8000
+
+
+def run_http_server():
+    print('Starting the HTTPServer on http://localhost:{}'.format(_HTTP_PORT))
+    server_address = ('', _HTTP_PORT)
+    httpd = server.HTTPServer(server_address, server.SimpleHTTPRequestHandler)
+    httpd.serve_forever()
+
+
+def wait_for_existence(files):
+    '''
+    Given a list with filenames, don't return until all those files exist.
+    '''
+    print('Waiting for the JavaScript assets to compile.\n' +
+          '... (Electron or the HTTP server will start automatically)...'
+         )
+    files = [pathlib.Path(x) for x in files]
+    compiled = [False for _ in range(len(files))]
+    while not all(compiled):
+        time.sleep(0.25)
+        for i, path in enumerate(files):
+            if not compiled[i]:
+                if path.exists():
+                    compiled[i] = True
 
 
 def the_script():
@@ -45,6 +85,20 @@ def the_script():
         print('\n!! NOTICE: "inotifywait" not found, so LESS files won\'t update automatically !!\n')
     else:
         we_have_inotify = True
+
+    # see if electron is installed
+    we_have_electron = True
+    electron = pathlib.Path(_PATH_TO_ELECTRON)
+    if not electron.exists():
+        we_have_electron = False
+        print('\n!! NOTICE: "electron" not found, so you will have to run nCoda in your browser !!\n')
+    del electron  # because this will be a long-running script
+
+    # remove existing Watchify-compiled files (when they exist again, we'll know they're current)
+    for each_file in _COMPILE_WITH_WATCHIFY:
+        compiled = pathlib.Path(each_file[1])
+        if compiled.exists():
+            compiled.unlink()
 
     # hold the Popen instances
     subprocesses = []
@@ -79,13 +133,19 @@ def the_script():
                     print('Encountered the following error while starting lessc:\n{}'.format(cperr))
                     raise SystemExit(1)
 
-        # now run the SimpleHTTPServer
+        # wait for the compiled JavaScript files to appear
+        wait_for_existence([x[1] for x in _COMPILE_WITH_WATCHIFY])
+
         # we'll catch KeyboardInterrupt so we can try killing babel on the way out
         try:
-            print('Starting the HTTPServer')
-            server_address = ('', 8000)
-            httpd = server.HTTPServer(server_address, server.SimpleHTTPRequestHandler)
-            httpd.serve_forever()
+            if we_have_electron:
+                print('Starting Electron')
+                subprocess.call([_PATH_TO_ELECTRON, '.'])
+
+            else:
+                # no Electron---use HTTPServer
+                run_http_server()
+
         except KeyboardInterrupt:
             print('')
 
