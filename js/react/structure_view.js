@@ -113,7 +113,7 @@ var HeaderBar = React.createClass({
         }
 
         return (
-            <div className="nc-strv-menu">
+            <div className="nc-strv-menu" id="nc-strv-header-bar">
                 <div className="header">
                     Header Bar
                     <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showHeaderList}/>
@@ -229,18 +229,6 @@ var ShowOrHideButton = React.createClass({
 });
 
 
-var StructureViewHeader = React.createClass({
-    render: function() {
-        return (
-            <header>
-                <HeaderBar/>
-                <ExpandedSectionView/>
-            </header>
-        );
-    }
-});
-
-
 var SectionContextMenu = React.createClass({
     // This menu appears when users click on a Section component.
     //
@@ -267,10 +255,10 @@ var SectionContextMenu = React.createClass({
 });
 
 
-var StructureViewMenus = React.createClass({
+var ContextMenus = React.createClass({
     render: function() {
         return (
-            <div id="ncoda-menus">
+            <div>
                 <SectionContextMenu/>
             </div>
         );
@@ -348,7 +336,7 @@ var StavesStructure = React.createClass({
         }
 
         return (
-            <div className="nc-strv-menu nc-strv-staves">
+            <div className="nc-strv-menu" id="nc-strv-staves">
                 <div className="header">
                     Staves Structure
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showParts}/>
@@ -467,25 +455,13 @@ var Collaboration = React.createClass({
         }
 
         return (
-            <div className="nc-strv-menu nc-strv-collaboration">
+            <div className="nc-strv-menu" id="nc-strv-collaboration">
                 <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showCollaborators}/>
                     Collaborators
                 </div>
                 {collabList}
             </div>
-        );
-    }
-});
-
-
-var StructureViewFooter = React.createClass({
-    render: function() {
-        return (
-            <footer>
-                <StavesStructure/>
-                <Collaboration/>
-            </footer>
         );
     }
 });
@@ -516,12 +492,12 @@ var Section = React.createClass({
         let headerStyleAttr = {background: this.props.colour};
 
         return (
-            <article className="ncoda-mei-section" id={`section-${this.props.id}`} onClick={this.onClick}>
+            <article className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.onClick}>
                 <header>
                     {this.props.name}
                     <div className="ncoda-section-colour" style={headerStyleAttr}></div>
                 </header>
-                <div className="ncoda-mei-section-img">
+                <div className="nc-strv-section-img">
                     <img src={this.props.pathToImage}/>
                 </div>
                 <footer>
@@ -611,12 +587,16 @@ var StructureView = React.createClass({
     },
     render: function() {
         return (
-            <div className="ncoda-structureview-frame">
-                <StructureViewMenus/>
-                <div id="ncoda-structureview" className="ncoda-structureview">
-                    <StructureViewHeader/>
+            <div id="nc-strv-frame">
+                <ContextMenus/>
+                <div id="nc-strv-corner-menus">
+                    <HeaderBar/>
+                    <ExpandedSectionView/>
+                    <StavesStructure/>
+                    <Collaboration/>
+                </div>
+                <div id="nc-strv-view">
                     <ActiveSections openContextMenu={this.showSectionContextMenu}/>
-                    <StructureViewFooter/>
                 </div>
             </div>
         );
