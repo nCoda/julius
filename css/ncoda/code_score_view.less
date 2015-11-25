@@ -26,29 +26,35 @@
 @import "colours.less";
 
 
+// The <div> framing CodeScoreView
+#nc-csv-frame {
+    flex: 1 1 0%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    background: @cardboard-gray;
+}
+
+
 /* ********************************************************************************************* */
 /* Things for the WorkTable (middle) */
 
 .ncoda-work-table {
     overflow: hidden;
-    min-height: 15em;
-    height: 75%;
-    max-height: 90%;
+    flex: 4 1 0%;
     /* for contents */
     display: flex;
     flex-flow: row;
     justify-content: space-between;
+    align-items: stretch;
 }
 
 /* TextEditor (middle-left) */
 .ncoda-text-editor {
-    width: 40%;
-    min-width: 5%;
-    max-width: 95%;
+    flex: 1 1 0%;
     display: flex;
     flex-flow: column;
     justify-content: space-between;
-    height: 100%;
 }
 
 .ncoda-text-editor h2 {
@@ -57,28 +63,34 @@
 }
 
 .ncoda-text-editor .ReactCodeMirror {
-    flex-grow: 1;
-    overflow: scroll;
+    flex: 1 1 0%;
+    display: flex;
+    flex-flow: column;
 }
 
 .ncoda-text-editor .CodeMirror {
-    height: 100%;
+    flex: 1 1 0%;
     font-family: 'Fira Mono';
     font-size: smaller;
+    display: flex;
+    flex-flow: column;
+}
+
+.ncoda-text-editor .CodeMirror-scroll {
+    flex: 1 1 0%;
 }
 
 /* Verovio (middle-right) */
 .ncoda-verovio {
-    width: 60%;
-    min-width: 5%;
-    max-width: 95%;
-    max-height: 100%;
-    display: block;
+    flex: 2 1 0%;
     overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .ncoda-verovio svg {
-    max-width: 100%;
+    flex: 1 0 0%;
 }
 
 .ncoda-verovio .verovio-waiting {
@@ -100,11 +112,8 @@
 
 .ncoda-separator {
     /* separator between main window and terminals */
-    min-height: 0.25em;
-    // background:  lighten(#232629, 60%);
+    flex: 0 0 0.25em;
     background: @divider-gray;
-    min-width: 0.25em;
-    flex-grow: 0;
 }
 
 .ncoda-separator:hover {
@@ -130,18 +139,15 @@
 
 .ncoda-terminal-output {
     // This contains the <h2> that says "output", plus the <div class="ncoda-output-terminals">
+    flex: 1 1 0%;
     overflow: hidden;
     display: flex;
-    min-height: 5rem;
-    height: 25%;
     flex-flow: column;
 }
 
 .ncoda-terminal-output h3 {
     margin: 0px;
     color: @charcoal-grey;
-    flex-grow: 0;
-    flex-shrink: 0;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -162,10 +168,10 @@
     // - <div class="ncoda-terminal-window ncoda-output-stdin">
     // - <div class="ncoda-separator ncoda-separator-vertical">
     // - <div class="ncoda-terminal-window ncoda-output-stdin">
+    flex: 1 1 0%;
     display: flex;
     flex-flow: row;
-    flex-grow: 1;
-    flex-shrink: 1;
+    align-items: stretch;
 }
 
 .ncoda-terminal-window {
@@ -173,13 +179,6 @@
     background-color: @solarized-base02;
     color: @solarized-base0;
     overflow: scroll;
-    padding: 3% 1em 0em;
-}
-
-.ncoda-output-stdin {
-    width: 50%;
-}
-
-.ncoda-output-stdout {
-    width: 50%;
+    padding: 0.5rem 1rem 0.5rem;
+    flex: 1 1 0%;
 }

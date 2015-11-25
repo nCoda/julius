@@ -158,6 +158,8 @@ var Verovio = React.createClass({
             let theOptions = {inputFormat: 'mei'};
             theOptions = JSON.stringify(theOptions);
             let rendered = this.state.verovio.renderData(renderThis, theOptions)
+            // TODO: dynamically set the height of the .ncoda-verovio <div> so it automatically responds proportionally to width changes
+            rendered = rendered.replace('width="2100px" height="2970px"', '');
             return rendered;
         }
     },
@@ -280,15 +282,9 @@ var TerminalOutput = React.createClass({
             <div id="ncoda-terminal-output" className="ncoda-terminal-output">
                 <h3><div>Your Input</div><div>Python Output</div></h3>
                 <div className="ncoda-output-terminals">
-                    <TerminalWindow outputThis={this.state.stdin}
-                                    extraClass="ncoda-output-stdin"
-                                    ref="theLeftBox"
-                    />
+                    <TerminalWindow outputThis={this.state.stdin} ref="theLeftBox" />
                     <Separator direction="vertical" movingFunction={this.handleSeparator} />
-                    <TerminalWindow outputThis={this.state.stdout}
-                                    extraClass="ncoda-output-stdout"
-                                    ref="theRightBox"
-                    />
+                    <TerminalWindow outputThis={this.state.stdout} ref="theRightBox" />
                 </div>
             </div>
         );
@@ -375,7 +371,7 @@ var CodeScoreView = React.createClass({
     },
     render: function() {
         return (
-            <div className="julius">
+            <div id="nc-csv-frame">
                 <WorkTable ref="workTable"
                            submitToPyPy={signals.emitters.submitToPyPy}
                            submitToLychee={signals.emitters.submitToLychee}

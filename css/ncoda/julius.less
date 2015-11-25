@@ -54,6 +54,18 @@ body {
     flex-flow: column;
 }
 
+// nCoda Content
+#ncoda-content {
+    color: @shade-black;
+    overflow: hidden;
+    flex: 1 1 0%;
+
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+}
+
+
 /* ********************************************************************************************* */
 /* The loading screen, shown before PyPy.js and Verovio are compiled. */
 
@@ -98,8 +110,6 @@ h2, h3 {
 #ncoda-global-header {
     background: @charcoal-grey;
     overflow: hidden;
-    flex-shrink: 0;
-    flex-grow: 0;
     box-shadow: 0px 0px 7px @shade-black;
     z-index: 1000;
     color: @cardboard-grey;
@@ -173,25 +183,6 @@ nav li a {
     position: absolute;
     right: 0px;
     z-index: 900;
-}
-
-#ncoda-content {
-    color: @shade-black;
-    overflow: hidden;
-    flex-grow: 1;
-
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
-}
-
-/* the #ncoda div contains another div with the "julius" class */
-.julius {
-    height: 100%;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
-    background: @cardboard-gray;
 }
 
 
