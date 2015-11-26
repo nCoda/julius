@@ -46,7 +46,7 @@ function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {
     // get the existing span
     let zeroMagnitude;
     let oneMagnitude;
-    if ("vertical" === thisDirection) {
+    if ('vertical' === thisDirection) {
         zeroMagnitude = zeroElem.offsetHeight;
         oneMagnitude = oneElem.offsetHeight;
     } else {
@@ -54,20 +54,9 @@ function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {
         oneMagnitude = oneElem.offsetWidth;
     }
 
-    // Sometimes when things move too quickly, they can somehow get out of sync, and there will
-    // be spaces around the Separator. This ensures that won't happen.
-    const requiredTotal = zeroMagnitude + oneMagnitude;
-
     // do the adjustment
     zeroMagnitude += doThis;
     oneMagnitude -= doThis;
-
-    // double-check it adds up
-    if ((zeroMagnitude + oneMagnitude) < requiredTotal) {
-        zeroMagnitude += requiredTotal - (zeroMagnitude + oneMagnitude);
-    } else if ((zeroMagnitude + oneMagnitude) > requiredTotal) {
-        zeroMagnitude -= (zeroMagnitude + oneMagnitude) - requiredTotal;
-    }
 
     // set everything
     let dimension = ('vertical' === thisDirection) ? 'height' : 'width';

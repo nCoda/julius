@@ -41,17 +41,18 @@
 
 .ncoda-work-table {
     overflow: hidden;
-    flex: 4 1 0%;
+    flex: 4 1 auto;
     /* for contents */
     display: flex;
     flex-flow: row;
     justify-content: space-between;
     align-items: stretch;
+    min-height: 5rem;
 }
 
 /* TextEditor (middle-left) */
 .ncoda-text-editor {
-    flex: 1 1 0%;
+    flex: 1 1 auto;
     display: flex;
     flex-flow: column;
     justify-content: space-between;
@@ -82,7 +83,7 @@
 
 /* Verovio (middle-right) */
 .ncoda-verovio {
-    flex: 2 1 0%;
+    flex: 2 1 auto;
     overflow: scroll;
     display: flex;
     flex-direction: column;
@@ -129,10 +130,11 @@
 
 .ncoda-terminal-output {
     // This contains the <h2> that says "output", plus the <div class="ncoda-output-terminals">
-    flex: 1 1 0%;
+    flex: 1 1 auto;
     overflow: hidden;
     display: flex;
     flex-flow: column;
+    min-height: 5rem;
 }
 
 .ncoda-terminal-output h3 {
@@ -170,5 +172,5 @@
     color: @solarized-base0;
     overflow: scroll;
     padding: 0.5rem 1rem 0.5rem;
-    flex: 1 1 0%;
+    flex: 1 1 auto;
 }
