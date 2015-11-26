@@ -72,13 +72,21 @@ var template = [
                 label: 'Toggle Electron Developer Tools',
                 accelerator: (function() {
                     if (process.platform === 'darwin')
-                        return 'Alt+Command+I';
+                    return 'Alt+Command+I';
                     else
-                        return 'Ctrl+Shift+I';
+                    return 'Ctrl+Shift+I';
                 })(),
                 click: function(item, focusedWindow) {
                     if (focusedWindow)
-                        focusedWindow.toggleDevTools();
+                    focusedWindow.toggleDevTools();
+                }
+            },
+            {
+                label: 'Reload nCoda',
+                accelerator: 'F5',
+                click: function(item, focusedWindow) {
+                    if (focusedWindow)
+                        focusedWindow.reload();
                 }
             },
             {
