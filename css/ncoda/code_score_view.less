@@ -110,31 +110,21 @@
 /* ********************************************************************************************* */
 /* Things for the terminals (bottom) */
 
-.ncoda-separator {
+.nc-separator {
     /* separator between main window and terminals */
     flex: 0 0 0.25em;
     background: @divider-gray;
 }
-
-.ncoda-separator:hover {
-    background: @plasma-blue;
-}
-
-.ncoda-separator-selected {
-    // TODO: this is basically to alert the user of an nCoda bug...
-    background: @beware-orange;
-}
-
-.ncoda-separator-selected:hover {
-    background: @mellow-turquoise;
-}
-
-.ncoda-separator-horizontal {
-    cursor: ns-resize;
-}
-
-.ncoda-separator-vertical {
-    cursor: ew-resize;
+.nc-separator:hover { background: @plasma-blue; }
+.nc-separator-selected:hover { background: @mellow-turquoise; }
+.nc-separator-horizontal { cursor: ns-resize; }
+.nc-separator-vertical { cursor: ew-resize; }
+.nc-separator-plane {
+    display: none;
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: 900;  // below the global header
+    background: rgba(255, 255, 255, 0);
 }
 
 .ncoda-terminal-output {

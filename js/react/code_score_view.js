@@ -310,45 +310,61 @@ var Separator = React.createClass({
     },
     onMouseMove: function(event) {
         if (this.state.mouseDown && this.props.movingFunction) {
-            var state = {};
-            var direction = null;  // this will be opposite of the Separator's direction
-            if ("vertical" === this.props.direction) {
-                state["recentestObservation"] = event.clientX;
-                direction = "horizontal";
+            let state = {};
+            let direction = null;  // this will be opposite of the Separator's direction
+            if ('vertical' === this.props.direction) {
+                state['recentestObservation'] = event.clientX;
+                direction = 'horizontal';
             } else {
-                state["recentestObservation"] = event.clientY;
-                direction = "vertical";
+                state['recentestObservation'] = event.clientY;
+                direction = 'vertical';
             }
-            var magnitude = state.recentestObservation - this.state.recentestObservation;
+            let magnitude = state.recentestObservation - this.state.recentestObservation;
             this.setState(state);
             this.props.movingFunction(magnitude, direction );
         }
     },
     onMouseDown: function(event) {
-        var state = {mouseDown: true};
-        if ("vertical" === this.props.direction) {
-            state["recentestObservation"] = event.clientX;
+        // make sure we start in the right place
+        let state = {mouseDown: true};
+        if ('vertical' === this.props.direction) {
+            state['recentestObservation'] = event.clientX;
         } else {
-            state["recentestObservation"] = event.clientY;
+            state['recentestObservation'] = event.clientY;
         }
+
+        // subscribe to MouseEvent events so we can process the dragging
+        this.refs.thePlane.addEventListener('mousemove', this.onMouseMove);
+        this.refs.thePlane.addEventListener('mouseup', this.onMouseUp);
+
+        // set the "mouse down" CSS classes and recentestObservation
         this.setState(state);
     },
     onMouseUp: function(event) {
+        // unsubscribe to MouseEvent events
+        this.refs.thePlane.removeEventListener(MouseEvent, this.mouseEventMultiplexer);
+
+        // make sure we stop in the right place
         this.onMouseMove(event);
+
+        // set the "mouse up" CSS classes
         this.setState({mouseDown: false});
     },
     render: function() {
-        var className = "ncoda-separator ncoda-separator-" + this.props.direction;
+        let className = `nc-separator nc-separator-${this.props.direction}`;
+        let planeStyle = {display: 'none'};
         if (null !== this.props.extraCssClass) {
-            className += " "  + this.props.extraCssClass;
+            className = `${className} ${this.props.extraCssClass}`;
         }
         if (this.state.mouseDown) {
-            className += " ncoda-separator-selected";
+            className = `${className} nc-separator-selected`;
+            planeStyle.display = 'block';
         }
-        return ( <div className={className}
-                      onMouseDown={this.onMouseDown}
-                      onMouseUp={this.onMouseUp}
-                      onMouseMove={this.onMouseMove}></div> );
+        return (
+            <div className={className} onMouseDown={this.onMouseDown}>
+                <div ref="thePlane" className="nc-separator-plane" style={planeStyle}/>
+            </div>
+        );
     }
 });
 
