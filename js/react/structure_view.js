@@ -59,7 +59,7 @@ var MetadataField = React.createClass({
         let display = `${this.props.name}: ${this.props.value}`;
         return (
             <li onClick={this.editHeader}>
-                <i className="fa fa-minus-square" onClick={this.removeHeader}></i>
+                <i className="fa fa-minus-circle" onClick={this.removeHeader}></i>
                 {display}
             </li>
         );
@@ -86,7 +86,7 @@ var HeaderList = React.createClass({
                 {this.state.headers.map(field =>
                     <MetadataField name={field.get('name')} value={field.get('value')}/>
                 )}
-                <li onClick={this.addNewHeader}><i className="fa fa-plus-square"></i></li>
+                <li onClick={this.addNewHeader}><i className="fa fa-plus-circle"></i></li>
             </ul>
         );
     }
@@ -113,7 +113,7 @@ var HeaderBar = React.createClass({
         }
 
         return (
-            <div className="nc-strv-menu" id="nc-strv-header-bar">
+            <div className="nc-strv-menu nc-strv-menu-tl" id="nc-strv-header-bar">
                 <div className="header">
                     Header Bar
                     <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showHeaderList}/>
@@ -157,7 +157,7 @@ var ExpandedSectionView = React.createClass({
         }
 
         return (
-            <div className="nc-strv-menu" id="nc-strv-expanded-section">
+            <div className="nc-strv-menu nc-strv-menu-tr" id="nc-strv-expanded-section">
                 <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showGraph}/>
                     Expanded Section View
@@ -336,7 +336,7 @@ var StavesStructure = React.createClass({
         }
 
         return (
-            <div className="nc-strv-menu" id="nc-strv-staves">
+            <div className="nc-strv-menu nc-strv-menu-bl" id="nc-strv-staves">
                 <div className="header">
                     Staves Structure
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showParts}/>
@@ -387,14 +387,14 @@ var Collaborator = React.createClass({
     },
     render: function() {
         return (
-            <div>
+            <li>
                 <address>{this.props.name}</address>
                 <ul>
                     {this.props.changesets.map(changeset =>
                         <Changeset date={changeset.get('date')} message={changeset.get('summary')}/>
                     )}
                 </ul>
-            </div>
+            </li>
         );
     }
 });
@@ -425,11 +425,11 @@ var CollaboratorList = React.createClass({
         );
 
         return (
-            <div>
+            <ul>
                 {collaborators.map(person =>
                     <Collaborator name={person.get(0).get('name')} changesets={person}/>
                 )}
-            </div>
+            </ul>
         );
     }
 });
@@ -455,7 +455,7 @@ var Collaboration = React.createClass({
         }
 
         return (
-            <div className="nc-strv-menu" id="nc-strv-collaboration">
+            <div className="nc-strv-menu nc-strv-menu-br" id="nc-strv-collaboration">
                 <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showCollaborators}/>
                     Collaborators
