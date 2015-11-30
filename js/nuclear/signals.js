@@ -29,7 +29,7 @@
 
 import {log} from '../util/log';
 import reactor from './reactor';
-import {fujianStart, fujianStop, submitToFujianWs, submitToFujianAjax} from '../util/fujian';
+import {fujian} from '../util/fujian';
 
 
 // TODO: should be "const" but Atom's symbol-list sidebar doesn't pick that up yet
@@ -114,14 +114,14 @@ const emitters = {
 
     // Fujian PyPy Server (currently doesn't affect NuclearJS)
     fujianStartWS() {
-        fujianStart();
+        fujian.startWS();
     },
     fujianRestartWS() {
-        fujianStop();
-        fujianStart();
+        fujian.stopWS();
+        fujian.startWS();
     },
     fujianStopWS() {
-        fujianStop();
+        fujian.stopWS();
     },
     submitToLychee(data, format) {
         // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
@@ -143,12 +143,12 @@ const emitters = {
                         + "from lychee.signals import outbound\n"
                         + "\n"
                         + "def mei_listener(**kwargs):\n"
-                        + "    outbound.I_AM_LISTENING.emit(dtype='mei')\n"
+                        + "    outbound.I_AM_LISTENING.emit(dtype='verovio')\n"
                         + "\n"
                         + "outbound.WHO_IS_LISTENING.connect(mei_listener)\n"
                         + "lychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''" + data + "''')";
 
-            submitToFujianWs(code);
+            fujian.sendWS(code);
         } else {
             log.error('submitToLychee() received an unknown "format" argument.');
         }
@@ -156,7 +156,7 @@ const emitters = {
     submitToPyPy(code) {
         // For code being submitted by the human user.
         //
-        submitToFujianAjax(code);
+        fujian.sendAjax(code);
     },
 
     // StructureView GUI state
