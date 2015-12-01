@@ -37,8 +37,22 @@ import {log} from './log';
 import {signals} from '../nuclear/signals';
 
 
-const FUJIAN_URL = 'ws://localhost:1987/websocket/';
+const FUJIAN_WS_URL = 'ws://localhost:1987/websocket/';
+const FUJIAN_AJAX_URL = 'http://localhost:1987';
 // const fujian ... created and exported after class definition
+
+const ERROR_MESSAGES = {
+    // These error messages are in a module-level constant for two reasons: (1) to ease testing
+    // when we know the expected error message; and (2) to ease translation of the messages
+    websocketError: 'The WebSocket connection to Fujian encountered an error.',
+    ajaxAbort: 'The AJAX request to Fujian was aborted.',
+    ajaxError: 'The AJAX request to Fujian encountered an error.',
+    fujianBadJson: 'SyntaxError while decoding a message from Fujian',
+    fujianReturnValue: 'PyPy additionally returned the following:',
+    wsConnectionAlreadyOpen: 'WebSocket connection to Fujian was already open.',
+    wsNotReady: 'Fujian WebSocket connection is not ready. Data not sent.',
+    wsSyntaxError: 'SyntaxError while sending data to Fujian (probably a Unicode problem?)',
+};
 
 const FUJIAN_SIGNALS = {
     // Functions that handle signals sent by Lychee. Essentially this maps a Lychee signal name to
@@ -76,11 +90,11 @@ class Fujian {
     startWS() {
         if ('closed' === this.statusWS()) {
             // make a new connection if there isn't one, or the existing one is closed
-            this._fujian = new WebSocket(FUJIAN_URL);
+            this._fujian = new WebSocket(FUJIAN_WS_URL);
             this._fujian.onmessage = Fujian._receiveWS;
         }
         else {
-            log.info('WebSocket connection to Fujian was already open.');
+            log.info(ERROR_MESSAGES.wsConnectionAlreadyOpen);
         }
     }
 
@@ -102,12 +116,16 @@ class Fujian {
      *    the WebSocket connection.
      */
     statusWS() {
-        if (this._fujian && 1 === this._fujian.readyState) {
-            return 'open';
+        let status = 'closed';
+        if (this._fujian) {
+            if (0 === this._fujian.readyState) {
+                status = 'connecting';
+            }
+            else if (1 === this._fujian.readyState) {
+                status = 'open';
+            }
         }
-        else {
-            return 'closed';
-        }
+        return status;
     }
 
     /** Send some Python code to Fujian with an AJAX request.
@@ -127,7 +145,7 @@ class Fujian {
         request.addEventListener('error', Fujian._errorAjax);
         request.addEventListener('abort', Fujian._abortAjax);
         request.addEventListener('load', Fujian._loadAjax);
-        request.open('POST', 'http://localhost:1987');
+        request.open('POST', FUJIAN_AJAX_URL);
         request.send(code);
 
         signals.emitters.stdin(code);
@@ -150,7 +168,7 @@ class Fujian {
             }
             catch (err) {
                 if ('SyntaxError' === err.name) {
-                    log.error('SyntaxError while sending data to Fujian (probably a Unicode problem?)');
+                    log.error(ERROR_MESSAGES.wsSyntaxError);
                 }
                 else {
                     throw err;
@@ -158,7 +176,7 @@ class Fujian {
             }
         }
         else {
-            log.error('Fujian WebSocket connection is not ready. Data not sent.');
+            log.error(ERROR_MESSAGES.wsNotReady);
         }
     }
 
@@ -180,7 +198,7 @@ class Fujian {
         }
         catch (err) {
             if ('SyntaxError' === err.name) {
-                log.error(`SyntaxError decoding following message from Fujian:\n\n${data}`);
+                log.error(ERROR_MESSAGES.fujianBadJson);
                 return;
             }
             else {
@@ -188,7 +206,7 @@ class Fujian {
             }
         }
 
-        if (undefined !== response.traceback && response.traceback.length > 0) {
+        if ('string' === typeof response.traceback && response.traceback.length > 0) {
             doStdio = true;
             signals.emitters.stdout(response.traceback);
         }
@@ -200,15 +218,16 @@ class Fujian {
         }
 
         if (doStdio) {
-            if (undefined !== response.stdout && response.stdout.length > 0) {
+            if ('string' === typeof response.stdout && response.stdout.length > 0) {
                 signals.emitters.stdout(response.stdout);
             }
-            if (undefined !== response.stderr && response.stderr.length > 0) {
+            if ('string' === typeof response.stderr && response.stderr.length > 0) {
                 // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
                 signals.emitters.stdout(response.stderr);
             }
-            if (undefined !== response.return && response.return.length > 0) {
-                log.info(`PyPy (Fujian) additionally returned the following:\n${response.return}`);
+            if ('string' === typeof response.return && response.return.length > 0) {
+                log.info(ERROR_MESSAGES.fujianReturnValue);
+                log.info(response.return);
             }
         }
     }
@@ -225,19 +244,19 @@ class Fujian {
 
     /** Callback for an error in the WebSocket connection. */
     static _errorWS(event) {
-        log.error('The WebSocket connection to Fujian encountered an error.');
+        log.error(ERROR_MESSAGES.websocketError);
         log.error(event);
     }
 
     /** Callback for an aborted AJAX request. */
     static _abortAjax(event) {
-        log.error('The AJAX request to Fujian was aborted.');
+        log.error(ERROR_MESSAGES.ajaxAbort);
         log.error(event);
     }
 
     /** Callback for an erroring AJAX request. */
     static _errorAjax(event) {
-        log.error('The AJAX request to Fujian encountered an error.');
+        log.error(ERROR_MESSAGES.ajaxError);
         log.error(event);
     }
 
@@ -254,4 +273,4 @@ class Fujian {
 
 
 const fujian = new Fujian();
-export {fujian, Fujian};
+export {fujian, Fujian, ERROR_MESSAGES, FUJIAN_WS_URL, FUJIAN_AJAX_URL};
