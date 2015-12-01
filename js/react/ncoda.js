@@ -35,7 +35,36 @@ var MainScreen = React.createClass({
     render: function() {
         return (
             <div id="ncoda-loading">
-                <div>Use the <i className="fa fa-bars"></i> button in the top-left corner to open the menu.</div>
+                <div>Use the <i className="fa fa-th"></i> button in the top-left corner to open the menu.</div>
+                <MainScreenQuote/>
+            </div>
+        );
+    }
+});
+
+
+var MainScreenQuote = React.createClass({
+    //
+    //
+
+    getInitialState() {
+        return {
+            attribution: 'Chuck Close',
+            cite: 'https://www.brainpickings.org/index.php/2012/12/27/chuck-close-on-creativity/',
+            quote: 'Inspiration is for amateurs\u2014the rest of us just show up and get to work.',
+        };
+    },
+    render() {
+        return (
+            <div className="nc-main-quote">
+                <blockquote cite={this.state.cite}>
+                    <i className="fa fa-quote-left"/>
+                    <p>{this.state.quote}</p>
+                    <i className="fa fa-quote-right"/>
+                    <div className="attribution">
+                        &mdash;&nbsp;{this.state.attribution}
+                    </div>
+                </blockquote>
             </div>
         );
     }
