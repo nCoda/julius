@@ -138,18 +138,10 @@ const emitters = {
         }
 
         if ('lilypond' === format) {
-            let code =    "import lychee\n"
-                        + "from lychee import signals\n"
-                        + "from lychee.signals import outbound\n"
-                        + "\n"
-                        + "def mei_listener(**kwargs):\n"
-                        + "    outbound.I_AM_LISTENING.emit(dtype='verovio')\n"
-                        + "\n"
-                        + "outbound.WHO_IS_LISTENING.connect(mei_listener)\n"
-                        + "lychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''" + data + "''')";
-
+            let code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''${data}''')`;
             fujian.sendWS(code);
-        } else {
+        }
+        else {
             log.error('submitToLychee() received an unknown "format" argument.');
         }
     },
@@ -169,6 +161,35 @@ const emitters = {
     // Logging
     setLogLevel(to) {
         reactor.dispatch(names.SET_LOG_LEVEL, to);
+    },
+
+    // Registering outbound formats with Lychee
+    _outboundFormatRegistrar(direction, dtype, who) {
+        // You must call this through registerOutboundFormat() or unregisterOutboundFormat().
+        //
+        if ('string' !== typeof dtype) {
+            let msg = `Calling ${direction}_FORMAT requires a string for "dtype".`;
+            log.warn(msg);
+            return;
+        }
+
+        dtype = `'${dtype}'`;
+        if ('string' === typeof who) {
+            who = `'${who}'`;
+        }
+        else {
+            who = 'None';
+        }
+        let code = `import lychee\nlychee.signals.outbound.${direction}_FORMAT.emit(dtype=${dtype}, who=${who})`;
+        fujian.sendWS(code);
+    },
+    registerOutboundFormat(dtype, who) {
+        // Emits "lychee.signals.outbound.REGISTER_FORMAT"
+        emitters._outboundFormatRegistrar('REGISTER', dtype, who);
+    },
+    unregisterOutboundFormat(dtype, who) {
+        // Emits "lychee.signals.outbound.UNREGISTER_FORMAT"
+        emitters._outboundFormatRegistrar('UNREGISTER', dtype, who);
     },
 };
 
