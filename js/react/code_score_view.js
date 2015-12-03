@@ -168,8 +168,10 @@ var Verovio = React.createClass({
     },
     componentDidMount: function() {
         this.makeVerovio();
+        signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
     },
     componentWillUnmount: function() {
+        signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
         delete this.state.verovio;
     },
     render: function() {
