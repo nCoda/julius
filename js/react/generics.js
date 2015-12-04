@@ -27,6 +27,8 @@
 
 
 import React from 'react';
+
+import {log} from '../util/log';
 import {getters} from '../nuclear/getters';
 import {reactor} from '../nuclear/reactor';
 import {emitters as signals} from '../nuclear/signals';
@@ -58,8 +60,10 @@ var DialogueBox = React.createClass({
     },
     onClick() {
         if (this.state.box.get('callback')) {
-            if ('question' === this.props.type) {
-                this.state.box.get('callback')(this.refs.answer.value);
+            if ('question' === this.state.box.get('type')) {
+                let answer = this.refs.answer.value;
+                log.debug(`QuestionBox answered with "${answer}".`);
+                this.state.box.get('callback')(answer);
             }
             else {
                 this.state.box.get('callback')();
