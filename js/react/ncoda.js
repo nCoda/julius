@@ -26,6 +26,7 @@
 import React from 'react';
 import {Link} from 'react-router';
 import signals from '../nuclear/signals';
+import {DialogueBox} from './generics';
 
 
 var MainScreen = React.createClass({
@@ -258,6 +259,7 @@ var NCoda = React.createClass({
                 <GlobalHeader showHideMenu={this.showOrHideGlobalMenu} showHideDevel={this.showOrHideDevelMenu}/>
 
                 <div id="ncoda-content">
+                    <DialogueBox/>
                     <GlobalMenu showMenu={this.state.menuShown} closeThatMenu={this.showOrHideGlobalMenu}/>
                     <DeveloperMenu showMenu={this.state.develMenuShown} closeThatMenu={this.showOrHideDevelMenu}/>
                     {this.props.children}

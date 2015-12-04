@@ -78,7 +78,7 @@ body {
     align-items: center;
 }
 
-#ncoda-loading i {
+#ncoda-loading .fa-th {
     color: @plasma-blue;
 }
 
@@ -193,6 +193,64 @@ nav li a {
     z-index: 900;
 }
 
+
+/* ********************************************************************************************* */
+/* Dialogue Boxes and Related */
+.nc-modal-background {
+    z-index: 950;
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: fade(@charcoal-gray, 40%);
+
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
+.nc-dialogue-box {
+    background: @cardboard-gray;
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    box-shadow: 0 0 1rem @charcoal-gray;
+}
+.nc-dialogue-type {
+    margin: 1rem;
+    padding: 0;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 0.15rem solid;
+}
+.nc-dialogue-type > * {
+    display: inline;
+}
+.nc-dialogue-type h3 {
+    font-weight: 300;
+    margin: none;
+    padding: none;
+}
+.nc-dialogue-msg {
+    font-weight: 500;
+    margin: 1rem;
+    margin-bottom: 0.5rem;
+}
+.nc-dialogue-detail {
+    margin: 1rem;
+    margin-top: 0.5rem;
+}
+.nc-dialogue-box input {
+    margin: 0.25rem 1rem;
+}
+.nc-dialogue-error i    { color: @danger-red; }
+.nc-dialogue-warn i     { color: @beware-orange; }
+.nc-dialogue-info i     { color: @plasma-blue; }
+.nc-dialogue-debug i    { color: @verdant-green; }
+.nc-dialogue-question i { color: @plasma-blue; }
+.nc-dialogue-error .nc-dialogue-type    { border-bottom-color: @danger-red; }
+.nc-dialogue-warn .nc-dialogue-type     { border-bottom-color: @beware-orange; }
+.nc-dialogue-info .nc-dialogue-type     { border-bottom-color: @plasma-blue; }
+.nc-dialogue-debug .nc-dialogue-type    { border-bottom-color: @verdant-green; }
+.nc-dialogue-question .nc-dialogue-type { border-bottom-color: @plasma-blue; }
 
 /* ********************************************************************************************* */
 /* Buttons */

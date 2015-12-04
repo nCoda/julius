@@ -40,6 +40,7 @@ const getters = {
     meiForVerovio: ['meiForVerovio'],
     sectionContextMenu: ['sectionContextMenu'],
     logLevel: ['logLevel'],
+    DialogueBox: ['DialogueBox'],
 };
 
 export {getters, stdioConcatter};

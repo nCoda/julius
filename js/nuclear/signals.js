@@ -58,6 +58,9 @@ const names = {
     SECTIO_CONTEXT_MENU: 14,
     // Logging
     SET_LOG_LEVEL: 15,
+    // DialogueBox
+    DIALOGUEBOX_SHOW: 16,
+    DIALOGUEBOX_HIDE: 17,
 };
 
 
@@ -191,9 +194,17 @@ const emitters = {
         // Emits "lychee.signals.outbound.UNREGISTER_FORMAT"
         emitters._outboundFormatRegistrar('UNREGISTER', dtype, who);
     },
+
+    // DialogueBox
+    dialogueBoxShow(props) {
+        reactor.dispatch(names.DIALOGUEBOX_SHOW, props);
+    },
+    dialogueBoxHide() {
+        reactor.dispatch(names.DIALOGUEBOX_HIDE);
+    },
 };
 
 
 const signals = {names: names, emitters: emitters};
-export {signals};
+export {signals, names, emitters};
 export default signals;

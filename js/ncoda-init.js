@@ -47,6 +47,7 @@ import stdio from './nuclear/stores/stdio';
 import verovio from './nuclear/stores/verovio';
 import structure_view from './nuclear/stores/structure_view';
 import {stores as juliusStores} from './nuclear/stores/julius';
+import {generics} from './nuclear/stores/generics';
 
 
 import signals from './nuclear/signals';
@@ -65,6 +66,7 @@ reactor.registerStores({
     'meiForVerovio': verovio.MeiForVerovio,
     'sectionContextMenu': structure_view.SectionContextMenu,
     'logLevel': juliusStores.LogLevel,
+    'DialogueBox': generics.DialogueBox,
 });
 
 // TODO: this is temporary... it's just setting up the default data
