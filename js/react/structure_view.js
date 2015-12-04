@@ -46,10 +46,11 @@ var MetadataField = React.createClass({
         return {name: '', value: ''};
     },
     editHeader: function() {
-        let value = prompt('Enter the new value.');
-        if (null !== value && value.length > 0) {
-            signals.emitters.changeHeader(this.props.name, value);
-        }
+        signals.emitters.dialogueBoxShow({
+            type: 'question',
+            message: 'Please enter a new value for the field',
+            callback: (value) => { signals.emitters.changeHeader(this.props.name, value) },
+        });
     },
     removeHeader: function(event) {
         event.stopPropagation();
@@ -76,9 +77,30 @@ var HeaderList = React.createClass({
     },
     addNewHeader: function() {
         // Does whatever's required to add a new header.
-        let name = prompt('Put in the field name.');
-        let value = prompt('Put in the field value.');
-        signals.emitters.addHeader(name, value);
+
+        // TODO: this is a terrible hack. Here's what happens:
+        // 1: We ask for the field's new name, then in the callback...
+        // 2: We set a timeout while...
+        // 3: The DialogueBox component automatically closes itself by clearing the state, then...
+        // 4: Our timeout is over and we have a function to open a new DialogueBox wherein...
+        // 5: That DialogueBox's callback takes *both* the new field name and value, and submits it.
+
+        signals.emitters.dialogueBoxShow({
+            type: 'question',
+            message: 'Please enter a name for the new field',
+            callback: (newName) => {
+                window.setTimeout(() => {
+                    signals.emitters.dialogueBoxShow({
+                        type: 'question',
+                        message: 'Please enter a value for the new field',
+                        callback: (newValue) => {
+                            signals.emitters.addHeader(newName, newValue)
+                        },
+                    });
+                },
+                100);
+            },
+        });
     },
     render: function() {
         return (
