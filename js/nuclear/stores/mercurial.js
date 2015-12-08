@@ -25,81 +25,55 @@
 
 import {Store, toImmutable} from 'nuclear-js';
 import signals from '../signals';
+import {log} from '../../util/log';
 
 
-var ChangesetHistory = Store({
-    // Representing a history of Mercurial changesets.
-    //
-    // Exactly what the contained changesets represent is not determined here. This may correspond
-    // to the entire repository's history, to the changesets in a particular branch, or a user's
-    // three most recent changesets, even if they're unrelated.
-    //
-    // The data are stored as an ImmutableJS.List of ImmutableJS.Map with this shape. All members
-    // are strings unless otherwise noted.
-    //
-    // - changeset: The changeset's identifying hash (e.g., "f9781620bc18")
-    //
-    // - tag: The changeset's identifying tag (e.g., "tip")
-    //
-    // - name: The user who made the commit (e.g., "Christopher Antila")
-    //
-    // - email: Email address of the user who made the commit (e.g., "christopher@ncodamusic.org")
-    //
-    // - username: nCoda username of the user (e.g., "crantila")
-    //
-    // - date: That date, time, and UTC offset of the revision, in this format:
-    //    YYYY-MM-DD HH:MM:SS dOOOO
-    //   For example:
-    //    2015-11-2 21:20:57 -0500
-    //
-    // - summary: Textual description of the changset, provided by the user.
-    //
-    // - parents (list of str): Identifying hashes of the parent changesets.
-    //
-    // - children (list of str): Idenityfing hashes of the children changesets.
-    //
-    // - files (list of str): Pathnames that were modified in the changeset.
-    //
-    // - diffAdded (int): The number of lines added in this changeset.
-    //
-    // - diffRemoved (int): The number of lines removed in this changeset.
-    //
+const mercurial = {
+    /** Revlog - a Mercurial revlog.
+     *
+     * The data format ere is just what's provided to us by Lychee's "vcs_outbound" converter.
+     */
+    Revlog: Store({
+        getInitialState() {
+            return toImmutable([]);
+        },
+        initialize() {
+            this.on(signals.names.VCS_NEW_REVLOG, vcsNewRevlog);
+        }
+    }),
+};
 
-    getInitialState() {
-        return toImmutable([]);
-    },
-    initialize() {
-        this.on(signals.names.HG_ADD_CHANGESET, addChangeset);
+
+/** Entirely replace the contents of the existing revlog with a new one.
+ *
+ * @param {ImmutableJS.Map} previous - The previous Revlog data. Returned if the new data are invalid.
+ * @param {string} next - Lychee's data output from the "converters.vcs_outbound" module.
+ *
+ * @returns {ImmutableJS.Map} - Lychee's data converted to a Map.
+ */
+function vcsNewRevlog(previous, next) {
+    let post;
+    try {
+        post = JSON.parse(next);
     }
-});
+    catch (exc) {
+        if ('SyntaxError' === exc.name) {
+            log.warn("Could not parse Lychee's VCS data into JSON. VCS data will be out-of-date.");
+            console.log(next);
+            return previous;
+        }
+        else {
+            throw exc;
+        }
+    }
 
+    return toImmutable(post);
+};
 
-function addChangeset(previousState, payload) {
-    // Make a new changeset and put it in the ChangesetHistory store.
-    //
-    // Payload: An object that may have any of the fields defined for a ChangesetHistory object.
-    //     Other fields are ignored.
-    //
-
-    let cset = {
-        changeset:   payload.changeset   || '',
-        tag:         payload.tag         || '',
-        name:        payload.name        || '',
-        email:       payload.email       || '',
-        username:    payload.username    || '',
-        date:        payload.date        || '',
-        summary:     payload.summary     || '',
-        parents:     payload.parents     || [],
-        children:    payload.children    || [],
-        files:       payload.files       || [],
-        diffAdded:   payload.diffAdded   || 0,
-        diffRemoved: payload.diffRemoved || 0
-    };
-
-    return previousState.push(toImmutable(cset));
+function vcsAddRevision(previous, next) {
+    // TODO
 };
 
 
-export default {
-    ChangesetHistory: ChangesetHistory
-};
+export default mercurial;
+export {mercurial};

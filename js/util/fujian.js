@@ -69,6 +69,9 @@ const FUJIAN_SIGNALS = {
         if ('verovio' === response.dtype) {
             signals.emitters.renderToVerovio(response.document);
         }
+        else if ('vcs' === response.dtype) {
+            signals.emitters.vcsNewRevlog(response.document);
+        }
     },
 };
 

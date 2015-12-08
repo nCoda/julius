@@ -40,7 +40,7 @@ const names = {
     CHANGE_HEADER: 2,
     REMOVE_HEADER: 3,
     // Mercurial stuff
-    HG_ADD_CHANGESET: 4,
+    VCS_NEW_REVLOG: 4,
     // MEI Document Stuff
     SCOREDEF_INSTR_ADD: 5,  // to add an instrument to the score
     SCOREDEF_INSTRGRP_ADD: 6,  // to add a group of instruments to the score
@@ -81,9 +81,9 @@ const emitters = {
     },
 
     // Mercurial stuff
-    hgAddChangeset(changeset) {
-        // The argument may have any of the fields defined for the mercurial.ChangesetHistory store.
-        reactor.dispatch(names.HG_ADD_CHANGESET, changeset);
+    vcsNewRevlog(revlog) {
+        // A new, complete revlog from Mercurial.
+        reactor.dispatch(names.VCS_NEW_REVLOG, revlog);
     },
 
     // MEI Document Stuff

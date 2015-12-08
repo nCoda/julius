@@ -58,7 +58,7 @@ signals.emitters.fujianStartWS();
 // Register the NuclearJS Stores ----------------------------------------------
 reactor.registerStores({
     'headerMetadata': headerMetadataStores.MetadataHeaders,
-    'hgChangesetHistory': mercurial.ChangesetHistory,
+    'revlog': mercurial.Revlog,
     'instruments': documentModule.scoreDef.Instruments,
     'stdin': stdio.Stdin,
     'stdout': stdio.Stdout,
@@ -68,6 +68,10 @@ reactor.registerStores({
     'logLevel': juliusStores.LogLevel,
     'DialogueBox': generics.DialogueBox,
 });
+
+
+// TODO: put this in a more appropriate place (esp. so it registers/unregisters with the StructureView)
+signals.emitters.submitToPyPy("import lychee\nlychee.signals.outbound.REGISTER_FORMAT.emit(dtype='vcs', who='ncoda-init')");
 
 
 // Render the react-router components -----------------------------------------

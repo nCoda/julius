@@ -23,6 +23,9 @@
 //-------------------------------------------------------------------------------------------------
 
 
+import {Immutable} from 'nuclear-js';
+
+
 function stdioConcatter(output) {
     // Concatenates a List of strings into a single string.
     //
@@ -30,9 +33,46 @@ function stdioConcatter(output) {
 };
 
 
+/** vcsUsers() - Extract an ImmutableJS Map of user data from the revlog.
+ *
+ * @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
+ * @returns {ImmutableJS.List} A list of Map objects representing a user. Each user has "rname"
+ *    and "email" fields, each of which is a string, and "changesets," which is a List of strings,
+ *    each of which is the hexadecimal hash of a changeset for which the user is responsible. The
+ *    "changesets" List will be in chronological order, so the last element is the has of the most
+ *    recent changeset.
+ */
+function vcsUsers(revlog) {
+    // TODO: when we have nCoda usernames, maybe that could be returned here?
+    const usersMap = revlog.get('users');
+    let post = [];
+    for (let user of usersMap.keys()) {
+        post.push(Immutable.Map({
+            'name': user.slice(0, user.indexOf('<') - 1),
+            'email': user.slice(user.indexOf('<')),
+            'changesets': usersMap.get(user),
+        }));
+    }
+    return new Immutable.List(post);
+};
+
+
+/** vcsChangesets() - Extract an ImmutableJS Map of changesets from the revlog.
+*
+* @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
+* @returns {ImmutableJS.List} A list of Map objects representing a user. Each user has "rname"
+*    and "email" fields, each of which is a string, and "changesets," which is a List of strings,
+*    each of which is the hexadecimal hash of a changeset for which the user is responsible. The
+*    "changesets" List will be in chronological order, so the last element is the has of the most
+*    recent changeset.
+*/
+function vcsChangesets(revlog) {
+    return revlog.get('changesets');
+};
+
+
 const getters = {
     meiHeadersList: ['headerMetadata'],
-    hgChangesetHistory: ['hgChangesetHistory'],
     listOfInstruments: ['instruments'],
     stdin: [['stdin'], stdioConcatter],
     stdout: [['stdout'], stdioConcatter],
@@ -41,6 +81,8 @@ const getters = {
     sectionContextMenu: ['sectionContextMenu'],
     logLevel: ['logLevel'],
     DialogueBox: ['DialogueBox'],
+    vcsUsers: [['revlog'], vcsUsers],
+    vcsChangesets: [['revlog'], vcsChangesets],
 };
 
 export {getters, stdioConcatter};

@@ -395,26 +395,45 @@ var Collaborator = React.createClass({
     //
     // Props:
     // - name (string): The collaborator's name, whether a username, their real name, or other.
-    // - changesets (list of object): A list of this person's recent changesets. Refer to the
-    //     "Changeset" component for a description of the "date" and "message" props.
+    // - changesets (List of string): An ImmutableJS.List of the IDs of this person's hangesets.
+    // - numToShow (integer): The maximum number of changesets to show for this user.
     //
 
+    mixins: [reactor.ReactMixin],
+    getDataBindings: function() {
+        return {revlog: getters.vcsChangesets};
+    },
     propTypes: {
-        name: React.PropTypes.string,
-        changesets: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                date: React.PropTypes.string,
-                message: React.PropTypes.string
-            }))
+        name: React.PropTypes.string.isRequired,
+        changesets: React.PropTypes.any.isRequired,  // TODO: make global way to ask for ImmutableJS.List
+        numToShow: React.PropTypes.number,
+    },
+    getDefaultProps() {
+        return {numToShow: 3};
     },
     render: function() {
+        // NOTE: in this function, "this.state.revlog" is all the changesets in the repository, and
+        //       "this.props.changesets" is the changeset IDs of this user
+
+        let hashes = this.props.changesets;
+        if (hashes.size > this.props.numToShow) {
+            hashes = hashes.slice(-1 * this.props.numToShow);
+        }
+
+        let changesets = [];
+        for (let hash of hashes) {
+            let theDate = new Date();
+            theDate.setTime(1000 * this.state.revlog.get(hash).get('date'));
+            changesets.push(<Changeset key={hash}
+                                       date={theDate.toDateString()}
+                                       message={this.state.revlog.get(hash).get('description')}/>);
+        }
+
         return (
             <li>
                 <address>{this.props.name}</address>
                 <ul>
-                    {this.props.changesets.map(changeset =>
-                        <Changeset date={changeset.get('date')} message={changeset.get('summary')}/>
-                    )}
+                    {changesets}
                 </ul>
             </li>
         );
@@ -427,30 +446,21 @@ var CollaboratorList = React.createClass({
 
     mixins: [reactor.ReactMixin],
     getDataBindings: function() {
-        return {history: getters.hgChangesetHistory};
+        return {users: getters.vcsUsers};
     },
     render: function() {
-        // who has changesets in this repository?
-        let names = [];
-        this.state.history.forEach(function(changeset) {
-            let name = changeset.get('name');
-            if (undefined !== name && name.length > 0 && -1 === names.indexOf(name)) {
-                names.push(name);
-            }
-        });
-
-        // build collaborator-specific collections of changesets
-        let collaborators = names.map(name =>
-            this.state.history.filter(changeset =>
-                (changeset.get('name') === name) ? true : false
-            )
-        );
+        let collaborators = [];
+        for (let person of this.state.users.values()) {
+            // TODO: implement numToShow, which ought to vary based on the number of users
+            collaborators.push(<Collaborator key={person.hashCode()}
+                                             name={person.get('name')}
+                                             changesets={person.get('changesets')}
+                                             />);
+        }
 
         return (
             <ul>
-                {collaborators.map(person =>
-                    <Collaborator name={person.get(0).get('name')} changesets={person}/>
-                )}
+                {collaborators}
             </ul>
         );
     }
