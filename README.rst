@@ -42,9 +42,6 @@ you should have these top-level directories all beside each other:
 - julius
 - lychee
 - fujian
-- abjad
-
-If you installed *Abjad* without cloning the repository, of course, it will not have a directory.
 
 The *Lychee* repository URL is git@jameson.adjectivenoun.ca:lychee/lychee.git
 
