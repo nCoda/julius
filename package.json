@@ -13,7 +13,7 @@
         "nuclear-js": "1.2.x",
         "react": "0.14.x",
         "react-dom": "0.14.x",
-        "react-router": "1.0.x"
+        "react-router": "1.0.1"
     },
     "devDependencies": {
         "less": "2.5.x",
