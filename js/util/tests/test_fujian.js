@@ -23,7 +23,9 @@
 //-------------------------------------------------------------------------------------------------
 
 // mocked imports
+import {getters} from '../../nuclear/getters';
 import {log} from '../log';
+import {reactor} from '../../nuclear/reactor';
 import {signals} from '../../nuclear/signals';
 
 // non-mocked imports
@@ -222,86 +224,104 @@ describe('The response loading callbacks', () => {
         fujian.Fujian._commonReceiver = origCommonReceiver;
     });
 
-    // NB: all the following tests are for Fujian._commonReceiver()
+    describe('_commonReceiver()', () => {
+        it('works properly', () => {
+            // In this test...
+            // - doStdio=false (but becomes true because of the traceback)
+            // - there are values for stdout, stderr, and return
+            // - response.signal indicates "outbound.CONVERSION_ERROR"
+            // - response.traceback has stuff in it
+            const doStdio = false;
+            const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: 'back',
+                signal: 'outbound.CONVERSION_ERROR'};
+            const data = JSON.stringify(dataObj);
 
-    it('works properly', () => {
-        // In this test...
-        // - doStdio=false (but becomes true because of the traceback)
-        // - there are values for stdout, stderr, and return
-        // - response.signal indicates "outbound.CONVERSION_ERROR"
-        // - response.traceback has stuff in it
-        const doStdio = false;
-        const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: 'back',
-            signal: 'outbound.CONVERSION_ERROR'};
-        const data = JSON.stringify(dataObj);
+            fujian.Fujian._commonReceiver(data, doStdio);
 
-        fujian.Fujian._commonReceiver(data, doStdio);
+            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stdout);
+            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stderr);
+            expect(signals.emitters.stdout).toBeCalledWith(dataObj.traceback);
+            expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.fujianReturnValue);
+            expect(log.info).toBeCalledWith(dataObj.return);
+            expect(signals.emitters.stdout.mock.calls.length).toBe(4);  // stdout, stderr, traceback, signal
+        });
 
-        expect(signals.emitters.stdout).toBeCalledWith(dataObj.stdout);
-        expect(signals.emitters.stdout).toBeCalledWith(dataObj.stderr);
-        expect(signals.emitters.stdout).toBeCalledWith(dataObj.traceback);
-        expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.fujianReturnValue);
-        expect(log.info).toBeCalledWith(dataObj.return);
-        expect(signals.emitters.stdout.mock.calls.length).toBe(4);  // stdout, stderr, traceback, signal
-    });
+        it('ignores a signal that does not exist in Julius', () => {
+            // In this test...
+            // - doStdio=true and there is a value for stdout
+            // - response.signals indicates "whatever.DOES_NOT_EXIST" (which just ensures nothing fails,
+            //   and the function continues execution through the stdio part
+            const doStdio = true;
+            const dataObj = {stdout: 'out', signals: 'whatever.DOES_NOT_EXIST'};
+            const data = JSON.stringify(dataObj);
 
-    it('ignores a signal that does not exist in Julius', () => {
-        // In this test...
-        // - doStdio=true and there is a value for stdout
-        // - response.signals indicates "whatever.DOES_NOT_EXIST" (which just ensures nothing fails,
-        //   and the function continues execution through the stdio part
-        const doStdio = true;
-        const dataObj = {stdout: 'out', signals: 'whatever.DOES_NOT_EXIST'};
-        const data = JSON.stringify(dataObj);
+            fujian.Fujian._commonReceiver(data, doStdio);
 
-        fujian.Fujian._commonReceiver(data, doStdio);
+            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stdout);
+            expect(signals.emitters.stdout.mock.calls.length).toBe(1);  // stdout
+        });
 
-        expect(signals.emitters.stdout).toBeCalledWith(dataObj.stdout);
-        expect(signals.emitters.stdout.mock.calls.length).toBe(1);  // stdout
-    });
+        it('does not call stdout() signal if doStdio=true but there are no values to output', () => {
+            // In this test...
+            // - doStdio=true and there are no values for stdout, stderr, and return
+            const doStdio = true;
+            const dataObj = {};
+            const data = JSON.stringify(dataObj);
 
-    it('does not call stdout() signal if doStdio=true but there are no values to output', () => {
-        // In this test...
-        // - doStdio=true and there are no values for stdout, stderr, and return
-        const doStdio = true;
-        const dataObj = {};
-        const data = JSON.stringify(dataObj);
+            fujian.Fujian._commonReceiver(data, doStdio);
 
-        fujian.Fujian._commonReceiver(data, doStdio);
+            expect(signals.emitters.stdout).not.toBeCalled();
+        });
 
-        expect(signals.emitters.stdout).not.toBeCalled();
-    });
+        it('does not call stdout() signal if doStdio=true and Fujian returns 0-length strings', () => {
+            // In this test...
+            // - doStdio=true and stdout, stderr, and return are zero-length strings
+            const doStdio = true;
+            const dataObj = {stdout: '', stderr: '', return: ''};
+            const data = JSON.stringify(dataObj);
 
-    it('does not call stdout() signal if doStdio=true and Fujian returns 0-length strings', () => {
-        // In this test...
-        // - doStdio=true and stdout, stderr, and return are zero-length strings
-        const doStdio = true;
-        const dataObj = {stdout: '', stderr: '', return: ''};
-        const data = JSON.stringify(dataObj);
+            fujian.Fujian._commonReceiver(data, doStdio);
 
-        fujian.Fujian._commonReceiver(data, doStdio);
+            expect(signals.emitters.stdout).not.toBeCalled();
+        });
 
-        expect(signals.emitters.stdout).not.toBeCalled();
-    });
+        it('does not call stdout() signal if doStdio=false, even if there is stuff to print out', () => {
+            // In this test...
+            // - doStdio=false and there are values for stdout, stderr, and return
+            // - response.traceback is a zero-length string
+            const doStdio = false;
+            const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: ''};
+            const data = JSON.stringify(dataObj);
 
-    it('does not call stdout() signal if doStdio=false, even if there is stuff to print out', () => {
-        // In this test...
-        // - doStdio=false and there are values for stdout, stderr, and return
-        // - response.traceback is a zero-length string
-        const doStdio = false;
-        const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: ''};
-        const data = JSON.stringify(dataObj);
+            fujian.Fujian._commonReceiver(data, doStdio);
 
-        fujian.Fujian._commonReceiver(data, doStdio);
+            expect(signals.emitters.stdout).not.toBeCalled();
+        });
 
-        expect(signals.emitters.stdout).not.toBeCalled();
-    });
+        it('does call stdout() if doStdio=false but LOG_LEVEL===DEBUG', () => {
+            // In this test...
+            // - LOG_LEVEL is DEBUG
+            // - doStdio is false
+            // - there are values for stdout, stderr, and return
+            // - response.traceback is a zero-length string
+            const doStdio = false;
+            const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: ''};
+            const data = JSON.stringify(dataObj);
+            reactor.evaluate.mockReturnValue(log.LEVELS.DEBUG);
 
-    it('calls log.error() when "data" contains invalid JSON', () => {
-        const doStdio = false;
-        const data = '{key: value';
-        fujian.Fujian._commonReceiver(data, doStdio);
-        expect(log.error).toBeCalledWith(fujian.ERROR_MESSAGES.fujianBadJson);
+            fujian.Fujian._commonReceiver(data, doStdio);
+
+            expect(reactor.evaluate).toBeCalledWith(getters.logLevel);
+            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stdout);
+            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stderr);
+        });
+
+        it('calls log.error() when "data" contains invalid JSON', () => {
+            const doStdio = false;
+            const data = '{key: value';
+            fujian.Fujian._commonReceiver(data, doStdio);
+            expect(log.error).toBeCalledWith(fujian.ERROR_MESSAGES.fujianBadJson);
+        });
     });
 });
 

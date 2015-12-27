@@ -33,7 +33,9 @@
 // - Fujian.sendAjax()
 
 
+import {getters} from '../nuclear/getters';
 import {log} from './log';
+import {reactor} from '../nuclear/reactor';
 import {signals} from '../nuclear/signals';
 
 
@@ -220,7 +222,7 @@ class Fujian {
             }
         }
 
-        if (doStdio) {
+        if (doStdio || log.LEVELS.DEBUG === reactor.evaluate(getters.logLevel)) {
             if ('string' === typeof response.stdout && response.stdout.length > 0) {
                 signals.emitters.stdout(response.stdout);
             }
