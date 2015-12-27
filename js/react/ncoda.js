@@ -25,6 +25,8 @@
 
 import React from 'react';
 import {Link} from 'react-router';
+
+import {log} from '../util/log';
 import signals from '../nuclear/signals';
 import {DialogueBox} from './generics';
 
@@ -203,6 +205,18 @@ var DeveloperMenu = React.createClass({
             case 'devel-2':
                 signals.emitters.fujianStopWS();
                 break;
+            case 'devel-3':
+                signals.emitters.setLogLevel(log.LEVELS.ERROR);
+                break;
+            case 'devel-4':
+                signals.emitters.setLogLevel(log.LEVELS.WARN);
+                break;
+            case 'devel-5':
+                signals.emitters.setLogLevel(log.LEVELS.INFO);
+                break;
+            case 'devel-6':
+                signals.emitters.setLogLevel(log.LEVELS.DEBUG);
+                break;
         }
     },
     render: function() {
@@ -222,6 +236,12 @@ var DeveloperMenu = React.createClass({
                     <li id="devel-0" onClick={this.onClick}>Start</li>
                     <li id="devel-1" onClick={this.onClick}>Restart</li>
                     <li id="devel-2" onClick={this.onClick}>Stop</li>
+                    <hr/>
+                    <h4>Set Log Level</h4>
+                    <li id="devel-3" onClick={this.onClick}>Error</li>
+                    <li id="devel-4" onClick={this.onClick}>Warn</li>
+                    <li id="devel-5" onClick={this.onClick}>Info</li>
+                    <li id="devel-6" onClick={this.onClick}>Debug</li>
                 </ul>
             </nav>
         );
