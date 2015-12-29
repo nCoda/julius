@@ -1,16 +1,13 @@
-Julius
-======
+# Julius #
 
 This repository holds Julius, the user interface, and the nCoda app itself.
 
-License
--------
+## License ##
 
 All nCoda-provided files are subject to the GNU GPL, version 3 or later. A copy of the license can
 be found in the LICENSE file.
 
-Install
--------
+## Install ##
 
 You need to install NodeJS and the NPM (Node Package Manager). This may be available through your
 distribution's package management system, but you can also download it from the NodeJS website,
@@ -22,15 +19,14 @@ commands. From the nCoda root directory, run:
     $ npm install
     $ npm dedupe
 
-.. note:: You should re-run these commands after you run ``git pull``.
+***Note:*** You should re-run these commands after you run ``git pull``.
 
 The first command installs Julius' dependencies, and the second tries to factor out common
 dependencies between the installed dependencies.
 
 We recommend running the automated test suites before starting development.
 
-Install Fujian and Lychee
--------------------------
+## Install Fujian and Lychee ##
 
 Most Julius functionality requires a data source, for which nCoda's *Julius* and *Lychee* are the
 only known solutions.
@@ -45,10 +41,9 @@ you should have these top-level directories all beside each other:
 
 The *Lychee* repository URL is git@jameson.adjectivenoun.ca:lychee/lychee.git
 
-Run nCoda
----------
+## Run nCoda ##
 
-.. important:: Start *Fujian* before you start *Julius*.
+***Important:*** Start *Fujian* before you start *Julius*.
 
 Open two terminal windows. In one window, activate the Fujian/Lychee virtualenv, then start *Fujian*
 by running ``python -m fujian``.
@@ -56,55 +51,59 @@ by running ``python -m fujian``.
 In the other window, run the development version of nCoda with with ``devserver`` script for
 Python 3.4+. You can run it in three ways:
 
-    $ python3 devserver
-    ... or...
-    $ ./devserver
-    ... or...
-    $ npm start
+```bash
+$ python3 devserver
+# ... or...
+$ ./devserver
+# ... or...
+$ npm start
+```
 
 Then visit http://localhost:8000 in your browser! It will take noticeable time to load nCoda.
 
-Run the Test Suites
--------------------
+## Run the Test Suites ##
 
 Run the *Julius* test suite with the ``npm test`` command. Run the *Lychee* and *Fujian* test suites
 with the ``py.test`` command. All test commands must be issued from the project's respective directory.
 
-Troubleshooting Problems
-------------------------
+## Troubleshooting Problems ##
 
 It's a computer program, so sometimes it's just not going to work.
 
-Cannot run lessc
-****************
+### Cannot run lessc ###
 
 When you run ``devserver`` you may see an error like this:
 
-    ./less_autocompiler.sh: line 4: node_modules/less/bin/lessc: Permission denied
+```bash
+./less_autocompiler.sh: line 4: node_modules/less/bin/lessc: Permission denied
+```
 
-This probably means that ``lessc`` was installed without the "executable" permission bit set. I don't
-know why they would ship an executable that can't be executed, but it happens. To see whether this
-is the problem, use ``ls``:
+This probably means that ``lessc`` was installed without the "executable" bit set. I don't know why
+they would ship an executable that can't be executed, but it happens. To see whether this is the
+problem, use ``ls``:
 
-    $ ls -l node_modules/less/bin/lessc
-    total 16
-    -rw-r--r-- 1 crantila crantila 16197 Sep 25 02:43 lessc
+```bash
+$ ls -l node_modules/less/bin/lessc
+total 16
+-rw-r--r-- 1 crantila crantila 16197 Sep 25 02:43 lessc
+```
 
 It shouldn't say "crantila" unless that's your username. But look at the permissions: ``-rw-r--r--``.
 This should be ``-rwxr-xr-x`` so you need to fix it. Do this:
 
-    $ chmod +x node_modules/less/bin/lessc
+```bash
+$ chmod +x node_modules/less/bin/lessc
+```
 
 Try running ``devserver`` again, and that error message should disappear.
 
-Directory Structure
--------------------
+## Directory Structure ##
 
 The "js" directory of the Julius repository is subdivided into three:
 
-    #. The "nuclear" directory holds NuclearJS stores, getters, and so on, which manage data flow.
-    #. The "react" directory holds React components, which constitute the user interface.
-    #. The "util" directory holds other modules, for tasks such as logging and connecting to Fujian.
+1. The "nuclear" directory holds NuclearJS stores, getters, and so on, which manage data flow.
+1. The "react" directory holds React components, which constitute the user interface.
+1. The "util" directory holds other modules, for tasks such as logging and connecting to Fujian.
 
 Tests for a module belong in a subdirectory of that module. For example, the tests for
 ``js/nuclear/getters.js`` are in ``js/nuclear/tests/getters.js``.
