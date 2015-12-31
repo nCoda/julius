@@ -131,4 +131,4 @@ var DialogueBox = React.createClass({
 });
 
 
-export {DialogueBox};
+export {DialogueBox, ModalBackground};

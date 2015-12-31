@@ -195,10 +195,24 @@ const emitters = {
         emitters._outboundFormatRegistrar('UNREGISTER', dtype, who);
     },
 
-    // DialogueBox
+    /** Show a DialogueBox.
+     *
+     * If the "type" is "question," the DialogueBox displays an <input type="text"> element, and
+     * the answer is provided as the single argument to the "callback" function.
+     *
+     * @param (object) props - A JavaScript object with four members described below.
+     * @param (string) props.type - Describing the type of dialogue box (one of "error", "warn",
+     *        "info", "debug", or "question").
+     * @param (string) props.message - A one sentence message for the user.
+     * @param (string) props.detail - An optional detailed description of the message.
+     * @param (function) props.callback - An optional function to call when the user dismisses (or
+     *        closes) the DialogueBox. If "props.type" is "question," this function is called with
+     *        "answer" as the only argument; otherwise there are no arguments.
+     */
     dialogueBoxShow(props) {
         reactor.dispatch(names.DIALOGUEBOX_SHOW, props);
     },
+    /** Hide the DialogueBox React component. */
     dialogueBoxHide() {
         reactor.dispatch(names.DIALOGUEBOX_HIDE);
     },
