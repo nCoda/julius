@@ -22,11 +22,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-
-jest.dontMock('../julius/log');
-const log = require('../julius/log');
-jest.dontMock('../julius/stores/julius');
-const setters = require('../julius/stores/julius').setters;
+jest.dontMock('../../../util/log');
+const log = require('../../../util/log');
+jest.dontMock('../julius');
+const setters = require('../julius').setters;
 
 
 describe('setLogLevel()', () => {
@@ -38,6 +37,8 @@ describe('setLogLevel()', () => {
     });
 
     it('fails with some invalid values', () => {
+        // print a warning that the following warnings are okay
+        log.log.warn('NOTE: the following four warnings about invalid log levels are expected');
         expect(setters.setLogLevel(-12, 400)).toBe(-12);
         expect(setters.setLogLevel(-12, '400')).toBe(-12);
         expect(setters.setLogLevel(-12, {a: 400})).toBe(-12);
