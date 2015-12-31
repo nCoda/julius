@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/tests/getters.js
+// Filename:               js/tests/test_getters.js
 // Purpose:                Tests for the NuclearJS "getters."
 //
 // Copyright (C) 2015 Christopher Antila
@@ -23,22 +23,21 @@
 //-------------------------------------------------------------------------------------------------
 
 
-jest.dontMock('nuclear-js');
-const Immutable = require('nuclear-js').Immutable;
-jest.dontMock('../julius/getters');
-const getters = require('../julius/getters');
+import nuclear from 'nuclear-js';
+const Immutable = nuclear.Immutable;
+import {getters, stdioConcatter} from '../getters';
 
 
 describe('stdioConcatter()', () => {
     it('works with an empty List', () => {
         let input = Immutable.List([]);
         let expected = '';
-        expect(getters.stdioConcatter(input)).toBe(expected);
+        expect(stdioConcatter(input)).toBe(expected);
     });
 
     it('works with three items', () => {
         let input = Immutable.List(['1', '2', '3']);
         let expected = '1\n2\n3';
-        expect(getters.stdioConcatter(input)).toBe(expected);
+        expect(stdioConcatter(input)).toBe(expected);
     });
 });

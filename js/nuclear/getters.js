@@ -44,6 +44,7 @@ function stdioConcatter(output) {
  */
 function vcsUsers(revlog) {
     // TODO: when we have nCoda usernames, maybe that could be returned here?
+    // TODO: there are no tests for this
     const usersMap = revlog.get('users');
     let post = [];
     for (let user of usersMap.keys()) {
