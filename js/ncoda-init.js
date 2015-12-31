@@ -22,6 +22,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
+// register the NuclearJS Stores (as early as possible)
+import {init} from './nuclear/init';
 
 // third-party libraries
 import React from 'react';
@@ -38,36 +40,13 @@ import {MainScreen, Colophon} from './react/ncoda';
 import StructureView from './react/structure_view';
 import CodeScoreView from './react/code_score_view';
 
-// NuclearJS things
-import reactor from './nuclear/reactor';
-import headerMetadataStores from './nuclear/stores/headerMetadata';
-import mercurial from './nuclear/stores/mercurial';
-import documentModule from './nuclear/stores/document';
-import stdio from './nuclear/stores/stdio';
-import verovio from './nuclear/stores/verovio';
-import structure_view from './nuclear/stores/structure_view';
-import {stores as juliusStores} from './nuclear/stores/julius';
-import {generics} from './nuclear/stores/generics';
-
-
+// Set the default log level and connect to Fujian.
 import signals from './nuclear/signals';
 signals.emitters.setLogLevel(log.LEVELS.DEBUG);
 signals.emitters.fujianStartWS();
 
 
-// Register the NuclearJS Stores ----------------------------------------------
-reactor.registerStores({
-    'headerMetadata': headerMetadataStores.MetadataHeaders,
-    'revlog': mercurial.Revlog,
-    'instruments': documentModule.scoreDef.Instruments,
-    'stdin': stdio.Stdin,
-    'stdout': stdio.Stdout,
-    'stderr': stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView
-    'meiForVerovio': verovio.MeiForVerovio,
-    'sectionContextMenu': structure_view.SectionContextMenu,
-    'logLevel': juliusStores.LogLevel,
-    'DialogueBox': generics.DialogueBox,
-});
+
 
 
 // TODO: put this in a more appropriate place (esp. so it registers/unregisters with the StructureView)
