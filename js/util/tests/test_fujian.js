@@ -23,12 +23,13 @@
 //-------------------------------------------------------------------------------------------------
 
 // mocked imports
-import {getters} from '../../nuclear/getters';
 import {log} from '../log';
-import {reactor} from '../../nuclear/reactor';
-import {signals} from '../../nuclear/signals';
 
 // non-mocked imports
+import {init} from '../../nuclear/init';
+import getters from '../../nuclear/getters';
+import reactor from '../../nuclear/reactor';
+import signals from '../../nuclear/signals';
 jest.dontMock('../fujian.js');
 const fujian = require('../fujian.js');
 
@@ -39,6 +40,7 @@ describe("Fujian class' instance methods", () => {
         log.warn.mockClear();
         log.info.mockClear();
         log.debug.mockClear();
+        //
         window.WebSocket = jest.genMockFn();
         window.xhrMock = {
             addEventListener: jest.genMockFn(),
@@ -46,6 +48,8 @@ describe("Fujian class' instance methods", () => {
             send: jest.genMockFn()
         };
         window.XMLHttpRequest = () => window.xhrMock;
+        //
+        reactor.reset();
     });
 
     describe('constructor()', () => {
@@ -134,7 +138,7 @@ describe("Fujian class' instance methods", () => {
     });
 
     describe('sendAjax()', () => {
-        it('sendAjax() works', () => {
+        it('works', () => {
             const actual = new fujian.Fujian();
             const code = 'some code';
             actual.sendAjax(code);
@@ -145,7 +149,7 @@ describe("Fujian class' instance methods", () => {
             expect(xhr.addEventListener).toBeCalledWith('load', fujian.Fujian._loadAjax);
             expect(xhr.open).toBeCalledWith('POST', fujian.FUJIAN_AJAX_URL);
             expect(xhr.send).toBeCalledWith(code);
-            expect(signals.emitters.stdin).toBeCalledWith(code);
+            expect(reactor.evaluate(getters.stdin)).toBe(code);
         });
     });
 
@@ -191,11 +195,12 @@ describe("Fujian class' instance methods", () => {
 
 describe('The response loading callbacks', () => {
     beforeEach(() => {
-        signals.emitters.stdout.mockClear();
         log.error.mockClear();
         log.warn.mockClear();
         log.info.mockClear();
         log.debug.mockClear();
+        //
+        reactor.reset();
     });
 
     it('Fujian._receiveWS() calls _commonReceiver() correctly', () => {
@@ -235,15 +240,13 @@ describe('The response loading callbacks', () => {
             const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: 'back',
                 signal: 'outbound.CONVERSION_ERROR'};
             const data = JSON.stringify(dataObj);
+            const expectedStdout = `${dataObj.traceback}\n${fujian.ERROR_MESSAGES.outboundConversion}\n${dataObj.stdout}\n${dataObj.stderr}`;
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stdout);
-            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stderr);
-            expect(signals.emitters.stdout).toBeCalledWith(dataObj.traceback);
             expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.fujianReturnValue);
             expect(log.info).toBeCalledWith(dataObj.return);
-            expect(signals.emitters.stdout.mock.calls.length).toBe(4);  // stdout, stderr, traceback, signal
+            expect(reactor.evaluate(getters.stdout)).toBe(expectedStdout);
         });
 
         it('ignores a signal that does not exist in Julius', () => {
@@ -257,8 +260,7 @@ describe('The response loading callbacks', () => {
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stdout);
-            expect(signals.emitters.stdout.mock.calls.length).toBe(1);  // stdout
+            expect(reactor.evaluate(getters.stdout)).toBe(dataObj.stdout);
         });
 
         it('does not call stdout() signal if doStdio=true but there are no values to output', () => {
@@ -270,7 +272,7 @@ describe('The response loading callbacks', () => {
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(signals.emitters.stdout).not.toBeCalled();
+            expect(reactor.evaluate(getters.stdout)).toBe('');
         });
 
         it('does not call stdout() signal if doStdio=true and Fujian returns 0-length strings', () => {
@@ -282,7 +284,7 @@ describe('The response loading callbacks', () => {
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(signals.emitters.stdout).not.toBeCalled();
+            expect(reactor.evaluate(getters.stdout)).toBe('');
         });
 
         it('does not call stdout() signal if doStdio=false, even if there is stuff to print out', () => {
@@ -295,7 +297,7 @@ describe('The response loading callbacks', () => {
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(signals.emitters.stdout).not.toBeCalled();
+            expect(reactor.evaluate(getters.stdout)).toBe('');
         });
 
         it('does call stdout() if doStdio=false but LOG_LEVEL===DEBUG', () => {
@@ -307,13 +309,12 @@ describe('The response loading callbacks', () => {
             const doStdio = false;
             const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: ''};
             const data = JSON.stringify(dataObj);
-            reactor.evaluate.mockReturnValue(log.LEVELS.DEBUG);
+            signals.emitters.setLogLevel(log.LEVELS.DEBUG);
+            const expStdout = `${dataObj.stdout}\n${dataObj.stderr}`;
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(reactor.evaluate).toBeCalledWith(getters.logLevel);
-            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stdout);
-            expect(signals.emitters.stdout).toBeCalledWith(dataObj.stderr);
+            expect(reactor.evaluate(getters.stdout)).toBe(expStdout);
         });
 
         it('calls log.error() when "data" contains invalid JSON', () => {

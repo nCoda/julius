@@ -54,6 +54,7 @@ const ERROR_MESSAGES = {
     wsConnectionAlreadyOpen: 'WebSocket connection to Fujian was already open.',
     wsNotReady: 'Fujian WebSocket connection is not ready. Data not sent.',
     wsSyntaxError: 'SyntaxError while sending data to Fujian (probably a Unicode problem?)',
+    outboundConversion: 'Error during outbound conversion.',
 };
 
 const FUJIAN_SIGNALS = {
@@ -64,7 +65,7 @@ const FUJIAN_SIGNALS = {
 
     'outbound.CONVERSION_ERROR': function(response) {
         // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
-        signals.emitters.stdout(`${response.signal}:\n${response.msg}\n`);
+        signals.emitters.stdout(ERROR_MESSAGES.outboundConversion);
     },
 
     'outbound.CONVERSION_FINISHED': function(response) {
