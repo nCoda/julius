@@ -1,0 +1,65 @@
+{
+  "ecmaFeatures": {
+    "jsx": true,
+    "modules": true,
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true,
+    "node": true,
+  },
+  "extends": "eslint:recommended",
+  "plugins": ["react"],
+  "rules": {
+    // possible errors
+    "comma-dangle": [1, "always-multiline"],
+    "no-unexpected-multiline": 2,
+    "valid-jsdoc": 1,
+    // best practices
+    "eqeqeq": 2,
+    "no-alert": 2,
+    "no-caller": 2,
+    "no-eval": 2,
+    "no-implied-eval": 2,
+    "no-native-reassign": 2,
+    "no-process-env": 2,
+    "no-return-assign": 2,
+    "no-script-url": 2,
+    // variables
+    "no-shadow-restricted-names": 2,
+    "no-undef-init": 1,
+    // stylistic
+    "jsx-quotes": [1, "prefer-double"],
+    // ES6
+    "no-var": 2,
+    "prefer-const": 1,
+    "prefer-template": 1,
+    // React
+    "react/forbid-prop-types": 2,
+    "react/jsx-boolean-value": [1, "never"],
+    "react/jsx-closing-bracket-location": 1,
+    "react/jsx-curly-spacing": [1, "never"],
+    "react/jsx-equals-spacing": [2, "never"],
+    "react/jsx-handler-names": 1,
+    "react/jsx-indent-props": 1,
+    "react/jsx-indent": 1,
+    "react/jsx-key": 2,
+    "react/jsx-no-bind": 2,
+    "react/jsx-no-duplicate-props": 2,
+    "react/jsx-no-literals": 2,
+    "react/jsx-no-undef": 2,
+    "react/jsx-pascal-case": 2,
+    "react/jsx-sort-prop-types": 1,
+    "react/jsx-uses-react": 1,
+    "react/jsx-uses-vars": 1,
+    "react/no-danger": 2,
+    "react/no-deprecated": 1,
+    "react/no-did-mount-set-state": 1,
+    "react/no-did-update-set-state": 1,
+    "react/no-direct-mutation-state": 2,
+    "react/prop-types": 2,
+    "react/self-closing-comp": 1,
+    "react/wrap-multilines": 1,
+  }
+}
