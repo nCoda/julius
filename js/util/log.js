@@ -22,6 +22,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
+/* eslint no-console: 0 */
+
+
 import {getters} from '../nuclear/getters';
 import {reactor} from '../nuclear/reactor';
 
@@ -39,29 +42,27 @@ const LEVELS = {
 let level = LEVELS.WARN;
 function levelSetter(newLevel) {
     level = newLevel;
-};
+}
 reactor.observe(getters.logLevel, levelSetter);
 
 
 // determine which Console functions are available
-let haveConsole = false;
 let haveError = false;
 let haveWarn = false;
 let haveInfo = false;
 let haveLog = false;
 
-if (undefined !== console) {
-    haveConsole = true;
-    if (undefined !== console.error) {
+if (console) {
+    if (console.error) {
         haveError = true;
     }
-    if (undefined !== console.warn) {
+    if (console.warn) {
         haveWarn = true;
     }
-    if (undefined !== console.info) {
+    if (console.info) {
         haveInfo = true;
     }
-    if (undefined !== console.debug) {
+    if (console.debug) {
         haveLog = true;
     }
 }

@@ -22,8 +22,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-
 import React from "react";
+import ReactDOM from 'react-dom';
 import ReactCodeMirror from "./CodeMirror";
 
 import getters from '../nuclear/getters';
@@ -59,32 +59,32 @@ function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {
     oneMagnitude -= doThis;
 
     // set everything
-    let dimension = ('vertical' === thisDirection) ? 'height' : 'width';
-    zeroElem.style[dimension] = zeroMagnitude + 'px';
-    oneElem.style[dimension] = oneMagnitude + 'px';
-};
+    const dimension = ('vertical' === thisDirection) ? 'height' : 'width';
+    zeroElem.style[dimension] = `${zeroMagnitude}px`;
+    oneElem.style[dimension] = `${oneMagnitude}px`;
+}
 
 
-var TextEditor = React.createClass({
+const TextEditor = React.createClass({
     propTypes: {
+        submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
-        submitToLychee: React.PropTypes.func.isRequired
     },
     getInitialState: function() {
-        return {editorValue: ""};
+        return {editorValue: ''};
     },
-    updateEditorValue: function(withThis) {
+    handleEditorChange: function(withThis) {
         // TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
         this.setState({editorValue: withThis});
     },
-    submitToPyPy: function(changeEvent) {
+    handleSubmitPython: function() {
         this.props.submitToPyPy(this.state.editorValue);
     },
-    submitToLychee: function(changeEvent) {
+    handleSubmitLilyPond: function() {
         this.props.submitToLychee(this.state.editorValue, 'lilypond');
     },
     render: function() {
-        var codeMirrorOptions = {
+        const codeMirrorOptions = {
             "mode": "python",
             "theme": "solarized dark",
             "indentUnit": 4,
@@ -92,29 +92,30 @@ var TextEditor = React.createClass({
             "smartIndent": true,
             "electricChars": true,
             "lineNumbers": true,
-            "inputStyle": "contenteditable"  // NOTE: this usually defaults to "textarea" on
-                                             // desktop and may not be so good for us, but it has
-                                             // better IME and and screen reader support
+            "inputStyle": "contenteditable",  // NOTE: this usually defaults to "textarea" on
+                                              // desktop and may not be so good for us, but it has
+                                              // better IME and and screen reader support
         };
         return (
             <div className="ncoda-text-editor">
-                <h2>Text Editor</h2>
-                <ReactCodeMirror path="ncoda-editor"
-                                 options={codeMirrorOptions}
-                                 value={this.state.editorValue}
-                                 onChange={this.updateEditorValue}
-                                 />
+                <h2>{`Text Editor`}</h2>
+                <ReactCodeMirror
+                    path="ncoda-editor"
+                    options={codeMirrorOptions}
+                    value={this.state.editorValue}
+                    onChange={this.handleEditorChange}
+                />
                 <div className="ncoda-text-editor-controls">
-                    <button className="btn" value="Run as Python" onClick={this.submitToPyPy}>Run as Python</button>
-                    <button className="btn" value="Display as LilyPond" onClick={this.submitToLychee}>Submit as LilyPond</button>
+                    <button className="btn" value="Run as Python" onClick={this.handleSubmitPython}>{`Run as Python`}</button>
+                    <button className="btn" value="Display as LilyPond" onClick={this.handleSubmitLilyPond}>{`Submit as LilyPond`}</button>
                 </div>
             </div>
         );
-    }
+    },
 });
 
 
-var Verovio = React.createClass({
+const Verovio = React.createClass({
     //
     // State
     // =====
@@ -175,46 +176,49 @@ var Verovio = React.createClass({
         delete this.state.verovio;
     },
     render: function() {
-        let innerHtml = {'__html': this.renderWithVerovio(this.state.meiForVerovio)};
-        return (
-            <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
-        );
-    }
+        const innerHtml = {'__html': this.renderWithVerovio(this.state.meiForVerovio)};
+        return <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}/>;
+    },
 });
 
 
-var WorkTable = React.createClass({
+const WorkTable = React.createClass({
     propTypes: {
         meiForVerovio: React.PropTypes.string,
+        submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
-        submitToLychee: React.PropTypes.func.isRequired
     },
     getDefaultProps: function() {
         return ( {meiForVerovio: ""} );
     },
     handleSeparator: function(doThis, thisDirection) {
-        var wt = React.findDOMNode(this.refs.workTable);
-        handleSeparator(doThis, thisDirection, React.findDOMNode(this.refs.textEditor),
-                        React.findDOMNode(this.refs.verovio));
+        handleSeparator(
+            doThis,
+            thisDirection,
+            ReactDOM.findDOMNode(this.refs.textEditor),
+            ReactDOM.findDOMNode(this.refs.verovio)
+        );
     },
     render: function () {
         return (
             <div ref="workTable" className="ncoda-work-table">
-                <TextEditor ref="textEditor"
-                            submitToPyPy={this.props.submitToPyPy}
-                            submitToLychee={this.props.submitToLychee} />
-                <Separator direction="vertical" movingFunction={this.handleSeparator} />
+                <TextEditor
+                    ref="textEditor"
+                    submitToPyPy={this.props.submitToPyPy}
+                    submitToLychee={this.props.submitToLychee}
+                />
+                <Separator direction="vertical" onMove={this.handleSeparator} />
                 <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
             </div>
         );
-    }
+    },
 });
 
 
-var TerminalWindow = React.createClass({
+const TerminalWindow = React.createClass({
     propTypes: {
+        extraClass: React.PropTypes.string,
         outputThis: React.PropTypes.string,
-        extraClass: React.PropTypes.string
     },
     getDefaultProps: function() {
         return {outputThis: '', extraClass: ''};
@@ -246,51 +250,55 @@ var TerminalWindow = React.createClass({
         return outputThis;
     },
     render: function() {
-        var innerHtml = {__html: this.formatStringForOutput(this.props.outputThis)};
-        var className = "ncoda-terminal-window";
+        const innerHtml = {__html: this.formatStringForOutput(this.props.outputThis)};
+        let className = 'ncoda-terminal-window';
         if (this.props.extraClass.length > 0) {
-            className += " " + this.props.extraClass;
+            className += `${className} ${this.props.extraClass}`;
         }
         return (
             <div className={className} dangerouslySetInnerHTML={innerHtml}/>
         );
-    }
+    },
 });
 
 
-var TerminalOutput = React.createClass({
+const TerminalOutput = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     mixins: [reactor.ReactMixin],
     getDataBindings: function() {
         return {stdout: getters.stdout, stderr: getters.stderr, stdin: getters.stdin};
     },
     handleSeparator: function(doThis, thisDirection) {
-        handleSeparator(doThis, thisDirection, React.findDOMNode(this.refs.theLeftBox),
-                        React.findDOMNode(this.refs.theRightBox));
+        handleSeparator(
+            doThis,
+            thisDirection,
+            ReactDOM.findDOMNode(this.refs.theLeftBox),
+            ReactDOM.findDOMNode(this.refs.theRightBox)
+        );
     },
     render: function() {
         return (
             <div id="ncoda-terminal-output" className="ncoda-terminal-output">
-                <h3><div>Your Input</div><div>Python Output</div></h3>
+                <h3><div>{`Your Input`}</div><div>{`Python Output`}</div></h3>
                 <div className="ncoda-output-terminals">
                     <TerminalWindow outputThis={this.state.stdin} ref="theLeftBox" />
-                    <Separator direction="vertical" movingFunction={this.handleSeparator} />
+                    <Separator direction="vertical" onMove={this.handleSeparator} />
                     <TerminalWindow outputThis={this.state.stdout} ref="theRightBox" />
                 </div>
             </div>
         );
-    }
+    },
 });
 
 
-var Separator = React.createClass({
+const Separator = React.createClass({
     // TODO: let the caller submit two @id attributes, on which we'll set min- and max- properties,
     //       different depending on whether it's horizontal or vertical. And without those props,
     //       the resize cursor won't be shown.
     propTypes: {
-        extraCssClass: React.PropTypes.string,  // to add a CSS class to this Separator
         direction: React.PropTypes.oneOf(["horizontal", "vertical"]),
-        movingFunction: React.PropTypes.func  // TODO: write explanation about this
+        extraCssClass: React.PropTypes.string,  // to add a CSS class to this Separator
+        onMove: React.PropTypes.func,  // TODO: write explanation about this
     },
     getDefaultProps: function() {
         return {direction: "horizontal", extraCssClass: null};
@@ -299,9 +307,9 @@ var Separator = React.createClass({
         // - "mouseDown": set to "true" when the mouse is down
         return {mouseDown: false, recentestObservation: null};
     },
-    onMouseMove: function(event) {
-        if (this.state.mouseDown && this.props.movingFunction) {
-            let state = {};
+    handleMouseMove: function(event) {
+        if (this.state.mouseDown && this.props.onMove) {
+            const state = {};
             let direction = null;  // this will be opposite of the Separator's direction
             if ('vertical' === this.props.direction) {
                 state['recentestObservation'] = event.clientX;
@@ -310,14 +318,14 @@ var Separator = React.createClass({
                 state['recentestObservation'] = event.clientY;
                 direction = 'vertical';
             }
-            let magnitude = state.recentestObservation - this.state.recentestObservation;
+            const magnitude = state.recentestObservation - this.state.recentestObservation;
             this.setState(state);
-            this.props.movingFunction(magnitude, direction );
+            this.props.onMove(magnitude, direction );
         }
     },
-    onMouseDown: function(event) {
+    handleMouseDown: function(event) {
         // make sure we start in the right place
-        let state = {mouseDown: true};
+        const state = {mouseDown: true};
         if ('vertical' === this.props.direction) {
             state['recentestObservation'] = event.clientX;
         } else {
@@ -325,25 +333,25 @@ var Separator = React.createClass({
         }
 
         // subscribe to MouseEvent events so we can process the dragging
-        this.refs.thePlane.addEventListener('mousemove', this.onMouseMove);
-        this.refs.thePlane.addEventListener('mouseup', this.onMouseUp);
+        this.refs.thePlane.addEventListener('mousemove', this.handleMouseMove);
+        this.refs.thePlane.addEventListener('mouseup', this.handleMouseUp);
 
         // set the "mouse down" CSS classes and recentestObservation
         this.setState(state);
     },
-    onMouseUp: function(event) {
+    handleMouseUp: function(event) {
         // unsubscribe to MouseEvent events
         this.refs.thePlane.removeEventListener(MouseEvent, this.mouseEventMultiplexer);
 
         // make sure we stop in the right place
-        this.onMouseMove(event);
+        this.handleMouseMove(event);
 
         // set the "mouse up" CSS classes
         this.setState({mouseDown: false});
     },
     render: function() {
         let className = `nc-separator nc-separator-${this.props.direction}`;
-        let planeStyle = {display: 'none'};
+        const planeStyle = {display: 'none'};
         if (null !== this.props.extraCssClass) {
             className = `${className} ${this.props.extraCssClass}`;
         }
@@ -352,15 +360,15 @@ var Separator = React.createClass({
             planeStyle.display = 'block';
         }
         return (
-            <div className={className} onMouseDown={this.onMouseDown}>
+            <div className={className} onMouseDown={this.handleMouseDown}>
                 <div ref="thePlane" className="nc-separator-plane" style={planeStyle}/>
             </div>
         );
-    }
+    },
 });
 
 
-var CodeScoreView = React.createClass({
+const CodeScoreView = React.createClass({
     propTypes: {
         meiForVerovio: React.PropTypes.string,
     },
@@ -373,25 +381,28 @@ var CodeScoreView = React.createClass({
                  });
     },
     handleSeparator: function(doThis, thisDirection) {
-        handleSeparator(doThis, thisDirection, React.findDOMNode(this.refs.workTable),
-                        React.findDOMNode(this.refs.terminalOutput));
+        handleSeparator(
+            doThis,
+            thisDirection,
+            ReactDOM.findDOMNode(this.refs.workTable),
+            ReactDOM.findDOMNode(this.refs.terminalOutput)
+        );
     },
     render: function() {
         return (
             <div id="nc-csv-frame">
-                <WorkTable ref="workTable"
-                           submitToPyPy={signals.emitters.submitToPyPy}
-                           submitToLychee={signals.emitters.submitToLychee}
-                           meiForVerovio={this.props.meiForVerovio}
+                <WorkTable
+                    ref="workTable"
+                    submitToPyPy={signals.emitters.submitToPyPy}
+                    submitToLychee={signals.emitters.submitToLychee}
+                    meiForVerovio={this.props.meiForVerovio}
                 />
-                <Separator movingFunction={this.handleSeparator}/>
+                <Separator onMove={this.handleSeparator}/>
                 <TerminalOutput ref="terminalOutput"/>
             </div>
         );
-    }
+    },
 });
 
-//
 
-// export {CodeScoreView, TextEditor, Verovio, WorkTable, TerminalOutput, Separator};
 export default CodeScoreView;

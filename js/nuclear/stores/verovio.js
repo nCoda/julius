@@ -41,15 +41,15 @@ const MeiForVerovio = Store({
     },
     initialize() {
         this.on(signals.names.RENDER_TO_VEROVIO, renderToVerovio);
-    }
-    });
+    },
+});
 
 
 function renderToVerovio(previousState, payload) {
     return toImmutable(payload);
-};
+}
 
 
 export default {
-    MeiForVerovio: MeiForVerovio
+    MeiForVerovio: MeiForVerovio,
 };

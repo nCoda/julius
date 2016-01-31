@@ -30,7 +30,7 @@ function stdioConcatter(output) {
     // Concatenates a List of strings into a single string.
     //
     return output.join('\n');
-};
+}
 
 
 /** vcsUsers() - Extract an ImmutableJS Map of user data from the revlog.
@@ -46,8 +46,8 @@ function vcsUsers(revlog) {
     // TODO: when we have nCoda usernames, maybe that could be returned here?
     // TODO: there are no tests for this
     const usersMap = revlog.get('users');
-    let post = [];
-    for (let user of usersMap.keys()) {
+    const post = [];
+    for (const user of usersMap.keys()) {
         post.push(Immutable.Map({
             'name': user.slice(0, user.indexOf('<') - 1),
             'email': user.slice(user.indexOf('<')),
@@ -55,7 +55,7 @@ function vcsUsers(revlog) {
         }));
     }
     return new Immutable.List(post);
-};
+}
 
 
 /** vcsChangesets() - Extract an ImmutableJS Map of changesets from the revlog.
@@ -69,7 +69,7 @@ function vcsUsers(revlog) {
 */
 function vcsChangesets(revlog) {
     return revlog.get('changesets');
-};
+}
 
 
 const getters = {

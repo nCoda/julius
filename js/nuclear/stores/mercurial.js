@@ -39,7 +39,7 @@ const mercurial = {
         },
         initialize() {
             this.on(signals.names.VCS_NEW_REVLOG, vcsNewRevlog);
-        }
+        },
     }),
 };
 
@@ -59,7 +59,6 @@ function vcsNewRevlog(previous, next) {
     catch (exc) {
         if ('SyntaxError' === exc.name) {
             log.warn("Could not parse Lychee's VCS data into JSON. VCS data will be out-of-date.");
-            console.log(next);
             return previous;
         }
         else {
@@ -68,11 +67,7 @@ function vcsNewRevlog(previous, next) {
     }
 
     return toImmutable(post);
-};
-
-function vcsAddRevision(previous, next) {
-    // TODO
-};
+}
 
 
 export default mercurial;

@@ -63,7 +63,7 @@ const FUJIAN_SIGNALS = {
     // by Fujian.
     //
 
-    'outbound.CONVERSION_ERROR': function(response) {
+    'outbound.CONVERSION_ERROR': function() {
         // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
         signals.emitters.stdout(ERROR_MESSAGES.outboundConversion);
     },
@@ -87,12 +87,18 @@ const FUJIAN_SIGNALS = {
  */
 class Fujian {
 
-    /** Create a Fujian instance. A WebSocket connection is *not* automatically opened.. */
+    /** Create a Fujian instance. A WebSocket connection is *not* automatically opened.
+     *
+     * @constructor
+     */
     constructor() {
         this._ws = null;  // holds the WebSocket connection
     }
 
-    /** Open a connection to the Fujian PyPy server. */
+    /** Open a connection to the Fujian PyPy server.
+     *
+     * @returns {undefined}
+     */
     startWS() {
         if ('closed' === this.statusWS()) {
             // make a new connection if there isn't one, or the existing one is closed
@@ -104,10 +110,13 @@ class Fujian {
         }
     }
 
-    /** Close an existing connection to the Fujian PyPy server. */
+    /** Close an existing connection to the Fujian PyPy server.
+     *
+     * @returns {undefined}
+     */
     stopWS() {
-        let status = this.statusWS();
-        if ('open' === status || 'connecting' == status) {
+        const status = this.statusWS();
+        if ('open' === status || 'connecting' === status) {
             this._fujian.close(1000);
             this._fujian = null;
         }
@@ -137,6 +146,7 @@ class Fujian {
     /** Send some Python code to Fujian with an AJAX request.
      *
      * @param {string} code - The Python code to send to Fujian.
+     * @returns {undefined}
      *
      * We prefer AJAX requests for code written by the user. While user code may cause several Lychee
      * signals to be emitted, there are determined start and end times for execution of user code,
@@ -147,7 +157,7 @@ class Fujian {
      *    stdout and stderr when there is an uncaught exception.
      */
     sendAjax(code) {
-        let request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
         request.addEventListener('error', Fujian._errorAjax);
         request.addEventListener('abort', Fujian._abortAjax);
         request.addEventListener('load', Fujian._loadAjax);
@@ -160,6 +170,7 @@ class Fujian {
     /** Send some Python code to Fujian over the WebSocket connection.
      *
      * @param {string} code - The Python code to send to Fujian.
+     * @returns {undefined}
      *
      * We prefer the WebSocket for Julius/nCoda-related data, such as emitting a signal, since the
      * WebSocket connection offers less overhead and a closer analogy to an all-client-side app.
@@ -190,6 +201,7 @@ class Fujian {
      *
      * @param {string} data - The string sent by Fujian that contains response data.
      * @param {boolean} doStdio - Whether to output stdout and stderr data.
+     * @returns {undefined}
      *
      * When data arrives over either the WebSocket or AJAX connection, call this function to parse
      * and handle the response.
@@ -241,6 +253,7 @@ class Fujian {
     /** Called when a message arrives from Fujian over the WebSocket connection.
      *
      * @param {MessageEvent} event - Containing the data arriving from Fujian.
+     * @returns {undefined}
      *
      * This function calls Fujian._commonReceiver().
      */
@@ -248,19 +261,31 @@ class Fujian {
         Fujian._commonReceiver(event.data, false);
     }
 
-    /** Callback for an error in the WebSocket connection. */
+    /** Callback for an error in the WebSocket connection.
+     *
+     * @param {Event} event - The error event.
+     * @returns {undefined}
+     */
     static _errorWS(event) {
         log.error(ERROR_MESSAGES.websocketError);
         log.error(event);
     }
 
-    /** Callback for an aborted AJAX request. */
+    /** Callback for an aborted AJAX request.
+     *
+     * @param {ProgressEvent} event - The abort event.
+     * @returns {undefined}
+     */
     static _abortAjax(event) {
         log.error(ERROR_MESSAGES.ajaxAbort);
         log.error(event);
     }
 
-    /** Callback for an erroring AJAX request. */
+    /** Callback for an erroring AJAX request.
+     *
+     * @param {ProgressEvent} event - The error event.
+     * @returns {undefined}
+     */
     static _errorAjax(event) {
         log.error(ERROR_MESSAGES.ajaxError);
         log.error(event);
@@ -269,6 +294,7 @@ class Fujian {
     /** Called when Fujian completes an AJAX request.
      *
      * @param {MessageEvent} event - Containing the data arriving from Fujian.
+     * @returns {undefined}
      *
      * This function calls Fujian._commonReceiver().
      */

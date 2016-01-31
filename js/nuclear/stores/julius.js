@@ -23,7 +23,7 @@
 //-------------------------------------------------------------------------------------------------
 
 
-import {Store, toImmutable} from 'nuclear-js';
+import {Store} from 'nuclear-js';
 import {log, LEVELS} from '../../util/log';
 import {signals} from '../signals';
 

@@ -34,12 +34,15 @@ import {reactor} from '../nuclear/reactor';
 import {emitters as signals} from '../nuclear/signals';
 
 
-var ModalBackground = React.createClass({
+const ModalBackground = React.createClass({
     // This component is a semi-transparent background that appears behind the global menu bar, but
     // in front of everything else. Child components will, of course, be in front of the background.
     //
     // The background fills all the available screen space. Children are "flexboxxed" vertically.
     //
+    propTypes: {
+        children: React.PropTypes.element,
+    },
     render() {
         return (
             <div className="nc-modal-background">
@@ -50,7 +53,7 @@ var ModalBackground = React.createClass({
 });
 
 
-var DialogueBox = React.createClass({
+const DialogueBox = React.createClass({
     //
     //
 
@@ -58,10 +61,10 @@ var DialogueBox = React.createClass({
     getDataBindings: function() {
         return {box: getters.DialogueBox};
     },
-    onClick() {
+    handleClick() {
         if (this.state.box.get('callback')) {
             if ('question' === this.state.box.get('type')) {
-                let answer = this.refs.answer.value;
+                const answer = this.refs.answer.value;
                 log.debug(`QuestionBox answered with "${answer}".`);
                 this.state.box.get('callback')(answer);
             }
@@ -102,7 +105,7 @@ var DialogueBox = React.createClass({
         }
 
         iconClass = `fa fa-${iconClass}`;
-        let boxClass = `nc-dialogue-box nc-dialogue-${this.state.box.get('type')}`;
+        const boxClass = `nc-dialogue-box nc-dialogue-${this.state.box.get('type')}`;
 
         let detail = '';
         if (this.state.box.get('detail')) {
@@ -123,7 +126,7 @@ var DialogueBox = React.createClass({
                     <p className="nc-dialogue-msg">{this.state.box.get('message')}</p>
                     {detail}
                     {answer}
-                    <button className="btn" onClick={this.onClick}>OK</button>
+                    <button className="btn" onClick={this.handleClick}>{`OK`}</button>
                 </div>
             </ModalBackground>
         );

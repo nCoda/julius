@@ -141,7 +141,7 @@ const emitters = {
         }
 
         if ('lilypond' === format) {
-            let code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''${data}''')`;
+            const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''${data}''')`;
             fujian.sendWS(code);
         }
         else {
@@ -171,7 +171,7 @@ const emitters = {
         // You must call this through registerOutboundFormat() or unregisterOutboundFormat().
         //
         if ('string' !== typeof dtype) {
-            let msg = `Calling ${direction}_FORMAT requires a string for "dtype".`;
+            const msg = `Calling ${direction}_FORMAT requires a string for "dtype".`;
             log.warn(msg);
             return;
         }
@@ -183,7 +183,7 @@ const emitters = {
         else {
             who = 'None';
         }
-        let code = `import lychee\nlychee.signals.outbound.${direction}_FORMAT.emit(dtype=${dtype}, who=${who})`;
+        const code = `import lychee\nlychee.signals.outbound.${direction}_FORMAT.emit(dtype=${dtype}, who=${who})`;
         fujian.sendWS(code);
     },
     registerOutboundFormat(dtype, who) {
@@ -200,19 +200,22 @@ const emitters = {
      * If the "type" is "question," the DialogueBox displays an <input type="text"> element, and
      * the answer is provided as the single argument to the "callback" function.
      *
-     * @param (object) props - A JavaScript object with four members described below.
-     * @param (string) props.type - Describing the type of dialogue box (one of "error", "warn",
+     * @param {object} props - A JavaScript object with four members described below.
+     * @param {string} props.type - Describing the type of dialogue box (one of "error", "warn",
      *        "info", "debug", or "question").
-     * @param (string) props.message - A one sentence message for the user.
-     * @param (string) props.detail - An optional detailed description of the message.
-     * @param (function) props.callback - An optional function to call when the user dismisses (or
+     * @param {string} props.message - A one sentence message for the user.
+     * @param {string} props.detail - An optional detailed description of the message.
+     * @param {function} props.callback - An optional function to call when the user dismisses (or
      *        closes) the DialogueBox. If "props.type" is "question," this function is called with
      *        "answer" as the only argument; otherwise there are no arguments.
+     * @returns {undefined}
      */
     dialogueBoxShow(props) {
         reactor.dispatch(names.DIALOGUEBOX_SHOW, props);
     },
-    /** Hide the DialogueBox React component. */
+    /** Hide the DialogueBox React component.
+     * @returns {undefined}
+     */
     dialogueBoxHide() {
         reactor.dispatch(names.DIALOGUEBOX_HIDE);
     },

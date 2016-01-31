@@ -27,7 +27,7 @@ import {Store, toImmutable} from 'nuclear-js';
 import signals from '../signals';
 
 
-var Stdin = Store({
+const Stdin = Store({
     // Representing everything that has been written to stdin during an editing session.
     //
 
@@ -36,9 +36,11 @@ var Stdin = Store({
     },
     initialize() {
         this.on(signals.names.STDIN, stdioAppender);
-    }
+    },
 });
-var Stdout = Store({
+
+
+const Stdout = Store({
     // Representing everything that has been written to stdout during an editing session.
     //
 
@@ -47,9 +49,11 @@ var Stdout = Store({
     },
     initialize() {
         this.on(signals.names.STDOUT, stdioAppender);
-    }
+    },
 });
-var Stderr = Store({
+
+
+const Stderr = Store({
     // Representing everything that has been written to stderr during an editing session.
     //
 
@@ -58,7 +62,7 @@ var Stderr = Store({
     },
     initialize() {
         this.on(signals.names.STDERR, stdioAppender);
-    }
+    },
 });
 
 
@@ -69,7 +73,7 @@ function stdioAppender(previousState, payload) {
     //
 
     return previousState.push(payload);
-};
+}
 
 export default {
     Stdin: Stdin,

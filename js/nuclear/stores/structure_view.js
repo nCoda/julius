@@ -22,8 +22,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-
 import {Store, toImmutable} from 'nuclear-js';
+
+import log from '../../util/log';
 import signals from '../signals';
 
 
@@ -60,19 +61,19 @@ function sectionContextMenu(previousState, payload) {
                 return toImmutable({
                     display: 'flex',
                     left: payload.left,
-                    top: payload.top
+                    top: payload.top,
                 });
             } else {
-                console.error('SECTION_CONTEXT_MENU signal received improper "left" and "top" arguments.');
+                log.error('SECTION_CONTEXT_MENU signal received improper "left" and "top" arguments.');
             }
         } else if (false === payload.show) {
             return toImmutable({display: 'none'});
         } else {
-            console.error('SECTION_CONTEXT_MENU signal must have true or false "show" argument');
+            log.error('SECTION_CONTEXT_MENU signal must have true or false "show" argument');
             return previousState;
         }
     } else {
-        console.error('SECTION_CONTEXT_MENU signal requires "show" argument');
+        log.error('SECTION_CONTEXT_MENU signal requires "show" argument');
         return previousState;
     }
 }
@@ -86,6 +87,6 @@ export default {
         },
         initialize() {
             this.on(signals.names.SECTION_CONTEXT_MENU, sectionContextMenu);
-        }
+        },
     }),
 };

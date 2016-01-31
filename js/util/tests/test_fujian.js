@@ -45,7 +45,7 @@ describe("Fujian class' instance methods", () => {
         window.xhrMock = {
             addEventListener: jest.genMockFn(),
             open: jest.genMockFn(),
-            send: jest.genMockFn()
+            send: jest.genMockFn(),
         };
         window.XMLHttpRequest = () => window.xhrMock;
         //
@@ -54,7 +54,7 @@ describe("Fujian class' instance methods", () => {
 
     describe('constructor()', () => {
         it('initializes properly', () => {
-            let actual = new fujian.Fujian();
+            const actual = new fujian.Fujian();
             expect(actual._ws).toBe(null);
         });
     });

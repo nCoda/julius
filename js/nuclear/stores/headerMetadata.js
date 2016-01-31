@@ -27,7 +27,7 @@ import {Store, toImmutable} from 'nuclear-js';
 import signals from '../signals';
 
 
-var MetadataHeaders = Store({
+const MetadataHeaders = Store({
     getInitialState() {
         return toImmutable([]);
     },
@@ -35,7 +35,7 @@ var MetadataHeaders = Store({
         this.on(signals.names.ADD_HEADER, addHeader);
         this.on(signals.names.CHANGE_HEADER, changeHeader);
         this.on(signals.names.REMOVE_HEADER, removeHeader);
-    }
+    },
 });
 
 
@@ -47,9 +47,8 @@ function addHeader(currentState, payload) {
     // - value (str) Value of the new header field.
     //
 
-    let newHeader = toImmutable({name: payload.name, value: payload.value});
-    return currentState.push(newHeader);
-};
+    return currentState.push(toImmutable({name: payload.name, value: payload.value}));
+}
 
 
 function changeHeader(currentState, payload) {
@@ -60,7 +59,7 @@ function changeHeader(currentState, payload) {
     //
 
     let replaceToIndex = null;
-    for (let header of currentState.entries()) {
+    for (const header of currentState.entries()) {
         if (header[1].get('name') === payload.name) {
             replaceToIndex = header[0];
             break;
@@ -68,11 +67,11 @@ function changeHeader(currentState, payload) {
     }
 
     // TODO: figure out how you're supposed to do this with bullshit ImmutableJS data structures
-    let newState = currentState.toArray();
+    const newState = currentState.toArray();
     newState[replaceToIndex] = toImmutable({name: payload.name, value: payload.value});
 
     return toImmutable(newState);
-};
+}
 
 
 function removeHeader(currentState, payload) {
@@ -83,7 +82,7 @@ function removeHeader(currentState, payload) {
     //
 
     let removeIndex = null;
-    for (let header of currentState.entries()) {
+    for (const header of currentState.entries()) {
         if (header[1].get('name') === payload.name) {
             removeIndex = header[0];
             break;
@@ -91,13 +90,13 @@ function removeHeader(currentState, payload) {
     }
 
     // TODO: figure out how you're supposed to do this with bullshit ImmutableJS data structures
-    let state = currentState.toArray();
-    let partOne = state.slice(0, removeIndex);
-    let partTwo = state.slice(removeIndex + 1, state.length);
-    let newState = partOne.concat(partTwo);
+    const state = currentState.toArray();
+    const partOne = state.slice(0, removeIndex);
+    const partTwo = state.slice(removeIndex + 1, state.length);
+    const newState = partOne.concat(partTwo);
 
     return toImmutable(newState);
-};
+}
 
 
 export default {MetadataHeaders: MetadataHeaders};

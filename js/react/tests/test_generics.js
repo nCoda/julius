@@ -25,7 +25,6 @@
 import {init} from '../../nuclear/init';
 
 import nuclear from 'nuclear-js';
-const Immutable = nuclear.Immutable;
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
@@ -63,11 +62,12 @@ describe('DialogueBox', () => {
 
     /** Run a test on the DialogueBox component
      *
-     * @param (object) props - Object with type, message, detail, callback.
-     * @param (string) expIconClass - The expected className of the <i> icon; this string will have
+     * @param {object} props - Object with type, message, detail, callback.
+     * @param {string} expIconClass - The expected className of the <i> icon; this string will have
      *        "fa fa-" prepended automatically, so you can omit that part.
-     * @param (string) expTitle - The text expected in the "nc-dialogue-type" <div>.
-     * @param (string) answer - The text to write into the <input> element (only for "question").
+     * @param {string} expTitle - The text expected in the "nc-dialogue-type" <div>.
+     * @param {string} answer - The text to write into the <input> element (only for "question").
+     * @returns {undefined}
      */
     function dialogueBoxTester(props, expIconClass, expTitle, answer) {
         signals.emitters.dialogueBoxShow(props);
@@ -79,23 +79,23 @@ describe('DialogueBox', () => {
         expect(boxNode.className).toBe('nc-modal-background');
         expect(boxNode.children[0].tagName).toBe('DIV');
         expect(boxNode.children[0].className).toBe(`nc-dialogue-box nc-dialogue-${props.type}`);
-        let titleDiv = boxNode.children[0].children[0];
+        const titleDiv = boxNode.children[0].children[0];
         expect(titleDiv.tagName).toBe('DIV');
         expect(titleDiv.className).toBe('nc-dialogue-type');
         expect(titleDiv.children[0].tagName).toBe('I');
         expect(titleDiv.children[0].className).toBe(`fa fa-${expIconClass}`);
         expect(titleDiv.children[1].tagName).toBe('H3');
         expect(titleDiv.children[1].innerHTML).toBe(expTitle);
-        let message = boxNode.children[0].children[1];
+        const message = boxNode.children[0].children[1];
         expect(message.tagName).toBe('P');
         expect(message.className).toBe('nc-dialogue-msg');
         expect(message.innerHTML).toBe(props.message);
-        let detail = boxNode.children[0].children[2];
+        const detail = boxNode.children[0].children[2];
         expect(detail.tagName).toBe('P');
         expect(detail.className).toBe('nc-dialogue-detail');
         expect(detail.innerHTML).toBe(props.detail);
         // 3 is empty <div> for "answer"
-        let button = boxNode.children[0].children[4];
+        const button = boxNode.children[0].children[4];
         expect(button.tagName).toBe('BUTTON');
         expect(button.className).toBe('btn');
         expect(button.innerHTML).toBe('OK');
@@ -115,7 +115,7 @@ describe('DialogueBox', () => {
             expect(props.callback).toBeCalledWith();
         }
         expect(reactor.evaluate(getters.DialogueBox).get('displayed')).toBe(false);
-    };
+    }
 
     it('works with "error"', () => {
         const props = {type: 'error', message: 'A', detail: 'B', callback: jest.genMockFn()};

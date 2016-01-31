@@ -23,6 +23,8 @@
 //-------------------------------------------------------------------------------------------------
 
 import {Store, toImmutable} from 'nuclear-js';
+
+import log from '../../util/log';
 import signals from '../signals';
 
 
@@ -53,14 +55,14 @@ function dialogueBoxShow(previous, next) {
     }
 
     return post;
-};
+}
 
 
-function dialogueBoxHide(previous, next) {
+function dialogueBoxHide() {
     // The default is hidden. This also eliminates the possibility that we let data carry over from
     // ond dialogue box to the next.
     return generics.DialogueBox.getInitialState();
-};
+}
 
 
 const generics = {
@@ -80,8 +82,8 @@ const generics = {
         initialize() {
             this.on(signals.names.DIALOGUEBOX_SHOW, dialogueBoxShow);
             this.on(signals.names.DIALOGUEBOX_HIDE, dialogueBoxHide);
-        }
-    })
+        },
+    }),
 };
 
 

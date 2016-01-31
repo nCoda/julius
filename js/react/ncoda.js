@@ -31,22 +31,22 @@ import signals from '../nuclear/signals';
 import {DialogueBox} from './generics';
 
 
-var MainScreen = React.createClass({
+const MainScreen = React.createClass({
     //
     //
 
     render: function() {
         return (
             <div id="ncoda-loading">
-                <div>Use the <i className="fa fa-th"></i> button in the top-left corner to open the menu.</div>
+                <div>{`Use the `}<i className="fa fa-th"></i>{` button in the top-left corner to open the menu.`}</div>
                 <MainScreenQuote/>
             </div>
         );
-    }
+    },
 });
 
 
-var MainScreenQuote = React.createClass({
+const MainScreenQuote = React.createClass({
     //
     //
 
@@ -64,17 +64,15 @@ var MainScreenQuote = React.createClass({
                     <i className="fa fa-quote-left"/>
                     <p>{this.state.quote}</p>
                     <i className="fa fa-quote-right"/>
-                    <div className="attribution">
-                        &mdash;&nbsp;{this.state.attribution}
-                    </div>
+                    <div className="attribution">{`\u2014 ${this.state.attribution}`}</div>
                 </blockquote>
             </div>
         );
-    }
+    },
 });
 
 
-var Colophon = React.createClass({
+const Colophon = React.createClass({
     //
     //
 
@@ -83,83 +81,83 @@ var Colophon = React.createClass({
             <div id="ncoda-colophon">
                 <img src="img/nCoda-temporary_logo_square-180x180.png" alt="nCoda logo"></img>
                 <div>
-                    <h2>About nCoda</h2>
-                    <p>Many people contribute to nCoda. Learn about them at URL.</p>
-                    <p>You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.</p>
-                    <p>The nCoda source code is available at no direct cost from URL.</p>
-                    <p>We use many third-party software components to build nCoda. Learn about them at URL.</p>
+                    <h2>{`About nCoda`}</h2>
+                    <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
+                    <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
+                    <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
+                    <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
                 </div>
             </div>
         );
-    }
+    },
 });
 
 
-var GlobalHeader = React.createClass({
+const GlobalHeader = React.createClass({
     // This is the header bar that should always appear at the top of the screen.
     //
     // Props:
-    // - showHideMenu (func): Called without arguments to show or hide the main menu.
-    // - showHideDevel (func): Called without arguments to show or hide the developer menu.
+    // - handleShowMenu (func): Called without arguments to show or hide the main menu.
+    // - handleShowDevelMenu (func): Called without arguments to show or hide the developer menu.
 
     propTypes: {
-        showHideMenu: React.PropTypes.func.isRequired,
-        showHideDevel: React.PropTypes.func,
+        handleShowDevelMenu: React.PropTypes.func,
+        handleShowMenu: React.PropTypes.func.isRequired,
     },
     render: function() {
         return (
             <div id="ncoda-global-header">
-                <button onClick={this.props.showHideMenu}>
+                <button onClick={this.props.handleShowMenu}>
                     <i className="fa fa-th fa-2x"></i>
                 </button>
                 <h1 className="ncoda-logo">
-                    <div className="ncoda-logo-n">n</div>Coda
+                    <div className="ncoda-logo-n">{`n`}</div>{`Coda`}
                 </h1>
-                <button onClick={this.props.showHideDevel}>
+                <button onClick={this.props.handleShowDevelMenu}>
                     <i className="fa fa-wrench fa-2x"></i>
                 </button>
             </div>
         );
-    }
+    },
 });
 
 
 // TODO: consolidate MenuItem and GlobalMenu somehow onto an nCoda-global component
-var MenuItem = React.createClass({
+const MenuItem = React.createClass({
     propTypes: {
+        // A function that closes the menu once a menu item has been chosen.
+        handleCloseMenu: React.PropTypes.func,
         // The @id attribute to set on the <menuitem>
         id: React.PropTypes.string,
         // The @label and text of the <menuitem>
         label: React.PropTypes.string,
         // The URL to redirect to when this <menuitem> is selected.
         linkTo: React.PropTypes.string,
-        // A function that closes the menu once a menu item has been chosen.
-        closeThatMenu: React.PropTypes.func,
     },
     render: function() {
         return (
-            <li id={this.props.id} onClick={this.props.closeThatMenu}>
+            <li id={this.props.id} onClick={this.props.handleCloseMenu}>
                 <Link to={this.props.linkTo}>
                     {this.props.label}
                 </Link>
             </li>
         );
-    }
+    },
 });
 
 
-var GlobalMenu = React.createClass({
+const GlobalMenu = React.createClass({
     propTypes: {
+        // A function that closes the menu once a menu item has been chosen.
+        handleCloseMenu: React.PropTypes.func,
         // Whether the menu is currently shown.
         showMenu: React.PropTypes.bool,
-        // A function that closes the menu once a menu item has been chosen.
-        closeThatMenu: React.PropTypes.func,
     },
     getDefaultProps: function() {
         return {showMenu: false};
     },
     render: function() {
-        let globalMenuStyle = {};
+        const globalMenuStyle = {};
         if (this.props.showMenu) {
             globalMenuStyle['display'] = 'block';
         } else {
@@ -169,32 +167,32 @@ var GlobalMenu = React.createClass({
         return (
             <nav id="ncoda-global-menu" style={globalMenuStyle}>
                 <ul>
-                    <MenuItem id="global-0" label="Home" linkTo="/" closeThatMenu={this.props.closeThatMenu}/>
-                    <MenuItem id="global-1" label="Open CodeScoreView" linkTo="/codescore" closeThatMenu={this.props.closeThatMenu}/>
-                    <MenuItem id="global-2" label="Open StructureView" linkTo="/structure" closeThatMenu={this.props.closeThatMenu}/>
+                    <MenuItem id="global-0" label="Home" linkTo="/" handleCloseMenu={this.props.handleCloseMenu}/>
+                    <MenuItem id="global-1" label="Open CodeScoreView" linkTo="/codescore" handleCloseMenu={this.props.handleCloseMenu}/>
+                    <MenuItem id="global-2" label="Open StructureView" linkTo="/structure" handleCloseMenu={this.props.handleCloseMenu}/>
                     <hr/>
-                    <MenuItem id="global-3" label="About nCoda" linkTo="/colophon" closeThatMenu={this.props.closeThatMenu}/>
+                    <MenuItem id="global-3" label="About nCoda" linkTo="/colophon" handleCloseMenu={this.props.handleCloseMenu}/>
                 </ul>
             </nav>
         );
-    }
+    },
 });
 
 
-var DeveloperMenu = React.createClass({
+const DeveloperMenu = React.createClass({
     propTypes: {
+        // A function that closes the menu once a menu item has been chosen.
+        handleCloseMenu: React.PropTypes.func.isRequired,
         // Whether the menu is currently shown.
         showMenu: React.PropTypes.bool,
-        // A function that closes the menu once a menu item has been chosen.
-        closeThatMenu: React.PropTypes.func.isRequired,
     },
     getDefaultProps: function() {
         return {showMenu: false};
     },
-    onClick: function(event) {
+    handleClick: function(event) {
         // Handle a click on the menu items.
 
-        this.props.closeThatMenu();
+        this.props.handleCloseMenu();
         switch (event.target.id) {
             case 'devel-0':
                 signals.emitters.fujianStartWS();
@@ -220,7 +218,7 @@ var DeveloperMenu = React.createClass({
         }
     },
     render: function() {
-        let globalMenuStyle = {};
+        const globalMenuStyle = {};
         if (this.props.showMenu) {
             globalMenuStyle['display'] = 'block';
         } else {
@@ -230,26 +228,26 @@ var DeveloperMenu = React.createClass({
         return (
             <nav id="ncoda-devel-menu" style={globalMenuStyle}>
                 <ul>
-                    <li>nCoda Developer Menu</li>
+                    <li>{`nCoda Developer Menu`}</li>
                     <hr/>
-                    <h4>Fujian WebSocket Connection</h4>
-                    <li id="devel-0" onClick={this.onClick}>Start</li>
-                    <li id="devel-1" onClick={this.onClick}>Restart</li>
-                    <li id="devel-2" onClick={this.onClick}>Stop</li>
+                    <h4>{`Fujian WebSocket Connection`}</h4>
+                    <li id="devel-0" onClick={this.handleClick}>{`Start`}</li>
+                    <li id="devel-1" onClick={this.handleClick}>{`Restart`}</li>
+                    <li id="devel-2" onClick={this.handleClick}>{`Stop`}</li>
                     <hr/>
-                    <h4>Set Log Level</h4>
-                    <li id="devel-3" onClick={this.onClick}>Error</li>
-                    <li id="devel-4" onClick={this.onClick}>Warn</li>
-                    <li id="devel-5" onClick={this.onClick}>Info</li>
-                    <li id="devel-6" onClick={this.onClick}>Debug</li>
+                    <h4>{`Set Log Level`}</h4>
+                    <li id="devel-3" onClick={this.handleClick}>{`Error`}</li>
+                    <li id="devel-4" onClick={this.handleClick}>{`Warn`}</li>
+                    <li id="devel-5" onClick={this.handleClick}>{`Info`}</li>
+                    <li id="devel-6" onClick={this.handleClick}>{`Debug`}</li>
                 </ul>
             </nav>
         );
-    }
+    },
 });
 
 
-var NCoda = React.createClass({
+const NCoda = React.createClass({
     //
     // State:
     // - menuShown (boolean): Whether the menu is shown. Obviously.
@@ -257,6 +255,9 @@ var NCoda = React.createClass({
     // - activeView (str): Currently active main view. Default is "default."
     //
 
+    propTypes: {
+        children: React.PropTypes.element,
+    },
     getInitialState: function() {
         return ({menuShown: false, develMenuShown: false, activeView: 'default'});
     },
@@ -276,17 +277,17 @@ var NCoda = React.createClass({
         // TODO: figure out the accessibility stuff for the main menu button
         return (
             <div id="ncoda">
-                <GlobalHeader showHideMenu={this.showOrHideGlobalMenu} showHideDevel={this.showOrHideDevelMenu}/>
+                <GlobalHeader handleShowMenu={this.showOrHideGlobalMenu} handleShowDevelMenu={this.showOrHideDevelMenu}/>
 
                 <div id="ncoda-content">
                     <DialogueBox/>
-                    <GlobalMenu showMenu={this.state.menuShown} closeThatMenu={this.showOrHideGlobalMenu}/>
-                    <DeveloperMenu showMenu={this.state.develMenuShown} closeThatMenu={this.showOrHideDevelMenu}/>
+                    <GlobalMenu showMenu={this.state.menuShown} handleCloseMenu={this.showOrHideGlobalMenu}/>
+                    <DeveloperMenu showMenu={this.state.develMenuShown} handleCloseMenu={this.showOrHideDevelMenu}/>
                     {this.props.children}
                 </div>
             </div>
         );
-    }
+    },
 });
 
 

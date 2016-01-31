@@ -45,8 +45,8 @@ const scoreDef = {
         initialize() {
             this.on(signals.names.SCOREDEF_INSTR_ADD, addInstrument);
             this.on(signals.names.SCOREDEF_INSTRGRP_ADD, addInstrumentGroup);
-        }
-    })
+        },
+    }),
 };
 
 
@@ -55,9 +55,9 @@ function makeNewInstrument(fromThis) {
     // fields containing default values, and any fields in "fromThis" too.
     //
     return toImmutable({
-        label: fromThis.label || ''
+        label: fromThis.label || '',
     });
-};
+}
 
 
 function addInstrument(previousState, payload) {
@@ -68,7 +68,7 @@ function addInstrument(previousState, payload) {
     //
 
     return previousState.push(makeNewInstrument(payload));
-};
+}
 
 
 function addInstrumentGroup(previousState, payload) {
@@ -79,9 +79,9 @@ function addInstrumentGroup(previousState, payload) {
     //
 
     return previousState.push(toImmutable(payload.map(makeNewInstrument)));
-};
+}
 
 
 export default {
-    scoreDef: scoreDef
+    scoreDef: scoreDef,
 };

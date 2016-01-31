@@ -33,49 +33,49 @@ import signals from '../nuclear/signals';
 import {MenuItem} from './ncoda';
 
 
-var MetadataField = React.createClass({
+const MetadataField = React.createClass({
     //
 
     propTypes: {
         // The name of this metadata field.
         name: React.PropTypes.string,
         // The value of this metadata field.
-        value: React.PropTypes.string
+        value: React.PropTypes.string,
     },
     getDefaultProps: function() {
         return {name: '', value: ''};
     },
-    editHeader: function() {
+    handleEdit: function() {
         signals.emitters.dialogueBoxShow({
             type: 'question',
             message: 'Please enter a new value for the field',
             callback: (value) => { signals.emitters.changeHeader(this.props.name, value) },
         });
     },
-    removeHeader: function(event) {
+    handleDelete: function(event) {
         event.stopPropagation();
         signals.emitters.removeHeader(this.props.name);
     },
     render: function() {
-        let display = `${this.props.name}: ${this.props.value}`;
+        const display = `${this.props.name}: ${this.props.value}`;
         return (
-            <li onClick={this.editHeader}>
-                <i className="fa fa-minus-circle" onClick={this.removeHeader}></i>
+            <li onClick={this.handleEdit}>
+                <i className="fa fa-minus-circle" onClick={this.handleDelete}></i>
                 {display}
             </li>
         );
-    }
+    },
 });
 
 
-var HeaderList = React.createClass({
+const HeaderList = React.createClass({
     //
 
     mixins: [reactor.ReactMixin],
     getDataBindings: function() {
         return {headers: getters.meiHeadersList};
     },
-    addNewHeader: function() {
+    handleAddHeader: function() {
         // Does whatever's required to add a new header.
 
         // TODO: this is a terrible hack. Here's what happens:
@@ -105,17 +105,17 @@ var HeaderList = React.createClass({
     render: function() {
         return (
             <ul id="headerbar-list" className="headers">
-                {this.state.headers.map(field =>
-                    <MetadataField name={field.get('name')} value={field.get('value')}/>
+                {this.state.headers.map((field, i) =>
+                    <MetadataField key={i} name={field.get('name')} value={field.get('value')}/>
                 )}
-                <li onClick={this.addNewHeader}><i className="fa fa-plus-circle"></i></li>
+                <li onClick={this.handleAddHeader}><i className="fa fa-plus-circle"></i></li>
             </ul>
         );
-    }
+    },
 });
 
 
-var HeaderBar = React.createClass({
+const HeaderBar = React.createClass({
     // HeaderBar
     //
     // State
@@ -137,29 +137,29 @@ var HeaderBar = React.createClass({
         return (
             <div className="nc-strv-menu nc-strv-menu-tl" id="nc-strv-header-bar">
                 <div className="header">
-                    Header Bar
+                    {`Header Bar`}
                     <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showHeaderList}/>
                 </div>
                 {headerList}
             </div>
         );
-    }
+    },
 });
 
 
-var ExpandedSectionViewGraph = React.createClass({
+const ExpandedSectionViewGraph = React.createClass({
     render: function() {
         return (
             <div id="ncoda-expanded-section-svg">
-                <h2>A</h2>
+                <h2>{`A`}</h2>
                 <img src="structureview_mock/expanded_section_view.svg"></img>
             </div>
         );
-    }
+    },
 });
 
 
-var ExpandedSectionView = React.createClass({
+const ExpandedSectionView = React.createClass({
     // ExpandedSectionView
     //
     // State
@@ -182,16 +182,16 @@ var ExpandedSectionView = React.createClass({
             <div className="nc-strv-menu nc-strv-menu-tr" id="nc-strv-expanded-section">
                 <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showGraph}/>
-                    Expanded Section View
+                    {`Expanded Section View`}
                 </div>
                 {graph}
             </div>
         );
-    }
+    },
 });
 
 
-var ShowOrHideButton = React.createClass({
+const ShowOrHideButton = React.createClass({
     // ShowOrHideButton
     //
     // Render a button to show or hide another component. This component does not do the showing or
@@ -205,13 +205,14 @@ var ShowOrHideButton = React.createClass({
     //
 
     propTypes: {
+        expands: React.PropTypes.oneOf(['up', 'down', 'left', 'right', 'expand']),
         func: React.PropTypes.func.isRequired,
         isShown: React.PropTypes.bool,
-        expands: React.PropTypes.oneOf(['up', 'down', 'left', 'right', 'expand'])
     },
     getDefaultProps: function() {
         return {expands: 'expand'};
     },
+    handleClick() { this.props.func(); },
     render: function() {
         let className = '';
 
@@ -243,15 +244,15 @@ var ShowOrHideButton = React.createClass({
         className = `fa ${className}`;
 
         return (
-            <button name="show-or-hide-button" className="show-or-hide-button" type="button" onClick={this.props.func}>
+            <button name="show-or-hide-button" className="show-or-hide-button" type="button" onClick={this.handleClick}>
                 <i className={className}></i>
             </button>
         );
-    }
+    },
 });
 
 
-var SectionContextMenu = React.createClass({
+const SectionContextMenu = React.createClass({
     // This menu appears when users click on a Section component.
     //
 
@@ -259,7 +260,7 @@ var SectionContextMenu = React.createClass({
     getDataBindings: function() {
         return {style: getters.sectionContextMenu};
     },
-    closeMenu: function(event) {
+    closeMenu() {
         // Handle a click on the menu items.
         signals.emitters.sectionContextMenu({show: false});
     },
@@ -273,22 +274,18 @@ var SectionContextMenu = React.createClass({
                 </ul>
             </nav>
         );
-    }
+    },
 });
 
 
-var ContextMenus = React.createClass({
+const ContextMenus = React.createClass({
     render: function() {
-        return (
-            <div>
-                <SectionContextMenu/>
-            </div>
-        );
-    }
+        return <div><SectionContextMenu/></div>;
+    },
 });
 
 
-var StaffGroupOrStaff = React.createClass({
+const StaffGroupOrStaff = React.createClass({
     // Given either a StaffGroup or a Staff, this component returns the proper stuff.
     //
     // Props:
@@ -301,7 +298,7 @@ var StaffGroupOrStaff = React.createClass({
         names: React.PropTypes.oneOfType([
             React.PropTypes.instanceOf(Immutable.Map),
             React.PropTypes.instanceOf(Immutable.List),
-        ]).isRequired
+        ]).isRequired,
     },
     render: function() {
         if (Immutable.Map.isMap(this.props.names)) {
@@ -317,11 +314,11 @@ var StaffGroupOrStaff = React.createClass({
                 </ul></li>
             );
         }
-    }
-})
+    },
+});
 
 
-var PartsList = React.createClass({
+const PartsList = React.createClass({
     mixins: [reactor.ReactMixin],
     getDataBindings: function() {
         return {partsList: getters.listOfInstruments};
@@ -334,11 +331,11 @@ var PartsList = React.createClass({
                 })}
             </ul>
         );
-    }
+    },
 });
 
 
-var StavesStructure = React.createClass({
+const StavesStructure = React.createClass({
     // StavesStructure
     //
     // State
@@ -360,17 +357,17 @@ var StavesStructure = React.createClass({
         return (
             <div className="nc-strv-menu nc-strv-menu-bl" id="nc-strv-staves">
                 <div className="header">
-                    Staves Structure
+                    {`Staves Structure`}
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showParts}/>
                 </div>
                 {partsList}
             </div>
         );
-    }
+    },
 });
 
 
-var Changeset = React.createClass({
+const Changeset = React.createClass({
     // Information about a changeset.
     //
     // Props:
@@ -380,17 +377,17 @@ var Changeset = React.createClass({
 
     propTypes: {
         date: React.PropTypes.string.isRequired,
-        message: React.PropTypes.string.isRequired
+        message: React.PropTypes.string.isRequired,
     },
     render: function() {
         return (
-            <li><time dateTime={this.props.date}>{this.props.date}</time>: {this.props.message}</li>
+            <li><time dateTime={this.props.date}>{this.props.date}</time>{`: ${this.props.message}`}</li>
         );
-    }
+    },
 });
 
 
-var Collaborator = React.createClass({
+const Collaborator = React.createClass({
     // Information about a collaborator and their recent changesets.
     //
     // Props:
@@ -404,8 +401,8 @@ var Collaborator = React.createClass({
         return {revlog: getters.vcsChangesets};
     },
     propTypes: {
+        changesets: React.PropTypes.instanceOf(Immutable.List).isRequired,
         name: React.PropTypes.string.isRequired,
-        changesets: React.PropTypes.any.isRequired,  // TODO: make global way to ask for ImmutableJS.List
         numToShow: React.PropTypes.number,
     },
     getDefaultProps() {
@@ -420,13 +417,17 @@ var Collaborator = React.createClass({
             hashes = hashes.slice(-1 * this.props.numToShow);
         }
 
-        let changesets = [];
-        for (let hash of hashes) {
-            let theDate = new Date();
+        const changesets = [];
+        for (const hash of hashes) {
+            const theDate = new Date();
             theDate.setTime(1000 * this.state.revlog.get(hash).get('date'));
-            changesets.push(<Changeset key={hash}
-                                       date={theDate.toDateString()}
-                                       message={this.state.revlog.get(hash).get('description')}/>);
+            changesets.push(
+                <Changeset
+                    key={hash}
+                    date={theDate.toDateString()}
+                    message={this.state.revlog.get(hash).get('description')}
+                />
+            );
         }
 
         return (
@@ -437,11 +438,11 @@ var Collaborator = React.createClass({
                 </ul>
             </li>
         );
-    }
+    },
 });
 
 
-var CollaboratorList = React.createClass({
+const CollaboratorList = React.createClass({
     //
 
     mixins: [reactor.ReactMixin],
@@ -449,13 +450,16 @@ var CollaboratorList = React.createClass({
         return {users: getters.vcsUsers};
     },
     render: function() {
-        let collaborators = [];
-        for (let person of this.state.users.values()) {
-            // TODO: implement numToShow, which ought to vary based on the number of users
-            collaborators.push(<Collaborator key={person.hashCode()}
-                                             name={person.get('name')}
-                                             changesets={person.get('changesets')}
-                                             />);
+        const collaborators = [];
+        for (const person of this.state.users.values()) {
+            // TODO: implement numToShow, which ought to lety based on the number of users
+            collaborators.push(
+                <Collaborator
+                    key={person.hashCode()}
+                    name={person.get('name')}
+                    changesets={person.get('changesets')}
+                />
+            );
         }
 
         return (
@@ -463,11 +467,11 @@ var CollaboratorList = React.createClass({
                 {collaborators}
             </ul>
         );
-    }
+    },
 });
 
 
-var Collaboration = React.createClass({
+const Collaboration = React.createClass({
     // Collaboration
     //
     // State
@@ -490,41 +494,41 @@ var Collaboration = React.createClass({
             <div className="nc-strv-menu nc-strv-menu-br" id="nc-strv-collaboration">
                 <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showCollaborators}/>
-                    Collaborators
+                    {`Collaborators`}
                 </div>
                 {collabList}
             </div>
         );
-    }
+    },
 });
 
 
-var Section = React.createClass({
+const Section = React.createClass({
     propTypes: {
-        name: React.PropTypes.string,
+        colour: React.PropTypes.string,
         id: React.PropTypes.string,
         lastUpdated: React.PropTypes.shape({
             name: React.PropTypes.string,
-            date: React.PropTypes.string
+            date: React.PropTypes.string,
         }),
+        name: React.PropTypes.string,
         pathToImage: React.PropTypes.string,
-        colour: React.PropTypes.string
     },
     getDefaultProps: function() {
         return {colour: '#000'};
     },
-    onClick: function(event) {
+    handleClick(event) {
         // Set the NuclearJS state required to show the context menu.
-        let style = {show: true};
-        style.left = event.clientX + 'px';
-        style.top = event.clientY + 'px';
+        const style = {show: true};
+        style.left = `${event.clientX}px`;
+        style.top = `${event.clientY}px`;
         signals.emitters.sectionContextMenu(style);
     },
     render: function() {
-        let headerStyleAttr = {background: this.props.colour};
+        const headerStyleAttr = {background: this.props.colour};
 
         return (
-            <article className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.onClick}>
+            <article className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.handleClick}>
                 <header>
                     {this.props.name}
                     <div className="ncoda-section-colour" style={headerStyleAttr}></div>
@@ -538,27 +542,28 @@ var Section = React.createClass({
                 </footer>
             </article>
         );
-    }
+    },
 });
 
 
-var ActiveSections = React.createClass({
+const ActiveSections = React.createClass({
     propTypes: {
         // A function that, when called with no argument, opens the SectionContextMenu in the right place.
-        openContextMenu: React.PropTypes.func.isRequired
+        openContextMenu: React.PropTypes.func.isRequired,
     },
+    handleClick() { this.props.openContextMenu(); },
     render: function() {
-        let aLastUpdated = {name: 'Christopher Antila', date: '2015-10-06'};
-        let bLastUpdated = {name: 'Honoré de Balzac', date: '2015-10-09'};
-        let cLastUpdated = {name: '卓文萱', date: '2015-05-07'};
-        let aColour = 'rgba(0, 191, 255, 0.6)';
-        let bColour = 'rgba(218, 165, 32, 0.6)';
-        let cColour = 'rgba(255, 127, 80, 0.6)';
+        const aLastUpdated = {name: 'Christopher Antila', date: '2015-10-06'};
+        const bLastUpdated = {name: 'Honoré de Balzac', date: '2015-10-09'};
+        const cLastUpdated = {name: '卓文萱', date: '2015-05-07'};
+        const aColour = 'rgba(0, 191, 255, 0.6)';
+        const bColour = 'rgba(218, 165, 32, 0.6)';
+        const cColour = 'rgba(255, 127, 80, 0.6)';
 
         return (
             <article className="ncoda-active-sections">
                 <header>
-                    Active Score
+                    {`Active Score`}
                 </header>
 
                 <content>
@@ -567,7 +572,7 @@ var ActiveSections = React.createClass({
                         name="A"
                         lastUpdated={aLastUpdated}
                         pathToImage="structureview_mock/sectionA.png"
-                        onClick={this.props.openContextMenu}
+                        onClick={this.handleClick}
                         colour={aColour}
                     />
                     <Section
@@ -575,7 +580,7 @@ var ActiveSections = React.createClass({
                         name="B"
                         lastUpdated={bLastUpdated}
                         pathToImage="structureview_mock/sectionB.png"
-                        onClick={this.props.openContextMenu}
+                        onClick={this.handleClick}
                         colour={bColour}
                     />
                     <Section
@@ -583,7 +588,7 @@ var ActiveSections = React.createClass({
                         name={"A\u2032"}
                         lastUpdated={aLastUpdated}
                         pathToImage="structureview_mock/sectionA.png"
-                        onClick={this.props.openContextMenu}
+                        onClick={this.handleClick}
                         colour={aColour}
                     />
                     <Section
@@ -591,7 +596,7 @@ var ActiveSections = React.createClass({
                         name="C"
                         lastUpdated={cLastUpdated}
                         pathToImage="structureview_mock/sectionC.png"
-                        onClick={this.props.openContextMenu}
+                        onClick={this.handleClick}
                         colour={cColour}
                     />
                     <Section
@@ -599,22 +604,22 @@ var ActiveSections = React.createClass({
                         name={"A\u2032\u2032"}
                         lastUpdated={aLastUpdated}
                         pathToImage="structureview_mock/sectionA.png"
-                        onClick={this.props.openContextMenu}
+                        onClick={this.handleClick}
                         colour={aColour}
                     />
                 </content>
             </article>
         );
-    }
+    },
 });
 
 
-var StructureView = React.createClass({
+const StructureView = React.createClass({
     showSectionContextMenu: function(event) {
         // Display the context menu under the cursor.
-        let menu = document.getElementById('ncoda-section-menu');
-        menu.style.left = event.clientX + 'px';
-        menu.style.top = event.clientY + 'px';
+        const menu = document.getElementById('ncoda-section-menu');
+        menu.style.left = `${event.clientX}px`;
+        menu.style.top = `${event.clientY}px`;
         menu.style.display = 'flex';
     },
     render: function() {
@@ -632,7 +637,7 @@ var StructureView = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 export default StructureView;
