@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,18 +20,20 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // mocked imports
 import {log} from '../log';
 
 // non-mocked imports
-import {init} from '../../nuclear/init';
+import {init} from '../../nuclear/init';  /* eslint no-unused-vars: 0 */
 import getters from '../../nuclear/getters';
 import reactor from '../../nuclear/reactor';
 import signals from '../../nuclear/signals';
 jest.dontMock('../fujian.js');
 const fujian = require('../fujian.js');
+
+const WS_CLOSE_CODE = 1000;
 
 
 describe("Fujian class' instance methods", () => {
@@ -75,7 +77,7 @@ describe("Fujian class' instance methods", () => {
             const actual = new fujian.Fujian();
             actual.statusWS = () => 'open';
             actual.startWS();
-            expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.wsConnectionAlreadyOpen);
+            expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.wsAlreadyOpen);
             expect(window.WebSocket).not.toBeCalled();
         });
     });
@@ -87,7 +89,7 @@ describe("Fujian class' instance methods", () => {
             const wsMock = {close: jest.genMockFn()};
             actual._fujian = wsMock;
             actual.stopWS();
-            expect(wsMock.close).toBeCalledWith(1000);
+            expect(wsMock.close).toBeCalledWith(WS_CLOSE_CODE);
             expect(actual._fujian).toBe(null);
         });
 
@@ -97,7 +99,7 @@ describe("Fujian class' instance methods", () => {
             const wsMock = {close: jest.genMockFn()};
             actual._fujian = wsMock;
             actual.stopWS();
-            expect(wsMock.close).toBeCalledWith(1000);
+            expect(wsMock.close).toBeCalledWith(WS_CLOSE_CODE);
             expect(actual._fujian).toBe(null);
         });
 
@@ -182,7 +184,9 @@ describe("Fujian class' instance methods", () => {
             const actual = new fujian.Fujian();
             actual.statusWS = () => 'open';
             actual._fujian = {send: jest.genMockFn()};
-            actual._fujian.send.mockImplementation(() => { throw new SyntaxError(); });
+            actual._fujian.send.mockImplementation(() => {
+                throw new SyntaxError();
+            });
             const code = 'some code';
 
             actual.sendWS(code);
@@ -241,11 +245,11 @@ describe('The response loading callbacks', () => {
             const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: 'back',
                 signal: 'outbound.CONVERSION_ERROR'};
             const data = JSON.stringify(dataObj);
-            const expectedStdout = `${dataObj.traceback}\n${fujian.ERROR_MESSAGES.outboundConversion}\n${dataObj.stdout}\n${dataObj.stderr}`;
+            const expectedStdout = `${dataObj.traceback}\n${fujian.ERROR_MESSAGES.outboundConv}\n${dataObj.stdout}\n${dataObj.stderr}`;
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.fujianReturnValue);
+            expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.fjnRetVal);
             expect(log.info).toBeCalledWith(dataObj.return);
             expect(reactor.evaluate(getters.stdout)).toBe(expectedStdout);
         });
@@ -322,7 +326,7 @@ describe('The response loading callbacks', () => {
             const doStdio = false;
             const data = '{key: value';
             fujian.Fujian._commonReceiver(data, doStdio);
-            expect(log.error).toBeCalledWith(fujian.ERROR_MESSAGES.fujianBadJson);
+            expect(log.error).toBeCalledWith(fujian.ERROR_MESSAGES.fjnBadJson);
         });
     });
 });

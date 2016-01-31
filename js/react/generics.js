@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // NOTE: This module contains generic components, like "question box." Widely-used but specific
 // components, such as the global menu bar, are stored in "ncoda.js."
@@ -58,7 +58,7 @@ const DialogueBox = React.createClass({
     //
 
     mixins: [reactor.ReactMixin],
-    getDataBindings: function() {
+    getDataBindings() {
         return {box: getters.DialogueBox};
     },
     handleClick() {
@@ -82,26 +82,27 @@ const DialogueBox = React.createClass({
         let iconClass, title;
 
         switch (this.state.box.get('type')) {
-            case 'error':
-                iconClass = 'exclamation-triangle';
-                title = 'Error';
-                break;
-            case 'warn':
-                iconClass = 'exclamation-circle';
-                title = 'Warning';
-                break;
-            case 'info':
-                iconClass = 'info-circle';
-                title = 'Information';
-                break;
-            case 'debug':
-                iconClass = 'bug';
-                title = 'Developer Message';
-                break;
-            case 'question':
-                iconClass = 'question-circle';
-                title = 'Question';
-                break;
+        case 'error':
+            iconClass = 'exclamation-triangle';
+            title = 'Error';
+            break;
+        case 'warn':
+            iconClass = 'exclamation-circle';
+            title = 'Warning';
+            break;
+        case 'debug':
+            iconClass = 'bug';
+            title = 'Developer Message';
+            break;
+        case 'question':
+            iconClass = 'question-circle';
+            title = 'Question';
+            break;
+        case 'info':
+        default:
+            iconClass = 'info-circle';
+            title = 'Information';
+            break;
         }
 
         iconClass = `fa fa-${iconClass}`;
@@ -114,7 +115,7 @@ const DialogueBox = React.createClass({
 
         let answer = '';
         if ('question' === this.state.box.get('type')) {
-            answer  = <input type="text" ref="answer"/>;
+            answer = <input type="text" ref="answer"/>;
         }
 
         return (

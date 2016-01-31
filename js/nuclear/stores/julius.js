@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 import {Store} from 'nuclear-js';
@@ -31,10 +31,9 @@ import {signals} from '../signals';
 const setters = {
     setLogLevel(previous, next) {
         if (LEVELS.ERROR === next ||
-            LEVELS.WARN  === next ||
-            LEVELS.INFO  === next ||
+            LEVELS.WARN === next ||
+            LEVELS.INFO === next ||
             LEVELS.DEBUG === next) {
-
             return next;
         }
 

@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // Note: This module is called "signals" so that nCoda has a consistent relationship between its
 //       Python and JavaScript worlds. In JavaScript, our NuclearJS "actionTypes" are effectively
@@ -32,7 +32,6 @@ import reactor from './reactor';
 import {fujian} from '../util/fujian';
 
 
-// TODO: should be "const" but Atom's symbol-list sidebar doesn't pick that up yet
 // "names" is NuclearJS "actionTypes."
 const names = {
     // HeaderBar
@@ -77,7 +76,7 @@ const emitters = {
     },
     removeHeader(name) {
         // The name of an existing header.
-        reactor.dispatch(names.REMOVE_HEADER, {name: name})
+        reactor.dispatch(names.REMOVE_HEADER, {name: name});
     },
 
     // Mercurial stuff
@@ -162,12 +161,12 @@ const emitters = {
     },
 
     // Logging
-    setLogLevel(to) {
-        reactor.dispatch(names.SET_LOG_LEVEL, to);
+    setLogLevel(newLevel) {
+        reactor.dispatch(names.SET_LOG_LEVEL, newLevel);
     },
 
     // Registering outbound formats with Lychee
-    _outboundFormatRegistrar(direction, dtype, who) {
+    _regOutboundFormat(direction, dtype, who) {
         // You must call this through registerOutboundFormat() or unregisterOutboundFormat().
         //
         if ('string' !== typeof dtype) {
@@ -188,11 +187,11 @@ const emitters = {
     },
     registerOutboundFormat(dtype, who) {
         // Emits "lychee.signals.outbound.REGISTER_FORMAT"
-        emitters._outboundFormatRegistrar('REGISTER', dtype, who);
+        emitters._regOutboundFormat('REGISTER', dtype, who);
     },
     unregisterOutboundFormat(dtype, who) {
         // Emits "lychee.signals.outbound.UNREGISTER_FORMAT"
-        emitters._outboundFormatRegistrar('UNREGISTER', dtype, who);
+        emitters._regOutboundFormat('UNREGISTER', dtype, who);
     },
 
     /** Show a DialogueBox.

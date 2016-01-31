@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 /* eslint no-console: 0 */
 
@@ -40,6 +40,10 @@ const LEVELS = {
 // set the log level with NuclearJS
 // just in case Nuclear isn't working, we default to WARN
 let level = LEVELS.WARN;
+/** Set the log level.
+ * @param {int} newLevel - A member of "LEVELS" indicating the new log level.
+ * @returns {undefined}
+ */
 function levelSetter(newLevel) {
     level = newLevel;
 }
@@ -71,23 +75,27 @@ if (console) {
 // actual logging functions
 const log = {
     error(msg) {
-        if (haveError && level >= LEVELS.ERROR)
+        if (haveError && level >= LEVELS.ERROR) {
             console.error(msg);
+        }
     },
 
     warn(msg) {
-        if (haveWarn && level >= LEVELS.WARN)
+        if (haveWarn && level >= LEVELS.WARN) {
             console.warn(msg);
+        }
     },
 
     info(msg) {
-        if (haveInfo && level >= LEVELS.INFO)
+        if (haveInfo && level >= LEVELS.INFO) {
             console.info(msg);
+        }
     },
 
     debug(msg) {
-        if (haveLog && level >= LEVELS.DEBUG)
+        if (haveLog && level >= LEVELS.DEBUG) {
             console.log(msg);
+        }
     },
 
     LEVELS: LEVELS,

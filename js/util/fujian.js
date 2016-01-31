@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // NOTE: List of public methods
 //
@@ -41,6 +41,7 @@ import {signals} from '../nuclear/signals';
 
 const FUJIAN_WS_URL = 'ws://localhost:1987/websocket/';
 const FUJIAN_AJAX_URL = 'http://localhost:1987';
+const WS_CLOSE_CODE = 1000;
 // const fujian ... created and exported after class definition
 
 const ERROR_MESSAGES = {
@@ -49,12 +50,12 @@ const ERROR_MESSAGES = {
     websocketError: 'The WebSocket connection to Fujian encountered an error.',
     ajaxAbort: 'The AJAX request to Fujian was aborted.',
     ajaxError: 'The AJAX request to Fujian encountered an error.',
-    fujianBadJson: 'SyntaxError while decoding a message from Fujian',
-    fujianReturnValue: 'PyPy additionally returned the following:',
-    wsConnectionAlreadyOpen: 'WebSocket connection to Fujian was already open.',
+    fjnBadJson: 'SyntaxError while decoding a message from Fujian',
+    fjnRetVal: 'PyPy additionally returned the following:',
+    wsAlreadyOpen: 'WebSocket connection to Fujian was already open.',
     wsNotReady: 'Fujian WebSocket connection is not ready. Data not sent.',
     wsSyntaxError: 'SyntaxError while sending data to Fujian (probably a Unicode problem?)',
-    outboundConversion: 'Error during outbound conversion.',
+    outboundConv: 'Error during outbound conversion.',
 };
 
 const FUJIAN_SIGNALS = {
@@ -63,12 +64,12 @@ const FUJIAN_SIGNALS = {
     // by Fujian.
     //
 
-    'outbound.CONVERSION_ERROR': function() {
+    'outbound.CONVERSION_ERROR': () => {
         // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
-        signals.emitters.stdout(ERROR_MESSAGES.outboundConversion);
+        signals.emitters.stdout(ERROR_MESSAGES.outboundConv);
     },
 
-    'outbound.CONVERSION_FINISHED': function(response) {
+    'outbound.CONVERSION_FINISHED': (response) => {
         if ('verovio' === response.dtype) {
             signals.emitters.renderToVerovio(response.document);
         }
@@ -107,7 +108,7 @@ class Fujian {
             this._fujian.onerror = Fujian._errorWS;
         }
         else {
-            log.info(ERROR_MESSAGES.wsConnectionAlreadyOpen);
+            log.info(ERROR_MESSAGES.wsAlreadyOpen);
         }
     }
 
@@ -118,7 +119,7 @@ class Fujian {
     stopWS() {
         const status = this.statusWS();
         if ('open' === status || 'connecting' === status) {
-            this._fujian.close(1000);
+            this._fujian.close(WS_CLOSE_CODE);
             this._fujian = null;
         }
         else {
@@ -217,16 +218,14 @@ class Fujian {
         }
         catch (err) {
             if ('SyntaxError' === err.name) {
-                log.error(ERROR_MESSAGES.fujianBadJson);
+                log.error(ERROR_MESSAGES.fjnBadJson);
                 return;
             }
-            else {
-                throw err;
-            }
+            throw err;
         }
 
         if ('string' === typeof response.traceback && response.traceback.length > 0) {
-            doStdio = true;
+            doStdio = true;  /* eslint no-param-reassign: 0 */
             signals.emitters.stdout(response.traceback);
         }
 
@@ -245,7 +244,7 @@ class Fujian {
                 signals.emitters.stdout(response.stderr);
             }
             if ('string' === typeof response.return && response.return.length > 0) {
-                log.info(ERROR_MESSAGES.fujianReturnValue);
+                log.info(ERROR_MESSAGES.fjnRetVal);
                 log.info(response.return);
             }
         }

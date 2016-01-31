@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 import {Store, toImmutable} from 'nuclear-js';
@@ -61,9 +61,7 @@ function vcsNewRevlog(previous, next) {
             log.warn("Could not parse Lychee's VCS data into JSON. VCS data will be out-of-date.");
             return previous;
         }
-        else {
-            throw exc;
-        }
+        throw exc;
     }
 
     return toImmutable(post);

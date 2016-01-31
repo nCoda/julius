@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 import {Store, toImmutable} from 'nuclear-js';
 
@@ -28,10 +28,15 @@ import log from '../../util/log';
 import signals from '../signals';
 
 
+/** Verify properties then update the DialogueBox Store.
+ * @param {ImmutableJS.Map} previous - The DialogueBox Store's previous state.
+ * @param {Object} next - An Object with new attributes for the Store.
+ * @returns {ImmutableJS.Map} The Store's new state.
+ *
+ * Note: this function prints errors and warnings directly to the Console. If this weren't the case,
+ *       we might end up in a circular update, since "log" produces a DialogueBox on errors.
+ */
 function dialogueBoxShow(previous, next) {
-    // Verify the types of all the properties, then update the DialogueBox state.
-    // NOTE: that this function prints errors and warnings directly to the Console. If not, we might
-    //       end up in a circular update, since the "log" object may produce a DialogueBox.
     let post = generics.DialogueBox.getInitialState();
     post = post.set('displayed', true);
 
@@ -58,9 +63,10 @@ function dialogueBoxShow(previous, next) {
 }
 
 
+/** Reset the DialogueBox Store to its original state, hiding it.
+ * @returns {ImmutableJS.Map} The Store's initial state.
+ */
 function dialogueBoxHide() {
-    // The default is hidden. This also eliminates the possibility that we let data carry over from
-    // ond dialogue box to the next.
     return generics.DialogueBox.getInitialState();
 }
 

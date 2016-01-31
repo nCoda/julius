@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 import {Store, toImmutable} from 'nuclear-js';
@@ -39,25 +39,24 @@ const MetadataHeaders = Store({
 });
 
 
+/** Add a new header field.
+ * @param {ImmutableJS.Map} currentState - As it says.
+ * @param {Object} payload - An Object with "name" and "value" members, both strings, which are the
+ *     desired name and value for the new field.
+ * @returns {ImmutableJS.Map} The Store's new state.
+ */
 function addHeader(currentState, payload) {
-    // Add a new header field.
-    //
-    // Payload:
-    // - name (str) Name for the new header field to add.
-    // - value (str) Value of the new header field.
-    //
-
     return currentState.push(toImmutable({name: payload.name, value: payload.value}));
 }
 
 
+/** Modify an existing header field.
+ * @param {ImmutableJS.Map} currentState - As it says.
+ * @param {Object} payload - An Object with "name" and "value" members, both strings, which are the
+ *     desired name and value of the field to modify.
+ * @returns {ImmutableJS.Map} The Store's new state.
+ */
 function changeHeader(currentState, payload) {
-    // Edit an existing header field.
-    //
-    // Payload:
-    // Same as addHeader().
-    //
-
     let replaceToIndex = null;
     for (const header of currentState.entries()) {
         if (header[1].get('name') === payload.name) {
@@ -74,13 +73,12 @@ function changeHeader(currentState, payload) {
 }
 
 
+/** Remove an existing header field.
+ * @param {ImmutableJS.Map} currentState - As it says.
+ * @param {Object} payload - An Object with a "name" string, containing the field name to remove.
+ * @returns {ImmutableJS.Map} The Store's new state.
+ */
 function removeHeader(currentState, payload) {
-    // Remove an existing header field.
-    //
-    // Payload:
-    // Same as addHeader() but "value" is ignored if present.
-    //
-
     let removeIndex = null;
     for (const header of currentState.entries()) {
         if (header[1].get('name') === payload.name) {

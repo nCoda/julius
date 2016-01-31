@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,15 +20,17 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 import {Immutable} from 'nuclear-js';
 
 
+/** Concatenate a List of strings into a single string with newlines.
+ * @param {ImmutableJS.List of str} output - The List of strings to concatenate.
+ * @returns {str} The concatenated string.
+ */
 function stdioConcatter(output) {
-    // Concatenates a List of strings into a single string.
-    //
     return output.join('\n');
 }
 
@@ -49,9 +51,9 @@ function vcsUsers(revlog) {
     const post = [];
     for (const user of usersMap.keys()) {
         post.push(Immutable.Map({
-            'name': user.slice(0, user.indexOf('<') - 1),
-            'email': user.slice(user.indexOf('<')),
-            'changesets': usersMap.get(user),
+            name: user.slice(0, user.indexOf('<') - 1),
+            email: user.slice(user.indexOf('<')),
+            changesets: usersMap.get(user),
         }));
     }
     return new Immutable.List(post);

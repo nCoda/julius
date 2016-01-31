@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 import {Immutable} from 'nuclear-js';
@@ -42,21 +42,21 @@ const MetadataField = React.createClass({
         // The value of this metadata field.
         value: React.PropTypes.string,
     },
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {name: '', value: ''};
     },
-    handleEdit: function() {
+    handleEdit() {
         signals.emitters.dialogueBoxShow({
             type: 'question',
             message: 'Please enter a new value for the field',
-            callback: (value) => { signals.emitters.changeHeader(this.props.name, value) },
+            callback: (value) => signals.emitters.changeHeader(this.props.name, value),
         });
     },
-    handleDelete: function(event) {
+    handleDelete(event) {
         event.stopPropagation();
         signals.emitters.removeHeader(this.props.name);
     },
-    render: function() {
+    render() {
         const display = `${this.props.name}: ${this.props.value}`;
         return (
             <li onClick={this.handleEdit}>
@@ -72,10 +72,10 @@ const HeaderList = React.createClass({
     //
 
     mixins: [reactor.ReactMixin],
-    getDataBindings: function() {
+    getDataBindings() {
         return {headers: getters.meiHeadersList};
     },
-    handleAddHeader: function() {
+    handleAddHeader() {
         // Does whatever's required to add a new header.
 
         // TODO: this is a terrible hack. Here's what happens:
@@ -94,7 +94,7 @@ const HeaderList = React.createClass({
                         type: 'question',
                         message: 'Please enter a value for the new field',
                         callback: (newValue) => {
-                            signals.emitters.addHeader(newName, newValue)
+                            signals.emitters.addHeader(newName, newValue);
                         },
                     });
                 },
@@ -102,7 +102,7 @@ const HeaderList = React.createClass({
             },
         });
     },
-    render: function() {
+    render() {
         return (
             <ul id="headerbar-list" className="headers">
                 {this.state.headers.map((field, i) =>
@@ -122,13 +122,13 @@ const HeaderBar = React.createClass({
     // - showHeaderList: whether the list of headers is visible (true) or invisible (false)
     //
 
-    getInitialState: function() {
+    getInitialState() {
         return {showHeaderList: false};
     },
-    showOrHide: function() {
+    showOrHide() {
         this.setState({showHeaderList: !this.state.showHeaderList});
     },
-    render: function() {
+    render() {
         let headerList = '';
         if (this.state.showHeaderList) {
             headerList = <HeaderList/>;
@@ -138,7 +138,11 @@ const HeaderBar = React.createClass({
             <div className="nc-strv-menu nc-strv-menu-tl" id="nc-strv-header-bar">
                 <div className="header">
                     {`Header Bar`}
-                    <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showHeaderList}/>
+                    <ShowOrHideButton
+                        func={this.showOrHide}
+                        expands="down"
+                        isShown={this.state.showHeaderList}
+                    />
                 </div>
                 {headerList}
             </div>
@@ -148,7 +152,7 @@ const HeaderBar = React.createClass({
 
 
 const ExpandedSectionViewGraph = React.createClass({
-    render: function() {
+    render() {
         return (
             <div id="ncoda-expanded-section-svg">
                 <h2>{`A`}</h2>
@@ -166,13 +170,13 @@ const ExpandedSectionView = React.createClass({
     // - showGraph: whether the SVG graph is visible (true) or invisible (false)
     //
 
-    getInitialState: function() {
+    getInitialState() {
         return {showGraph: false};
     },
-    showOrHide: function() {
+    showOrHide() {
         this.setState({showGraph: !this.state.showGraph});
     },
-    render: function() {
+    render() {
         let graph = '';
         if (this.state.showGraph) {
             graph = <ExpandedSectionViewGraph/>;
@@ -209,35 +213,40 @@ const ShowOrHideButton = React.createClass({
         func: React.PropTypes.func.isRequired,
         isShown: React.PropTypes.bool,
     },
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {expands: 'expand'};
     },
-    handleClick() { this.props.func(); },
-    render: function() {
+    handleClick() {
+        this.props.func();
+    },
+    render() {
         let className = '';
 
         if ('expand' === this.props.expands) {
             className = 'fa-expand';
-        } else if (false === this.props.isShown) {
+        }
+        else if (false === this.props.isShown) {
             // the chevron points in the direction of this.props.expands
             className = `fa-chevron-${this.props.expands}`;
-        } else if (true === this.props.isShown) {
+        }
+        else if (true === this.props.isShown) {
             // the chevron points opposite the direction of this.props.expands
             switch (this.props.expands) {
-                case 'up':
-                    className = 'fa-chevron-down';
-                    break;
-                case 'down':
-                    className = 'fa-chevron-up';
-                    break;
-                case 'left':
-                    className = 'fa-chevron-right';
-                    break;
-                case 'right':
-                    className = 'fa-chevron-left';
-                    break;
+            case 'down':
+                className = 'fa-chevron-up';
+                break;
+            case 'left':
+                className = 'fa-chevron-right';
+                break;
+            case 'right':
+                className = 'fa-chevron-left';
+                break;
+            case 'up':
+            default:
+                className = 'fa-chevron-down';
             }
-        } else {
+        }
+        else {
             className = 'fa-expand';
         }
 
@@ -257,14 +266,14 @@ const SectionContextMenu = React.createClass({
     //
 
     mixins: [reactor.ReactMixin],
-    getDataBindings: function() {
+    getDataBindings() {
         return {style: getters.sectionContextMenu};
     },
     closeMenu() {
         // Handle a click on the menu items.
         signals.emitters.sectionContextMenu({show: false});
     },
-    render: function() {
+    render() {
         return (
             <nav id="ncoda-section-menu" style={this.state.style.toObject()}>
                 <ul>
@@ -279,7 +288,7 @@ const SectionContextMenu = React.createClass({
 
 
 const ContextMenus = React.createClass({
-    render: function() {
+    render() {
         return <div><SectionContextMenu/></div>;
     },
 });
@@ -300,33 +309,33 @@ const StaffGroupOrStaff = React.createClass({
             React.PropTypes.instanceOf(Immutable.List),
         ]).isRequired,
     },
-    render: function() {
+    render() {
         if (Immutable.Map.isMap(this.props.names)) {
             return (
                 <li>{this.props.names.get('label')}</li>
             );
-        } else {
-            return (
-                <li><ul>
-                    {this.props.names.map(name =>
-                        <li key={name.get('label').toLowerCase()}>{name}</li>
-                    )}
-                </ul></li>
-            );
         }
+
+        return (
+            <li><ul>
+                {this.props.names.map((name) =>
+                    <li key={name.get('label').toLowerCase()}>{name}</li>
+                )}
+            </ul></li>
+        );
     },
 });
 
 
 const PartsList = React.createClass({
     mixins: [reactor.ReactMixin],
-    getDataBindings: function() {
+    getDataBindings() {
         return {partsList: getters.listOfInstruments};
     },
-    render: function() {
+    render() {
         return (
             <ul id="staves-instruments">
-                {this.state.partsList.map(function(parts, index) {
+                {this.state.partsList.map((parts, index) => {
                     return (<StaffGroupOrStaff key={index} names={parts}/>);
                 })}
             </ul>
@@ -342,13 +351,13 @@ const StavesStructure = React.createClass({
     // - showParts: whether the list of parts is visible (true) or invisible (false)
     //
 
-    getInitialState: function() {
+    getInitialState() {
         return {showParts: false};
     },
-    showOrHide: function() {
+    showOrHide() {
         this.setState({showParts: !this.state.showParts});
     },
-    render: function() {
+    render() {
         let partsList = '';
         if (this.state.showParts) {
             partsList = <PartsList/>;
@@ -379,7 +388,7 @@ const Changeset = React.createClass({
         date: React.PropTypes.string.isRequired,
         message: React.PropTypes.string.isRequired,
     },
-    render: function() {
+    render() {
         return (
             <li><time dateTime={this.props.date}>{this.props.date}</time>{`: ${this.props.message}`}</li>
         );
@@ -397,7 +406,7 @@ const Collaborator = React.createClass({
     //
 
     mixins: [reactor.ReactMixin],
-    getDataBindings: function() {
+    getDataBindings() {
         return {revlog: getters.vcsChangesets};
     },
     propTypes: {
@@ -408,7 +417,7 @@ const Collaborator = React.createClass({
     getDefaultProps() {
         return {numToShow: 3};
     },
-    render: function() {
+    render() {
         // NOTE: in this function, "this.state.revlog" is all the changesets in the repository, and
         //       "this.props.changesets" is the changeset IDs of this user
 
@@ -446,10 +455,10 @@ const CollaboratorList = React.createClass({
     //
 
     mixins: [reactor.ReactMixin],
-    getDataBindings: function() {
+    getDataBindings() {
         return {users: getters.vcsUsers};
     },
-    render: function() {
+    render() {
         const collaborators = [];
         for (const person of this.state.users.values()) {
             // TODO: implement numToShow, which ought to lety based on the number of users
@@ -478,13 +487,13 @@ const Collaboration = React.createClass({
     // - showCollaborators: whether the list of collaborators is visible (true) or invisible (false)
     //
 
-    getInitialState: function() {
+    getInitialState() {
         return {showCollaborators: false};
     },
-    showOrHide: function() {
+    showOrHide() {
         this.setState({showCollaborators: !this.state.showCollaborators});
     },
-    render: function() {
+    render() {
         let collabList = '';
         if (this.state.showCollaborators) {
             collabList = <CollaboratorList/>;
@@ -514,7 +523,7 @@ const Section = React.createClass({
         name: React.PropTypes.string,
         pathToImage: React.PropTypes.string,
     },
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {colour: '#000'};
     },
     handleClick(event) {
@@ -524,7 +533,7 @@ const Section = React.createClass({
         style.top = `${event.clientY}px`;
         signals.emitters.sectionContextMenu(style);
     },
-    render: function() {
+    render() {
         const headerStyleAttr = {background: this.props.colour};
 
         return (
@@ -552,7 +561,7 @@ const ActiveSections = React.createClass({
         openContextMenu: React.PropTypes.func.isRequired,
     },
     handleClick() { this.props.openContextMenu(); },
-    render: function() {
+    render() {
         const aLastUpdated = {name: 'Christopher Antila', date: '2015-10-06'};
         const bLastUpdated = {name: 'Honoré de Balzac', date: '2015-10-09'};
         const cLastUpdated = {name: '卓文萱', date: '2015-05-07'};
@@ -615,14 +624,14 @@ const ActiveSections = React.createClass({
 
 
 const StructureView = React.createClass({
-    showSectionContextMenu: function(event) {
+    showSectionContextMenu(event) {
         // Display the context menu under the cursor.
         const menu = document.getElementById('ncoda-section-menu');
         menu.style.left = `${event.clientX}px`;
         menu.style.top = `${event.clientY}px`;
         menu.style.display = 'flex';
     },
-    render: function() {
+    render() {
         return (
             <div id="nc-strv-frame">
                 <ContextMenus/>

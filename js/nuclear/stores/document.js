@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 import {Store, toImmutable} from 'nuclear-js';
@@ -50,34 +50,33 @@ const scoreDef = {
 };
 
 
+/** Produce a new Map instance by combining fields from the argument with defaults.
+ * @param {Object} fromThis - A base Object from which to copy fields for the instrument.
+ * @returns {ImmutableJS.Map} A new instrument.
+ */
 function makeNewInstrument(fromThis) {
-    // Given a "fromThis" object, this function returns a new ImmutableJS Map with all the default
-    // fields containing default values, and any fields in "fromThis" too.
-    //
     return toImmutable({
         label: fromThis.label || '',
     });
 }
 
 
+/** Make a new <instrDef> and put it in the Instrument Store.
+ * @param {ImmutableJS.Map} previousState - The previous state of the "Instrument" Store.
+ * @param {Object} payload - An Object with any of the fields defined for an Instruments object.
+ * @returns {ImmutableJS.Map} The Store's new state.
+ */
 function addInstrument(previousState, payload) {
-    // Make a new <instrDef> and put it in the Instrument store.
-    //
-    // Payload: An object that may have any of the fields defined for a Instruments object.
-    //     Other fields are ignored.
-    //
-
     return previousState.push(makeNewInstrument(payload));
 }
 
 
+/** Make a new <instrGrp> and put it in the Instrument Store.
+ * @param {ImmutableJS.Map} previousState - The previous state of the "Instrument" Store.
+ * @param {Object} payload - An Array of Objects with fields defined for Instruments objects.
+ * @returns {ImmutableJS.Map} The Store's new state.
+ */
 function addInstrumentGroup(previousState, payload) {
-    // Make a new <instrGrp> and put it in the Instrument store.
-    //
-    // Payload: An arry of objects that may have any of the fields defined for a Instruments object.
-    //     Other fields are ignored.
-    //
-
     return previousState.push(toImmutable(payload.map(makeNewInstrument)));
 }
 

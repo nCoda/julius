@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 import React from 'react';
@@ -32,13 +32,13 @@ import {DialogueBox} from './generics';
 
 
 const MainScreen = React.createClass({
-    //
-    //
-
-    render: function() {
+    render() {
         return (
             <div id="ncoda-loading">
-                <div>{`Use the `}<i className="fa fa-th"></i>{` button in the top-left corner to open the menu.`}</div>
+                <div>
+                    {`Use the `}<i className="fa fa-th"></i>
+                    {` button in the top-left corner to open the menu.`}
+                </div>
                 <MainScreenQuote/>
             </div>
         );
@@ -47,9 +47,6 @@ const MainScreen = React.createClass({
 
 
 const MainScreenQuote = React.createClass({
-    //
-    //
-
     getInitialState() {
         return {
             attribution: 'Chuck Close',
@@ -73,10 +70,7 @@ const MainScreenQuote = React.createClass({
 
 
 const Colophon = React.createClass({
-    //
-    //
-
-    render: function() {
+    render() {
         return (
             <div id="ncoda-colophon">
                 <img src="img/nCoda-temporary_logo_square-180x180.png" alt="nCoda logo"></img>
@@ -104,7 +98,7 @@ const GlobalHeader = React.createClass({
         handleShowDevelMenu: React.PropTypes.func,
         handleShowMenu: React.PropTypes.func.isRequired,
     },
-    render: function() {
+    render() {
         return (
             <div id="ncoda-global-header">
                 <button onClick={this.props.handleShowMenu}>
@@ -134,7 +128,7 @@ const MenuItem = React.createClass({
         // The URL to redirect to when this <menuitem> is selected.
         linkTo: React.PropTypes.string,
     },
-    render: function() {
+    render() {
         return (
             <li id={this.props.id} onClick={this.props.handleCloseMenu}>
                 <Link to={this.props.linkTo}>
@@ -153,15 +147,16 @@ const GlobalMenu = React.createClass({
         // Whether the menu is currently shown.
         showMenu: React.PropTypes.bool,
     },
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {showMenu: false};
     },
-    render: function() {
+    render() {
         const globalMenuStyle = {};
         if (this.props.showMenu) {
-            globalMenuStyle['display'] = 'block';
-        } else {
-            globalMenuStyle['display'] = 'none';
+            globalMenuStyle.display = 'block';
+        }
+        else {
+            globalMenuStyle.display = 'none';
         }
 
         return (
@@ -186,43 +181,45 @@ const DeveloperMenu = React.createClass({
         // Whether the menu is currently shown.
         showMenu: React.PropTypes.bool,
     },
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {showMenu: false};
     },
-    handleClick: function(event) {
+    handleClick(event) {
         // Handle a click on the menu items.
 
         this.props.handleCloseMenu();
         switch (event.target.id) {
-            case 'devel-0':
-                signals.emitters.fujianStartWS();
-                break;
-            case 'devel-1':
-                signals.emitters.fujianRestartWS();
-                break;
-            case 'devel-2':
-                signals.emitters.fujianStopWS();
-                break;
-            case 'devel-3':
-                signals.emitters.setLogLevel(log.LEVELS.ERROR);
-                break;
-            case 'devel-4':
-                signals.emitters.setLogLevel(log.LEVELS.WARN);
-                break;
-            case 'devel-5':
-                signals.emitters.setLogLevel(log.LEVELS.INFO);
-                break;
-            case 'devel-6':
-                signals.emitters.setLogLevel(log.LEVELS.DEBUG);
-                break;
+        case 'devel-0':
+            signals.emitters.fujianStartWS();
+            break;
+        case 'devel-1':
+            signals.emitters.fujianRestartWS();
+            break;
+        case 'devel-2':
+            signals.emitters.fujianStopWS();
+            break;
+        case 'devel-3':
+            signals.emitters.setLogLevel(log.LEVELS.ERROR);
+            break;
+        case 'devel-4':
+            signals.emitters.setLogLevel(log.LEVELS.WARN);
+            break;
+        case 'devel-5':
+            signals.emitters.setLogLevel(log.LEVELS.INFO);
+            break;
+        case 'devel-6':
+            signals.emitters.setLogLevel(log.LEVELS.DEBUG);
+            break;
+        default:
+            return;
         }
     },
-    render: function() {
+    render() {
         const globalMenuStyle = {};
         if (this.props.showMenu) {
-            globalMenuStyle['display'] = 'block';
+            globalMenuStyle.display = 'block';
         } else {
-            globalMenuStyle['display'] = 'none';
+            globalMenuStyle.display = 'none';
         }
 
         return (
@@ -258,22 +255,22 @@ const NCoda = React.createClass({
     propTypes: {
         children: React.PropTypes.element,
     },
-    getInitialState: function() {
+    getInitialState() {
         return ({menuShown: false, develMenuShown: false, activeView: 'default'});
     },
-    showOrHideGlobalMenu: function() {
+    showOrHideGlobalMenu() {
         // If the global menu is shown, hide it.
         // If the global menu is hiddent, show it.
         //
         this.setState({menuShown: !this.state.menuShown});
     },
-    showOrHideDevelMenu: function() {
+    showOrHideDevelMenu() {
         // If the developer menu is shown, hide it.
         // If the developer menu is hidden, show it.
         //
         this.setState({develMenuShown: !this.state.develMenuShown});
     },
-    render: function() {
+    render() {
         // TODO: figure out the accessibility stuff for the main menu button
         return (
             <div id="ncoda">

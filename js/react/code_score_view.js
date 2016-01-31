@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 import React from "react";
 import ReactDOM from 'react-dom';
@@ -31,25 +31,25 @@ import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 
 
+/** This function handles resizing elements separated by a Separator component.
+ *
+ * @param {int} doThis - Move the element by this many pixels. (0, 0) is at the top-left.
+ * @param {str} thisDirection - Either "horizontal" or "vertical," depending on the intended
+ *     direction of movement. Note this is the *opposite* of the Separator component's "direction" prop.
+ * @param {Element} zeroElem - The element closer to "zero" in the direction of movement. For vertical
+ *     movement, this is the higher Element; for horizontal movement this is the Element on the left.
+ * @param {Element} oneElem - The other element being resized.
+ * @returns {undefined}
+ */
 function handleSeparator(doThis, thisDirection, zeroElem, oneElem) {
-    // This function handles resizing elements separated by a Separator component.
-    //
-    // @param doThis (int): Move the element by this many pixels. (0, 0) is at the top-left.
-    // @param thisDirection (string): Either "horizontal" or "vertical," depending on the
-    //        intended direction of movement. Note this is the *opposite* of the Separator
-    //        component's "direction" prop.
-    // @param zeroElem (Element): The element closer to "zero" in the direction of movement. For
-    //        vertical movement, this is the higher Element; for horizontal movement this is the
-    //        Element on the left.
-    // @param oneElem (Element): The other element that's being resized.
-
     // get the existing span
     let zeroMagnitude;
     let oneMagnitude;
     if ('vertical' === thisDirection) {
         zeroMagnitude = zeroElem.offsetHeight;
         oneMagnitude = oneElem.offsetHeight;
-    } else {
+    }
+    else {
         zeroMagnitude = zeroElem.offsetWidth;
         oneMagnitude = oneElem.offsetWidth;
     }
@@ -70,31 +70,31 @@ const TextEditor = React.createClass({
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
     },
-    getInitialState: function() {
+    getInitialState() {
         return {editorValue: ''};
     },
-    handleEditorChange: function(withThis) {
+    handleEditorChange(withThis) {
         // TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
         this.setState({editorValue: withThis});
     },
-    handleSubmitPython: function() {
+    handleSubmitPython() {
         this.props.submitToPyPy(this.state.editorValue);
     },
-    handleSubmitLilyPond: function() {
+    handleSubmitLilyPond() {
         this.props.submitToLychee(this.state.editorValue, 'lilypond');
     },
-    render: function() {
+    render() {
         const codeMirrorOptions = {
-            "mode": "python",
-            "theme": "solarized dark",
-            "indentUnit": 4,
-            "indentWithTabs": false,
-            "smartIndent": true,
-            "electricChars": true,
-            "lineNumbers": true,
-            "inputStyle": "contenteditable",  // NOTE: this usually defaults to "textarea" on
-                                              // desktop and may not be so good for us, but it has
-                                              // better IME and and screen reader support
+            mode: "python",
+            theme: "solarized dark",
+            indentUnit: 4,
+            indentWithTabs: false,
+            smartIndent: true,
+            electricChars: true,
+            lineNumbers: true,
+            inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
+                                            // desktop and may not be so good for us, but it has
+                                            // better IME and and screen reader support
         };
         return (
             <div className="ncoda-text-editor">
@@ -106,8 +106,12 @@ const TextEditor = React.createClass({
                     onChange={this.handleEditorChange}
                 />
                 <div className="ncoda-text-editor-controls">
-                    <button className="btn" value="Run as Python" onClick={this.handleSubmitPython}>{`Run as Python`}</button>
-                    <button className="btn" value="Display as LilyPond" onClick={this.handleSubmitLilyPond}>{`Submit as LilyPond`}</button>
+                    <button className="btn" value="Run as Python" onClick={this.handleSubmitPython}>
+                        {`Run as Python`}
+                    </button>
+                    <button className="btn" value="Display as LilyPond" onClick={this.handleSubmitLilyPond}>
+                        {`Submit as LilyPond`}
+                    </button>
                 </div>
             </div>
         );
@@ -125,16 +129,16 @@ const Verovio = React.createClass({
     //
 
     mixins: [reactor.ReactMixin],
-    getDataBindings: function() {
+    getDataBindings() {
         return {meiForVerovio: getters.meiForVerovio};
     },
-    getInitialState: function() {
+    getInitialState() {
         // - verovio: the instance of Verovio Toolkit
         // - renderedMei: the current SVG score as a string
         // - meiForVerovio: do NOT set in this function (set by the ReactMixin)
         return {verovio: null, renderedMei: ''};
     },
-    renderWithVerovio: function(renderThis) {
+    renderWithVerovio(renderThis) {
         // Ensure there's an instance of Verovio available, and use it to render "renderThis."
         //
         // TODO: move all the interaction with Verovio to part of the model
@@ -142,41 +146,44 @@ const Verovio = React.createClass({
 
         if (null === this.state.verovio) {
             return '<div class="verovio-waiting"><i class="fa fa-spinner fa-5x fa-spin"></i><div>Loading ScoreView</div></div>';
-        } else if (null === renderThis) {
-            return 'Received no MEI to render.';
-        } else {
-            let theOptions = {inputFormat: 'mei'};
-            theOptions = JSON.stringify(theOptions);
-            let rendered = this.state.verovio.renderData(renderThis, theOptions)
-            // TODO: dynamically set the height of the .ncoda-verovio <div> so it automatically responds proportionally to width changes
-            rendered = rendered.replace('width="2100px" height="2970px"', '');
-            return rendered;
         }
+        else if (null === renderThis) {
+            return 'Received no MEI to render.';
+        }
+
+        let theOptions = {inputFormat: 'mei'};
+        theOptions = JSON.stringify(theOptions);
+        let rendered = this.state.verovio.renderData(renderThis, theOptions);
+        // TODO: dynamically set the height of the .ncoda-verovio <div> so it automatically responds proportionally to width changes
+        rendered = rendered.replace('width="2100px" height="2970px"', '');
+        return rendered;
     },
-    makeVerovio: function() {
+    makeVerovio() {
         // TODO: consider whether we should be making a global instance? (I'm thinking one per
         //       Verovio component is good though)
 
         try {
             this.setState({verovio: new verovio.toolkit()});
-        } catch (err) {
-            if ('ReferenceError' !== err.name) {
-                throw err;
-            } else {
+        }
+        catch (err) {
+            if ('ReferenceError' === err.name) {
                 window.setTimeout(this.makeVerovio, 250);
+            }
+            else {
+                throw err;
             }
         }
     },
-    componentDidMount: function() {
+    componentDidMount() {
         this.makeVerovio();
         signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
     },
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
         delete this.state.verovio;
     },
-    render: function() {
-        const innerHtml = {'__html': this.renderWithVerovio(this.state.meiForVerovio)};
+    render() {
+        const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
         return <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}/>;
     },
 });
@@ -188,10 +195,10 @@ const WorkTable = React.createClass({
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
     },
-    getDefaultProps: function() {
-        return ( {meiForVerovio: ""} );
+    getDefaultProps() {
+        return {meiForVerovio: ''};
     },
-    handleSeparator: function(doThis, thisDirection) {
+    handleSeparator(doThis, thisDirection) {
         handleSeparator(
             doThis,
             thisDirection,
@@ -199,7 +206,7 @@ const WorkTable = React.createClass({
             ReactDOM.findDOMNode(this.refs.verovio)
         );
     },
-    render: function () {
+    render() {
         return (
             <div ref="workTable" className="ncoda-work-table">
                 <TextEditor
@@ -220,37 +227,38 @@ const TerminalWindow = React.createClass({
         extraClass: React.PropTypes.string,
         outputThis: React.PropTypes.string,
     },
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {outputThis: '', extraClass: ''};
     },
-    formatStringForOutput: function(outputThis) {
+    formatString(outputThis) {
         // Formats a string properly so it can be outputted in the window as dangerouslySetInnerHTML.
         //
+        let post = outputThis;
 
         // TODO: how to make this replace all occurrences?
         // TODO: how to avoid other possible attacks?
-        while (outputThis.includes('<')) {
-            outputThis = outputThis.replace('<', '&lt;');
+        while (post.includes('<')) {
+            post = post.replace('<', '&lt;');
         }
-        while (outputThis.includes('>')) {
-            outputThis = outputThis.replace('>', '&gt;');
+        while (post.includes('>')) {
+            post = post.replace('>', '&gt;');
         }
 
         // convert newlines to <br/>
-        while (outputThis.includes('\n')) {
-            outputThis = outputThis.replace('\n', '<br/>');
+        while (post.includes('\n')) {
+            post = post.replace('\n', '<br/>');
         }
 
         // finally append our thing
-        if (!outputThis.endsWith('<br/>')) {
-            outputThis += '<br/>';
+        if (!post.endsWith('<br/>')) {
+            post += '<br/>';
         }
         // wrap the output in <pre> tag to preserve spaces and tabs.
-        outputThis = `<pre>${outputThis}</pre>`;
-        return outputThis;
+        post = `<pre>${post}</pre>`;
+        return post;
     },
-    render: function() {
-        const innerHtml = {__html: this.formatStringForOutput(this.props.outputThis)};
+    render() {
+        const innerHtml = {__html: this.formatString(this.props.outputThis)};
         let className = 'ncoda-terminal-window';
         if (this.props.extraClass.length > 0) {
             className += `${className} ${this.props.extraClass}`;
@@ -265,10 +273,10 @@ const TerminalWindow = React.createClass({
 const TerminalOutput = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     mixins: [reactor.ReactMixin],
-    getDataBindings: function() {
+    getDataBindings() {
         return {stdout: getters.stdout, stderr: getters.stderr, stdin: getters.stdin};
     },
-    handleSeparator: function(doThis, thisDirection) {
+    handleSeparator(doThis, thisDirection) {
         handleSeparator(
             doThis,
             thisDirection,
@@ -276,7 +284,7 @@ const TerminalOutput = React.createClass({
             ReactDOM.findDOMNode(this.refs.theRightBox)
         );
     },
-    render: function() {
+    render() {
         return (
             <div id="ncoda-terminal-output" className="ncoda-terminal-output">
                 <h3><div>{`Your Input`}</div><div>{`Python Output`}</div></h3>
@@ -300,22 +308,23 @@ const Separator = React.createClass({
         extraCssClass: React.PropTypes.string,  // to add a CSS class to this Separator
         onMove: React.PropTypes.func,  // TODO: write explanation about this
     },
-    getDefaultProps: function() {
+    getDefaultProps() {
         return {direction: "horizontal", extraCssClass: null};
     },
-    getInitialState: function() {
+    getInitialState() {
         // - "mouseDown": set to "true" when the mouse is down
         return {mouseDown: false, recentestObservation: null};
     },
-    handleMouseMove: function(event) {
+    handleMouseMove(event) {
         if (this.state.mouseDown && this.props.onMove) {
             const state = {};
             let direction = null;  // this will be opposite of the Separator's direction
             if ('vertical' === this.props.direction) {
-                state['recentestObservation'] = event.clientX;
+                state.recentestObservation = event.clientX;
                 direction = 'horizontal';
-            } else {
-                state['recentestObservation'] = event.clientY;
+            }
+            else {
+                state.recentestObservation = event.clientY;
                 direction = 'vertical';
             }
             const magnitude = state.recentestObservation - this.state.recentestObservation;
@@ -323,13 +332,14 @@ const Separator = React.createClass({
             this.props.onMove(magnitude, direction );
         }
     },
-    handleMouseDown: function(event) {
+    handleMouseDown(event) {
         // make sure we start in the right place
         const state = {mouseDown: true};
         if ('vertical' === this.props.direction) {
-            state['recentestObservation'] = event.clientX;
-        } else {
-            state['recentestObservation'] = event.clientY;
+            state.recentestObservation = event.clientX;
+        }
+        else {
+            state.recentestObservation = event.clientY;
         }
 
         // subscribe to MouseEvent events so we can process the dragging
@@ -339,7 +349,7 @@ const Separator = React.createClass({
         // set the "mouse down" CSS classes and recentestObservation
         this.setState(state);
     },
-    handleMouseUp: function(event) {
+    handleMouseUp(event) {
         // unsubscribe to MouseEvent events
         this.refs.thePlane.removeEventListener(MouseEvent, this.mouseEventMultiplexer);
 
@@ -349,7 +359,7 @@ const Separator = React.createClass({
         // set the "mouse up" CSS classes
         this.setState({mouseDown: false});
     },
-    render: function() {
+    render() {
         let className = `nc-separator nc-separator-${this.props.direction}`;
         const planeStyle = {display: 'none'};
         if (null !== this.props.extraCssClass) {
@@ -372,15 +382,16 @@ const CodeScoreView = React.createClass({
     propTypes: {
         meiForVerovio: React.PropTypes.string,
     },
-    getDefaultProps: function() {
-        return ( {meiForVerovio: "", sendToConsole: "", sendToConsoleType: null} );
+    getDefaultProps() {
+        return {meiForVerovio: '', sendToConsole: '', sendToConsoleType: null};
     },
-    getInitialState: function() {
-        return ({sendToConsole: "nCoda is ready for action!",
-                 sendToConsoleType: "welcome",
-                 });
+    getInitialState() {
+        return {
+            sendToConsole: 'nCoda is ready for action!',
+            sendToConsoleType: 'welcome',
+        };
     },
-    handleSeparator: function(doThis, thisDirection) {
+    handleSeparator(doThis, thisDirection) {
         handleSeparator(
             doThis,
             thisDirection,
@@ -388,7 +399,7 @@ const CodeScoreView = React.createClass({
             ReactDOM.findDOMNode(this.refs.terminalOutput)
         );
     },
-    render: function() {
+    render() {
         return (
             <div id="nc-csv-frame">
                 <WorkTable

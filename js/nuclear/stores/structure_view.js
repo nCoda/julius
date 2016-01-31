@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
@@ -20,7 +20,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 import {Store, toImmutable} from 'nuclear-js';
 
@@ -28,34 +28,31 @@ import log from '../../util/log';
 import signals from '../signals';
 
 
+/** Guarantee that "spec" is a string with a number followed by "px".
+ * @param {str} spec - The string to check for validity.
+ * @returns {bool} Whether the string contains a number followed by "px".
+ */
 function verifyIsPixels(spec) {
-    // Guarantees that "spec" is a string with a number followed by "px".
-    //
-
     if ('string' === typeof spec) {
         if (spec.endsWith('px')) {
             if (spec.length > 2) {
-                if (!Number.isNaN(Number(spec.slice(0, -2)))) {
+                if (!Number.isNaN(Number(spec.slice(0, -2)))) {  /* eslint no-magic-numbers: 0 */
                     return true;
-    }}}}
+                } } } }
 
     return false;
 }
 
 
+/** Update state for the SectionContextMenu Store.
+ * @param {ImmutableJS.Map} previousState - The Store's previous state.
+ * @param {Object} payload - An object with "left", "top", and "show" members. The first two correspond
+ *     to the desired CSS attributes of the same name for the context menu, and must be a string with
+ *     a number followed by "px". The "show" member is a boolean indicating whether to show the menu.
+ * @returns {ImmutableJS.Map} The updated state.
+ */
 function sectionContextMenu(previousState, payload) {
-    // Verify that the properties are all valid, then return the new settings.
-    //
-    // Payload:
-    // An object with "left", "top", and "show" members. The first two correspond to the desired CSS
-    // attributes of the same name for the context menu, and must be a string with a number followed
-    // by "px". The "show" member is a boolean indicating whether to show the menu.
-    //
-    // If "show" is false, "left" and "top" are ignored and their presence is not checked. If "show"
-    // is true, "left" and "top" must both be present.
-    //
-
-    if (undefined !== payload.show) {
+    if (payload.show) {
         if (true === payload.show) {
             if (verifyIsPixels(payload.left) && verifyIsPixels(payload.top)) {
                 return toImmutable({
@@ -63,16 +60,18 @@ function sectionContextMenu(previousState, payload) {
                     left: payload.left,
                     top: payload.top,
                 });
-            } else {
-                log.error('SECTION_CONTEXT_MENU signal received improper "left" and "top" arguments.');
             }
-        } else if (false === payload.show) {
+            log.error('SECTION_CONTEXT_MENU signal received improper "left" and "top" arguments.');
+        }
+        else if (false === payload.show) {
             return toImmutable({display: 'none'});
-        } else {
+        }
+        else {
             log.error('SECTION_CONTEXT_MENU signal must have true or false "show" argument');
             return previousState;
         }
-    } else {
+    }
+    else {
         log.error('SECTION_CONTEXT_MENU signal requires "show" argument');
         return previousState;
     }
