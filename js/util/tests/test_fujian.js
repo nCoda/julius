@@ -67,6 +67,7 @@ describe("Fujian class' instance methods", () => {
             expect(window.WebSocket).toBeCalledWith(fujian.FUJIAN_WS_URL);
             expect(actual._fujian).toBe(window.WebSocket.mock.instances[0]);
             expect(actual._fujian.onmessage).toBe(fujian.Fujian._receiveWS);
+            expect(actual._fujian.onerror).toBe(fujian.Fujian._errorWS);
         });
 
         it('startWS() can deal with an existing WebSocket connection', () => {

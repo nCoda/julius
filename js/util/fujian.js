@@ -104,6 +104,7 @@ class Fujian {
             // make a new connection if there isn't one, or the existing one is closed
             this._fujian = new WebSocket(FUJIAN_WS_URL);
             this._fujian.onmessage = Fujian._receiveWS;
+            this._fujian.onerror = Fujian._errorWS;
         }
         else {
             log.info(ERROR_MESSAGES.wsConnectionAlreadyOpen);
