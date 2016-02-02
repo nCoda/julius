@@ -1,0 +1,119 @@
+// -*- coding: utf-8 -*-
+//-------------------------------------------------------------------------------------------------
+// Program Name:           Julius
+// Program Description:    User interface for the nCoda music notation editor.
+//
+// Filename:               css/ncoda/buttons.less
+// Purpose:                Override the amazeui button colours.
+//
+// Copyright (C) 2016 Christopher Antila
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//-------------------------------------------------------------------------------------------------
+
+@import "colours.less";
+
+
+// default
+.am-btn-default {
+    color: @shade-black;
+    background-color: @cardboard-gray;
+    border-color: @cardboard-gray;
+}
+.am-btn-default:hover {
+    background-color: darken(@cardboard-gray, 10%);
+    border-color: darken(@cardboard-gray, 10%);
+}
+.am-btn-default:focus, .am-btn-default:active {
+    background-color: darken(@cardboard-gray, 15%);
+    border-color: darken(@cardboard-gray, 15%);
+}
+
+// primary
+.am-btn-primary {
+    color: @paper-white;
+    background-color: @plasma-blue;
+    border-color: @plasma-blue;
+}
+.am-btn-primary:hover {
+    background-color: darken(@plasma-blue, 10%);
+    border-color: darken(@plasma-blue, 10%);
+}
+.am-btn-primary:focus, .am-btn-primary:active {
+    background-color: darken(@plasma-blue, 15%);
+    border-color: darken(@plasma-blue, 15%);
+}
+
+// secondary
+.am-btn-secondary {
+    color: @paper-white;
+    background-color: @mellow-turquoise;
+    border-color: @mellow-turquoise;
+}
+.am-btn-secondary:hover {
+    background-color: darken(@mellow-turquoise, 10%);
+    border-color: darken(@mellow-turquoise, 10%);
+}
+.am-btn-secondary:focus,
+.am-btn-secondary:active,
+.am-btn-secondary.am-active,
+.am-active .am-btn-secondary.am-dropdown-toggle {
+    background-color: darken(@mellow-turquoise, 15%);
+    border-color: darken(@mellow-turquoise, 15%);
+}
+
+// success
+.am-btn-success {
+    color: @paper-white;
+    background-color: @verdant-green;
+    border-color: @verdant-green;
+}
+.am-btn-success:hover {
+    background-color: darken(@verdant-green, 10%);
+    border-color: darken(@verdant-green, 10%);
+}
+.am-btn-success:focus, .am-btn-success:active {
+    background-color: darken(@verdant-green, 15%);
+    border-color: darken(@verdant-green, 15%);
+}
+
+// warning
+.am-btn-warning {
+    color: @paper-white;
+    background-color: @beware-orange;
+    border-color: @beware-orange;
+}
+.am-btn-warning:hover {
+    background-color: darken(@beware-orange, 10%);
+    border-color: darken(@beware-orange, 10%);
+}
+.am-btn-warning:focus, .am-btn-warning:active {
+    background-color: darken(@beware-orange, 15%);
+    border-color: darken(@beware-orange, 15%);
+}
+
+// danger
+.am-btn-danger {
+    color: @paper-white;
+    background-color: @danger-red;
+    border-color: @danger-red;
+}
+.am-btn-danger:hover {
+    background-color: darken(@danger-red, 10%);
+    border-color: darken(@danger-red, 10%);
+}
+.am-btn-danger:focus, .am-btn-danger:active {
+    background-color: darken(@danger-red, 15%);
+    border-color: darken(@danger-red, 15%);
+}

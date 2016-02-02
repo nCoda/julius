@@ -6,7 +6,7 @@
 // Filename:               css/ncoda/julius.less
 // Purpose:                LESS file shared by all Views.
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015, 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -23,8 +23,9 @@
 //-------------------------------------------------------------------------------------------------
 
 
-@import "height_of_global_menubar.less";
+@import "height_of_global_menubar.less";  // TODO: remove this import once we don't use it
 @import "colours.less";
+@import "buttons.less";
 
 
 /* ********************************************************************************************* */
@@ -51,19 +52,6 @@ body {
 }
 #ncoda {
     height: 100%;
-    display: flex;
-    flex-flow: column;
-}
-
-// nCoda Content
-#ncoda-content {
-    color: @shade-black;
-    overflow: hidden;
-    flex: 1 1 0%;
-
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
 }
 
 
@@ -71,6 +59,7 @@ body {
 /* The loading screen, shown before PyPy.js and Verovio are compiled. */
 
 #ncoda-loading {
+    height: 100%;
     flex: 1 1;
     display: flex;
     flex-flow: column;
@@ -82,10 +71,12 @@ body {
     color: @plasma-blue;
 }
 
-.nc-main-quote { border-left: 0.35rem solid @plasma-blue; }
-.nc-main-quote i { color: @plasma-blue; }
-.nc-main-quote p { max-width: 30rem; }
-.nc-main-quote .attribution { text-align: right; }
+blockquote { font-family: inherit; }
+blockquote { border-left-color: @plasma-blue; }
+blockquote i { color: @plasma-blue; }
+blockquote p { max-width: 45rem; }
+blockquote small { color: @charcoal-gray; font-family: inherit; }
+
 
 /* ********************************************************************************************* */
 /* Headers */
@@ -102,6 +93,7 @@ h2, h3 {
 /* The colophon, "about nCoda." */
 
 #ncoda-colophon {
+    height: 100%;
     flex: 1 1;
     display: flex;
     flex-flow: column;
@@ -113,20 +105,20 @@ h2, h3 {
 /* ********************************************************************************************* */
 /* The top-level components (header and everything else) */
 
-#ncoda-global-header {
-    background: @charcoal-grey;
-    overflow: hidden;
-    box-shadow: 0px 0px 7px @shade-black;
-    z-index: 1000;
+.am-topbar-inverse {
+    background-color: @charcoal-grey;
+    border-color: @plasma-blue;
+    border-width: 0 0 3px;
     color: @cardboard-grey;
-    border-bottom: 3px solid @plasma-blue;
+}
 
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    justify-content: space-between;
+.am-topbar-inverse .am-topbar-nav > li > a:hover, .am-topbar-inverse .am-topbar-nav > li > a:focus {
+    background-color: darken(@charcoal-grey, 5%);
+}
 
-    height: @global-menubar-height;
+// this is for the triangle under the Topbar button
+.am-topbar-inverse .am-topbar-nav > li > a:hover:after, .am-topbar-inverse .am-topbar-nav > li > a:focus:after {
+    border-bottom-color: @plasma-blue;
 }
 
 .ncoda-logo {
@@ -156,9 +148,10 @@ h2, h3 {
     margin: 0px;
 }
 
+
 /*************************/
 /* nCoda Menus Generally */
-
+// TODO: abandon these in favour of amazeui menus
 nav {
     background: @charcoal-gray;
     color: @cardboard-gray;
@@ -181,21 +174,10 @@ nav li a {
     text-decoration: inherit;
 }
 
-#ncoda-global-menu {
-    position: absolute;
-    left: 0px;
-    z-index: 900;
-}
-
-#ncoda-devel-menu {
-    position: absolute;
-    right: 0px;
-    z-index: 900;
-}
-
 
 /* ********************************************************************************************* */
 /* Dialogue Boxes and Related */
+// TODO: abandon these in favour of amazeui Modal
 .nc-modal-background {
     z-index: 950;
     position: absolute;
@@ -251,22 +233,6 @@ nav li a {
 .nc-dialogue-info .nc-dialogue-type     { border-bottom-color: @plasma-blue; }
 .nc-dialogue-debug .nc-dialogue-type    { border-bottom-color: @verdant-green; }
 .nc-dialogue-question .nc-dialogue-type { border-bottom-color: @plasma-blue; }
-
-/* ********************************************************************************************* */
-/* Buttons */
-.btn {
-    background: @cardboard-gray;
-    color: @shade-black;
-    margin: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    min-width: 5rem;
-    border: none;
-    border-radius: 0.25rem;
-    box-shadow: 0 0.1rem 0.1rem lighten(#232629, 40%);  // NOTE: that's shade black
-}
-.btn:hover {
-    background-color: @plasma-blue;
-}
 
 
 /* ********************************************************************************************* */

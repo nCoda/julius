@@ -23,6 +23,7 @@
 // ------------------------------------------------------------------------------------------------
 
 
+import {CollapsibleNav, Dropdown, Nav, NavItem, Topbar} from 'amazeui-react';
 import React from 'react';
 import {Link} from 'react-router';
 
@@ -35,10 +36,10 @@ const MainScreen = React.createClass({
     render() {
         return (
             <div id="ncoda-loading">
-                <div>
+                <section>
                     {`Use the `}<i className="fa fa-th"></i>
                     {` button in the top-left corner to open the menu.`}
-                </div>
+                </section>
                 <MainScreenQuote/>
             </div>
         );
@@ -56,14 +57,12 @@ const MainScreenQuote = React.createClass({
     },
     render() {
         return (
-            <div className="nc-main-quote">
-                <blockquote cite={this.state.cite}>
-                    <i className="fa fa-quote-left"/>
-                    <p>{this.state.quote}</p>
-                    <i className="fa fa-quote-right"/>
-                    <div className="attribution">{`\u2014 ${this.state.attribution}`}</div>
-                </blockquote>
-            </div>
+            <blockquote cite={this.state.cite}>
+                <i className="fa fa-quote-left"/>
+                <p>{this.state.quote}</p>
+                <i className="fa fa-quote-right"/>
+                <small>{`\u2014 ${this.state.attribution}`}</small>
+            </blockquote>
         );
     },
 });
@@ -99,24 +98,31 @@ const GlobalHeader = React.createClass({
         handleShowMenu: React.PropTypes.func.isRequired,
     },
     render() {
+        const brand = (
+            <h1 className="ncoda-logo">
+                <span className="ncoda-logo-n">{`n`}</span>{`Coda`}
+            </h1>
+        );
+
         return (
-            <div id="ncoda-global-header">
-                <button onClick={this.props.handleShowMenu}>
-                    <i className="fa fa-th fa-2x"></i>
-                </button>
-                <h1 className="ncoda-logo">
-                    <div className="ncoda-logo-n">{`n`}</div>{`Coda`}
-                </h1>
-                <button onClick={this.props.handleShowDevelMenu}>
-                    <i className="fa fa-wrench fa-2x"></i>
-                </button>
-            </div>
+            <Topbar brand={brand} toggleNavKey="nav" inverse fixedTop>
+                <CollapsibleNav eventKey="nav">
+                    <Nav topbar>
+                        <NavItem><Link to="/">{`Home`}</Link></NavItem>
+                        <NavItem><Link to="/colophon">{`About`}</Link></NavItem>
+                        <NavItem><Link to="/codescore">{`CodeScoreView`}</Link></NavItem>
+                        <NavItem><Link to="/structure">{`StructureView`}</Link></NavItem>
+                        <NavItem><DeveloperMenu/></NavItem>
+                    </Nav>
+                </CollapsibleNav>
+            </Topbar>
         );
     },
 });
 
 
-// TODO: consolidate MenuItem and GlobalMenu somehow onto an nCoda-global component
+// TODO: abandon this in favour of amazeui menus
+// TODO: it's used in other modules (probably just StructureView?)
 const MenuItem = React.createClass({
     propTypes: {
         // A function that closes the menu once a menu item has been chosen.
@@ -140,53 +146,11 @@ const MenuItem = React.createClass({
 });
 
 
-const GlobalMenu = React.createClass({
-    propTypes: {
-        // A function that closes the menu once a menu item has been chosen.
-        handleCloseMenu: React.PropTypes.func,
-        // Whether the menu is currently shown.
-        showMenu: React.PropTypes.bool,
-    },
-    getDefaultProps() {
-        return {showMenu: false};
-    },
-    render() {
-        const globalMenuStyle = {};
-        if (this.props.showMenu) {
-            globalMenuStyle.display = 'block';
-        }
-        else {
-            globalMenuStyle.display = 'none';
-        }
-
-        return (
-            <nav id="ncoda-global-menu" style={globalMenuStyle}>
-                <ul>
-                    <MenuItem id="global-0" label="Home" linkTo="/" handleCloseMenu={this.props.handleCloseMenu}/>
-                    <MenuItem id="global-1" label="Open CodeScoreView" linkTo="/codescore" handleCloseMenu={this.props.handleCloseMenu}/>
-                    <MenuItem id="global-2" label="Open StructureView" linkTo="/structure" handleCloseMenu={this.props.handleCloseMenu}/>
-                    <hr/>
-                    <MenuItem id="global-3" label="About nCoda" linkTo="/colophon" handleCloseMenu={this.props.handleCloseMenu}/>
-                </ul>
-            </nav>
-        );
-    },
-});
-
-
 const DeveloperMenu = React.createClass({
-    propTypes: {
-        // A function that closes the menu once a menu item has been chosen.
-        handleCloseMenu: React.PropTypes.func.isRequired,
-        // Whether the menu is currently shown.
-        showMenu: React.PropTypes.bool,
-    },
-    getDefaultProps() {
-        return {showMenu: false};
-    },
+    /** Handle a click on one of the menu items.
+     * @param {ClickEvent} event - The click event.
+     */
     handleClick(event) {
-        // Handle a click on the menu items.
-
         this.props.handleCloseMenu();
         switch (event.target.id) {
         case 'devel-0':
@@ -215,30 +179,19 @@ const DeveloperMenu = React.createClass({
         }
     },
     render() {
-        const globalMenuStyle = {};
-        if (this.props.showMenu) {
-            globalMenuStyle.display = 'block';
-        } else {
-            globalMenuStyle.display = 'none';
-        }
-
         return (
-            <nav id="ncoda-devel-menu" style={globalMenuStyle}>
-                <ul>
-                    <li>{`nCoda Developer Menu`}</li>
-                    <hr/>
-                    <h4>{`Fujian WebSocket Connection`}</h4>
-                    <li id="devel-0" onClick={this.handleClick}>{`Start`}</li>
-                    <li id="devel-1" onClick={this.handleClick}>{`Restart`}</li>
-                    <li id="devel-2" onClick={this.handleClick}>{`Stop`}</li>
-                    <hr/>
-                    <h4>{`Set Log Level`}</h4>
-                    <li id="devel-3" onClick={this.handleClick}>{`Error`}</li>
-                    <li id="devel-4" onClick={this.handleClick}>{`Warn`}</li>
-                    <li id="devel-5" onClick={this.handleClick}>{`Info`}</li>
-                    <li id="devel-6" onClick={this.handleClick}>{`Debug`}</li>
-                </ul>
-            </nav>
+            <Dropdown title={<i className="fa fa-wrench fa-2x"/>} btnStyle="link">
+                <Dropdown.Item header>{`Fujian WebSocket Connection`}</Dropdown.Item>
+                <Dropdown.Item id="devel-0">{`Start`}</Dropdown.Item>
+                <Dropdown.Item id="devel-1">{`Restart`}</Dropdown.Item>
+                <Dropdown.Item id="devel-2">{`Stop`}</Dropdown.Item>
+                <Dropdown.Item divider/>
+                <Dropdown.Item header>{`Log Level`}</Dropdown.Item>
+                <Dropdown.Item id="devel-3">{`Set to DEBUG`}</Dropdown.Item>
+                <Dropdown.Item id="devel-4">{`Set to INFO`}</Dropdown.Item>
+                <Dropdown.Item id="devel-5">{`Set to WARN`}</Dropdown.Item>
+                <Dropdown.Item id="devel-6">{`Set to ERROR`}</Dropdown.Item>
+            </Dropdown>
         );
     },
 });
@@ -271,17 +224,11 @@ const NCoda = React.createClass({
         this.setState({develMenuShown: !this.state.develMenuShown});
     },
     render() {
-        // TODO: figure out the accessibility stuff for the main menu button
         return (
             <div id="ncoda">
                 <GlobalHeader handleShowMenu={this.showOrHideGlobalMenu} handleShowDevelMenu={this.showOrHideDevelMenu}/>
-
-                <div id="ncoda-content">
-                    <DialogueBox/>
-                    <GlobalMenu showMenu={this.state.menuShown} handleCloseMenu={this.showOrHideGlobalMenu}/>
-                    <DeveloperMenu showMenu={this.state.develMenuShown} handleCloseMenu={this.showOrHideDevelMenu}/>
-                    {this.props.children}
-                </div>
+                <DialogueBox/>
+                {this.props.children}
             </div>
         );
     },
