@@ -7,6 +7,8 @@
     "repository": "https://jameson.adjectivenoun.ca:ncoda/julius.git",
     "main": "js/electron_main.js",
     "dependencies": {
+        "amazeui": "2.5.2",
+        "amazeui-react": "1.0.1",
         "codemirror": "5.11.0",
         "electron-prebuilt": "0.36.7",
         "history": "^1",
