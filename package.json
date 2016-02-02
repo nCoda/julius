@@ -8,7 +8,7 @@
     "main": "js/electron_main.js",
     "dependencies": {
         "codemirror": "5.11.0",
-        "electron-prebuilt": "0.34.4",
+        "electron-prebuilt": "0.36.7",
         "history": "^1",
         "nuclear-js": "1.3.0",
         "react": "0.14.7",
