@@ -27,6 +27,7 @@
 
 import {getters} from '../nuclear/getters';
 import {reactor} from '../nuclear/reactor';
+import {emitters as signals} from '../nuclear/signals';
 
 
 const LEVELS = {
@@ -75,14 +76,24 @@ if (console) {
 // actual logging functions
 const log = {
     error(msg) {
-        if (haveError && level >= LEVELS.ERROR) {
+        if (haveError) {
             console.error(msg);
+            signals.dialogueBoxShow({
+                type: 'error',
+                message: 'Log Message',
+                detail: msg,
+            });
         }
     },
 
     warn(msg) {
         if (haveWarn && level >= LEVELS.WARN) {
             console.warn(msg);
+            signals.dialogueBoxShow({
+                type: 'warn',
+                message: 'Log Message',
+                detail: msg,
+            });
         }
     },
 
