@@ -22,8 +22,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-@import "height_of_global_menubar.less";
 @import "colours.less";
+
 
 /*************************************************************************************************/
 /* StructureView colour definitions */
@@ -45,6 +45,7 @@
     /* This contains the menus and #nc-structureview. It exists basically to ensure that the
      * menus don't interfere with the StructureView flexbox layout.
      */
+    height: 100%;
     flex: 1 1 0%;
     background: @charcoal-gray;
     display: flex;
@@ -89,6 +90,7 @@
     align-items: stretch;
 }
 
+
 /*************************************************************************************************/
 /* <article> corresponding to an MEI <section> */
 .nc-strv-section {
@@ -127,6 +129,7 @@
 #ncoda-section-menu a {
     cursor: default;
 }
+
 
 /*************************************************************************************************/
 /* StructureView Corner Menus */
@@ -187,14 +190,12 @@
 .nc-strv-menu-tr {
     border-left: .1rem solid #10825b;
     border-bottom: .1rem solid #10825b;
-    top: @global-menubar-height;
     right: 0;
     box-shadow: 0 0 1rem @strv-widget-shadow;
 }
 .nc-strv-menu-tl {
     border-right: .1rem solid #10825b;
     border-bottom: .1rem solid #10825b;
-    top: @global-menubar-height;
     left: 0;
     box-shadow: 0 0 1rem @strv-widget-shadow;
 }
