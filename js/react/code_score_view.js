@@ -22,6 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
+import {Button, ButtonGroup} from 'amazeui-react';
 import React from "react";
 import ReactDOM from 'react-dom';
 import ReactCodeMirror from "./CodeMirror";
@@ -106,12 +107,14 @@ const TextEditor = React.createClass({
                     onChange={this.handleEditorChange}
                 />
                 <div className="ncoda-text-editor-controls">
-                    <button className="btn" value="Run as Python" onClick={this.handleSubmitPython}>
-                        {`Run as Python`}
-                    </button>
-                    <button className="btn" value="Display as LilyPond" onClick={this.handleSubmitLilyPond}>
-                        {`Submit as LilyPond`}
-                    </button>
+                    <ButtonGroup>
+                        <Button onClick={this.handleSubmitPython}>
+                            {`Run as Python`}
+                        </Button>
+                        <Button onClick={this.handleSubmitLilyPond}>
+                            {`Submit as Lilypond`}
+                        </Button>
+                    </ButtonGroup>
                 </div>
             </div>
         );
