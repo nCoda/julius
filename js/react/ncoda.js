@@ -23,7 +23,7 @@
 // ------------------------------------------------------------------------------------------------
 
 
-import {CollapsibleNav, Dropdown, Nav, NavItem, Topbar} from 'amazeui-react';
+import {Button, CollapsibleNav, Dropdown, Nav, NavItem, Topbar} from 'amazeui-react';
 import React from 'react';
 import {Link} from 'react-router';
 
@@ -151,7 +151,6 @@ const DeveloperMenu = React.createClass({
      * @param {ClickEvent} event - The click event.
      */
     handleClick(event) {
-        this.props.handleCloseMenu();
         switch (event.target.id) {
         case 'devel-0':
             signals.emitters.fujianStartWS();
@@ -163,34 +162,62 @@ const DeveloperMenu = React.createClass({
             signals.emitters.fujianStopWS();
             break;
         case 'devel-3':
-            signals.emitters.setLogLevel(log.LEVELS.ERROR);
-            break;
-        case 'devel-4':
-            signals.emitters.setLogLevel(log.LEVELS.WARN);
-            break;
-        case 'devel-5':
-            signals.emitters.setLogLevel(log.LEVELS.INFO);
-            break;
-        case 'devel-6':
             signals.emitters.setLogLevel(log.LEVELS.DEBUG);
             break;
+        case 'devel-4':
+            signals.emitters.setLogLevel(log.LEVELS.INFO);
+            break;
+        case 'devel-5':
+            signals.emitters.setLogLevel(log.LEVELS.WARN);
+            break;
+        case 'devel-6':
+            signals.emitters.setLogLevel(log.LEVELS.ERROR);
+            break;
         default:
-            return;
+            log.warn('The DeveloperMenu component is misconfigured, so nothing will happen.');
         }
     },
     render() {
         return (
             <Dropdown title={<i className="fa fa-wrench fa-2x"/>} btnStyle="link">
                 <Dropdown.Item header>{`Fujian WebSocket Connection`}</Dropdown.Item>
-                <Dropdown.Item id="devel-0">{`Start`}</Dropdown.Item>
-                <Dropdown.Item id="devel-1">{`Restart`}</Dropdown.Item>
-                <Dropdown.Item id="devel-2">{`Stop`}</Dropdown.Item>
+                <Dropdown.Item closeOnClick>
+                    <Button id="devel-0" amStyle="link" onClick={this.handleClick}>
+                        {`Start`}
+                    </Button>
+                </Dropdown.Item>
+                <Dropdown.Item closeOnClick>
+                    <Button id="devel-1" amStyle="link" onClick={this.handleClick}>
+                        {`Restart`}
+                    </Button>
+                </Dropdown.Item>
+                <Dropdown.Item closeOnClick>
+                    <Button id="devel-2" amStyle="link" onClick={this.handleClick}>
+                        {`Stop`}
+                    </Button>
+                </Dropdown.Item>
                 <Dropdown.Item divider/>
                 <Dropdown.Item header>{`Log Level`}</Dropdown.Item>
-                <Dropdown.Item id="devel-3">{`Set to DEBUG`}</Dropdown.Item>
-                <Dropdown.Item id="devel-4">{`Set to INFO`}</Dropdown.Item>
-                <Dropdown.Item id="devel-5">{`Set to WARN`}</Dropdown.Item>
-                <Dropdown.Item id="devel-6">{`Set to ERROR`}</Dropdown.Item>
+                <Dropdown.Item closeOnClick>
+                    <Button id="devel-3" amStyle="link" onClick={this.handleClick}>
+                        {`Set to DEBUG`}
+                    </Button>
+                </Dropdown.Item>
+                <Dropdown.Item closeOnClick>
+                    <Button id="devel-4" amStyle="link" onClick={this.handleClick}>
+                        {`Set to INFO`}
+                    </Button>
+                </Dropdown.Item>
+                <Dropdown.Item closeOnClick>
+                    <Button id="devel-5" amStyle="link" onClick={this.handleClick}>
+                        {`Set to WARN`}
+                    </Button>
+                </Dropdown.Item>
+                <Dropdown.Item closeOnClick>
+                    <Button id="devel-6" amStyle="link" onClick={this.handleClick}>
+                        {`Set to ERROR`}
+                    </Button>
+                </Dropdown.Item>
             </Dropdown>
         );
     },
