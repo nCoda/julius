@@ -74,8 +74,31 @@ function vcsChangesets(revlog) {
 }
 
 
+/** Produce a "flattened" Map of the MEI header data.
+ *
+ * Whereas the "headers" Store itself is structured the same way as an MEI XML document, this
+ * function outputs a Map wherein the keys are human-readable field names, plus the values.
+ *
+ * @param {ImmutableJS.Map} headers - The value of the "headers" Store.
+ * @returns {ImmutableJS.Map} A "flattened" version of the MEI header data.
+ */
+function headerFlattener(headers) {
+    const post = {};
+
+    // titleStmt
+    post['Title'] = headers.getIn(['fileDesc', 'titleStmt', 'main']);
+    post['Subtitle'] = headers.getIn(['fileDesc', 'titleStmt', 'subordinate']);
+
+    // pubStmt
+    post['Publication'] = headers.getIn(['fileDesc', 'pubStmt', 'unpub']);
+
+    return Immutable.Map(post);
+}
+
+
 const getters = {
     headers: ['headers'],
+    headersFlat: [['headers'], headerFlattener],  // for human-readable names in a "flat" Object
     listOfInstruments: ['instruments'],
     stdin: [['stdin'], stdioConcatter],
     stdout: [['stdout'], stdioConcatter],
