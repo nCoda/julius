@@ -389,8 +389,13 @@ const Changeset = React.createClass({
         message: React.PropTypes.string.isRequired,
     },
     render() {
+        let message = this.props.message;
+        if (message.indexOf('\n') > -1) {
+            message = message.slice(0, message.indexOf('\n'));
+        }
+
         return (
-            <li><time dateTime={this.props.date}>{this.props.date}</time>{`: ${this.props.message}`}</li>
+            <li><time dateTime={this.props.date}>{this.props.date}</time>{`: ${message}`}</li>
         );
     },
 });
