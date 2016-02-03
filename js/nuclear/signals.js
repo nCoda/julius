@@ -35,6 +35,7 @@ import {fujian} from '../util/fujian';
 // "names" is NuclearJS "actionTypes."
 const names = {
     // HeaderBar
+    HEADERS_FROM_LYCHEE: 'HEADERS_FROM_LYCHEE',
     ADD_HEADER: 1,
     CHANGE_HEADER: 2,
     REMOVE_HEADER: 3,
@@ -66,6 +67,12 @@ const names = {
 // "emitters" is NuclearJS "actions."
 const emitters = {
     // MEI headers
+    /** Replace the current MEI headers with these new ones from Lychee.
+     * @param {Object} newHeaders - The "headers" object from Lychee's "document" converter.
+     */
+    headersFromLychee(newHeaders) {
+        reactor.dispatch(names.HEADERS_FROM_LYCHEE, newHeaders);
+    },
     addHeader(name, value) {
         // The name and value of the header to add.
         reactor.dispatch(names.ADD_HEADER, {name: name, value: value});

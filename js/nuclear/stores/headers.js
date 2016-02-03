@@ -32,11 +32,26 @@ const Headers = Store({
         return toImmutable([]);
     },
     initialize() {
+        this.on(signals.names.HEADERS_FROM_LYCHEE, headersFromLychee);
         this.on(signals.names.ADD_HEADER, addHeader);
         this.on(signals.names.CHANGE_HEADER, changeHeader);
         this.on(signals.names.REMOVE_HEADER, removeHeader);
     },
 });
+
+
+/** Accept new MEI headers from Lychee.
+ *
+ * @param {ImmutableJS.Map} currentState - Ignored.
+ * @param {Object} payload - Converted to an ImmutableJS.Map and returned.
+ * @returns {ImmutableJS.Map} The Store's new state.
+ *
+ * This function effectively overwrites the Store's existing state with the new data. We intend it
+ * to be used only with data from Lychee, our Source Of Truth.
+ */
+function headersFromLychee(currentState, payload) {
+    return toImmutable(payload);
+}
 
 
 /** Add a new header field.
@@ -46,7 +61,9 @@ const Headers = Store({
  * @returns {ImmutableJS.Map} The Store's new state.
  */
 function addHeader(currentState, payload) {
-    return currentState.push(toImmutable({name: payload.name, value: payload.value}));
+    log.error('addHeader() is not implemented');
+    return currentState;
+    // return currentState.push(toImmutable({name: payload.name, value: payload.value}));
 }
 
 
@@ -57,19 +74,21 @@ function addHeader(currentState, payload) {
  * @returns {ImmutableJS.Map} The Store's new state.
  */
 function changeHeader(currentState, payload) {
-    let replaceToIndex = null;
-    for (const header of currentState.entries()) {
-        if (header[1].get('name') === payload.name) {
-            replaceToIndex = header[0];
-            break;
-        }
-    }
-
-    // TODO: figure out how you're supposed to do this with bullshit ImmutableJS data structures
-    const newState = currentState.toArray();
-    newState[replaceToIndex] = toImmutable({name: payload.name, value: payload.value});
-
-    return toImmutable(newState);
+    log.error('changeHeader() is not implemented');
+    return currentState;
+    // let replaceToIndex = null;
+    // for (const header of currentState.entries()) {
+    //     if (header[1].get('name') === payload.name) {
+    //         replaceToIndex = header[0];
+    //         break;
+    //     }
+    // }
+    //
+    // // TODO: figure out how you're supposed to do this with bullshit ImmutableJS data structures
+    // const newState = currentState.toArray();
+    // newState[replaceToIndex] = toImmutable({name: payload.name, value: payload.value});
+    //
+    // return toImmutable(newState);
 }
 
 
@@ -79,21 +98,23 @@ function changeHeader(currentState, payload) {
  * @returns {ImmutableJS.Map} The Store's new state.
  */
 function removeHeader(currentState, payload) {
-    let removeIndex = null;
-    for (const header of currentState.entries()) {
-        if (header[1].get('name') === payload.name) {
-            removeIndex = header[0];
-            break;
-        }
-    }
-
-    // TODO: figure out how you're supposed to do this with bullshit ImmutableJS data structures
-    const state = currentState.toArray();
-    const partOne = state.slice(0, removeIndex);
-    const partTwo = state.slice(removeIndex + 1, state.length);
-    const newState = partOne.concat(partTwo);
-
-    return toImmutable(newState);
+    log.error('removeHeader() is not implemented');
+    return currentState;
+    // let removeIndex = null;
+    // for (const header of currentState.entries()) {
+    //     if (header[1].get('name') === payload.name) {
+    //         removeIndex = header[0];
+    //         break;
+    //     }
+    // }
+    //
+    // // TODO: figure out how you're supposed to do this with bullshit ImmutableJS data structures
+    // const state = currentState.toArray();
+    // const partOne = state.slice(0, removeIndex);
+    // const partTwo = state.slice(removeIndex + 1, state.length);
+    // const newState = partOne.concat(partTwo);
+    //
+    // return toImmutable(newState);
 }
 
 
