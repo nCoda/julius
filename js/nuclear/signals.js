@@ -36,31 +36,31 @@ import {fujian} from '../util/fujian';
 const names = {
     // HeaderBar
     HEADERS_FROM_LYCHEE: 'HEADERS_FROM_LYCHEE',
-    ADD_HEADER: 1,
-    CHANGE_HEADER: 2,
-    REMOVE_HEADER: 3,
+    ADD_HEADER: 'ADD_HEADER',
+    CHANGE_HEADER: 'CHANGE_HEADER',
+    REMOVE_HEADER: 'REMOVE_HEADER',
     // Mercurial stuff
-    VCS_NEW_REVLOG: 4,
+    VCS_NEW_REVLOG: 'VCS_NEW_REVLOG',
     // MEI Document Stuff
-    SCOREDEF_INSTR_ADD: 5,  // to add an instrument to the score
-    SCOREDEF_INSTRGRP_ADD: 6,  // to add a group of instruments to the score
+    SCOREDEF_INSTR_ADD: 'SCOREDEF_INSTR_ADD',  // to add an instrument to the score
+    SCOREDEF_INSTRGRP_ADD: 'SCOREDEF_INSTRGRP_ADD',  // to add a group of instruments to the score
     // Standard I/O
-    STDIN: 7,
-    STDOUT: 8,
-    STDERR: 9,
+    STDIN: 'STDIN',
+    STDOUT: 'STDOUT',
+    STDERR: 'STDERR',
     // Verovio
-    RENDER_TO_VEROVIO: 10,
+    RENDER_TO_VEROVIO: 'RENDER_TO_VEROVIO',
     // Fujian PyPy Server (currently doesn't affect NuclearJS)
-    FUJIAN_START_WS: 11,
-    FUJIAN_RESTAT_WS: 12,
-    FUJIAN_CLOSE_WS: 13,
+    FUJIAN_START_WS: 'FUJIAN_START_WS',
+    FUJIAN_RESTAT_WS: 'FUJIAN_RESTAT_WS',
+    FUJIAN_CLOSE_WS: 'FUJIAN_CLOSE_WS',
     // StructureView stuff
-    SECTIO_CONTEXT_MENU: 14,
+    SECTION_CONTEXT_MENU: 'SECTION_CONTEXT_MENU',
     // Logging
-    SET_LOG_LEVEL: 15,
+    SET_LOG_LEVEL: 'SET_LOG_LEVEL',
     // DialogueBox
-    DIALOGUEBOX_SHOW: 16,
-    DIALOGUEBOX_HIDE: 17,
+    DIALOGUEBOX_SHOW: 'DIALOGUEBOX_SHOW',
+    DIALOGUEBOX_HIDE: 'DIALOGUEBOX_HIDE',
 };
 
 
