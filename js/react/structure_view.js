@@ -638,9 +638,11 @@ const StructureView = React.createClass({
     },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('vcs', 'StructureView', true);
+        signals.emitters.registerOutboundFormat('document', 'StructureView', true);
     },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('vcs', 'StructureView');
+        signals.emitters.unregisterOutboundFormat('document', 'StructureView');
     },
     render() {
         return (
