@@ -75,7 +75,7 @@ function vcsChangesets(revlog) {
 
 
 const getters = {
-    meiHeadersList: ['headerMetadata'],
+    headers: ['headers'],
     listOfInstruments: ['instruments'],
     stdin: [['stdin'], stdioConcatter],
     stdout: [['stdout'], stdioConcatter],

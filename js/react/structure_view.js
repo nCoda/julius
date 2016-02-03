@@ -73,7 +73,7 @@ const HeaderList = React.createClass({
 
     mixins: [reactor.ReactMixin],
     getDataBindings() {
-        return {headers: getters.meiHeadersList};
+        return {headers: getters.headers};
     },
     handleAddHeader() {
         // Does whatever's required to add a new header.

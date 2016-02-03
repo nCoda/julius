@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/nuclear/stores/headerMetadata.js
+// Filename:               js/nuclear/stores/headers.js
 // Purpose:                NuclearJS Stores related to MEI header metadata.
 //
 // Copyright (C) 2015 Christopher Antila
@@ -27,7 +27,7 @@ import {Store, toImmutable} from 'nuclear-js';
 import signals from '../signals';
 
 
-const MetadataHeaders = Store({
+const Headers = Store({
     getInitialState() {
         return toImmutable([]);
     },
@@ -97,4 +97,4 @@ function removeHeader(currentState, payload) {
 }
 
 
-export default {MetadataHeaders: MetadataHeaders};
+export default {Headers: Headers};

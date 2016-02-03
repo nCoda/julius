@@ -26,7 +26,7 @@
 // NOTE: You must also import this module for any tests that use NuclearJS.
 
 import reactor from './reactor';
-import headerMetadataStores from './stores/headerMetadata';
+import headers from './stores/headers';
 import mercurial from './stores/mercurial';
 import documentModule from './stores/document';
 import stdio from './stores/stdio';
@@ -37,7 +37,7 @@ import {generics} from './stores/generics';
 
 
 reactor.registerStores({
-    headerMetadata: headerMetadataStores.MetadataHeaders,
+    headers: headers.Headers,
     revlog: mercurial.Revlog,
     instruments: documentModule.scoreDef.Instruments,
     stdin: stdio.Stdin,
