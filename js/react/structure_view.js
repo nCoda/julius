@@ -73,7 +73,7 @@ const HeaderList = React.createClass({
 
     mixins: [reactor.ReactMixin],
     getDataBindings() {
-        return {headers: getters.headers};
+        return {headers: getters.headersFlat};
     },
     handleAddHeader() {
         // Does whatever's required to add a new header.
@@ -105,9 +105,9 @@ const HeaderList = React.createClass({
     render() {
         return (
             <ul id="headerbar-list" className="headers">
-                {this.state.headers.map((field, i) =>
-                    <MetadataField key={i} name={field.get('name')} value={field.get('value')}/>
-                )}
+                {this.state.headers.map((value, name) =>
+                    <MetadataField key={name} name={name} value={value}/>
+                ).toArray()}
                 <li onClick={this.handleAddHeader}><i className="fa fa-plus-circle"></i></li>
             </ul>
         );
