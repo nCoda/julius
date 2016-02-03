@@ -631,6 +631,12 @@ const StructureView = React.createClass({
         menu.style.top = `${event.clientY}px`;
         menu.style.display = 'flex';
     },
+    componentWillMount() {
+        signals.emitters.registerOutboundFormat('vcs', 'StructureView', true);
+    },
+    componentWillUnmount() {
+        signals.emitters.unregisterOutboundFormat('vcs', 'StructureView');
+    },
     render() {
         return (
             <div id="nc-strv-frame">

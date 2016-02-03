@@ -177,9 +177,9 @@ const Verovio = React.createClass({
             }
         }
     },
-    componentDidMount() {
+    componentWillMount() {
         this.makeVerovio();
-        signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
+        signals.emitters.registerOutboundFormat('verovio', 'Verovio component', true);
     },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');

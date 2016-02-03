@@ -46,13 +46,6 @@ signals.emitters.setLogLevel(log.LEVELS.DEBUG);
 signals.emitters.fujianStartWS();
 
 
-
-
-
-// TODO: put this in a more appropriate place (esp. so it registers/unregisters with the StructureView)
-signals.emitters.submitToPyPy("import lychee\nlychee.signals.outbound.REGISTER_FORMAT.emit(dtype='vcs', who='ncoda-init')");
-
-
 // Render the react-router components -----------------------------------------
 // TODO: move this to a submodule
 ReactDOM.render((
