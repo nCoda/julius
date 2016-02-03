@@ -140,8 +140,15 @@ const emitters = {
         }
 
         if ('lilypond' === format) {
-            const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='LilyPond', doc='''${data}''')`;
-            fujian.sendWS(code);
+            // First check there is no """ in the string, which would cause the string to terminate
+            // early and allow executing arbitrary code.
+            if (-1 === data.indexOf('"""')) {
+                const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='LilyPond', doc="""${data}""")`;
+                fujian.sendWS(code);
+            }
+            else {
+                log.error('Invalid LilyPond code. Please do not use """ in your LilyPond code.');
+            }
         }
         else {
             log.error('submitToLychee() received an unknown "format" argument.');
