@@ -55,7 +55,7 @@ const ERROR_MESSAGES = {
     wsAlreadyOpen: 'WebSocket connection to Fujian was already open.',
     wsNotReady: 'Fujian WebSocket connection is not ready. Data not sent.',
     wsSyntaxError: 'SyntaxError while sending data to Fujian (probably a Unicode problem?)',
-    outboundConv: 'Error during outbound conversion.',
+    outboundConv: 'Error during outbound conversion',
 };
 
 const FUJIAN_SIGNALS = {
@@ -64,9 +64,17 @@ const FUJIAN_SIGNALS = {
     // by Fujian.
     //
 
-    'outbound.CONVERSION_ERROR': () => {
+    'outbound.CONVERSION_ERROR': (response) => {
         // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
-        signals.emitters.stdout(ERROR_MESSAGES.outboundConv);
+        let message;
+        if (response.msg) {
+            message = `${ERROR_MESSAGES.outboundConv}: ${response.msg}`;
+        }
+        else {
+            message = ERROR_MESSAGES.outboundConv;
+        }
+        signals.emitters.stdout(message);
+        log.error(message);
     },
 
     'outbound.CONVERSION_FINISHED': (response) => {
