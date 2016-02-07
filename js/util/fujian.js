@@ -235,6 +235,13 @@ class Fujian {
         if ('string' === typeof response.traceback && response.traceback.length > 0) {
             doStdio = true;  /* eslint no-param-reassign: 0 */
             signals.emitters.stdout(response.traceback);
+            signals.emitters.dialogueBoxShow({
+                type: 'error',
+                message: 'Unhandled Exception in Python',
+                detail: 'There was an unhandled exception in the Python interpreter. This means ' +
+                        'there was an error but we could not fix it automatically. There is a ' +
+                        'traceback (error report) in the nCoda Python Console.',
+            });
         }
 
         if (undefined !== response.signal) {

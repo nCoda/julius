@@ -252,6 +252,9 @@ describe('The response loading callbacks', () => {
             expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.fjnRetVal);
             expect(log.info).toBeCalledWith(dataObj.return);
             expect(reactor.evaluate(getters.stdout)).toBe(expectedStdout);
+            const box = reactor.evaluate(getters.DialogueBox);
+            expect(box.get('type')).toBe('error');
+            expect(box.get('message')).toBe('Unhandled Exception in Python');
         });
 
         it('ignores a signal that does not exist in Julius', () => {
