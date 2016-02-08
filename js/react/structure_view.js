@@ -6,7 +6,7 @@
 // Filename:               js/react/structure_view.js
 // Purpose:                React components for StructureView.
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015, 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -318,8 +318,8 @@ const StaffGroupOrStaff = React.createClass({
 
         return (
             <li><ul>
-                {this.props.names.map((name) =>
-                    <li key={name.get('label').toLowerCase()}>{name}</li>
+                {this.props.names.map((names, index) =>
+                    <StaffGroupOrStaff key={index} names={names}/>
                 )}
             </ul></li>
         );
@@ -330,14 +330,15 @@ const StaffGroupOrStaff = React.createClass({
 const PartsList = React.createClass({
     mixins: [reactor.ReactMixin],
     getDataBindings() {
-        return {partsList: getters.listOfInstruments};
+        return {sections: getters.sections};
     },
     render() {
+        const partsList = this.state.sections.get(this.state.sections.get('score_order').get(0)).get('staffGrp');
         return (
             <ul id="staves-instruments">
-                {this.state.partsList.map((parts, index) => {
-                    return (<StaffGroupOrStaff key={index} names={parts}/>);
-                })}
+                {partsList.map((parts, index) =>
+                    <StaffGroupOrStaff key={index} names={parts}/>
+                )}
             </ul>
         );
     },
