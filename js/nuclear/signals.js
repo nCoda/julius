@@ -6,7 +6,7 @@
 // Filename:               js/nuclear/signals.js
 // Purpose:                NuclearJS Actions and ActionTypes.
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015, 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -42,8 +42,7 @@ const names = {
     // Mercurial stuff
     VCS_NEW_REVLOG: 'VCS_NEW_REVLOG',
     // MEI Document Stuff
-    SCOREDEF_INSTR_ADD: 'SCOREDEF_INSTR_ADD',  // to add an instrument to the score
-    SCOREDEF_INSTRGRP_ADD: 'SCOREDEF_INSTRGRP_ADD',  // to add a group of instruments to the score
+    SECTIONS_FROM_LYCHEE: 'SECTIONS_FROM_LYCHEE',
     // Standard I/O
     STDIN: 'STDIN',
     STDOUT: 'STDOUT',
@@ -93,16 +92,11 @@ const emitters = {
     },
 
     // MEI Document Stuff
-    addInstrument(instrument) {
-        // Add an instrument to the active document.
-        // Fields for the "instrument" object are defined for the document.scoreDef.Instrument store.
-        reactor.dispatch(names.SCOREDEF_INSTR_ADD, instrument);
-    },
-    addInstrumentGroup(instruments) {
-        // Add an instrument to the active document.
-        // The "instruments" argument should be an array of objects as defined for the
-        // document.scoreDef.Instrument store.
-        reactor.dispatch(names.SCOREDEF_INSTRGRP_ADD, instruments);
+    /** Replace the current <scoreDef> objects with these new ones from Lychee.
+     * @param {Object} scoreDef - The "sections" object from Lychee's "document" converter.
+     */
+    documentFromLychee(scoreDef) {
+        reactor.dispatch(names.SECTIONS_FROM_LYCHEE, scoreDef);
     },
 
     // Standard I/O

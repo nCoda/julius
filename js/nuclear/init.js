@@ -6,7 +6,7 @@
 // Filename:               js/nuclear/init.js
 // Purpose:                Initialize the NuclearJS Stores for Julius.
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015, 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@
 import reactor from './reactor';
 import headers from './stores/headers';
 import mercurial from './stores/mercurial';
-import documentModule from './stores/document';
+import document from './stores/document';
 import stdio from './stores/stdio';
 import verovio from './stores/verovio';
 import structureView from './stores/structure_view';
@@ -39,7 +39,7 @@ import {generics} from './stores/generics';
 reactor.registerStores({
     headers: headers.Headers,
     revlog: mercurial.Revlog,
-    instruments: documentModule.scoreDef.Instruments,
+    sections: document.Sections,
     stdin: stdio.Stdin,
     stdout: stdio.Stdout,
     stderr: stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView

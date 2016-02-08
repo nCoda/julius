@@ -126,7 +126,7 @@ function headerFlattener(headers) {
 const getters = {
     headers: ['headers'],
     headersFlat: [['headers'], headerFlattener],  // for human-readable names in a "flat" Object
-    listOfInstruments: ['instruments'],
+    sections: ['sections'],
     stdin: [['stdin'], stdioConcatter],
     stdout: [['stdout'], stdioConcatter],
     stderr: [['stderr'], stdioConcatter],
