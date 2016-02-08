@@ -26,23 +26,31 @@
 import {Store, toImmutable} from 'nuclear-js';
 import signals from '../signals';
 
-// TODO: move the "headers" store here to reflect it's from the "document" thing in Lychee
-
 
 const document = {
+    /** Holds the "headers" object produced by Lychee's "document_outbound" convert. */
+    Headers: Store({
+        getInitialState() {
+            return toImmutable([]);
+        },
+        initialize() {
+            this.on(signals.names.HEADERS_FROM_LYCHEE, replaceWithLychee);
+        },
+    }),
+
     /** Holds the "sections" object produced by Lychee's "document_outbound" converter. */
     Sections: Store({
         getInitialState() {
             return toImmutable({});
         },
         initialize() {
-            this.on(signals.names.SECTIONS_FROM_LYCHEE, sectionsFromLychee);
+            this.on(signals.names.SECTIONS_FROM_LYCHEE, replaceWithLychee);
         },
     }),
 };
 
 
-/** Accept a new "sections" object from Lychee.
+/** Accept a new object from Lychee.
  *
  * @param {ImmutableJS.Map} currentState - Ignored.
  * @param {Object} payload - Converted to an ImmutableJS.Map and returned.
@@ -51,7 +59,7 @@ const document = {
  * This function effectively overwrites the Store's existing state with the new data. We intend it
  * to be used only with data from Lychee, our Source Of Truth.
  */
-function sectionsFromLychee(currentState, payload) {
+function replaceWithLychee(currentState, payload) {
     return toImmutable(payload);
 }
 
