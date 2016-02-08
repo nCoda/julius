@@ -6,7 +6,7 @@
 // Filename:               js/util/fujian.js
 // Purpose:                Code for connecting between Julius and Fujian.
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015, 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -64,6 +64,7 @@ const FUJIAN_SIGNALS = {
     // by Fujian.
     //
 
+    // TODO: add tests
     'outbound.CONVERSION_ERROR': (response) => {
         // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
         let message;
@@ -77,12 +78,32 @@ const FUJIAN_SIGNALS = {
         log.error(message);
     },
 
+    // TODO: add tests
     'outbound.CONVERSION_FINISHED': (response) => {
-        if ('verovio' === response.dtype) {
-            signals.emitters.renderToVerovio(response.document);
-        }
-        else if ('vcs' === response.dtype) {
+        switch (response.dtype) {
+        case 'document':
+            let document;
+            try {
+                document = JSON.parse(response.document);
+            }
+            catch (err) {
+                if ('SyntaxError' === err.name) {
+                    log.error(ERROR_MESSAGES.fjnBadJson);
+                    return;
+                }
+                throw err;
+            }
+            signals.emitters.headersFromLychee(document.headers);
+            signals.emitters.documentFromLychee(document.sections);
+            break;
+        case 'vcs':
             signals.emitters.vcsNewRevlog(response.document);
+            break;
+        case 'verovio':
+            signals.emitters.renderToVerovio(response.document);
+            break;
+        default:
+            return;
         }
     },
 };
