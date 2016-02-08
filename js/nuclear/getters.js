@@ -6,7 +6,7 @@
 // Filename:               js/nuclear/getters.js
 // Purpose:                NuclearJS getters.
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015, 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -80,19 +80,46 @@ function vcsChangesets(revlog) {
  * function outputs a Map wherein the keys are human-readable field names, plus the values.
  *
  * @param {ImmutableJS.Map} headers - The value of the "headers" Store.
- * @returns {ImmutableJS.Map} A "flattened" version of the MEI header data.
+ * @returns {ImmutableJS.OrderedMap} A "flattened" version of the MEI header data.
  */
 function headerFlattener(headers) {
-    const post = {};
+    let post = Immutable.OrderedMap();
+
+    function assign(field, value) {
+        // Assign "value" to "field" in post---but only if "value" is something.
+        if (value) {
+            post = post.set(field, value);
+        }
+    }
 
     // titleStmt
-    post['Title'] = headers.getIn(['fileDesc', 'titleStmt', 'main']);
-    post['Subtitle'] = headers.getIn(['fileDesc', 'titleStmt', 'subordinate']);
+    assign('Title', headers.getIn(['fileDesc', 'titleStmt', 'main']));
+    assign('Subtitle', headers.getIn(['fileDesc', 'titleStmt', 'subordinate']));
+    assign('Abbreviated Title', headers.getIn(['fileDesc', 'titleStmt', 'abbreviated']));
+    assign('Alternative Title', headers.getIn(['fileDesc', 'titleStmt', 'alternative']));
+
+    // people with roles
+    assign('Arranger', headers.getIn(['fileDesc', 'arranger', 'full']));
+    assign('Author', headers.getIn(['fileDesc', 'author', 'full']));
+    assign('Composer', headers.getIn(['fileDesc', 'composer', 'full']));
+    assign('Editor', headers.getIn(['fileDesc', 'editor', 'full']));
+    assign('Funder', headers.getIn(['fileDesc', 'funder', 'full']));
+    assign('Librettist', headers.getIn(['fileDesc', 'librettist', 'full']));
+    assign('Lyricist', headers.getIn(['fileDesc', 'lyricist', 'full']));
+    assign('Sponsor', headers.getIn(['fileDesc', 'sponsor', 'full']));
+
+    // respStmt (repository contributors without roles)
+    if (headers.getIn(['fileDesc', 'respStmt'])) {
+        const respStmt = headers.getIn(['fileDesc', 'respStmt']).map((person) => {
+            return person.get('full');
+        });
+        assign('Contributors', respStmt.join(', '));
+    }
 
     // pubStmt
-    post['Publication'] = headers.getIn(['fileDesc', 'pubStmt', 'unpub']);
+    assign('Publication', headers.getIn(['fileDesc', 'pubStmt', 'unpub']));
 
-    return Immutable.Map(post);
+    return post;
 }
 
 
