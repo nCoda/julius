@@ -32,6 +32,7 @@
 // - Fujian.sendWS()
 // - Fujian.sendAjax()
 
+import {Immutable} from 'nuclear-js';
 
 import {getters} from '../nuclear/getters';
 import {log} from './log';
@@ -131,10 +132,16 @@ class Fujian {
      */
     startWS() {
         if ('closed' === this.statusWS()) {
+            // prepare the message queue
+            this._sendWhenReady = Immutable.List();
             // make a new connection if there isn't one, or the existing one is closed
             this._fujian = new WebSocket(FUJIAN_WS_URL);
             this._fujian.onmessage = Fujian._receiveWS;
             this._fujian.onerror = Fujian._errorWS;
+            this._fujian.onopen = this._sendWSWhenReady;
+            // Put a reference to this Fujian instance on our WebSocket object so it's accessible
+            // from the "onopen" event handler.
+            this._fujian._fujian = this;
         }
         else {
             log.info(ERROR_MESSAGES.wsAlreadyOpen);
@@ -198,6 +205,19 @@ class Fujian {
         signals.emitters.stdin(code);
     }
 
+    /** A callback for the "onopen" WebSocket event that sends queued messages.
+     *
+     * This function should be called after the WebSocket connection is ready. It takes the contents
+     * of the "this._sendWhenReady" List
+     */
+    _sendWSWhenReady() {
+        // We have to make a copy of _sendWhenReady and set that to null *first* or else sendWS()
+        // will simply re-queue the message.
+        const messages = this._fujian._sendWhenReady;
+        this._fujian._sendWhenReady = null;
+        messages.forEach((message) => this._fujian.sendWS.call(this._fujian, message));
+    }
+
     /** Send some Python code to Fujian over the WebSocket connection.
      *
      * @param {string} code - The Python code to send to Fujian.
@@ -206,11 +226,25 @@ class Fujian {
      * We prefer the WebSocket for Julius/nCoda-related data, such as emitting a signal, since the
      * WebSocket connection offers less overhead and a closer analogy to an all-client-side app.
      *
+     * NOTE: If the WebSocket connection is not ready, data is queued to be sent when the connection
+     *    becomes ready.
+     *
      * NOTE: Stdout and stderr are not printed when received over the WebSocket connection unless
      *    there was an uncaught exception. For user-provided code use the AJAX connection.
      */
     sendWS(code) {
-        if ('open' === this.statusWS()) {
+        if (null !== this._sendWhenReady) {
+            // We try to prevent data loss and preserve the order of messages by checking whether
+            // the queue has already been sent. If we simply checked the connection status, there
+            // is a possibility that sendWS() will be called after the connection is ready but
+            // before the "onopen" event handler was called, which would result in sending messages
+            // out of order.
+            //
+            // Because _sendWSWhenReady() sets _sendWhenReady to null, we can determine whether that
+            // function has already been run.
+            this._sendWhenReady = this._sendWhenReady.push(code);
+        }
+        else if ('open' === this.statusWS()) {
             try {
                 this._fujian.send(code);
             }
