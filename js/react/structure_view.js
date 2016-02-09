@@ -22,10 +22,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-
+import {Icon, Image} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
-
 import React from 'react';
+
 import reactor from '../nuclear/reactor';
 import getters from '../nuclear/getters';
 import signals from '../nuclear/signals';
@@ -521,16 +521,13 @@ const Collaboration = React.createClass({
 const Section = React.createClass({
     propTypes: {
         colour: React.PropTypes.string,
-        id: React.PropTypes.string,
+        id: React.PropTypes.string.isRequired,
         lastUpdated: React.PropTypes.shape({
             name: React.PropTypes.string,
-            date: React.PropTypes.string,
+            date: React.PropTypes.instanceOf(Date),
         }),
-        name: React.PropTypes.string,
+        name: React.PropTypes.string.isRequired,
         pathToImage: React.PropTypes.string,
-    },
-    getDefaultProps() {
-        return {colour: '#000'};
     },
     handleClick(event) {
         // Set the NuclearJS state required to show the context menu.
@@ -540,22 +537,42 @@ const Section = React.createClass({
         signals.emitters.sectionContextMenu(style);
     },
     render() {
-        const headerStyleAttr = {background: this.props.colour};
+        let headerStyleAttr = {};
+        if (this.props.colour) {
+            headerStyleAttr = {background: this.props.colour};
+        }
+
+        let image;
+        if (this.props.pathToImage) {
+            image = <Image alt="" src={this.props.pathToImage}/>;
+        }
+        else {
+            image = <Icon icon="music" button amStyle="primary" className="am-center"/>;
+        }
+
+        let lastModified;
+        if (this.props.lastUpdated) {
+            lastModified = (
+                <footer>
+                    <address>{this.props.lastUpdated.name}</address>
+                    <time dateTime={this.props.lastUpdated.date.toISOString()}>
+                        {this.props.lastUpdated.date.toDateString()}
+                    </time>
+                </footer>
+            );
+        }
 
         return (
-            <article className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.handleClick}>
+            <section className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.handleClick}>
                 <header>
                     {this.props.name}
                     <div className="ncoda-section-colour" style={headerStyleAttr}></div>
                 </header>
                 <div className="nc-strv-section-img">
-                    <img src={this.props.pathToImage}/>
+                    {image}
                 </div>
-                <footer>
-                    <address>{this.props.lastUpdated.name}</address>
-                    <time dateTime={this.props.lastUpdated.date}>{this.props.lastUpdated.date}</time>
-                </footer>
-            </article>
+                {lastModified}
+            </section>
         );
     },
 });
@@ -566,63 +583,54 @@ const ActiveSections = React.createClass({
         // A function that, when called with no argument, opens the SectionContextMenu in the right place.
         openContextMenu: React.PropTypes.func.isRequired,
     },
-    handleClick() { this.props.openContextMenu(); },
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {changesets: getters.vcsChangesets, sections: getters.sections};
+    },
+    handleClick() { this.props.openContextMenu(); },  // TODO: deduplicate with handleClick() in <Section>
     render() {
-        const aLastUpdated = {name: 'Christopher Antila', date: '2015-10-06'};
-        const bLastUpdated = {name: 'Honoré de Balzac', date: '2015-10-09'};
-        const cLastUpdated = {name: '卓文萱', date: '2015-05-07'};
-        const aColour = 'rgba(0, 191, 255, 0.6)';
-        const bColour = 'rgba(218, 165, 32, 0.6)';
-        const cColour = 'rgba(255, 127, 80, 0.6)';
+        const order = this.state.sections.get('score_order');
+        let sections;
+        if (order) {
+            sections = order.map((sectId, i) => {
+                const lastHash = this.state.sections.getIn([sectId, 'last_changeset']);
+                let lastUpdated;
+                if (this.state.changesets.has(lastHash)) {
+                    let name = this.state.changesets.getIn([lastHash, 'user']);
+                    name = name.slice(0, name.indexOf(' <'));  // TODO: this is not foolproof
+
+                    let date = new Date();
+                    date.setTime(this.state.changesets.getIn([lastHash, 'date']) * 1000);
+
+                    lastUpdated = {
+                        name: name,
+                        date: date,
+                    };
+                }
+                return (
+                    <Section
+                        key={i}
+                        id={sectId}
+                        name={this.state.sections.getIn([sectId, 'label'])}
+                        lastUpdated={lastUpdated}
+
+                        onClick={this.handleClick}
+                    />
+                );
+            });
+        }
+        else {
+            sections = <Icon icon="circle-o-notch" spin amSize="lg" className="am-text-primary"/>;
+        }
 
         return (
-            <article className="ncoda-active-sections">
+            <article className="nc-active-sections">
                 <header>
                     {`Active Score`}
                 </header>
-
-                <content>
-                    <Section
-                        id="a"
-                        name="A"
-                        lastUpdated={aLastUpdated}
-                        pathToImage="structureview_mock/sectionA.png"
-                        onClick={this.handleClick}
-                        colour={aColour}
-                    />
-                    <Section
-                        id="b"
-                        name="B"
-                        lastUpdated={bLastUpdated}
-                        pathToImage="structureview_mock/sectionB.png"
-                        onClick={this.handleClick}
-                        colour={bColour}
-                    />
-                    <Section
-                        id="ap"
-                        name={"A\u2032"}
-                        lastUpdated={aLastUpdated}
-                        pathToImage="structureview_mock/sectionA.png"
-                        onClick={this.handleClick}
-                        colour={aColour}
-                    />
-                    <Section
-                        id="c"
-                        name="C"
-                        lastUpdated={cLastUpdated}
-                        pathToImage="structureview_mock/sectionC.png"
-                        onClick={this.handleClick}
-                        colour={cColour}
-                    />
-                    <Section
-                        id="app"
-                        name={"A\u2032\u2032"}
-                        lastUpdated={aLastUpdated}
-                        pathToImage="structureview_mock/sectionA.png"
-                        onClick={this.handleClick}
-                        colour={aColour}
-                    />
-                </content>
+                <div>
+                    {sections}
+                </div>
             </article>
         );
     },
