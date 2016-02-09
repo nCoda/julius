@@ -49,7 +49,8 @@
             "<rootDir>/js/nuclear",
             "<rootDir>/js/nuclear/stores"
         ],
-        "testDirectoryName": "tests"
+        "testDirectoryName": "tests",
+        "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
     },
     "babel": {
         "presets": ["es2015", "react"],
