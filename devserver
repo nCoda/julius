@@ -19,14 +19,16 @@ import pathlib
 import subprocess
 import time
 
+_HTTP_PORT = 8000
+
 
 # list of the JS files that must be compiled with Watchify; it's input filename, then output filename
 _COMPILE_WITH_WATCHIFY = [
     ('js/ncoda-init.js', 'js/ncoda-compiled.js'),
 ]
 
-# list of the CSS files that must be compiled from LESS; it's the shell path we should call
-# inotifywatch with, the input filename, and the output filename
+# list of the CSS files that must be compiled from LESS; it's the shell path we should ask Watchman
+# to watch, then the input and output filenames for lessc.
 _COMPILE_WITH_LESSC = [
     ('css/ncoda/*.less', 'css/ncoda/julius.less', 'css/ncoda/julius.css'),
 ]
@@ -35,7 +37,12 @@ _PATH_TO_WATCHIFY = 'node_modules/.bin/watchify'
 _PATH_TO_LESSC = 'node_modules/.bin/lessc'
 _PATH_TO_ELECTRON = 'node_modules/.bin/electron'
 
-_HTTP_PORT = 8000
+# see whether "watchman" is installed
+try:
+    _PATH_TO_WATCHMAN = subprocess.check_output(['which', 'watchman-make'])
+    _PATH_TO_WATCHMAN = str(_PATH_TO_WATCHMAN, encoding='utf-8').strip()
+except subprocess.CalledProcessError:
+    _PATH_TO_WATCHMAN = None
 
 
 def run_http_server():
@@ -77,15 +84,6 @@ def the_script():
         raise SystemExit(1)
     del lessc  # because this will be a long-running script
 
-    # see if we can find/use inotifywait (used by "less_autocompiler.sh")
-    we_have_inotify = False
-    try:
-        subprocess.check_output(['which', 'inotifywait'])
-    except subprocess.CalledProcessError:
-        print('\n!! NOTICE: "inotifywait" not found, so LESS files won\'t update automatically !!\n')
-    else:
-        we_have_inotify = True
-
     # see if electron is installed
     we_have_electron = True
     electron = pathlib.Path(_PATH_TO_ELECTRON)
@@ -114,27 +112,44 @@ def the_script():
                 print('Encountered the following error while starting Watchify:\n{}'.format(cperr))
                 raise SystemExit(1)
 
-        # set up some lessc instances
+        # Compile LESS files to CSS
+        # first compile the files initially
         for each_file in _COMPILE_WITH_LESSC:
-            if we_have_inotify:
-                print('Starting less_autocompiler.sh for {}'.format(each_file[1]))
-                try:
-                    kummand = ['./less_autocompiler.sh', each_file[0], each_file[1], each_file[2]]
-                    subprocesses.append(subprocess.Popen(kummand))
-                except subprocess.CalledProcessError as cperr:
-                    print('Encountered the following error while starting lessc:\n{}'.format(cperr))
-                    raise SystemExit(1)
-            else:
-                print('Running lessc ONCE ONLY on {}'.format(each_file[1]))
-                try:
-                    kummand = [_PATH_TO_LESSC, '--clean-css', each_file[1], each_file[2]]
-                    subprocess.check_output(kummand)
-                except subprocess.CalledProcessError as cperr:
-                    print('Encountered the following error while starting lessc:\n{}'.format(cperr))
-                    raise SystemExit(1)
+            try:
+                kummand = [_PATH_TO_LESSC, '--clean-css', each_file[1], each_file[2]]
+                subprocess.check_output(kummand)
+            except subprocess.CalledProcessError as cperr:
+                print('Encountered the following error while starting lessc:\n{}'.format(cperr))
+                raise SystemExit(1)
+
+        # now, if we can, start Watchman too
+        if _PATH_TO_WATCHMAN:
+            # the command will look something like this (note the single quotes! And how they're
+            #     missing in what we submit below!):
+            #  watchman-make --make path_to_lessc -p 'path_to_watch' -t '--clean-css compile_this compiled_path'
+            #
+            print('Starting Watchman for automatic LESS compilation.')
+            kummand = ['watchman-make', '--make', '{}'.format(_PATH_TO_LESSC)]
+            for each_file in _COMPILE_WITH_LESSC:
+                kummand.append('-p')
+                kummand.append('{}'.format(each_file[0]))
+                kummand.append('-t')
+                kummand.append("--clean-css {0} {1}".format(each_file[1], each_file[2]))
+            try:
+                subprocesses.append(subprocess.Popen(kummand))
+            except subprocess.CalledProcessError as cperr:
+                print('Encountered the following error while starting Watchman:\n{}'.format(cperr))
+                raise SystemExit(1)
 
         # wait for the compiled JavaScript files to appear
         wait_for_existence([x[1] for x in _COMPILE_WITH_WATCHIFY])
+
+        # see whether any of the subprocesses have crashed
+        for proc in subprocesses:
+            proc.poll()
+            if proc.returncode is not None:
+                print('\nERROR: One of the processes had a problem; devserver quitting!')
+                raise SystemExit(1)
 
         # we'll catch KeyboardInterrupt so we can try killing babel on the way out
         try:
@@ -151,9 +166,12 @@ def the_script():
 
     finally:
         for each_instance in subprocesses:
-            print('Terminating subprocess with PID {}'.format(each_instance.pid))
-            each_instance.terminate()
-            each_instance.wait(timeout=30)
+            try:
+                each_instance.terminate()
+                print('Terminated subprocess with PID {}'.format(each_instance.pid))
+                each_instance.wait(timeout=30)
+            except ProcessLookupError:
+                print('Subprocess with PID {} had already terminated.'.format(each_instance.pid))
 
 
 if '__main__' == __name__:

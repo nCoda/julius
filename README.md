@@ -26,6 +26,24 @@ dependencies between the installed dependencies.
 
 We recommend running the automated test suites before starting development.
 
+## Optional: Install Watchman ##
+
+The "devserver" script used to compile and run *Julius* takes advantage of the *Watchman* program
+to automatically recompile the LESS files when they are changed. Installing *Watchman* is optional.
+The "devserver" script will detect and use *Watchman* if it can be found by the *which* command.
+
+https://facebook.github.io/watchman/docs/install.html#build-install
+
+You must use the ``--with-python`` flage for the ``./configure`` script in order to build the Python
+extension. After you build, switch into the "python" subdirectory and run
+``sudo python2 setup.py install`` to install the Python extension.
+
+We strongly recommend the ``--enable-stack-protector`` flag for the ``./configure`` script for all
+users. This adds several compiler flags that eliminate a common set of memory management bugs.
+
+If you do not install *Watchman*, you must restart the "devserver" script or run ``lessc`` yourself
+in order to recompile the LESS files.
+
 ## Install Fujian and Lychee ##
 
 Most Julius functionality requires a data source, for which nCoda's *Julius* and *Lychee* are the
@@ -65,6 +83,14 @@ Then visit http://localhost:8000 in your browser! It will take noticeable time t
 
 Run the *Julius* test suite with the ``npm test`` command. Run the *Lychee* and *Fujian* test suites
 with the ``py.test`` command. All test commands must be issued from the project's respective directory.
+
+## Development Workflow ##
+
+Once you start *Lychee* and *Julius* in the way described above, the JavaScript files will be
+recompiled automatically when you save them. However, you can also recompile the CSS files
+automatically by installing the *Watchman* program as described above. If it is installed properly
+on your system (i.e., if it can be found with the *which* command) then *Watchman* will be found and
+used without specific configuration.
 
 ## Troubleshooting Problems ##
 
