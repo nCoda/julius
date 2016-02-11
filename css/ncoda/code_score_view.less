@@ -28,78 +28,71 @@
 
 // The <div> framing CodeScoreView
 #nc-csv-frame {
-    height: 100%;
-    flex: 1 1 0%;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
+    position: relative;
+    display: block;
+    height:100%;
     background: @cardboard-gray;
 }
-
 
 /* ********************************************************************************************* */
 /* Things for the WorkTable (middle) */
 
+// TODO: Fix sizing for CodeMirror, buttons, and h3
+
 .ncoda-work-table {
     overflow: hidden;
-    flex: 4 1 auto;
-    /* for contents */
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    align-items: stretch;
-    min-height: 5rem;
+    width: inherit;
 }
 
 /* TextEditor (middle-left) */
 .ncoda-text-editor {
-    flex: 1 1 auto;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
+    position: absolute; //needed to fill flexbox parent
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-.ncoda-text-editor h2 {
-    margin: 0px;
-    color: @charcoal-grey;
+.ncoda-text-editor h3 {
+}
+
+.CodeMirror {
+    position: absolute; //needed to fill flexbox parent
+    width: 100%;
+    height: 70%;
 }
 
 .ncoda-text-editor .ReactCodeMirror {
-    flex: 1 1 0%;
-    display: flex;
-    flex-flow: column;
+    width: inherit;
+    height: auto;
+    overflow: scroll;
 }
 
 .ncoda-text-editor .CodeMirror {
-    flex: 1 1 0%;
     font-family: 'Fira Mono';
     font-size: smaller;
-    display: flex;
-    flex-flow: column;
 }
 
 .ncoda-text-editor .CodeMirror-scroll {
-    flex: 1 1 0%;
+}
+
+// buttons: Run as Python, Submit as Lilypond
+.ncoda-text-editor-controls {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+
 }
 
 /* Verovio (middle-right) */
 .ncoda-verovio {
-    flex: 2 1 auto;
     overflow: scroll;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
 }
 
 .ncoda-verovio svg {
-    flex: 1 0 0%;
 }
 
 .ncoda-verovio .verovio-waiting {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-around;
-    align-items: center;
     height: 100%;
     color: @shade-black;
 }
@@ -112,62 +105,26 @@
 /* ********************************************************************************************* */
 /* Things for the terminals (bottom) */
 
-.nc-separator {
-    /* separator between main window and terminals */
-    flex: 0 0 0.25em;
-    background: @divider-gray;
-}
-.nc-separator:hover { background: @plasma-blue; }
-.nc-separator-selected:hover { background: @mellow-turquoise; }
-.nc-separator-horizontal { cursor: ns-resize; }
-.nc-separator-vertical { cursor: ew-resize; }
-.nc-separator-plane {
-    display: none;
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    z-index: 900;  // below the global header
-    background: rgba(255, 255, 255, 0);
-}
-
 .ncoda-terminal-output {
-    // This contains the <h2> that says "output", plus the <div class="ncoda-output-terminals">
-    flex: 1 1 auto;
+    // This contains the <h3> that says "output", plus the <div class="ncoda-output-terminals">
     overflow: hidden;
-    display: flex;
-    flex-flow: column;
     min-height: 5rem;
 }
 
 .ncoda-terminal-output h3 {
     margin: 0px;
     color: @charcoal-grey;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-}
-
-.ncoda-terminal-output h3 div {
-    display: inline;
 }
 
 .ncoda-terminal-output pre {
     height: 100%;
     margin: 0;
     padding: 0;
-    background: unset;
+    background: transparent;
     border: unset;
-    color: inherit;
 }
 
 .ncoda-output-terminals {
-    // This contains the following three elements, layed out horizontally:
-    // - <div class="ncoda-terminal-window ncoda-output-stdin">
-    // - <div class="ncoda-separator ncoda-separator-vertical">
-    // - <div class="ncoda-terminal-window ncoda-output-stdin">
-    flex: 1 1 0%;
-    display: flex;
-    flex-flow: row;
-    align-items: stretch;
 }
 
 .ncoda-terminal-window {
@@ -176,5 +133,51 @@
     color: @solarized-base0;
     overflow: scroll;
     padding: 0.5rem 1rem 0.5rem;
-    flex: 1 1 auto;
+}
+
+/* ********************************************************************************************* */
+/* Things for SplitPane and Resizer elements (from react-split-pane) */
+
+.Resizer {
+    background: #000;
+    opacity: .2;
+    z-index: 1;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding;
+    background-clip: padding-box;
+
+    &:hover {
+        -webkit-transition: all 2s ease;
+        transition: all 2s ease;
+    }
+
+    &.horizontal {
+        height: 11px;
+        margin: -5px 0;
+        border-top: 5px solid rgba(255, 255, 255, 0);
+        border-bottom: 5px solid rgba(255, 255, 255, 0);
+        cursor: row-resize;
+        width: 100%;
+
+        &:hover {
+            border-top: 5px solid rgba(0, 0, 0, 0.5);
+            border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+        }
+    }
+    &.vertical {
+        width: 11px;
+        margin: 0 -5px;
+        border-left: 5px solid rgba(255, 255, 255, 0);
+        border-right: 5px solid rgba(255, 255, 255, 0);
+        cursor: col-resize;
+        height: 100%;
+
+        &:hover {
+            border-left: 5px solid rgba(0, 0, 0, 0.5);
+            border-right: 5px solid rgba(0, 0, 0, 0.5);
+        }
+    }
 }
