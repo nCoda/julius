@@ -46,8 +46,7 @@ in order to recompile the LESS files.
 
 ## Install Fujian and Lychee ##
 
-Most Julius functionality requires a data source, for which nCoda's *Julius* and *Lychee* are the
-only known solutions.
+Most Julius functionality requires a data source, for which nCoda's *Lychee* is the only known solution.
 
 Clone the *Lychee* repository into a directory *other than* the the Julius directory, then follow
 the installation instructions in the *Lychee* README file. At the end of the installation process
