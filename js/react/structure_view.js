@@ -285,15 +285,15 @@ const ContextMenus = React.createClass({
 });
 
 
+/** StaffGroupOrStaff: Subcomponent of PartsList, which renders the data for a part or group of them.
+ *
+ * This component calls itself recursively to deal with nested <staffGroup> elements
+ *
+ * Props
+ * -----
+ * @param {ImmutableJS.List or ImmutableJS.Map} names - Names of the staves to show.
+ */
 const StaffGroupOrStaff = React.createClass({
-    // Given either a StaffGroup or a Staff, this component returns the proper stuff.
-    //
-    // Props:
-    // - names (Map, or List of Map): The names of staves to render.
-    //
-    // If "names" is a Map, this component renders a Staff. If "names" is an Array of Maps,
-    // this component renders a StaffGroup with each string as a contained Staff.
-
     propTypes: {
         names: React.PropTypes.oneOfType([
             React.PropTypes.instanceOf(Immutable.Map),
@@ -303,46 +303,57 @@ const StaffGroupOrStaff = React.createClass({
     render() {
         if (Immutable.Map.isMap(this.props.names)) {
             return (
-                <li>{this.props.names.get('label')}</li>
+                <ListItem>{this.props.names.get('label')}</ListItem>
             );
         }
 
         return (
-            <li><ul>
-                {this.props.names.map((names, index) =>
-                    <StaffGroupOrStaff key={index} names={names}/>
-                )}
-            </ul></li>
+            <ListItem>
+                <List>
+                    {this.props.names.map((names, index) =>
+                        <StaffGroupOrStaff key={index} names={names}/>
+                    )}
+                </List>
+            </ListItem>
         );
     },
 });
 
 
+/** PartsList: Subcomponent of PartsList, the actual content.
+ *
+ * State
+ * -----
+ * @param {ImmutableJS.List} sections - Data about <section> elements in the score, provided by
+ *     Lychee's "document-outbound" converter.
+ */
 const PartsList = React.createClass({
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {sections: getters.sections};
     },
     render() {
-        const partsList = this.state.sections.get(this.state.sections.get('score_order').get(0)).get('staffGrp');
+        // TODO: find a better solution to which staves to display... Julius issue #14.
+        const scoreOrder = this.state.sections.get('score_order').get(0);
+        const partsList = this.state.sections.get(scoreOrder).get('staffGrp');
         return (
-            <ul id="staves-instruments">
+            <List>
                 {partsList.map((parts, index) =>
                     <StaffGroupOrStaff key={index} names={parts}/>
                 )}
-            </ul>
+            </List>
         );
     },
 });
 
 
+/** StavesStructure: In the bottom-left corner, this shows the staves in the score/section.
+ *
+ * State
+ * -----
+ * @param {boolean} showParts - Whether the contents are currently displayed.
+ */
 const StavesStructure = React.createClass({
-    // StavesStructure
-    //
-    // State
-    // - showParts: whether the list of parts is visible (true) or invisible (false)
-    //
-
     getInitialState() {
         return {showParts: false};
     },
@@ -350,7 +361,7 @@ const StavesStructure = React.createClass({
         this.setState({showParts: !this.state.showParts});
     },
     render() {
-        let partsList = '';
+        let partsList;
         if (this.state.showParts) {
             partsList = <PartsList/>;
         }
