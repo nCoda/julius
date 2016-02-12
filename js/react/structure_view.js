@@ -22,24 +22,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Icon, Image} from 'amazeui-react';
+import {Button, Icon, Image, List, ListItem} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
 
-import reactor from '../nuclear/reactor';
 import getters from '../nuclear/getters';
+import log from '../util/log';
+import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 
 import {MenuItem} from './ncoda';
 
 
-const MetadataField = React.createClass({
-    //
-
+/** HeaderField: Subcomponent of HeaderList, a single MEI header.
+ *
+ * @param {string} name - The header's display name.
+ * @param {string} value - The header's value.
+ */
+const HeaderField = React.createClass({
     propTypes: {
-        // The name of this metadata field.
         name: React.PropTypes.string,
-        // The value of this metadata field.
         value: React.PropTypes.string,
     },
     getDefaultProps() {
@@ -59,69 +61,58 @@ const MetadataField = React.createClass({
     render() {
         const display = `${this.props.name}: ${this.props.value}`;
         return (
-            <li onClick={this.handleEdit}>
-                <i className="fa fa-minus-circle" onClick={this.handleDelete}></i>
+            <ListItem>
+                <Button onClick={this.handleDelete} amStyle="danger" className="header-button">
+                    <Icon icon="minus-circle"/>
+                </Button>
+                <Button onClick={this.handleEdit} amStyle="warning" className="header-button">
+                    <Icon icon="pencil"/>
+                </Button>
                 {display}
-            </li>
+            </ListItem>
         );
     },
 });
 
 
+/** HeaderList: Subcomponent of HeaderBar, the actual list of headers.
+ *
+ * State
+ * -----
+ * @param {ImmutableJS.Map} headers - The "flat" list of MEI headers.
+ */
 const HeaderList = React.createClass({
-    //
-
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {headers: getters.headersFlat};
     },
     handleAddHeader() {
-        // Does whatever's required to add a new header.
-
-        // TODO: this is a terrible hack. Here's what happens:
-        // 1: We ask for the field's new name, then in the callback...
-        // 2: We set a timeout while...
-        // 3: The DialogueBox component automatically closes itself by clearing the state, then...
-        // 4: Our timeout is over and we have a function to open a new DialogueBox wherein...
-        // 5: That DialogueBox's callback takes *both* the new field name and value, and submits it.
-
-        signals.emitters.dialogueBoxShow({
-            type: 'question',
-            message: 'Please enter a name for the new field',
-            callback: (newName) => {
-                window.setTimeout(() => {
-                    signals.emitters.dialogueBoxShow({
-                        type: 'question',
-                        message: 'Please enter a value for the new field',
-                        callback: (newValue) => {
-                            signals.emitters.addHeader(newName, newValue);
-                        },
-                    });
-                },
-                100);
-            },
-        });
+        log.error('Adding a header is not implemented yet.');
     },
     render() {
         return (
-            <ul id="headerbar-list" className="headers">
+            <List id="headerbar-list">
                 {this.state.headers.map((value, name) =>
-                    <MetadataField key={name} name={name} value={value}/>
+                    <HeaderField key={name} name={name} value={value}/>
                 ).toArray()}
-                <li onClick={this.handleAddHeader}><i className="fa fa-plus-circle"></i></li>
-            </ul>
+                <ListItem>
+                    <Button onClick={this.handleAddHeader} amStyle="success">
+                        <Icon icon="plus-circle"/>
+                    </Button>
+                </ListItem>
+            </List>
         );
     },
 });
 
 
+/** HeaderBar: In the top-left corner, this shows a list of the MEI headers.
+ *
+ * State
+ * -----
+ * @param {bool} showHeaderList - Whether the list of headers is expanded.
+ */
 const HeaderBar = React.createClass({
-    // HeaderBar
-    //
-    // State
-    // - showHeaderList: whether the list of headers is visible (true) or invisible (false)
-    //
-
     getInitialState() {
         return {showHeaderList: false};
     },
@@ -129,7 +120,7 @@ const HeaderBar = React.createClass({
         this.setState({showHeaderList: !this.state.showHeaderList});
     },
     render() {
-        let headerList = '';
+        let headerList;
         if (this.state.showHeaderList) {
             headerList = <HeaderList/>;
         }
