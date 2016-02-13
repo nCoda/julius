@@ -379,14 +379,14 @@ const StavesStructure = React.createClass({
 });
 
 
+/** Changeset: Subcomponent of Collaborator, showing data about a single changeset.
+ *
+ * Props
+ * -----
+ * @param {string} date - The date of the changeset as it should be displayed.
+ * @param {string} message - The message associated with the changeset.
+ */
 const Changeset = React.createClass({
-    // Information about a changeset.
-    //
-    // Props:
-    // - date (string): The date of the changeset, YYYY-MM-DD.
-    // - message (string): The message associated with the changeset.
-    //
-
     propTypes: {
         date: React.PropTypes.string.isRequired,
         message: React.PropTypes.string.isRequired,
@@ -398,21 +398,30 @@ const Changeset = React.createClass({
         }
 
         return (
-            <li><time dateTime={this.props.date}>{this.props.date}</time>{`: ${message}`}</li>
+            <ListItem>
+                <time dateTime={this.props.date}>{this.props.date}</time>
+                {`: ${message}`}
+            </ListItem>
         );
     },
 });
 
 
+/** Collaborator: Subcomponent of CollaboratorList, showing the changesets of a single contributor.
+ *
+ * Props
+ * -----
+ * @param {ImmutableJS.List of str} changesets - The commit hash IDs of contributor's changesets.
+ * @param {string} name - The contributor's display name.
+ * @param {int} numToShow - An optional maximum number of changesets to show for this user. If omitted,
+ *     the default is to show the most recent three changesets.
+ *
+ * State
+ * -----
+ * @param {ImmutableJS.List} revlog - Data from this document's Mercurial revlog, as per the
+ *     "vcsChangesets" getter.
+ */
 const Collaborator = React.createClass({
-    // Information about a collaborator and their recent changesets.
-    //
-    // Props:
-    // - name (string): The collaborator's name, whether a username, their real name, or other.
-    // - changesets (List of string): An ImmutableJS.List of the IDs of this person's hangesets.
-    // - numToShow (integer): The maximum number of changesets to show for this user.
-    //
-
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {revlog: getters.vcsChangesets};
@@ -434,67 +443,94 @@ const Collaborator = React.createClass({
             hashes = hashes.slice(-1 * this.props.numToShow);
         }
 
-        const changesets = [];
-        for (const hash of hashes) {
-            const theDate = new Date();
-            theDate.setTime(1000 * this.state.revlog.get(hash).get('date'));
-            changesets.push(
-                <Changeset
-                    key={hash}
-                    date={theDate.toDateString()}
-                    message={this.state.revlog.get(hash).get('description')}
-                />
-            );
+        // TODO: once we have better user IDs, we'll have to take their avatars from The Web
+        let imgSrc = 'img/generic_user.png';
+        switch (this.props.name) {
+        case '卓文萱':
+            imgSrc = 'img/sample_repo_avatars/genie.jpg';
+            break;
+        case 'Fortitude Johnson':
+            imgSrc = 'img/sample_repo_avatars/fortitude.jpg';
+            break;
+        case 'Honoré de Belzac':
+        case 'Honoré de Balzac':
+            imgSrc = 'img/sample_repo_avatars/honoré.jpg';
+            break;
+        case 'Danceathon Smith':
+            imgSrc = 'img/sample_repo_avatars/danceathon.jpg';
+            break;
+        case 'Gloria Steinem':
+            imgSrc = 'img/sample_repo_avatars/gloria.jpg';
+            break;
+        case 'Christopher Antila':
+            imgSrc = 'img/sample_repo_avatars/christopher.jpg';
         }
 
         return (
-            <li>
-                <address>{this.props.name}</address>
-                <ul>
-                    {changesets}
-                </ul>
+            <li className="am-comment">
+                <img src={imgSrc} alt="" className="am-comment-avatar" width="48" height="48"/>
+                <div className="am-comment-main">
+                    <header className="am-comment-hd">
+                        <div className="am-comment-meta">
+                            <div className="am-comment-author">
+                                {this.props.name}
+                            </div>
+                        </div>
+                    </header>
+                    <div className="am-comment-bd">
+                        <List>
+                            {hashes.map((hash) => {
+                                const theDate = new Date();
+                                theDate.setTime(1000 * this.state.revlog.get(hash).get('date'));
+                                return (
+                                    <Changeset
+                                        key={hash}
+                                        date={theDate.toDateString()}
+                                        message={this.state.revlog.get(hash).get('description')}
+                                    />
+                                );
+                                })
+                            }
+                        </List>
+                    </div>
+                </div>
             </li>
         );
     },
 });
 
 
+/** CollaboratorList: Subcomponent of Collaboration, the actual list of contributors to the score.
+ *
+ * State
+ * -----
+ * @param {ImmutableJS.List} users - The contributors to this score, in the format described for the
+ *     "vcsUsers" getter.
+ */
 const CollaboratorList = React.createClass({
-    //
-
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {users: getters.vcsUsers};
     },
     render() {
-        const collaborators = [];
-        for (const person of this.state.users.values()) {
-            // TODO: implement numToShow, which ought to lety based on the number of users
-            collaborators.push(
-                <Collaborator
-                    key={person.hashCode()}
-                    name={person.get('name')}
-                    changesets={person.get('changesets')}
-                />
-            );
-        }
-
         return (
-            <ul>
-                {collaborators}
+            <ul className="am-comments-list">
+                {this.state.users.map((val, key) =>
+                    <Collaborator key={key} name={val.get('name')} changesets={val.get('changesets')}/>
+                )}
             </ul>
         );
     },
 });
 
 
+/** Collaboration: in the bottom-right, an overview of the people who have worked on a score.
+ *
+ * State
+ * -----
+ * @param {bool} showCollaborators - Whether to display this component's contents.
+ */
 const Collaboration = React.createClass({
-    // Collaboration
-    //
-    // State
-    // - showCollaborators: whether the list of collaborators is visible (true) or invisible (false)
-    //
-
     getInitialState() {
         return {showCollaborators: false};
     },
@@ -502,7 +538,7 @@ const Collaboration = React.createClass({
         this.setState({showCollaborators: !this.state.showCollaborators});
     },
     render() {
-        let collabList = '';
+        let collabList;
         if (this.state.showCollaborators) {
             collabList = <CollaboratorList/>;
         }
@@ -510,7 +546,11 @@ const Collaboration = React.createClass({
         return (
             <div className="nc-strv-menu nc-strv-menu-br" id="nc-strv-collaboration">
                 <div className="header">
-                    <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showCollaborators}/>
+                    <ShowOrHideButton
+                        func={this.showOrHide}
+                        expands="up"
+                        isShown={this.state.showCollaborators}
+                    />
                     {`Collaborators`}
                 </div>
                 {collabList}
