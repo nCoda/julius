@@ -142,25 +142,27 @@ const HeaderBar = React.createClass({
 });
 
 
-const ExpandedSectionViewGraph = React.createClass({
+/** ExpSectViewGraph: Subcomponent of ExpSectView, the analysis graph itself.
+ */
+const ExpSectViewGraph = React.createClass({
     render() {
         return (
             <div id="ncoda-expanded-section-svg">
                 <h2>{`A`}</h2>
-                <img src="structureview_mock/expanded_section_view.svg"></img>
+                <img alt="music analysis graph" src="structureview_mock/expanded_section_view.svg"/>
             </div>
         );
     },
 });
 
 
-const ExpandedSectionView = React.createClass({
-    // ExpandedSectionView
-    //
-    // State
-    // - showGraph: whether the SVG graph is visible (true) or invisible (false)
-    //
-
+/** ExpSectView: In the top-right corner, the "expanded section view" analytic graph.
+ *
+ * State
+ * -----
+ * @param {boolean} showGraph - Whether the graph is currently displayed.
+ */
+const ExpSectView = React.createClass({
     getInitialState() {
         return {showGraph: false};
     },
@@ -168,9 +170,9 @@ const ExpandedSectionView = React.createClass({
         this.setState({showGraph: !this.state.showGraph});
     },
     render() {
-        let graph = '';
+        let graph;
         if (this.state.showGraph) {
-            graph = <ExpandedSectionViewGraph/>;
+            graph = <ExpSectViewGraph/>;
         }
 
         return (
@@ -701,7 +703,7 @@ const StructureView = React.createClass({
                 <ContextMenus/>
                 <div id="nc-strv-corner-menus">
                     <HeaderBar/>
-                    <ExpandedSectionView/>
+                    <ExpSectView/>
                     <StavesStructure/>
                     <Collaboration/>
                 </div>
