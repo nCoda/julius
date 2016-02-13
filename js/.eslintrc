@@ -18,7 +18,6 @@
     "valid-jsdoc": 1,
     // best practices
     "curly": [2, "all"],
-    "default-case": 2,
     "dot-location": [2, "property"],
     "dot-notation": 1,
     "eqeqeq": 2,
