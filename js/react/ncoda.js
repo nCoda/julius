@@ -37,10 +37,7 @@ const MainScreen = React.createClass({
     render() {
         return (
             <div id="ncoda-loading">
-                <section>
-                    {`Use the `}<i className="fa fa-th"></i>
-                    {` button in the top-left corner to open the menu.`}
-                </section>
+                <p>{`Use the menus above to navigate the program.`}</p>
                 <MainScreenQuote/>
             </div>
         );
@@ -75,7 +72,7 @@ const Colophon = React.createClass({
             <div id="ncoda-colophon">
                 <img src="img/nCoda-logo.svg" alt="nCoda" />
                 <div>
-                    <h2>{`About nCoda`}</h2>
+                    <h1>{`About nCoda`}</h1>
                     <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
                     <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
                     <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
@@ -101,7 +98,7 @@ const GlobalHeader = React.createClass({
     render() {
         const brand = (
             <h1 className="ncoda-logo">
-                <img src="img/nCoda-logo.svg" />
+                <Link to="/"><img src="img/nCoda-logo.svg" /></Link>
             </h1>
         );
 

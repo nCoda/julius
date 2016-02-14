@@ -69,14 +69,10 @@ const TextEditor = React.createClass({
                                             // better IME and and screen reader support
         };
         return (
-            <div className="ncoda-text-editor">
-                <h3>{`Text Editor`}</h3>
-                <ReactCodeMirror
-                    path="ncoda-editor"
-                    options={codeMirrorOptions}
-                    value={this.state.editorValue}
-                    onChange={this.handleEditorChange}
-                />
+            <div className="ncoda-text-editor panel-container">
+                <div className="panel-head">
+                    <h1>{`Text Editor`}</h1>
+                </div>
                 <div className="ncoda-text-editor-controls">
                     <ButtonGroup>
                         <Button onClick={this.handleSubmitPython}>
@@ -87,6 +83,12 @@ const TextEditor = React.createClass({
                         </Button>
                     </ButtonGroup>
                 </div>
+                <ReactCodeMirror
+                    path="ncoda-editor"
+                    options={codeMirrorOptions}
+                    value={this.state.editorValue}
+                    onChange={this.handleEditorChange}
+                />
             </div>
         );
     },
@@ -174,13 +176,13 @@ const WorkTable = React.createClass({
     },
     render() {
         return (
-            <SplitPane split="vertical" ref="workTable" className="ncoda-work-table">
+            <SplitPane split="vertical" ref="workTable" className="ncoda-work-table" minSize="20" defaultSize="40%">
                 <TextEditor
                     ref="textEditor"
                     submitToPyPy={this.props.submitToPyPy}
                     submitToLychee={this.props.submitToLychee}
                 />
-                <div><Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} /></div>
+                <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
             </SplitPane>
         );
     },
@@ -244,12 +246,16 @@ const TerminalOutput = React.createClass({
     render() {
         return (
         <SplitPane split="vertical" id="ncoda-terminal-output" className="ncoda-terminal-output">
-            <div>
-                <h3>{`Your Input`}</h3>
+            <div className="ncoda-terminal-in panel-container">
+                <div className="panel-head">
+                    <h1>{`Your Input`}</h1>
+                </div>
                 <TerminalWindow outputThis={this.state.stdin} />
             </div>
-            <div>
-                <h3>{`Python Output`}</h3>
+            <div className="ncoda-terminal-out panel-container">
+                <div className="panel-head">
+                    <h1>{`Python Output`}</h1>
+                </div>
                 <TerminalWindow outputThis={this.state.stdout} />
             </div>
         </SplitPane>
@@ -273,7 +279,7 @@ const CodeScoreView = React.createClass({
     render() {
         return (
             <div id="nc-csv-frame">
-                <SplitPane split="horizontal" minSize="20">
+                <SplitPane split="horizontal" minSize="20" defaultSize="70%">
                     <WorkTable
                         ref="workTable"
                         submitToPyPy={signals.emitters.submitToPyPy}

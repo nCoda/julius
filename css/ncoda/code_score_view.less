@@ -36,107 +36,6 @@
 }
 
 /* ********************************************************************************************* */
-/* Things for the WorkTable (middle) */
-
-// TODO: Fix sizing for CodeMirror, buttons, and h3
-
-.ncoda-work-table {
-    overflow: hidden;
-    width: inherit;
-}
-
-/* TextEditor (middle-left) */
-.ncoda-text-editor {
-    position: absolute; //needed to fill flexbox parent
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-.ncoda-text-editor h3 {
-}
-
-.CodeMirror {
-    position: absolute; //needed to fill flexbox parent
-    width: 100%;
-    height: 70%;
-}
-
-.ncoda-text-editor .ReactCodeMirror {
-    width: inherit;
-    height: auto;
-    overflow: scroll;
-}
-
-.ncoda-text-editor .CodeMirror {
-    font-family: 'Fira Mono';
-    font-size: smaller;
-}
-
-.ncoda-text-editor .CodeMirror-scroll {
-}
-
-// buttons: Run as Python, Submit as Lilypond
-.ncoda-text-editor-controls {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-
-}
-
-/* Verovio (middle-right) */
-.ncoda-verovio {
-    overflow: scroll;
-}
-
-.ncoda-verovio svg {
-}
-
-.ncoda-verovio .verovio-waiting {
-    height: 100%;
-    color: @shade-black;
-}
-
-.verovio-waiting i {
-    color: @plasma-blue;
-    filter: drop-shadow(0px 0px 5px @plasma-blue);
-}
-
-/* ********************************************************************************************* */
-/* Things for the terminals (bottom) */
-
-.ncoda-terminal-output {
-    // This contains the <h3> that says "output", plus the <div class="ncoda-output-terminals">
-    overflow: hidden;
-    min-height: 5rem;
-}
-
-.ncoda-terminal-output h3 {
-    margin: 0px;
-    color: @charcoal-grey;
-}
-
-.ncoda-terminal-output pre {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    border: unset;
-}
-
-.ncoda-output-terminals {
-}
-
-.ncoda-terminal-window {
-    // This is the terminal itself.
-    background-color: @solarized-base02;
-    color: @solarized-base0;
-    overflow: scroll;
-    padding: 0.5rem 1rem 0.5rem;
-}
-
-/* ********************************************************************************************* */
 /* Things for SplitPane and Resizer elements (from react-split-pane) */
 
 .Resizer {
@@ -182,3 +81,157 @@
         }
     }
 }
+
+/* ********************************************************************************************* */
+/* For all panels */
+
+.panel-container {
+    background-color: @base-3;
+    color: @solarized-base1;
+    padding-top: 3rem; //to accommodate panel-head
+    position: absolute; //needed to fill flexbox parent
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .panel-head {
+        // name of panel
+        display: block;
+        z-index: 99;
+        background-color: transparent;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 99;
+
+        > * {
+            display: inline-block;
+        }
+
+        h1 {
+            margin: 0;
+            padding: .5rem;
+            color: @solarized-base1;
+            font-size: 1.5rem;
+        }
+    }
+}
+
+/* ********************************************************************************************* */
+/* Things for the WorkTable (middle) */
+
+.ncoda-work-table {
+    width: inherit;
+    overflow: hidden;
+}
+
+/* TextEditor (middle-left) */
+.ncoda-text-editor {
+
+    .panel-head {
+    }
+
+    .ncoda-text-editor-controls {
+        // buttons ("Run as Python" and "Submit as Lilypond")
+        color: @solarized-base1;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 99;
+        overflow: scroll;
+
+        button {
+            background-color: @base-3;
+            color: @solarized-base1;
+            border-color: @solarized-base1;
+            margin: .5rem;
+            padding: .5rem;
+            font-size: 1.25rem;
+            opacity: .8;
+
+        }
+
+        button:hover {
+            opacity: 1;
+        }
+    }
+
+    .CodeMirror {
+        position: absolute; //needed to fill flexbox parent
+        width: 100%;
+        height: 100%;
+        padding-bottom: 3rem; // accommodate panel-head while also allowing for height: 100%
+        font-family: 'Fira Mono';
+        font-size: smaller;
+    }
+
+    .ReactCodeMirror {
+    }
+
+    .CodeMirror-vscrollbar {
+        margin-bottom: 2rem; // keep scroll out of overflow
+    }
+}
+
+/* Verovio (middle-right) */
+.ncoda-verovio {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+}
+
+.ncoda-verovio svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.ncoda-verovio .verovio-waiting {
+    height: 100%;
+    color: @shade-black;
+}
+
+.verovio-waiting i {
+    color: @plasma-blue;
+    filter: drop-shadow(0px 0px 5px @plasma-blue);
+}
+
+/* ********************************************************************************************* */
+/* Things for the terminals (bottom) */
+
+.ncoda-terminal-window {
+    // This is the terminal itself.
+    position: absolute; //needed to fill flexbox parent
+    width: 100%;
+    height: 100%;
+    padding-bottom: 3rem; // accommodate panel-head while also allowing for height: 100%
+
+    pre {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        color: @solarized-base1;
+        padding: 1rem; // 4rem needed to accommodate panel-head while also allowing for height: 100%
+        margin: 0;
+        border: none;
+        overflow: scroll;
+    }
+
+    .ncoda-terminal-in {
+        // "Your Input" part of terminal
+
+        .panel-head {
+        }
+    }
+
+    .ncoda-terminal-out {
+        // "Python Output" part of terminal
+
+        .panel-head {
+        }
+    }
+}
+
+
+

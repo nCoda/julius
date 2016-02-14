@@ -6,7 +6,7 @@
 // Filename:               js/util/tests/test_fujian.js
 // Purpose:                Tests for js/util/fujian.js
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015, 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@
 import {log} from '../log';
 
 // non-mocked imports
+import {Immutable} from 'nuclear-js';
 import {init} from '../../nuclear/init';  /* eslint no-unused-vars: 0 */
 import getters from '../../nuclear/getters';
 import reactor from '../../nuclear/reactor';
@@ -70,6 +71,9 @@ describe("Fujian class' instance methods", () => {
             expect(actual._fujian).toBe(window.WebSocket.mock.instances[0]);
             expect(actual._fujian.onmessage).toBe(fujian.Fujian._receiveWS);
             expect(actual._fujian.onerror).toBe(fujian.Fujian._errorWS);
+            expect(actual._fujian.onopen).toBe(actual._sendWSWhenReady);
+            expect(actual._fujian._fujian).toBe(actual);
+            expect(Immutable.List.isList(actual._sendWhenReady)).toBe(true);
         });
 
         it('startWS() can deal with an existing WebSocket connection', () => {
@@ -156,11 +160,46 @@ describe("Fujian class' instance methods", () => {
         });
     });
 
+    describe ('_sendWSWhenReady()', () => {
+        it('does not call sendWS() when there is nothing to send', () => {
+            const actual = new fujian.Fujian();
+            actual.statusWS = () => 'open';
+            // remember: _sendWSWhenReady() is called with "this" as the WebSocket instance
+            actual._fujian = {
+                sendWS: jest.genMockFn(),
+                _sendWhenReady: Immutable.List(),
+            };
+
+            actual._sendWSWhenReady();
+
+            expect(actual._fujian.sendWS).not.toBeCalled();
+            expect(actual._fujian._sendWhenReady).toBe(null);
+        });
+
+        it('calls sendWS() when there are things to send', () => {
+            const actual = new fujian.Fujian();
+            actual.statusWS = () => 'open';
+            // remember: _sendWSWhenReady() is called with "this" as the WebSocket instance
+            actual._fujian = {
+                sendWS: jest.genMockFn(),
+                _sendWhenReady: Immutable.List(['code 1', 'code 2']),
+            };
+
+            actual._sendWSWhenReady();
+
+            expect(actual._fujian.sendWS.mock.calls.length).toBe(2);
+            expect(actual._fujian.sendWS).toBeCalledWith('code 1');
+            expect(actual._fujian.sendWS).toBeCalledWith('code 2');
+            expect(actual._fujian._sendWhenReady).toBe(null);
+        });
+    });
+
     describe('sendWS()', () => {
         it('calls send() when the connection is ready', () => {
             const actual = new fujian.Fujian();
             actual.statusWS = () => 'open';
             actual._fujian = {send: jest.genMockFn()};
+            actual._sendWhenReady = null;  // pretend "onopen" already executed
             const code = 'some code';
 
             actual.sendWS(code);
@@ -172,6 +211,7 @@ describe("Fujian class' instance methods", () => {
             const actual = new fujian.Fujian();
             actual.statusWS = () => 'closed';
             actual._fujian = {send: jest.genMockFn()};
+            actual._sendWhenReady = null;  // pretend "onopen" already executed
             const code = 'some code';
 
             actual.sendWS(code);
@@ -184,6 +224,7 @@ describe("Fujian class' instance methods", () => {
             const actual = new fujian.Fujian();
             actual.statusWS = () => 'open';
             actual._fujian = {send: jest.genMockFn()};
+            actual._sendWhenReady = null;  // pretend "onopen" already executed
             actual._fujian.send.mockImplementation(() => {
                 throw new SyntaxError();
             });
@@ -193,6 +234,19 @@ describe("Fujian class' instance methods", () => {
 
             expect(actual._fujian.send).toBeCalledWith(code);
             expect(log.error).toBeCalledWith(fujian.ERROR_MESSAGES.wsSyntaxError);
+        });
+
+        it('enqueues messages for when the connection is ready', () => {
+            const actual = new fujian.Fujian();
+            actual.statusWS = () => 'open';
+            actual._fujian = {send: jest.genMockFn()};
+            actual._sendWhenReady = Immutable.List();
+            const code = 'some code';
+
+            actual.sendWS(code);
+
+            expect(actual._fujian.send).not.toBeCalled();
+            expect(actual._sendWhenReady.get(0)).toBe(code);
         });
     });
 });
