@@ -1,3 +1,5 @@
 node_modules
 js/ncoda-compiled.js
 css/ncoda/*.css
+*-compiled.js
+*-compiled.js.map
