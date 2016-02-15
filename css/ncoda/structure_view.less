@@ -6,7 +6,7 @@
 // Filename:               css/ncoda/structure_view.less
 // Purpose:                LESS file for StructureView
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2015, 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -27,10 +27,10 @@
 
 /*************************************************************************************************/
 /* StructureView colour definitions */
-@strv-widget-background: darken(@mellow-turquoise, 10%); //@cardboard-gray;
-@strv-widget-border: darken(@mellow-turquoise, 20%);
+@strv-widget-background: darken(@mellow-turquoise, 10%);
+@strv-widget-border: darken(@strv-widget-background, 10%);
 @strv-widget-shadow: @shade-black;
-@strv-inner-line: Red;  // a line in a widget
+@strv-inner-line: darken(@strv-widget-background, 5%);
 @strv-text: @shade-black;
 @strv-menu-background: darken(@mellow-turquoise, 10%);
 // highlighting colours
@@ -99,38 +99,44 @@
 
 /*************************************************************************************************/
 /* <section> corresponding to an MEI <section> */
+@nc-strv-section-shadow-transition: 0.5s;
 .nc-strv-section {
-    display: flex;
-    background: darken(@strv-widget-background, 5%);
-    border-bottom: 0.35rem solid @strv-widget-background;
-    z-index: 3;
-
-    flex-flow: column nowrap;
-    justify-content: space-between;
-    transition: border-bottom 0.25s;
-    margin: 0px 0.3rem;
-    padding: 0.5rem;
+    .am-panel {
+        background: unset;
+        margin: unset;
+    }
+    .am-panel-default {
+        border-color: @strv-inner-line;
+        transition: box-shadow @nc-strv-section-shadow-transition;
+        .am-panel-hd {
+            color: @strv-text;
+            background-color: darken(@strv-widget-background, 5%);
+            transition: opacity 1s;
+            border-color: @strv-inner-line;
+            transition: box-shadow @nc-strv-section-shadow-transition;
+        }
+        .am-panel-footer {
+            border-color: @strv-inner-line;
+            background-color: darken(@strv-widget-background, 5%);
+            address {
+                margin: unset;
+            }
+            transition: box-shadow @nc-strv-section-shadow-transition;
+        }
+    }
 }
 
-.nc-strv-section header {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-}
-.nc-strv-section header span { flex: 1 0; }
-.ncoda-section-colour {
-    flex: 6 1;
-    background: fade(@plasma-blue, 80%);
-}
-
-.nc-strv-section footer { margin: 0.4rem; }
-.nc-strv-section time { font-size: smaller; }
-.nc-strv-section:hover { border-bottom-color: @strv-primary; }
-.nc-strv-section-img { flex: 1; width: 10rem; display: block; overflow: hidden; }
-.nc-strv-section img { width: 100%; }
-.nc-strv-section .am-icon-primary {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+.nc-strv-section:hover {
+    .am-panel-hd {
+        box-shadow: inset 0 0.75rem 0.75rem 0 @mellow-turquoise;
+    }
+    .am-panel-default {
+        box-shadow: inset 0 0 0.75rem 0 @mellow-turquoise;
+        border-color: darken(@strv-inner-line, 5%);
+    }
+    .am-panel-footer {
+        box-shadow: inset 0 -0.75rem 0.75rem 0 @mellow-turquoise;
+    }
 }
 
 /* context menu when clicking on a <section>-corresponding <article> */

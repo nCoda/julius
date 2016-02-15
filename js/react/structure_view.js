@@ -22,7 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Button, Icon, Image, List, ListItem} from 'amazeui-react';
+import {Button, Icon, Image, List, ListItem, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
 
@@ -562,6 +562,16 @@ const Collaboration = React.createClass({
 });
 
 
+/** Section: Subcomponent of ActiveSections, the representation of an actual <section>.
+ *
+ * Props
+ * -----
+ * @param {string} colour - If there is a section colour, put the CSS-compatible string here.
+ * @param {string} id - REQUIRED: this section's "id"
+ * @param {Object} lastUpdated - The "name" and "date" of this section's most recent changeset.
+ * @param {string} name - REQUIRED: this section's "name"
+ * @param {string} pathToImage - The path to an image that represents this section.
+ */
 const Section = React.createClass({
     propTypes: {
         colour: React.PropTypes.string,
@@ -586,6 +596,13 @@ const Section = React.createClass({
             headerStyleAttr = {background: this.props.colour};
         }
 
+        const header = (
+            <header>
+                {this.props.name}
+                <div className="nc-backgrounder"/>
+            </header>
+        );
+
         let image;
         if (this.props.pathToImage) {
             image = <Image alt="" src={this.props.pathToImage}/>;
@@ -594,9 +611,9 @@ const Section = React.createClass({
             image = <Icon icon="music" button amStyle="primary" className="am-center"/>;
         }
 
-        let lastModified;
+        let footer;
         if (this.props.lastUpdated) {
-            lastModified = (
+            footer = (
                 <footer>
                     <address>{this.props.lastUpdated.name}</address>
                     <time dateTime={this.props.lastUpdated.date.toISOString()}>
@@ -608,14 +625,9 @@ const Section = React.createClass({
 
         return (
             <section className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.handleClick}>
-                <header>
-                    {this.props.name}
-                    <div className="ncoda-section-colour" style={headerStyleAttr}></div>
-                </header>
-                <div className="nc-strv-section-img">
+                <Panel header={header} footer={footer}>
                     {image}
-                </div>
-                {lastModified}
+                </Panel>
             </section>
         );
     },
