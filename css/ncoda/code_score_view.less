@@ -104,11 +104,8 @@
         left: 0;
         z-index: 99;
 
-        > * {
-            display: inline-block;
-        }
-
         h1 {
+            display: inline-block;
             margin: 0;
             padding: .5rem;
             color: @solarized-base1;
@@ -138,7 +135,7 @@
         bottom: 0;
         right: 0;
         z-index: 99;
-        overflow: scroll;
+        overflow: hidden;
 
         button {
             background-color: @base-3;
@@ -163,9 +160,6 @@
         padding-bottom: 3rem; // accommodate panel-head while also allowing for height: 100%
         font-family: 'Fira Mono';
         font-size: smaller;
-    }
-
-    .ReactCodeMirror {
     }
 
     .CodeMirror-vscrollbar {
