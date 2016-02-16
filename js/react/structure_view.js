@@ -34,6 +34,10 @@ import signals from '../nuclear/signals';
 import {MenuItem} from './ncoda';
 
 
+// when we get a datestring from Lychee, we need to multiply it by 1000 for JavaScript
+const DATE_MULTIPLIER = 1000;
+
+
 /** HeaderField: Subcomponent of HeaderList, a single MEI header.
  *
  * @param {string} name - The header's display name.
@@ -483,7 +487,7 @@ const Collaborator = React.createClass({
                         <List>
                             {hashes.map((hash) => {
                                 const theDate = new Date();
-                                theDate.setTime(1000 * this.state.revlog.get(hash).get('date'));
+                                theDate.setTime(DATE_MULTIPLIER * this.state.revlog.get(hash).get('date'));
                                 return (
                                     <Changeset
                                         key={hash}
@@ -491,8 +495,7 @@ const Collaborator = React.createClass({
                                         message={this.state.revlog.get(hash).get('description')}
                                     />
                                 );
-                                })
-                            }
+                            })}
                         </List>
                     </div>
                 </div>
@@ -591,14 +594,15 @@ const Section = React.createClass({
         signals.emitters.sectionContextMenu(style);
     },
     render() {
-        let headerStyleAttr = {};
-        if (this.props.colour) {
-            headerStyleAttr = {background: this.props.colour};
-        }
+        // TODO: figure out how to re-enable this when you deal with Julius issue #27
+        // let headerStyleAttr = {};
+        // if (this.props.colour) {
+        //     headerStyleAttr = {background: this.props.colour};
+        // }
 
         const header = (
             <header>
-                {this.props.name}
+                <h3>{this.props.name}</h3>
                 <div className="nc-backgrounder"/>
             </header>
         );
@@ -634,16 +638,18 @@ const Section = React.createClass({
 });
 
 
+/** ActiveSections: the list of <section>s currently active in the <score>.
+ *
+ * State
+ * -----
+ * @param {ImmutableJS.List} changesets - From the NuclearJS "vcsChangesets" getter.
+ * @param {ImmutableJS.Map} sections - From the NuclearJS "sections" getter.
+ */
 const ActiveSections = React.createClass({
-    propTypes: {
-        // A function that, when called with no argument, opens the SectionContextMenu in the right place.
-        openContextMenu: React.PropTypes.func.isRequired,
-    },
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {changesets: getters.vcsChangesets, sections: getters.sections};
     },
-    handleClick() { this.props.openContextMenu(); },  // TODO: deduplicate with handleClick() in <Section>
     render() {
         const order = this.state.sections.get('score_order');
         let sections;
@@ -655,8 +661,8 @@ const ActiveSections = React.createClass({
                     let name = this.state.changesets.getIn([lastHash, 'user']);
                     name = name.slice(0, name.indexOf(' <'));  // TODO: this is not foolproof
 
-                    let date = new Date();
-                    date.setTime(this.state.changesets.getIn([lastHash, 'date']) * 1000);
+                    const date = new Date();
+                    date.setTime(this.state.changesets.getIn([lastHash, 'date']) * DATE_MULTIPLIER);
 
                     lastUpdated = {
                         name: name,
@@ -669,8 +675,6 @@ const ActiveSections = React.createClass({
                         id={sectId}
                         name={this.state.sections.getIn([sectId, 'label'])}
                         lastUpdated={lastUpdated}
-
-                        onClick={this.handleClick}
                     />
                 );
             });
@@ -682,7 +686,7 @@ const ActiveSections = React.createClass({
         return (
             <article className="nc-active-sections">
                 <header>
-                    {`Active Score`}
+                    <h2>{`Active Score`}</h2>
                 </header>
                 <div>
                     {sections}
@@ -694,13 +698,6 @@ const ActiveSections = React.createClass({
 
 
 const StructureView = React.createClass({
-    showSectionContextMenu(event) {
-        // Display the context menu under the cursor.
-        const menu = document.getElementById('ncoda-section-menu');
-        menu.style.left = `${event.clientX}px`;
-        menu.style.top = `${event.clientY}px`;
-        menu.style.display = 'flex';
-    },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('vcs', 'StructureView', true);
         signals.emitters.registerOutboundFormat('document', 'StructureView', true);
@@ -720,7 +717,7 @@ const StructureView = React.createClass({
                     <Collaboration/>
                 </div>
                 <div id="nc-strv-view">
-                    <ActiveSections openContextMenu={this.showSectionContextMenu}/>
+                    <ActiveSections/>
                 </div>
             </div>
         );
