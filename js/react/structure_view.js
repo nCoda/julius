@@ -192,19 +192,15 @@ const ExpSectView = React.createClass({
 });
 
 
+/** ShowOrHidebutton: goes on a corner-menu to toggle whether it is shown.
+ *
+ * Props
+ * -----
+ * @param {string} expands - The direction this corner-menu expands (up, down, left, right).
+ * @param {func} func - REQUIRED: This function is called to toggle whether the corner-menu is shown.
+ * @param {bool} isShown - Whether the corner-menu is currently expanded (shown).
+ */
 const ShowOrHideButton = React.createClass({
-    // ShowOrHideButton
-    //
-    // Render a button to show or hide another component. This component does not do the showing or
-    // hiding itself, but rather calls a no-argument function to do that.
-    //
-    // Props:
-    // - func (function) This function is called without arguments when the button is clicked.
-    // - isShown (boolean) Whether the component shown/hidden by this button is currently shown.
-    // - expands (string) Either 'up,' 'down', 'left', or 'right', depending on the direction the
-    //     shown/hidden component moves when it expands.
-    //
-
     propTypes: {
         expands: React.PropTypes.oneOf(['up', 'down', 'left', 'right', 'expand']),
         func: React.PropTypes.func.isRequired,
@@ -217,42 +213,40 @@ const ShowOrHideButton = React.createClass({
         this.props.func();
     },
     render() {
-        let className = '';
+        let className;
 
         if ('expand' === this.props.expands) {
-            className = 'fa-expand';
+            className = 'expand';
         }
         else if (false === this.props.isShown) {
             // the chevron points in the direction of this.props.expands
-            className = `fa-chevron-${this.props.expands}`;
+            className = `chevron-${this.props.expands}`;
         }
         else if (true === this.props.isShown) {
             // the chevron points opposite the direction of this.props.expands
             switch (this.props.expands) {
             case 'down':
-                className = 'fa-chevron-up';
+                className = 'hevron-up';
                 break;
             case 'left':
-                className = 'fa-chevron-right';
+                className = 'chevron-right';
                 break;
             case 'right':
-                className = 'fa-chevron-left';
+                className = 'chevron-left';
                 break;
             case 'up':
             default:
-                className = 'fa-chevron-down';
+                className = 'chevron-down';
             }
         }
         else {
-            className = 'fa-expand';
+            className = 'expand';
         }
 
-        className = `fa ${className}`;
-
         return (
-            <button name="show-or-hide-button" className="show-or-hide-button" type="button" onClick={this.handleClick}>
-                <i className={className}></i>
-            </button>
+            <Button amSize="xs" onClick={this.handleClick}>
+                <Icon icon={className}/>
+            </Button>
         );
     },
 });
