@@ -92,7 +92,6 @@
     position: absolute; //needed to fill flexbox parent
     width: 100%;
     height: 100%;
-    overflow: hidden;
 
     .panel-head {
         // name of panel
@@ -119,7 +118,6 @@
 
 .ncoda-work-table {
     width: inherit;
-    overflow: hidden;
 }
 
 /* TextEditor (middle-left) */
@@ -135,7 +133,6 @@
         bottom: 0;
         right: 0;
         z-index: 99;
-        overflow: hidden;
 
         button {
             background-color: @base-3;
@@ -160,25 +157,23 @@
         padding-bottom: 3rem; // accommodate panel-head while also allowing for height: 100%
         font-family: 'Fira Mono';
         font-size: smaller;
-    }
-
-    .CodeMirror-vscrollbar {
-        margin-bottom: 2rem; // keep scroll out of overflow
+        overflow: hidden;
     }
 }
 
 /* Verovio (middle-right) */
-.ncoda-verovio {
+.verovio-root {
     position: absolute;
     width: 100%;
     height: 100%;
-    overflow: scroll;
+}
+.ncoda-verovio {
 }
 
 .ncoda-verovio svg {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 200%;
+    height: 200%;
 }
 
 .ncoda-verovio .verovio-waiting {
@@ -209,7 +204,6 @@
         padding: 1rem; // 4rem needed to accommodate panel-head while also allowing for height: 100%
         margin: 0;
         border: none;
-        overflow: scroll;
     }
 
     .ncoda-terminal-in {

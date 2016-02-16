@@ -23,11 +23,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Button, ButtonGroup} from 'amazeui-react';
-import React from "react";
+import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactCodeMirror from "./CodeMirror";
+
+import ReactCodeMirror from './CodeMirror';
+import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
+import Scrollbars from '../../node_modules/react-custom-scrollbars';
 
 
 import getters from '../nuclear/getters';
@@ -64,7 +66,7 @@ const TextEditor = React.createClass({
             lineNumbers: true,
             autofocus: true,
             lineWrapping: true,
-            inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
+            inputStyle: "contenteditable"  // NOTE: this usually defaults to "textarea" on
                                             // desktop and may not be so good for us, but it has
                                             // better IME and and screen reader support
         };
@@ -83,15 +85,17 @@ const TextEditor = React.createClass({
                         </Button>
                     </ButtonGroup>
                 </div>
-                <ReactCodeMirror
-                    path="ncoda-editor"
-                    options={codeMirrorOptions}
-                    value={this.state.editorValue}
-                    onChange={this.handleEditorChange}
-                />
+                <Scrollbars>
+                    <ReactCodeMirror
+                        path="ncoda-editor"
+                        options={codeMirrorOptions}
+                        value={this.state.editorValue}
+                        onChange={this.handleEditorChange}
+                    />
+                </Scrollbars>
             </div>
         );
-    },
+    }
 });
 
 
@@ -121,7 +125,12 @@ const Verovio = React.createClass({
         //
 
         if (null === this.state.verovio) {
-            return '<div class="verovio-waiting"><i class="fa fa-spinner fa-5x fa-spin"></i><div>Loading ScoreView</div></div>';
+            return (
+                <div class="verovio-waiting">
+                    <i class="fa fa-spinner fa-5x fa-spin"></i>
+                    <div>Loading ScoreView</div>
+                </div>
+            );
         }
         else if (null === renderThis) {
             return 'Received no MEI to render.';
@@ -160,8 +169,14 @@ const Verovio = React.createClass({
     },
     render() {
         const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
-        return <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>;
-    },
+        return (
+            <div className="verovio-root">
+                <Scrollbars>
+                    <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
+                </Scrollbars>
+            </div>
+        );
+    }
 });
 
 
@@ -169,7 +184,7 @@ const WorkTable = React.createClass({
     propTypes: {
         meiForVerovio: React.PropTypes.string,
         submitToLychee: React.PropTypes.func.isRequired,
-        submitToPyPy: React.PropTypes.func.isRequired,
+        submitToPyPy: React.PropTypes.func.isRequired
     },
     getDefaultProps() {
         return {meiForVerovio: ''};
@@ -185,14 +200,14 @@ const WorkTable = React.createClass({
                 <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
             </SplitPane>
         );
-    },
+    }
 });
 
 
 const TerminalWindow = React.createClass({
     propTypes: {
         extraClass: React.PropTypes.string,
-        outputThis: React.PropTypes.string,
+        outputThis: React.PropTypes.string
     },
     getDefaultProps() {
         return {outputThis: '', extraClass: ''};
@@ -231,9 +246,11 @@ const TerminalWindow = React.createClass({
             className += `${className} ${this.props.extraClass}`;
         }
         return (
-            <div className={className} dangerouslySetInnerHTML={innerHtml}></div>
+            <Scrollbars>
+                <div className={className} dangerouslySetInnerHTML={innerHtml}></div>
+            </Scrollbars>
         );
-    },
+    }
 });
 
 
@@ -260,12 +277,12 @@ const TerminalOutput = React.createClass({
             </div>
         </SplitPane>
         );
-    },
+    }
 });
 
 const CodeScoreView = React.createClass({
     propTypes: {
-        meiForVerovio: React.PropTypes.string,
+        meiForVerovio: React.PropTypes.string
     },
     getDefaultProps() {
         return {meiForVerovio: '', sendToConsole: '', sendToConsoleType: null};
@@ -273,7 +290,7 @@ const CodeScoreView = React.createClass({
     getInitialState() {
         return {
             sendToConsole: 'nCoda is ready for action!',
-            sendToConsoleType: 'welcome',
+            sendToConsoleType: 'welcome'
         };
     },
     render() {
@@ -290,7 +307,7 @@ const CodeScoreView = React.createClass({
                 </SplitPane>
             </div>
         );
-    },
+    }
 });
 
 
