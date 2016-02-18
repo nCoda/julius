@@ -22,37 +22,41 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
-
-@import "colours.less";
+@import "variables.less";
 @import "buttons.less";
-
 
 /* ********************************************************************************************* */
 /* Boring things */
 
-html { height: 100%; overflow: hidden; }
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     overflow: hidden;
-    margin: 0px;
+    margin: 0;
     height: 100%;
 
-    font-family: 'Fira Sans';
+    font-family: @font-family-sans-serif;
     font-weight: 300;
 
     cursor: default;
 }
+
 * {
     -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
+
 #julius-goes-here {
     height: 100%;
 }
+
 #ncoda {
     height: 100%;
 }
-
 
 /* ********************************************************************************************* */
 /* The loading screen, shown before PyPy.js and Verovio are compiled. */
@@ -67,26 +71,40 @@ body {
 }
 
 #ncoda-loading .fa-th {
-    color: @plasma-blue;
+    color: @global-primary;
 }
 
-blockquote { font-family: inherit; }
-blockquote { border-left-color: @plasma-blue; }
-blockquote i { color: @plasma-blue; }
-blockquote p { max-width: 45rem; }
-blockquote small { color: @charcoal-gray; font-family: inherit; }
+blockquote {
+    font-family: inherit;
+}
 
+blockquote {
+    border-left-color: @global-primary;
+}
+
+blockquote i {
+    color: @global-primary;
+}
+
+blockquote p {
+    max-width: 45rem;
+}
+
+blockquote small {
+    color: @gray-darker;
+    font-family: inherit;
+}
 
 /* ********************************************************************************************* */
 /* Headers */
 h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
 }
+
 h2, h3 {
     // These are the title and subtitle of a group of components (like of a GroupBox-alike)
     padding: 0.3em 0.7em;
 }
-
 
 /* ********************************************************************************************* */
 /* The colophon, "about nCoda." */
@@ -100,28 +118,27 @@ h2, h3 {
     align-items: center;
 }
 
-
 /* ********************************************************************************************* */
 /* The top-level components (header and everything else) */
 
 .am-topbar-inverse {
-    background-color: @charcoal-grey;
-    border-color: @plasma-blue;
+    background-color: @gray-darker;
+    border-color: @global-primary;
     border-width: 0 0 3px;
-    color: @cardboard-grey;
+    color: @gray-light;
 }
 
 .am-topbar-inverse .am-topbar-nav > li > a:hover, .am-topbar-inverse .am-topbar-nav > li > a:focus {
-    background-color: darken(@charcoal-grey, 5%);
+    background-color: darken(@gray-darker, 5%);
 }
 
 // this is for the triangle under the Topbar button
 .am-topbar-inverse .am-topbar-nav > li > a:hover:after, .am-topbar-inverse .am-topbar-nav > li > a:focus:after {
-    border-bottom-color: @plasma-blue;
+    border-bottom-color: @global-primary;
 }
 
 .ncoda-logo {
-    color: @plasma-blue;
+    color: @global-primary;
     font-weight: normal;
     padding-left: 1em;
 
@@ -138,103 +155,144 @@ h2, h3 {
     padding: 0.5em 0.5em 0.5em 0.5em;
     background: inherit;
     border: none;
-    color: @plasma-blue;
+    color: @global-primary;
 }
+
 #ncoda-global-header button:hover {
-    color: @mellow-turquoise;
+    color: @global-secondary;
 }
 
 #ncoda-global-header h1 {
     // display: inline;
-    margin: 0px;
+    margin: 0;
 }
-
 
 /*************************/
 /* nCoda Menus Generally */
 // TODO: abandon these in favour of amazeui menus
 nav {
-    background: @charcoal-gray;
-    color: @cardboard-gray;
+    background: @gray-darker;
+    color: @gray-darker;
     margin: 0;
     padding: 0;
     min-width: 10em;
 }
-nav ul { padding: 0; margin: 0; }
+
+nav ul {
+    padding: 0;
+    margin: 0;
+}
+
 nav li {
     display: block;
     padding: 0.25em 1.25em;
-    border-left: 3px solid @charcoal-gray;
+    border-left: 3px solid @gray-darker;
     transition: border-left 0.25s ease-in-out;
 }
+
 nav li:hover {
-    border-left: 3px solid @mellow-turquoise;
+    border-left: 3px solid @global-secondary;
 }
+
 nav li a {
     color: inherit;
     text-decoration: inherit;
 }
 
-
 /* ********************************************************************************************* */
 /* Dialogue Boxes and Related */
 // TODO: abandon these in favour of amazeui Modal
 .nc-modal-background {
-    z-index: 950;
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    background: fade(@charcoal-gray, 40%);
+    z-index: 1001;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: fade(@gray-darker, 40%);
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: center;
-}
 .nc-dialogue-box {
-    background: @cardboard-gray;
-    display: flex;
-    flex-flow: column;
-    align-items: flex-start;
-    box-shadow: 0 0 1rem @charcoal-gray;
+    background: @white;
+    color: @gray-darkest;
+    display: block;
+    width: 80%;
+    margin: 10% auto 0 auto;
+    padding: 1rem 2rem;
+    .box-shadow(@black);
 }
+
 .nc-dialogue-type {
-    margin: 1rem;
-    padding: 0;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.25rem;
+    margin: 1rem 1rem 0.75rem 1rem;
+    padding: 0 0 0.25rem 0;
     border-bottom: 0.15rem solid;
 }
+
 .nc-dialogue-type > * {
     display: inline;
 }
+
 .nc-dialogue-type h3 {
     font-weight: 300;
-    margin: none;
-    padding: none;
+    margin: 0;
+    padding: 0;
 }
+
 .nc-dialogue-msg {
     font-weight: 500;
     margin: 1rem;
     margin-bottom: 0.5rem;
 }
+
 .nc-dialogue-detail {
     margin: 1rem;
     margin-top: 0.5rem;
 }
+
 .nc-dialogue-box input {
     margin: 0.25rem 1rem;
 }
-.nc-dialogue-error i    { color: @danger-red; }
-.nc-dialogue-warn i     { color: @beware-orange; }
-.nc-dialogue-info i     { color: @plasma-blue; }
-.nc-dialogue-debug i    { color: @verdant-green; }
-.nc-dialogue-question i { color: @plasma-blue; }
-.nc-dialogue-error .nc-dialogue-type    { border-bottom-color: @danger-red; }
-.nc-dialogue-warn .nc-dialogue-type     { border-bottom-color: @beware-orange; }
-.nc-dialogue-info .nc-dialogue-type     { border-bottom-color: @plasma-blue; }
-.nc-dialogue-debug .nc-dialogue-type    { border-bottom-color: @verdant-green; }
-.nc-dialogue-question .nc-dialogue-type { border-bottom-color: @plasma-blue; }
 
+.nc-dialogue-error i {
+    color: @global-danger;
+}
+
+.nc-dialogue-warn i {
+    color: @global-warning;
+}
+
+.nc-dialogue-info i {
+    color: @global-primary;
+}
+
+.nc-dialogue-debug i {
+    color: @global-secondary;
+}
+
+.nc-dialogue-question i {
+    color: @global-primary;
+}
+
+.nc-dialogue-error .nc-dialogue-type {
+    border-bottom-color: @global-danger;
+}
+
+.nc-dialogue-warn .nc-dialogue-type {
+    border-bottom-color: @global-warning;
+}
+
+.nc-dialogue-info .nc-dialogue-type {
+    border-bottom-color: @global-primary;
+}
+
+.nc-dialogue-debug .nc-dialogue-type {
+    border-bottom-color: @global-secondary;
+}
+
+.nc-dialogue-question .nc-dialogue-type {
+    border-bottom-color: @global-primary;
+}
 
 /* ********************************************************************************************* */
 /* Import LESS files for the other components. */

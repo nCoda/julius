@@ -6,7 +6,8 @@
 // Filename:               js/react/structure_view.js
 // Purpose:                React components for StructureView.
 //
-// Copyright (C) 2015, 2016 Christopher Antila
+// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -137,12 +138,12 @@ const HeaderBar = React.createClass({
         return (
             <div className="nc-strv-menu nc-strv-menu-tl" id="nc-strv-header-bar">
                 <div className="header">
-                    {`Header Bar`}
                     <ShowOrHideButton
                         func={this.showOrHide}
                         expands="down"
                         isShown={this.state.showHeaderList}
                     />
+                    {`Header Bar`}
                 </div>
                 {headerList}
             </div>
@@ -185,8 +186,8 @@ const ExpandedSectionView = React.createClass({
         return (
             <div className="nc-strv-menu nc-strv-menu-tr" id="nc-strv-expanded-section">
                 <div className="header">
-                    <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showGraph}/>
                     {`Expanded Section View`}
+                    <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showGraph}/>
                 </div>
                 {graph}
             </div>
@@ -367,8 +368,8 @@ const StavesStructure = React.createClass({
         return (
             <div className="nc-strv-menu nc-strv-menu-bl" id="nc-strv-staves">
                 <div className="header">
-                    {`Staves Structure`}
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showParts}/>
+                    {`Staves Structure`}
                 </div>
                 {partsList}
             </div>
@@ -508,8 +509,8 @@ const Collaboration = React.createClass({
         return (
             <div className="nc-strv-menu nc-strv-menu-br" id="nc-strv-collaboration">
                 <div className="header">
-                    <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showCollaborators}/>
                     {`Collaborators`}
+                    <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showCollaborators}/>
                 </div>
                 {collabList}
             </div>

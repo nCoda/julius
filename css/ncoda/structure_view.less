@@ -7,6 +7,7 @@
 // Purpose:                LESS file for StructureView
 //
 // Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2016 Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -22,20 +23,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-@import "colours.less";
+@import "variables.less";
+@import "../../node_modules/amazeui/less/mixins.less";
 
 
 /*************************************************************************************************/
 /* StructureView colour definitions */
-@strv-widget-background: darken(@mellow-turquoise, 10%); //@cardboard-gray;
-@strv-widget-border: darken(@mellow-turquoise, 20%);
-@strv-widget-shadow: @shade-black;
-@strv-inner-line: Red;  // a line in a widget
-@strv-text: @shade-black;
-@strv-menu-background: darken(@mellow-turquoise, 10%);
+@strv-widget-background: @gray-lightest;
+@strv-widget-border: @gray-lightest;
+@strv-widget-shadow: @black;
+@strv-inner-line: @global-primary;  // a line in a widget
+@strv-text: @gray-darker;
+@strv-menu-background: @gray-lightest;
 // highlighting colours
-@strv-primary: @plasma-blue;
-@strv-secondary: @mellow-turquoise;
+@strv-primary: @global-secondary;
+@strv-secondary: @global-secondary;
 
 
 /*************************************************************************************************/
@@ -47,7 +49,7 @@
      */
     height: 100%;
     flex: 1 1 0%;
-    background: @charcoal-gray;
+    background: @gray-darker;
     display: flex;
     flex-flow: column;
     align-items: stretch;
@@ -73,9 +75,7 @@
 .nc-active-sections {
     z-index: 1;
     background: @strv-widget-background;
-    border: 0.1rem solid @strv-widget-border;
-    box-shadow: 0 0.5rem 1rem @strv-widget-shadow;
-    border-radius: 0.5rem;
+    .box-shadow(@black);
 }
 .nc-active-sections > header {
     text-align: center;
@@ -114,7 +114,7 @@
 .nc-strv-section header span { flex: 1 0; }
 .ncoda-section-colour {
     flex: 6 1;
-    background: fade(@plasma-blue, 80%);
+    background: fade(@global-primary, 80%);
 }
 
 .nc-strv-section footer { margin: 0.4rem; }
@@ -178,13 +178,13 @@
 /* The "show or hide" button */
 .show-or-hide-button {
     background: @strv-widget-background;
-    border: 0.1rem solid @shade-black;
+    border: 0.1rem solid @black;
     border-radius: 0.2rem;
     color: @strv-text;
 }
 .show-or-hide-button:hover {
-    border-color: @plasma-blue;
-    color: @plasma-blue;
+    border-color: @black;
+    color: @black;
     background: darken(@strv-widget-background, 10%);
 }
 .show-or-hide-button:focus {
@@ -195,38 +195,38 @@
 // Extra classes that set the corners
 // tr: top right; bl: bottom left; etc.
 .nc-strv-menu-tr {
-    border-left: .1rem solid #10825b;
-    border-bottom: .1rem solid #10825b;
+    border-left: .1rem solid @black;
+    border-bottom: .1rem solid @black;
     right: 0;
-    box-shadow: 0 0 1rem @strv-widget-shadow;
+    .box-shadow(@black);
 }
 .nc-strv-menu-tl {
-    border-right: .1rem solid #10825b;
-    border-bottom: .1rem solid #10825b;
+    border-right: .1rem solid @black;
+    border-bottom: .1rem solid @black;
     left: 0;
-    box-shadow: 0 0 1rem @strv-widget-shadow;
+    .box-shadow(@black);
 }
 .nc-strv-menu-br {
-    border-left: .1rem solid #10825b;
-    border-top: .1rem solid #10825b;
+    border-left: .1rem solid @black;
+    border-top: .1rem solid @black;
     bottom: 0;
     right: 0;
-    box-shadow: 0 0 1rem @strv-widget-shadow;
+    .box-shadow(@black);
 }
 .nc-strv-menu-bl {
-    border-right: .1rem solid #10825b;
-    border-top: .1rem solid #10825b;
+    border-right: .1rem solid @black;
+    border-top: .1rem solid @black;
     bottom: 0;
     left: 0;
-    box-shadow: 0 0 1rem @strv-widget-shadow;
+    .box-shadow(@black);
 }
 
 
 //////////////////////////////////////////////////////////
 // Header Bar
 #headerbar-list .fa { margin-right: 0.5rem; }
-#headerbar-list .fa-minus-circle:hover { color: @beware-orange; }
-#headerbar-list li:hover .fa-plus-circle { color: @verdant-green; }
+#headerbar-list li:hover .fa-minus-circle { color: @global-secondary; }
+#headerbar-list li:hover .fa-plus-circle { color: @global-secondary; }
 
 
 //////////////////////////////////////////////////////////
@@ -235,7 +235,7 @@
     margin: 0;
     margin-top: 0.75rem;
     padding: 0.25rem 0.5rem;
-    background: rgba(0, 191, 255, 0.6);  // TODO: this should be set programmatically
+    background: @gray;  // TODO: this should be set programmatically
 }
 #ncoda-expanded-section-svg img {
     width: 100%;

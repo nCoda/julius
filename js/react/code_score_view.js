@@ -31,7 +31,6 @@ import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
 import Scrollbars from '../../node_modules/react-custom-scrollbars';
 
-
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
@@ -66,6 +65,7 @@ const TextEditor = React.createClass({
             lineNumbers: true,
             autofocus: true,
             lineWrapping: true,
+            scrollbarStyle: null,
             inputStyle: "contenteditable"  // NOTE: this usually defaults to "textarea" on
                                             // desktop and may not be so good for us, but it has
                                             // better IME and and screen reader support
@@ -85,14 +85,16 @@ const TextEditor = React.createClass({
                         </Button>
                     </ButtonGroup>
                 </div>
-                <Scrollbars>
-                    <ReactCodeMirror
-                        path="ncoda-editor"
-                        options={codeMirrorOptions}
-                        value={this.state.editorValue}
-                        onChange={this.handleEditorChange}
-                    />
-                </Scrollbars>
+                <div className="codemirror-root">
+                    <Scrollbars className="custom-scrollbars">
+                        <ReactCodeMirror
+                            path="ncoda-editor"
+                            options={codeMirrorOptions}
+                            value={this.state.editorValue}
+                            onChange={this.handleEditorChange}
+                        />
+                    </Scrollbars>
+                </div>
             </div>
         );
     }
@@ -171,7 +173,7 @@ const Verovio = React.createClass({
         const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
         return (
             <div className="verovio-root">
-                <Scrollbars>
+                <Scrollbars className="custom-scrollbars">
                     <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
                 </Scrollbars>
             </div>
@@ -246,9 +248,7 @@ const TerminalWindow = React.createClass({
             className += `${className} ${this.props.extraClass}`;
         }
         return (
-            <Scrollbars>
-                <div className={className} dangerouslySetInnerHTML={innerHtml}></div>
-            </Scrollbars>
+            <div className={className} dangerouslySetInnerHTML={innerHtml}></div>
         );
     }
 });
@@ -267,13 +267,21 @@ const TerminalOutput = React.createClass({
                 <div className="panel-head">
                     <h1>{`Your Input`}</h1>
                 </div>
-                <TerminalWindow outputThis={this.state.stdin} />
+                <div className="terminal-in-root">
+                    <Scrollbars className="custom-scrollbars">
+                        <TerminalWindow outputThis={this.state.stdin} />
+                    </Scrollbars>
+                </div>
             </div>
             <div className="ncoda-terminal-out panel-container">
                 <div className="panel-head">
                     <h1>{`Python Output`}</h1>
                 </div>
-                <TerminalWindow outputThis={this.state.stdout} />
+                <div className="terminal-out-root">
+                    <Scrollbars className="custom-scrollbars">
+                        <TerminalWindow outputThis={this.state.stdout} />
+                    </Scrollbars>
+                </div>
             </div>
         </SplitPane>
         );

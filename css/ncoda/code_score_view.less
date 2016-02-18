@@ -24,7 +24,8 @@
 //-------------------------------------------------------------------------------------------------
 
 
-@import "colours.less";
+@import "variables.less";
+@import "buttons.less";
 
 
 // The <div> framing CodeScoreView
@@ -32,7 +33,26 @@
     position: relative;
     display: block;
     height:100%;
-    background: @cardboard-gray;
+    background: @white;
+}
+
+
+/* ********************************************************************************************* */
+/* 'root' containers needed for Scrollbars elements (from react-custom-scrollbars */
+
+.verovio-root, .codemirror-root, .terminal-in-root, .terminal-out-root {
+    position: absolute; //needed to fill flexbox parent
+    width: 100%;
+    height: 100%;
+
+    .custom-scrollbars {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.codemirror-root, .terminal-in-root, .terminal-out-root {
+    padding-top: 3rem;  //padding for panels with headings (.panel-head)
 }
 
 /* ********************************************************************************************* */
@@ -57,27 +77,27 @@
     &.horizontal {
         height: 11px;
         margin: -5px 0;
-        border-top: 5px solid rgba(255, 255, 255, 0);
-        border-bottom: 5px solid rgba(255, 255, 255, 0);
+        border-top: 5px solid rgba(red(@white), green(@white), blue(@white), 0);
+        border-bottom: 5px solid rgba(red(@white), green(@white), blue(@white), 0);
         cursor: row-resize;
         width: 100%;
 
         &:hover {
-            border-top: 5px solid rgba(0, 0, 0, 0.5);
-            border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+            border-top: 5px solid rgba(red(@black), green(@black), blue(@black), 0.8);
+            border-bottom: 5px solid rgba(red(@black), green(@black), blue(@black), 0.8);
         }
     }
     &.vertical {
         width: 11px;
         margin: 0 -5px;
-        border-left: 5px solid rgba(255, 255, 255, 0);
-        border-right: 5px solid rgba(255, 255, 255, 0);
+        border-left: 5px solid rgba(red(@white), green(@white), blue(@white), 0);
+        border-right: 5px solid rgba(red(@white), green(@white), blue(@white), 0);
         cursor: col-resize;
         height: 100%;
 
         &:hover {
-            border-left: 5px solid rgba(0, 0, 0, 0.5);
-            border-right: 5px solid rgba(0, 0, 0, 0.5);
+            border-left: 5px solid rgba(red(@black), green(@black), blue(@black), 0.8);
+            border-right: 5px solid rgba(red(@black), green(@black), blue(@black), 0.8);
         }
     }
 }
@@ -86,9 +106,8 @@
 /* For all panels */
 
 .panel-container {
-    background-color: @base-3;
-    color: @solarized-base1;
-    padding-top: 3rem; //to accommodate panel-head
+    background-color: @gray-darker;
+    color: @gray-light;
     position: absolute; //needed to fill flexbox parent
     width: 100%;
     height: 100%;
@@ -96,7 +115,6 @@
     .panel-head {
         // name of panel
         display: block;
-        z-index: 99;
         background-color: transparent;
         position: absolute;
         top: 0;
@@ -107,7 +125,7 @@
             display: inline-block;
             margin: 0;
             padding: .5rem;
-            color: @solarized-base1;
+            color: @gray-light;
             font-size: 1.5rem;
         }
     }
@@ -128,19 +146,14 @@
 
     .ncoda-text-editor-controls {
         // buttons ("Run as Python" and "Submit as Lilypond")
-        color: @solarized-base1;
+        color: @gray-light;
         position: absolute;
         bottom: 0;
         right: 0;
         z-index: 99;
 
         button {
-            background-color: @base-3;
-            color: @solarized-base1;
-            border-color: @solarized-base1;
-            margin: .5rem;
-            padding: .5rem;
-            font-size: 1.25rem;
+            .am-btn-dark;
             opacity: .8;
 
         }
@@ -154,19 +167,13 @@
         position: absolute; //needed to fill flexbox parent
         width: 100%;
         height: 100%;
-        padding-bottom: 3rem; // accommodate panel-head while also allowing for height: 100%
-        font-family: 'Fira Mono';
+        font-family: @font-family-sans-serif;
         font-size: smaller;
         overflow: hidden;
     }
 }
 
 /* Verovio (middle-right) */
-.verovio-root {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
 .ncoda-verovio {
 }
 
@@ -178,12 +185,12 @@
 
 .ncoda-verovio .verovio-waiting {
     height: 100%;
-    color: @shade-black;
+    color: @gray-dark;
 }
 
 .verovio-waiting i {
-    color: @plasma-blue;
-    filter: drop-shadow(0px 0px 5px @plasma-blue);
+    color: @global-primary;
+    filter: drop-shadow(0px 0px 5px @global-primary);
 }
 
 /* ********************************************************************************************* */
@@ -200,7 +207,7 @@
         width: 100%;
         height: 100%;
         background: transparent;
-        color: @solarized-base1;
+        color: @gray-light;
         padding: 1rem; // 4rem needed to accommodate panel-head while also allowing for height: 100%
         margin: 0;
         border: none;
