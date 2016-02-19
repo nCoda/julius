@@ -1,0 +1,202 @@
+// -*- coding: utf-8 -*-
+//-------------------------------------------------------------------------------------------------
+// Program Name:           Julius
+// Program Description:    User interface for the nCoda music notation editor.
+//
+// Filename:               css/ncoda/amazeui-ncoda.less
+// Purpose:                Root LESS file for Amaze UI customized for nCoda.
+//
+// Copyright (C) 2016 Sienna M. Wood
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//-------------------------------------------------------------------------------------------------
+
+
+//TODO: better solution than digging into node_modules?
+
+// LESS related
+@import "variables.less";
+@import "../../node_modules/amazeui/less/mixins.less";
+
+// Defaults
+@import "../../node_modules/amazeui/less/base.less";
+
+// Layout
+@import "../../node_modules/amazeui/less/grid.less";
+@import "../../node_modules/amazeui/less/block-grid.less";
+
+// Elements
+@import "../../node_modules/amazeui/less/code.less";
+@import "../../node_modules/amazeui/less/button.less";
+@import "../../node_modules/amazeui/less/table.less";
+@import "../../node_modules/amazeui/less/form.less";
+@import "../../node_modules/amazeui/less/image.less";
+
+// Nav
+@import "../../node_modules/amazeui/less/nav.less";
+@import "../../node_modules/amazeui/less/topbar.less";
+@import "../../node_modules/amazeui/less/breadcrumb.less";
+@import "../../node_modules/amazeui/less/pagination.less";
+
+// Common
+@import "../../node_modules/amazeui/less/animation.less";
+@import "../../node_modules/amazeui/less/article.less";
+@import "../../node_modules/amazeui/less/badge.less";
+@import "../../node_modules/amazeui/less/comment.less";
+@import "../../node_modules/amazeui/less/button-group.less";
+@import "../../node_modules/amazeui/less/close.less";
+@import "../../node_modules/amazeui/less/icon.less";
+@import "../../node_modules/amazeui/less/input-group.less";
+@import "../../node_modules/amazeui/less/list.less";
+@import "../../node_modules/amazeui/less/panel.less";
+@import "../../node_modules/amazeui/less/progress.less";
+@import "../../node_modules/amazeui/less/thumbnail.less";
+@import "../../node_modules/amazeui/less/utility.less";
+
+// JavaScript Plugins
+@import "../../node_modules/amazeui/less/ui.alert.less";
+@import "../../node_modules/amazeui/less/ui.dropdown.less";
+@import "../../node_modules/amazeui/less/ui.flexslider.less";
+@import "../../node_modules/amazeui/less/ui.modal.less";
+@import "../../node_modules/amazeui/less/ui.offcanvas.less";
+@import "../../node_modules/amazeui/less/ui.popover.less";
+@import "../../node_modules/amazeui/less/ui.progress.less";
+@import "../../node_modules/amazeui/less/ui.tabs.less";
+@import "../../node_modules/amazeui/less/ui.share.less";
+@import "../../node_modules/amazeui/less/ui.pureview.less";
+@import "../../node_modules/amazeui/less/ui.add2home.less";
+@import "../../node_modules/amazeui/less/ui.ucheck.less";
+@import "../../node_modules/amazeui/less/ui.selected.less";
+@import "../../node_modules/amazeui/less/ui.component.less";
+@import "../../node_modules/amazeui/less/ui.datepicker.less";
+
+// Print
+@import "../../node_modules/amazeui/less/print.less";
+
+// Legacy
+@import "../../node_modules/amazeui/less/legacy.ie.less";
+
+// accordion
+@import "../../node_modules/amazeui/widget/accordion/src/accordion.less";
+@import "../../node_modules/amazeui/widget/accordion/src/accordion.default.less";
+@import "../../node_modules/amazeui/widget/accordion/src/accordion.basic.less";
+@import "../../node_modules/amazeui/widget/accordion/src/accordion.gapped.less";
+
+// divider
+@import "../../node_modules/amazeui/widget/divider/src/divider.less";
+@import "../../node_modules/amazeui/widget/divider/src/divider.default.less";
+@import "../../node_modules/amazeui/widget/divider/src/divider.dotted.less";
+@import "../../node_modules/amazeui/widget/divider/src/divider.dashed.less";
+
+// duoshuo
+@import "../../node_modules/amazeui/widget/duoshuo/src/duoshuo.less";
+@import "../../node_modules/amazeui/widget/duoshuo/src/duoshuo.default.less";
+
+// figure
+@import "../../node_modules/amazeui/widget/figure/src/figure.less";
+@import "../../node_modules/amazeui/widget/figure/src/figure.default.less";
+
+// footer
+@import "../../node_modules/amazeui/widget/footer/src/footer.less";
+@import "../../node_modules/amazeui/widget/footer/src/footer.default.less";
+
+// gallery
+@import "../../node_modules/amazeui/widget/gallery/src/gallery.less";
+@import "../../node_modules/amazeui/widget/gallery/src/gallery.default.less";
+@import "../../node_modules/amazeui/widget/gallery/src/gallery.overlay.less";
+@import "../../node_modules/amazeui/widget/gallery/src/gallery.bordered.less";
+@import "../../node_modules/amazeui/widget/gallery/src/gallery.imgbordered.less";
+
+// gotop
+@import "../../node_modules/amazeui/widget/gotop/src/gotop.less";
+@import "../../node_modules/amazeui/widget/gotop/src/gotop.default.less";
+@import "../../node_modules/amazeui/widget/gotop/src/gotop.fixed.less";
+
+// header
+@import "../../node_modules/amazeui/widget/header/src/header.less";
+@import "../../node_modules/amazeui/widget/header/src/header.default.less";
+
+// intro
+@import "../../node_modules/amazeui/widget/intro/src/intro.less";
+@import "../../node_modules/amazeui/widget/intro/src/intro.default.less";
+
+// list_news
+@import "../../node_modules/amazeui/widget/list_news/src/list_news.less";
+@import "../../node_modules/amazeui/widget/list_news/src/list_news.default.less";
+
+// map
+@import "../../node_modules/amazeui/widget/map/src/map.less";
+@import "../../node_modules/amazeui/widget/map/src/map.default.less";
+
+// mechat
+@import "../../node_modules/amazeui/widget/mechat/src/mechat.less";
+@import "../../node_modules/amazeui/widget/mechat/src/mechat.default.less";
+
+// menu
+@import "../../node_modules/amazeui/widget/menu/src/menu.less";
+@import "../../node_modules/amazeui/widget/menu/src/menu.default.less";
+@import "../../node_modules/amazeui/widget/menu/src/menu.dropdown1.less";
+@import "../../node_modules/amazeui/widget/menu/src/menu.dropdown2.less";
+@import "../../node_modules/amazeui/widget/menu/src/menu.slide1.less";
+@import "../../node_modules/amazeui/widget/menu/src/menu.offcanvas1.less";
+@import "../../node_modules/amazeui/widget/menu/src/menu.offcanvas2.less";
+@import "../../node_modules/amazeui/widget/menu/src/menu.stack.less";
+
+// navbar
+@import "../../node_modules/amazeui/widget/navbar/src/navbar.less";
+@import "../../node_modules/amazeui/widget/navbar/src/navbar.default.less";
+
+// pagination
+@import "../../node_modules/amazeui/widget/pagination/src/pagination.less";
+@import "../../node_modules/amazeui/widget/pagination/src/pagination.default.less";
+@import "../../node_modules/amazeui/widget/pagination/src/pagination.select.less";
+
+// paragraph
+@import "../../node_modules/amazeui/widget/paragraph/src/paragraph.less";
+@import "../../node_modules/amazeui/widget/paragraph/src/paragraph.default.less";
+
+// slider
+@import "../../node_modules/amazeui/widget/slider/src/slider.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.default.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.a1.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.a2.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.a3.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.a4.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.a5.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.b1.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.b2.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.b3.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.b4.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.c1.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.c2.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.c3.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.c4.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.d1.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.d2.less";
+@import "../../node_modules/amazeui/widget/slider/src/slider.d3.less";
+
+// tabs
+@import "../../node_modules/amazeui/widget/tabs/src/tabs.less";
+@import "../../node_modules/amazeui/widget/tabs/src/tabs.default.less";
+@import "../../node_modules/amazeui/widget/tabs/src/tabs.d2.less";
+
+// titlebar
+@import "../../node_modules/amazeui/widget/titlebar/src/titlebar.less";
+@import "../../node_modules/amazeui/widget/titlebar/src/titlebar.default.less";
+@import "../../node_modules/amazeui/widget/titlebar/src/titlebar.multi.less";
+@import "../../node_modules/amazeui/widget/titlebar/src/titlebar.cols.less";
+
+// wechatpay
+@import "../../node_modules/amazeui/widget/wechatpay/src/wechatpay.less";
+@import "../../node_modules/amazeui/widget/wechatpay/src/wechatpay.default.less";
