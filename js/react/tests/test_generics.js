@@ -6,7 +6,7 @@
 // Filename:               js/react/tests/test_generics.js
 // Purpose:                Tests for the "generics" React components.
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2016 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as

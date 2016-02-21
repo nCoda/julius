@@ -1,8 +1,10 @@
 Copyright Notice Template
 =========================
 
-Use this template at the top of every file to add the copyright notice. Be sure to fill out the
-filename, purpose, and copyright holder!
+Use this template at the top of every file to add the copyright notice.
+
+For help filling out the copyright statement (the line that begins with the word "copyright") please
+refer to our thread on Discourse: https://spivak.ncodamusic.org/t/update-on-copyright-notices/
 
 
 // -*- coding: utf-8 -*-
@@ -13,7 +15,7 @@ filename, purpose, and copyright holder!
 // Filename:               ?
 // Purpose:                ?
 //
-// Copyright (C) 2015 ?
+// Copyright (C) YEAR COPYRIGHT_HOLDER
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as

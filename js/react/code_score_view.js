@@ -6,7 +6,7 @@
 // Filename:               js/react/code_score_view.js
 // Purpose:                React components for CodeScoreView.
 //
-// Copyright (C) 2015 Christopher Antila, Wei Gao
+// Copyright (C) 2015 Wei Gao
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify

@@ -6,7 +6,6 @@
 // Filename:               js/react/structure_view.js
 // Purpose:                React components for StructureView.
 //
-// Copyright (C) 2015 Christopher Antila
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
