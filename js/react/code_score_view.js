@@ -65,15 +65,12 @@ const TextEditor = React.createClass({
             autofocus: true,
             lineWrapping: true,
             scrollbarStyle: null,
-            inputStyle: "contenteditable"  // NOTE: this usually defaults to "textarea" on
+            inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
                                             // desktop and may not be so good for us, but it has
                                             // better IME and and screen reader support
         };
         return (
-            <div className="ncoda-text-editor panel-container">
-                <div className="panel-head">
-                    <h1>{`Text Editor`}</h1>
-                </div>
+            <div className="codemirror-root">
                 <div className="ncoda-text-editor-controls">
                     <ButtonGroup>
                         <Button onClick={this.handleSubmitPython}>
@@ -84,16 +81,14 @@ const TextEditor = React.createClass({
                         </Button>
                     </ButtonGroup>
                 </div>
-                <div className="codemirror-root">
-                    <Scrollbars className="custom-scrollbars">
-                        <ReactCodeMirror
-                            path="ncoda-editor"
-                            options={codeMirrorOptions}
-                            value={this.state.editorValue}
-                            onChange={this.handleEditorChange}
-                        />
-                    </Scrollbars>
-                </div>
+                <Scrollbars className="custom-scrollbars">
+                    <ReactCodeMirror
+                        path="ncoda-editor"
+                        options={codeMirrorOptions}
+                        value={this.state.editorValue}
+                        onChange={this.handleEditorChange}
+                    />
+                </Scrollbars>
             </div>
         );
     },
@@ -180,7 +175,7 @@ const WorkTable = React.createClass({
     propTypes: {
         meiForVerovio: React.PropTypes.string,
         submitToLychee: React.PropTypes.func.isRequired,
-        submitToPyPy: React.PropTypes.func.isRequired
+        submitToPyPy: React.PropTypes.func.isRequired,
     },
     getDefaultProps() {
         return {meiForVerovio: ''};
@@ -188,11 +183,16 @@ const WorkTable = React.createClass({
     render() {
         return (
             <SplitPane split="vertical" ref="workTable" className="ncoda-work-table" minSize="20" defaultSize="40%">
-                <TextEditor
-                    ref="textEditor"
-                    submitToPyPy={this.props.submitToPyPy}
-                    submitToLychee={this.props.submitToLychee}
-                />
+                <div className="ncoda-text-editor panel-container">
+                    <div className="panel-head">
+                        <h1>{`Text Editor`}</h1>
+                    </div>
+                    <TextEditor
+                        ref="textEditor"
+                        submitToPyPy={this.props.submitToPyPy}
+                        submitToLychee={this.props.submitToLychee}
+                    />
+                </div>
                 <div className="verovio-root">
                     <Scrollbars className="custom-scrollbars">
                         <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
@@ -207,7 +207,7 @@ const WorkTable = React.createClass({
 const TerminalWindow = React.createClass({
     propTypes: {
         extraClass: React.PropTypes.string,
-        outputThis: React.PropTypes.string
+        outputThis: React.PropTypes.string,
     },
     getDefaultProps() {
         return {outputThis: '', extraClass: ''};
@@ -260,35 +260,35 @@ const TerminalOutput = React.createClass({
     },
     render() {
         return (
-        <SplitPane split="vertical" id="ncoda-terminal-output" className="ncoda-terminal-output">
-            <div className="ncoda-terminal-in panel-container">
-                <div className="panel-head">
-                    <h1>{`Your Input`}</h1>
+            <SplitPane split="vertical" id="ncoda-terminal-output" className="ncoda-terminal-output">
+                <div className="ncoda-terminal-in panel-container">
+                    <div className="panel-head">
+                        <h1>{`Your Input`}</h1>
+                    </div>
+                    <div className="terminal-in-root">
+                        <Scrollbars className="custom-scrollbars">
+                            <TerminalWindow outputThis={this.state.stdin}/>
+                        </Scrollbars>
+                    </div>
                 </div>
-                <div className="terminal-in-root">
-                    <Scrollbars className="custom-scrollbars">
-                        <TerminalWindow outputThis={this.state.stdin} />
-                    </Scrollbars>
+                <div className="ncoda-terminal-out panel-container">
+                    <div className="panel-head">
+                        <h1>{`Python Output`}</h1>
+                    </div>
+                    <div className="terminal-out-root">
+                        <Scrollbars className="custom-scrollbars">
+                            <TerminalWindow outputThis={this.state.stdout}/>
+                        </Scrollbars>
+                    </div>
                 </div>
-            </div>
-            <div className="ncoda-terminal-out panel-container">
-                <div className="panel-head">
-                    <h1>{`Python Output`}</h1>
-                </div>
-                <div className="terminal-out-root">
-                    <Scrollbars className="custom-scrollbars">
-                        <TerminalWindow outputThis={this.state.stdout} />
-                    </Scrollbars>
-                </div>
-            </div>
-        </SplitPane>
+            </SplitPane>
         );
     },
 });
 
 const CodeScoreView = React.createClass({
     propTypes: {
-        meiForVerovio: React.PropTypes.string
+        meiForVerovio: React.PropTypes.string,
     },
     getDefaultProps() {
         return {meiForVerovio: '', sendToConsole: '', sendToConsoleType: null};
@@ -296,7 +296,7 @@ const CodeScoreView = React.createClass({
     getInitialState() {
         return {
             sendToConsole: 'nCoda is ready for action!',
-            sendToConsoleType: 'welcome'
+            sendToConsoleType: 'welcome',
         };
     },
     render() {
