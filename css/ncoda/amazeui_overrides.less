@@ -1,0 +1,50 @@
+// -*- coding: utf-8 -*-
+//-------------------------------------------------------------------------------------------------
+// Program Name:           Julius
+// Program Description:    User interface for the nCoda music notation editor.
+//
+// Filename:               css/ncoda/amazeui_overrides.less
+// Purpose:                LESS variable overrides for the nCoda amazeUI theme.
+//
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//-------------------------------------------------------------------------------------------------
+//
+// This file is imported *after* amazeUI but *before* the components are finished styling.
+// Therefore in this file we can override anything in the amazeUI "variables" file, but we do not
+// need to duplicate anything that we are not changing.
+
+
+@gray-darkest:    #222;
+@gray-darker:     #333;
+@gray-dark:       #555;
+@gray:            #777;
+@gray-light:      #999;
+@gray-lighter:    #bbb;
+@gray-lightest:   #ddd;
+@white:           #fff;
+@global-primary:          #00ba8c;
+@global-secondary:        #fbc84e; //previously lighten(@global-primary, 15%)
+@global-success:          #00d500;
+@global-warning:        #f0720b;
+@global-danger:                   #ff0900;
+@global-info:           @global-secondary;
+@one-primary: @global-primary;
+@global-border:                                       @gray-lightest;
+@font-family-sans-serif: "Fira Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif: Georgia, "Times New Roman", Times, "FontAwesome", serif;
+@btn-primary-border:             @global-primary;
+@btn-warning-border:             @global-warning;
+@btn-danger-border:              @global-danger;

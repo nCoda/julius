@@ -1,0 +1,47 @@
+// -*- coding: utf-8 -*-
+//-------------------------------------------------------------------------------------------------
+// Program Name:           Julius
+// Program Description:    User interface for the nCoda music notation editor.
+//
+// Filename:               css/ncoda/main.less
+// Purpose:                Primary LESS file for all Julius components.
+//
+// Copyright (C) 2016 Christopher Antila
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//-------------------------------------------------------------------------------------------------
+//
+// This is the primary LESS file for all Julius components.
+//
+// For Julius, this stylesheet is the only one you need to compile. All the other stylesheets and
+// themes and libraries are included here.
+//
+// NOTE: please do not define anything in this file. This file should only import others.
+
+
+// 1.) The amazeUI base styles.
+@import "../../amazeui/less/amui";
+
+// 2.) Our nCoda-specific overrides.
+@import "amazeui_overrides";
+
+// 3.) The amazeUI widgets, which build on our base and overridden styles.
+//     (I know it's from another theme---trust me!)
+@import "../../amazeui/less/themes/one/widgets";
+
+// 4.) Additional widgets and styling for Julius modules.
+//     (Alphabetical order).
+@import "code_score_view";
+@import "julius";
+@import "structure_view";

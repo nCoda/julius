@@ -30,7 +30,7 @@ _COMPILE_WITH_WATCHIFY = [
 # list of the CSS files that must be compiled from LESS; it's the shell path we should ask Watchman
 # to watch, then the input and output filenames for lessc.
 _COMPILE_WITH_LESSC = [
-    ('css/ncoda/*.less', 'css/ncoda/julius.less', 'css/ncoda/julius.css'),
+    ('css/ncoda/*.less', 'css/ncoda/main.less', 'css/ncoda/main.css'),
 ]
 
 _PATH_TO_WATCHIFY = 'node_modules/.bin/watchify'
