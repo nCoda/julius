@@ -24,7 +24,6 @@
 // ------------------------------------------------------------------------------------------------
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import ReactCodeMirror from './CodeMirror';
 import {Button, ButtonGroup} from 'amazeui-react';
@@ -97,7 +96,7 @@ const TextEditor = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 
@@ -130,7 +129,7 @@ const Verovio = React.createClass({
             return (
                 <div class="verovio-waiting">
                     <i class="fa fa-spinner fa-5x fa-spin"></i>
-                    <div>Loading ScoreView</div>
+                    <div>{'Loading ScoreView'}</div>
                 </div>
             );
         }
@@ -146,8 +145,7 @@ const Verovio = React.createClass({
         return rendered;
     },
     makeVerovio() {
-        // TODO: consider whether we should be making a global instance? (I'm thinking one per
-        //       Verovio component is good though)
+        // TODO: consider whether we should be making a global instance? (I'm thinking one per Verovio component is good though)
 
         try {
             this.setState({verovio: new verovio.toolkit()});
@@ -172,13 +170,9 @@ const Verovio = React.createClass({
     render() {
         const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
         return (
-            <div className="verovio-root">
-                <Scrollbars className="custom-scrollbars">
-                    <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
-                </Scrollbars>
-            </div>
+            <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
         );
-    }
+    },
 });
 
 
@@ -199,10 +193,14 @@ const WorkTable = React.createClass({
                     submitToPyPy={this.props.submitToPyPy}
                     submitToLychee={this.props.submitToLychee}
                 />
-                <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
+                <div className="verovio-root">
+                    <Scrollbars className="custom-scrollbars">
+                        <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
+                    </Scrollbars>
+                </div>
             </SplitPane>
         );
-    }
+    },
 });
 
 
@@ -250,7 +248,7 @@ const TerminalWindow = React.createClass({
         return (
             <div className={className} dangerouslySetInnerHTML={innerHtml}></div>
         );
-    }
+    },
 });
 
 
@@ -285,7 +283,7 @@ const TerminalOutput = React.createClass({
             </div>
         </SplitPane>
         );
-    }
+    },
 });
 
 const CodeScoreView = React.createClass({
@@ -315,7 +313,7 @@ const CodeScoreView = React.createClass({
                 </SplitPane>
             </div>
         );
-    }
+    },
 });
 
 
