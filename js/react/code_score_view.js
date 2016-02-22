@@ -261,7 +261,7 @@ const TerminalOutput = React.createClass({
     render() {
         return (
             <SplitPane split="vertical" id="ncoda-terminal-output" className="ncoda-terminal-output">
-                <div className="ncoda-terminal-in panel-container">
+                <div className="panel-container">
                     <div className="panel-head">
                         <h1>{`Your Input`}</h1>
                     </div>
@@ -271,7 +271,7 @@ const TerminalOutput = React.createClass({
                         </Scrollbars>
                     </div>
                 </div>
-                <div className="ncoda-terminal-out panel-container">
+                <div className="panel-container">
                     <div className="panel-head">
                         <h1>{`Python Output`}</h1>
                     </div>
