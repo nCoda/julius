@@ -97,7 +97,7 @@ const GlobalHeader = React.createClass({
     render() {
         const brand = (
             <h1 className="ncoda-logo">
-                <Link to="/"><img src="img/nCoda-logo.svg" /></Link>
+                <Link to="/"><img src="img/apple-touch-icon-57x57.png" height="40px" width="40px"/></Link>
             </h1>
         );
 
