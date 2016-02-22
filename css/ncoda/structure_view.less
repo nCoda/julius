@@ -25,15 +25,14 @@
 
 /*************************************************************************************************/
 /* StructureView colour definitions */
-@strv-widget-background: @gray-lightest;
-@strv-widget-border: @gray-lightest;
+@strv-widget-background: @comp-l1-bg;
+@strv-widget-border: @comp-l1-border;
 @strv-widget-shadow: @black;
-@strv-inner-line: @global-primary;  // a line in a widget
-@strv-text: @gray-darker;
-@strv-menu-background: @gray-lightest;
+@strv-inner-line: @comp-l1-line;
+@strv-text: @base-text-color;
 // highlighting colours
-@strv-primary: @global-secondary;
-@strv-secondary: @global-secondary;
+@strv-primary: @global-primary;
+@strv-secondary: @global-primary;
 
 
 /*************************************************************************************************/
@@ -45,7 +44,7 @@
      */
     height: 100%;
     flex: 1 1 0%;
-    background: @gray-darker;
+    background: @view-bg;
     display: flex;
     flex-flow: column;
     align-items: stretch;
@@ -71,7 +70,7 @@
 .nc-active-sections {
     z-index: 1;
     background: @strv-widget-background;
-    .box-shadow(@black);
+    border: 1px solid @strv-widget-border;
 }
 .nc-active-sections > header {
     text-align: center;
@@ -91,8 +90,8 @@
 /* <section> corresponding to an MEI <section> */
 .nc-strv-section {
     display: flex;
-    background: darken(@strv-widget-background, 5%);
-    border-bottom: 0.35rem solid @strv-widget-background;
+    background: @comp-l2-bg;
+    border-bottom: 0.35rem solid @comp-l2-bg;
     z-index: 3;
 
     flex-flow: column nowrap;
@@ -138,7 +137,7 @@
 /*************************************************************************************************/
 /* StructureView Corner Menus */
 .nc-strv-menu {
-    background: @strv-menu-background;
+    background: @strv-widget-background;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
@@ -170,60 +169,49 @@
 .nc-strv-menu li:hover {
     // We do this with transparency so that nested lists will show as doubly darkened
     background: rgba(35, 38, 41, 0.2);  // shade black
+    // TODO: theme-decided colouring here
 }
 
 /* The "show or hide" button */
 .show-or-hide-button {
-    background: @strv-widget-background;
-    border: 0.1rem solid @black;
-    border-radius: 0.2rem;
-    color: @strv-text;
-}
-.show-or-hide-button:hover {
-    border-color: @black;
-    color: @black;
-    background: darken(@strv-widget-background, 10%);
+    .am-btn;
+    .am-btn-default;
 }
 .show-or-hide-button:focus {
     outline: none;
-    background: darken(@strv-widget-background, 10%);
 }
 
 // Extra classes that set the corners
 // tr: top right; bl: bottom left; etc.
 .nc-strv-menu-tr {
-    border-left: .1rem solid @black;
-    border-bottom: .1rem solid @black;
+    border-left: .1rem solid @strv-widget-border;
+    border-bottom: .1rem solid @strv-widget-border;
     right: 0;
-    .box-shadow(@black);
 }
 .nc-strv-menu-tl {
-    border-right: .1rem solid @black;
-    border-bottom: .1rem solid @black;
+    border-right: .1rem solid @strv-widget-border;
+    border-bottom: .1rem solid @strv-widget-border;
     left: 0;
-    .box-shadow(@black);
 }
 .nc-strv-menu-br {
-    border-left: .1rem solid @black;
-    border-top: .1rem solid @black;
+    border-left: .1rem solid @strv-widget-border;
+    border-top: .1rem solid @strv-widget-border;
     bottom: 0;
     right: 0;
-    .box-shadow(@black);
 }
 .nc-strv-menu-bl {
-    border-right: .1rem solid @black;
-    border-top: .1rem solid @black;
+    border-right: .1rem solid @strv-widget-border;
+    border-top: .1rem solid @strv-widget-border;
     bottom: 0;
     left: 0;
-    .box-shadow(@black);
 }
 
 
 //////////////////////////////////////////////////////////
 // Header Bar
 #headerbar-list .fa { margin-right: 0.5rem; }
-#headerbar-list li:hover .fa-minus-circle { color: @global-secondary; }
-#headerbar-list li:hover .fa-plus-circle { color: @global-secondary; }
+#headerbar-list li:hover .fa-minus-circle { color: @global-primary; }
+#headerbar-list li:hover .fa-plus-circle { color: @global-primary; }
 
 
 //////////////////////////////////////////////////////////
@@ -232,7 +220,7 @@
     margin: 0;
     margin-top: 0.75rem;
     padding: 0.25rem 0.5rem;
-    background: @gray;  // TODO: this should be set programmatically
+    background: @comp-l2-bg;  // TODO: this should be set programmatically
 }
 #ncoda-expanded-section-svg img {
     width: 100%;

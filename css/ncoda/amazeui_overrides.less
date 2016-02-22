@@ -27,24 +27,104 @@
 // need to duplicate anything that we are not changing.
 
 
-@gray-darkest:    #222;
-@gray-darker:     #333;
-@gray-dark:       #555;
-@gray:            #777;
-@gray-light:      #999;
-@gray-lighter:    #bbb;
-@gray-lightest:   #ddd;
-@white:           #fff;
-@global-primary:          #00ba8c;
-@global-secondary:        #fbc84e; //previously lighten(@global-primary, 15%)
-@global-success:          #00d500;
-@global-warning:        #f0720b;
-@global-danger:                   #ff0900;
-@global-info:           @global-secondary;
-@one-primary: @global-primary;
-@global-border:                                       @gray-lightest;
-@font-family-sans-serif: "Fira Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-@font-family-serif: Georgia, "Times New Roman", Times, "FontAwesome", serif;
+// =============================================================================
+// Base Colours
+// =============================================================================
+
+@white: #fbfffd;
+@black: #000;
+@clear: rgba(0, 0, 0, 0);
+
+/* When @black is #000:
+    12.5%: #222
+    13.5%: #222
+    20%:   #333
+    25%:   #444
+    33.5%: #333
+    50%:   #888
+    60%:   #999
+    75%:   #bfbfbf
+    87.5%: #dfdfdf
+    93.5%: #eee
+    99%:   #fcfcfc
+*/
+
+@gray-darker:     lighten(@black, 12.5%);
+@gray-dark:       lighten(@black, 25%);
+@gray:            lighten(@black, 50%);
+@gray-light:      lighten(@black, 75%);
+@gray-lighter:    lighten(@black, 87.5%);
+
+@global-primary:   #50C878;  // "Emerald green" per Wikipedia
+@global-secondary: @global-primary;
+@global-success:   #00AB66;  // GO Transit green: soothing for Ontarians
+@global-warning:   #FF8800;  // Web colour "dark orange"
+@global-danger:    #FF0000;  // Web colour "red"
+@global-info:      #ADD8E6;  // "Light Blue" per Wikipedia
+@one-primary:      @global-primary;
+
+@global-background:     @white;
+@global-border:         @gray-lighter
+@global-contrast-color: @white;
+
+
+// =============================================================================
+// Fonts
+// =============================================================================
+
+@font-family-sans-serif: "Fira Sans", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", "FontAwesome", sans-serif;
+
+@font-family-monospace: "Fira Mono", Monaco, Menlo, Consolas, "Courier New", "FontAwesome", monospace;
+
+
+// =============================================================================
+// Buttons
+// =============================================================================
+// For nCoda, we'll use "outline buttons" to reduce the visual shock of a colour.
+
+@btn-default-color:              @base-text-color;
+@btn-default-bg:                 @clear;
+@btn-default-border:             @base-text-color;
+
+@btn-primary-color:              #fff;
+@btn-primary-bg:                 @clear;
 @btn-primary-border:             @global-primary;
+
+@btn-secondary-color:            #fff;
+@btn-secondary-bg:               @clear;
+@btn-secondary-border:           @global-secondary;
+
+@btn-success-color:              #fff;
+@btn-success-bg:                 @clear;
+@btn-success-border:             @global-success;
+
+@btn-warning-color:              #fff;
+@btn-warning-bg:                 @clear;
 @btn-warning-border:             @global-warning;
+
+@btn-danger-color:               #fff;
+@btn-danger-bg:                  @clear;
 @btn-danger-border:              @global-danger;
+
+.am-btn {
+    border-radius: 0.2rem;
+}
+
+
+// =============================================================================
+// UI Component Colours
+// =============================================================================
+
+@view-bg:        @global-background;
+
+@comp-l1-bg:     @gray-lighter;
+@comp-l1-border: @gray-light;
+@comp-l1-line:   @gray-light;
+
+@comp-l2-bg:     @gray-light;
+@comp-l2-border: @gray;
+@comp-l2-line:   @gray;
+
+@comp-l3-bg:     @gray;
+@comp-l3-border: @gray-dark;
+@comp-l3-line:   @gray-dark;

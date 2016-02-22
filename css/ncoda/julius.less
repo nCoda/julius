@@ -120,14 +120,13 @@ h2, h3 {
 /* The top-level components (header and everything else) */
 
 .am-topbar-inverse {
-    background-color: @gray-darker;
-    border-color: @global-primary;
-    border-width: 0 0 3px;
-    color: @gray-light;
+    background-color: @comp-l3-bg;
+    border-width: 0;
+    color: @base-text-color;
 }
 
 .am-topbar-inverse .am-topbar-nav > li > a:hover, .am-topbar-inverse .am-topbar-nav > li > a:focus {
-    background-color: darken(@gray-darker, 5%);
+    background-color: darken(@comp-l3-bg, 5%);
 }
 
 // this is for the triangle under the Topbar button
@@ -213,7 +212,7 @@ nav li a {
 
 .nc-dialogue-box {
     background: @white;
-    color: @gray-darkest;
+    color: @gray-darker;
     display: block;
     width: 80%;
     margin: 10% auto 0 auto;
