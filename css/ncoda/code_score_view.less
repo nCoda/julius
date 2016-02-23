@@ -30,7 +30,7 @@
     position: relative;
     display: block;
     height:100%;
-    background: @white;
+    background: @view-bg;
 }
 
 
@@ -56,20 +56,16 @@
 /* Things for SplitPane and Resizer elements (from react-split-pane) */
 
 .Resizer {
-    background: #000;
+    background: @black;
     opacity: .2;
     z-index: 1;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -moz-background-clip: padding;
     -webkit-background-clip: padding;
-    background-clip: padding-box;
-
-    &:hover {
-        -webkit-transition: all 2s ease;
-        transition: all 2s ease;
-    }
+       -moz-background-clip: padding;
+            background-clip: padding-box;
+    -webkit-transition: border .5s ease-in-out;
+       -moz-transition: border .5s ease-in-out;
+         -o-transition: border .5s ease-in-out;
+            transition: border .5s ease-in-out;
 
     &.horizontal {
         height: 11px;
@@ -100,33 +96,35 @@
 }
 
 /* ********************************************************************************************* */
-/* For all panels */
+/* For all panels in the CodeScoreView */
 
-.panel-container {
-    background-color: @gray-darker;
-    color: @gray-light;
-    position: absolute; //needed to fill flexbox parent
-    width: 100%;
-    height: 100%;
+#nc-csv-frame {
+    .panel-container {
+        background-color: @comp-l1-bg;
+        color: @base-text-color;
+        position: absolute; //needed to fill flexbox parent
+        width: 100%;
+        height: 100%;
 
-    .panel-head {
-        // name of panel
-        display: block;
-        background-color: transparent;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 99;
+        .panel-head {
+            // name of panel
+            display: block;
+            background-color: @comp-l1-bg;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 99;
 
-        h1 {
-            display: inline-block;
-            margin: 0;
-            padding: .5rem;
-            color: @gray-light;
-            font-size: 1.5rem;
+            h2 {
+                display: inline-block;
+                margin: 0;
+                padding: .5rem;
+                font-size: 1.5rem;
+            }
         }
     }
 }
+
 
 /* ********************************************************************************************* */
 /* Things for the WorkTable (middle) */
@@ -137,28 +135,19 @@
 
 /* TextEditor (middle-left) */
 .ncoda-text-editor {
-
-    .panel-head {
-    }
-
     .ncoda-text-editor-controls {
         // buttons ("Run as Python" and "Submit as Lilypond")
-        color: @gray-light;
+        background: @comp-l1-bg;
         position: absolute;
         bottom: 0;
         right: 0;
         z-index: 99;
-
-        button:hover {
-            opacity: 1;
-        }
     }
 
     .CodeMirror {
         position: absolute; //needed to fill flexbox parent
         width: 100%;
         height: 100%;
-        font-family: @font-family-sans-serif;
         font-size: smaller;
         overflow: hidden;
     }
@@ -166,22 +155,19 @@
 
 /* Verovio (middle-right) */
 .ncoda-verovio {
-}
-
-.ncoda-verovio svg {
-    position: absolute;
-    width: 200%;
-    height: 200%;
-}
-
-.ncoda-verovio .verovio-waiting {
-    height: 100%;
-    color: @gray-dark;
-}
-
-.verovio-waiting i {
-    color: @global-primary;
-    filter: drop-shadow(0px 0px 5px @global-primary);
+    svg {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+    }
+    .verovio-waiting {
+        height: 100%;
+        color: @base-text-color;
+        i {
+            color: @global-primary;
+            filter: drop-shadow(0px 0px 5px @global-primary);
+        }
+    }
 }
 
 /* ********************************************************************************************* */
@@ -192,15 +178,9 @@
     position: absolute; //needed to fill flexbox parent
     width: 100%;
     height: 100%;
-    padding-bottom: 3rem; // accommodate panel-head while also allowing for height: 100%
-
     pre {
         width: 100%;
         height: 100%;
-        background: transparent;
-        color: @gray-light;
-        padding: 1rem; // 4rem needed to accommodate panel-head while also allowing for height: 100%
         margin: 0;
-        border: none;
     }
 }
