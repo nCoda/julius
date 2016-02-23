@@ -66,12 +66,14 @@ const MainScreenQuote = React.createClass({
 
 
 const Colophon = React.createClass({
+    // NOTE: the logo image doesn't help comprehension at all; an empty @alt attribute tells screenreaders
+    // NOTE: there should only be one <h2>, which is in the title bar; therefore this is an <h2>
     render() {
         return (
             <div id="ncoda-colophon">
-                <img src="img/nCoda-logo.svg" alt="nCoda" />
+                <img src="img/nCoda-logo.svg" alt=""/>
                 <div>
-                    <h1>{`About nCoda`}</h1>
+                    <h2>{`About nCoda`}</h2>
                     <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
                     <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
                     <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
