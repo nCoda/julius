@@ -110,34 +110,23 @@ body {
 // =============================================================================
 // Buttons
 // =============================================================================
-// For nCoda, we'll use "outline buttons" to reduce the visual shock of a colour.
 
 @btn-default-color:              @base-text-color;
-@btn-default-bg:                 @clear;
-@btn-default-border:             @base-text-color;
+@btn-default-bg:                 @comp-l1-bg;
+@btn-default-border:             @comp-l1-border;
 
-@btn-primary-color:              #fff;
-@btn-primary-bg:                 @clear;
-@btn-primary-border:             @global-primary;
+@btn-primary-color:              @white;
+@btn-secondary-color:            @white;
+@btn-success-color:              @white;
+@btn-warning-color:              @white;
+@btn-danger-color:               @white;
 
-@btn-secondary-color:            #fff;
-@btn-secondary-bg:               @clear;
-@btn-secondary-border:           @global-secondary;
-
-@btn-success-color:              #fff;
-@btn-success-bg:                 @clear;
-@btn-success-border:             @global-success;
-
-@btn-warning-color:              #fff;
-@btn-warning-bg:                 @clear;
-@btn-warning-border:             @global-warning;
-
-@btn-danger-color:               #fff;
-@btn-danger-bg:                  @clear;
-@btn-danger-border:              @global-danger;
-
-.am-btn {
+.am-btn, .am-btn-link {
     border-radius: 0.2rem;
+    cursor: default;
+}
+a {
+    cursor: default;
 }
 
 
