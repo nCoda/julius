@@ -54,7 +54,7 @@ const MainScreenQuote = React.createClass({
     },
     render() {
         return (
-            <blockquote cite={this.state.cite}>
+            <blockquote cite={this.state.cite} className="nc-quote">
                 <i className="fa fa-quote-left"/>
                 <p>{this.state.quote}</p>
                 <i className="fa fa-quote-right"/>
@@ -99,12 +99,12 @@ const GlobalHeader = React.createClass({
     render() {
         const brand = (
             <h1 className="ncoda-logo">
-                <Link to="/"><img src="img/apple-touch-icon-57x57.png" height="40px" width="40px"/></Link>
+                <a><img src="img/apple-touch-icon-57x57.png" height="40px" width="40px"/></a>
             </h1>
         );
 
         return (
-            <Topbar brand={brand} toggleNavKey="nav" inverse fixedTop>
+            <Topbar brand={brand} toggleNavKey="nav" fixedTop>
                 <CollapsibleNav eventKey="nav">
                     <Nav topbar>
                         <NavItem><Link to="/">{`Home`}</Link></NavItem>

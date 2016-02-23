@@ -63,9 +63,39 @@
 @global-info:      #ADD8E6;  // "Light Blue" per Wikipedia
 @one-primary:      @global-primary;
 
+
+// =============================================================================
+// Base
+// =============================================================================
+
 @global-background:     @white;
 @global-border:         @gray-lighter
 @global-contrast-color: @white;
+
+@base-text-color:          @gray-dark;
+@base-heading-font-weight: 400;
+
+@base-blockquote-small-color: @gray;
+blockquote {
+    font-family: inherit;
+    small {
+        font-family: inherit;
+    }
+}
+
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    overflow: hidden;
+    margin: 0;
+    height: 100%;
+    font-family: @font-family-sans-serif;
+    font-weight: 300;
+    cursor: default;
+}
 
 
 // =============================================================================
@@ -128,3 +158,47 @@
 @comp-l3-bg:     @gray;
 @comp-l3-border: @gray-dark;
 @comp-l3-line:   @gray-dark;
+
+
+// =============================================================================
+// Topbar
+// =============================================================================
+// Set the nCoda topbar to dark by default, so we don't have to bother with the "inverse" classes.
+
+@topbar-color:  @global-contrast-color;
+@topbar-bg:     @gray-dark;
+@topbar-border: @gray-dark;
+
+// these two have the effect you expect in the topbar
+@topbar-link-color:                @topbar-color;
+@topbar-link-active-color:         @global-primary;
+// these (from amazeUI's variables.less) are unused in the amazeUI components
+// @topbar-link-hover-color
+// @topbar-link-active-bg
+// @topbar-link-disabled-color
+// @topbar-link-disabled-bg
+
+// this does what you think @topbar-link-hover-color should do
+@nav-link-hover-bg:                darken(@topbar-bg, 5%);
+
+// brand label
+@topbar-brand-hover-color:         @topbar-color;
+// unused in amazeUI
+// @topbar-brand-color
+// @topbar-brand-hover-bg
+
+// we must set the :hover colours manually
+.am-topbar li > a:hover {
+    color: @global-primary;
+    &:after {
+        border-bottom-color: @global-primary;
+    }
+}
+
+
+// =============================================================================
+// Links
+// =============================================================================
+
+@link-color:       @base-text-color;
+@link-hover-color: @global-primary;
