@@ -24,18 +24,6 @@
 
 
 /*************************************************************************************************/
-/* StructureView colour definitions */
-@strv-widget-background: @comp-l1-bg;
-@strv-widget-border: @comp-l1-border;
-@strv-widget-shadow: @black;
-@strv-inner-line: @comp-l1-line;
-@strv-text: @base-text-color;
-// highlighting colours
-@strv-primary: @global-primary;
-@strv-secondary: @global-primary;
-
-
-/*************************************************************************************************/
 /* Shared stuff */
 
 #nc-strv-frame {
@@ -69,8 +57,8 @@
 /* active section <article> */
 .nc-active-sections {
     z-index: 1;
-    background: @strv-widget-background;
-    border: 1px solid @strv-widget-border;
+    background: @comp-l1-bg;
+    border: 1px solid @comp-l1-border;
 }
 .nc-active-sections > header {
     text-align: center;
@@ -99,22 +87,32 @@
     transition: border-bottom 0.25s;
     margin: 0px 0.3rem;
     padding: 0.5rem;
+
+    header {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        span {
+            flex: 1 0;
+        }
+    }
+
+    .ncoda-section-colour {
+        flex: 6 1;
+        background: inherit;  // NB: this is set programmatically
+    }
+
+    footer {
+        margin: 0.4rem;
+    }
+    time {
+        font-size: smaller;
+    }
+    &:hover {
+         border-bottom-color: @global-primary;
+    }
 }
 
-.nc-strv-section header {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-}
-.nc-strv-section header span { flex: 1 0; }
-.ncoda-section-colour {
-    flex: 6 1;
-    background: fade(@global-primary, 80%);
-}
-
-.nc-strv-section footer { margin: 0.4rem; }
-.nc-strv-section time { font-size: smaller; }
-.nc-strv-section:hover { border-bottom-color: @strv-primary; }
 .nc-strv-section-img { flex: 1; width: 10rem; display: block; overflow: hidden; }
 .nc-strv-section img { width: 100%; }
 .nc-strv-section .am-icon-primary {
@@ -128,16 +126,16 @@
     display: none;
     position: absolute;
     z-index: 251;  // just above the corner menus
-}
-#ncoda-section-menu a {
-    cursor: default;
+    a {
+        cursor: default;
+    }
 }
 
 
 /*************************************************************************************************/
 /* StructureView Corner Menus */
 .nc-strv-menu {
-    background: @strv-widget-background;
+    background: @comp-l1-bg;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
@@ -184,24 +182,24 @@
 // Extra classes that set the corners
 // tr: top right; bl: bottom left; etc.
 .nc-strv-menu-tr {
-    border-left: .1rem solid @strv-widget-border;
-    border-bottom: .1rem solid @strv-widget-border;
+    border-left: .1rem solid @comp-l1-border;
+    border-bottom: .1rem solid @comp-l1-border;
     right: 0;
 }
 .nc-strv-menu-tl {
-    border-right: .1rem solid @strv-widget-border;
-    border-bottom: .1rem solid @strv-widget-border;
+    border-right: .1rem solid @comp-l1-border;
+    border-bottom: .1rem solid @comp-l1-border;
     left: 0;
 }
 .nc-strv-menu-br {
-    border-left: .1rem solid @strv-widget-border;
-    border-top: .1rem solid @strv-widget-border;
+    border-left: .1rem solid @comp-l1-border;
+    border-top: .1rem solid @comp-l1-border;
     bottom: 0;
     right: 0;
 }
 .nc-strv-menu-bl {
-    border-right: .1rem solid @strv-widget-border;
-    border-top: .1rem solid @strv-widget-border;
+    border-right: .1rem solid @comp-l1-border;
+    border-top: .1rem solid @comp-l1-border;
     bottom: 0;
     left: 0;
 }
@@ -220,7 +218,7 @@
     margin: 0;
     margin-top: 0.75rem;
     padding: 0.25rem 0.5rem;
-    background: @comp-l2-bg;  // TODO: this should be set programmatically
+    background: @comp-l1-bg;  // TODO: this should be set programmatically
 }
 #ncoda-expanded-section-svg img {
     width: 100%;
@@ -230,7 +228,7 @@
 
 //////////////////////////////////////////////////////////
 // Collaborators
-#nc-strv-collaboration address { border-bottom: 1px solid @strv-text; }
+#nc-strv-collaboration address { border-bottom: 1px solid @base-text-color; }
 #nc-strv-collaboration > ul > li { padding-top: 0.5rem; }
 #nc-strv-collaboration > ul > li > ul { padding-left: 0.6rem; }
 #nc-strv-collaboration > ul > li:hover { background: unset; }
