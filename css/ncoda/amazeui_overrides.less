@@ -203,3 +203,22 @@ a {
 @pre-bg:     @code-bg;
 @pre-color:  @code-color;
 @pre-border: 1px solid @pre-bg;
+
+
+// =============================================================================
+// Off-screen Menu
+// =============================================================================
+
+.am-menu-offcanvas1 .am-menu-nav {
+    border-bottom: 1px solid rgba(0,0,0,.3);
+    box-shadow: 0 1px 0 rgba(255,255,255,.05);
+
+    > li > a {
+        border-top: 1px solid rgba(0,0,0,.3);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+        color: @global-contrast-color;
+        &:focus, &:hover {
+            color: @global-primary;
+        }
+    }
+}

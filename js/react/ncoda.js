@@ -23,7 +23,7 @@
 // ------------------------------------------------------------------------------------------------
 
 
-import {Button, CollapsibleNav, Dropdown, Nav, NavItem, Topbar} from 'amazeui-react';
+import {Button, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
 import React from 'react';
 import {Link} from 'react-router';
 
@@ -85,6 +85,48 @@ const Colophon = React.createClass({
 });
 
 
+const GlobalMenu = React.createClass({
+    propTypes: {
+        showMenu: React.PropTypes.bool,
+        handleHide: React.PropTypes.func.isRequired,
+    },
+    getDefaultProps() {
+        return {showMenu: false};
+    },
+    render() {
+        let offCanvas = 'am-offcanvas';
+        let offCanvasBar = 'am-offcanvas-bar am-offcanvas-bar-overlay';
+        if (this.props.showMenu) {
+            offCanvas += ' am-active';
+            offCanvasBar += ' am-offcanvas-bar-active';
+        }
+
+        return (
+            <nav data-am-widget="menu" className="am-menu am-menu-offcanvas1" data-am-menu-offcanvas>
+                <div className={offCanvas} onClick={this.props.handleHide}>
+                    <div className={offCanvasBar}>
+                        <Nav className="am-menu-nav">
+                            <NavItem linkComponent={Link} linkProps={{to: "/"}}>
+                                {`nCoda Home`}
+                            </NavItem>
+                            <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
+                                {`About`}
+                            </NavItem>
+                            <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
+                                {`CodeScoreView`}
+                            </NavItem>
+                            <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
+                                {`StructureView`}
+                            </NavItem>
+                        </Nav>
+                    </div>
+                </div>
+            </nav>
+        );
+    },
+});
+
+
 const GlobalHeader = React.createClass({
     // This is the header bar that should always appear at the top of the screen.
     //
@@ -104,16 +146,11 @@ const GlobalHeader = React.createClass({
         );
 
         return (
-            <Topbar brand={brand} toggleNavKey="nav" fixedTop>
-                <CollapsibleNav eventKey="nav">
-                    <Nav topbar>
-                        <NavItem><Link to="/">{`Home`}</Link></NavItem>
-                        <NavItem><Link to="/colophon">{`About`}</Link></NavItem>
-                        <NavItem><Link to="/codescore">{`CodeScoreView`}</Link></NavItem>
-                        <NavItem><Link to="/structure">{`StructureView`}</Link></NavItem>
-                        <NavItem><DeveloperMenu/></NavItem>
-                    </Nav>
-                </CollapsibleNav>
+            <Topbar brand={brand} fixedTop>
+                <Button onClick={this.props.handleShowMenu}>
+                    <Icon icon="bars"/>
+                </Button>
+                <DeveloperMenu/>
             </Topbar>
         );
     },
@@ -254,6 +291,7 @@ const NCoda = React.createClass({
             <div id="ncoda">
                 <GlobalHeader handleShowMenu={this.showOrHideGlobalMenu} handleShowDevelMenu={this.showOrHideDevelMenu}/>
                 <DialogueBox/>
+                <GlobalMenu showMenu={this.state.menuShown} handleHide={this.showOrHideGlobalMenu}/>
                 {this.props.children}
             </div>
         );
