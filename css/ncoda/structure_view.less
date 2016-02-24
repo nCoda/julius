@@ -6,7 +6,7 @@
 // Filename:               css/ncoda/structure_view.less
 // Purpose:                LESS file for StructureView
 //
-// Copyright (C) 2015, 2016 Christopher Antila
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -22,20 +22,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-@import "colours.less";
+@import "variables.less";
+@import "../../node_modules/amazeui/less/mixins.less";
 
 
 /*************************************************************************************************/
 /* StructureView colour definitions */
-@strv-widget-background: darken(@mellow-turquoise, 10%);
+@strv-widget-background: darken(Green, 10%);
 @strv-widget-border: darken(@strv-widget-background, 10%);
-@strv-widget-shadow: @shade-black;
+@strv-widget-shadow: Black;
 @strv-inner-line: darken(@strv-widget-background, 5%);
-@strv-text: @shade-black;
-@strv-menu-background: darken(@mellow-turquoise, 10%);
+@strv-text: Black;
+@strv-menu-background: darken(Green, 10%);
 // highlighting colours
-@strv-primary: @plasma-blue;
-@strv-secondary: @mellow-turquoise;
+@strv-primary: @global-secondary;
+@strv-secondary: @global-secondary;
 
 
 /*************************************************************************************************/
@@ -47,7 +48,7 @@
      */
     height: 100%;
     flex: 1 1 0%;
-    background: @charcoal-gray;
+    background: @gray-darker;
     display: flex;
     flex-flow: column;
     align-items: stretch;
@@ -133,14 +134,14 @@
 
 .nc-strv-section:hover {
     .am-panel-hd {
-        box-shadow: inset 0 0.75rem 0.75rem 0 @mellow-turquoise;
+        box-shadow: inset 0 0.75rem 0.75rem 0 Green;
     }
     .am-panel-default {
-        box-shadow: inset 0 0 0.75rem 0 @mellow-turquoise;
+        box-shadow: inset 0 0 0.75rem 0 Green;
         border-color: darken(@strv-inner-line, 5%);
     }
     .am-panel-footer {
-        box-shadow: inset 0 -0.75rem 0.75rem 0 @mellow-turquoise;
+        box-shadow: inset 0 -0.75rem 0.75rem 0 Green;
     }
 }
 
@@ -191,37 +192,37 @@
 }
 .nc-strv-menu li:hover {
     // We do this with transparency so that nested lists will show as doubly darkened
-    background: fade(@shade-black, 20%);
+    background: fade(Black, 20%);
 }
 
 
 // Extra classes that set the corners
 // tr: top right; bl: bottom left; etc.
 .nc-strv-menu-tr {
-    border-left: .1rem solid #10825b;
-    border-bottom: .1rem solid #10825b;
+    border-left: .1rem solid @black;
+    border-bottom: .1rem solid @black;
     right: 0;
-    box-shadow: 0 0 1rem @strv-widget-shadow;
+    .box-shadow(@black);
 }
 .nc-strv-menu-tl {
-    border-right: .1rem solid #10825b;
-    border-bottom: .1rem solid #10825b;
+    border-right: .1rem solid @black;
+    border-bottom: .1rem solid @black;
     left: 0;
-    box-shadow: 0 0 1rem @strv-widget-shadow;
+    .box-shadow(@black);
 }
 .nc-strv-menu-br {
-    border-left: .1rem solid #10825b;
-    border-top: .1rem solid #10825b;
+    border-left: .1rem solid @black;
+    border-top: .1rem solid @black;
     bottom: 0;
     right: 0;
-    box-shadow: 0 0 1rem @strv-widget-shadow;
+    .box-shadow(@black);
 }
 .nc-strv-menu-bl {
-    border-right: .1rem solid #10825b;
-    border-top: .1rem solid #10825b;
+    border-right: .1rem solid @black;
+    border-top: .1rem solid @black;
     bottom: 0;
     left: 0;
-    box-shadow: 0 0 1rem @strv-widget-shadow;
+    .box-shadow(@black);
 }
 
 
@@ -236,7 +237,7 @@
     margin: 0;
     margin-top: 0.75rem;
     padding: 0.25rem 0.5rem;
-    background: rgba(0, 191, 255, 0.6);  // TODO: this should be set programmatically
+    background: @gray;  // TODO: this should be set programmatically
 }
 #ncoda-expanded-section-svg img {
     width: 100%;

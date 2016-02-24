@@ -6,7 +6,7 @@
 // Filename:               js/react/ncoda.js
 // Purpose:                React components for nCoda in general.
 //
-// Copyright (C) 2015 Christopher Antila
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -36,10 +36,7 @@ const MainScreen = React.createClass({
     render() {
         return (
             <div id="ncoda-loading">
-                <section>
-                    {`Use the `}<i className="fa fa-th"></i>
-                    {` button in the top-left corner to open the menu.`}
-                </section>
+                <p>{`Use the menus above to navigate the program.`}</p>
                 <MainScreenQuote/>
             </div>
         );
@@ -72,9 +69,9 @@ const Colophon = React.createClass({
     render() {
         return (
             <div id="ncoda-colophon">
-                <img src="img/nCoda-temporary_logo_square-180x180.png" alt="nCoda logo"></img>
+                <img src="img/nCoda-logo.svg" alt="nCoda" />
                 <div>
-                    <h2>{`About nCoda`}</h2>
+                    <h1>{`About nCoda`}</h1>
                     <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
                     <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
                     <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
@@ -100,7 +97,7 @@ const GlobalHeader = React.createClass({
     render() {
         const brand = (
             <h1 className="ncoda-logo">
-                <span className="ncoda-logo-n">{`n`}</span>{`Coda`}
+                <Link to="/"><img src="img/nCoda-logo.svg" /></Link>
             </h1>
         );
 
