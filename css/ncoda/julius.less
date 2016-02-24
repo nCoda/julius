@@ -21,33 +21,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
-@import "variables.less";
-@import "buttons.less";
+
 
 /* ********************************************************************************************* */
 /* Boring things */
-
-html {
-    height: 100%;
-    overflow: hidden;
-}
-
-body {
-    overflow: hidden;
-    margin: 0;
-    height: 100%;
-
-    font-family: @font-family-sans-serif;
-    font-weight: 300;
-
-    cursor: default;
-}
-
-* {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
 
 #julius-goes-here {
     height: 100%;
@@ -56,6 +33,7 @@ body {
 #ncoda {
     height: 100%;
 }
+
 
 /* ********************************************************************************************* */
 /* The loading screen, shown before PyPy.js and Verovio are compiled. */
@@ -69,41 +47,15 @@ body {
     align-items: center;
 }
 
-#ncoda-loading .fa-th {
-    color: @global-primary;
+blockquote.nc-quote {
+    i {
+        color: @base-blockquote-border;
+    }
+    p {
+        max-width: 45rem;
+    }
 }
 
-blockquote {
-    font-family: inherit;
-}
-
-blockquote {
-    border-left-color: @global-primary;
-}
-
-blockquote i {
-    color: @global-primary;
-}
-
-blockquote p {
-    max-width: 45rem;
-}
-
-blockquote small {
-    color: @gray-darker;
-    font-family: inherit;
-}
-
-/* ********************************************************************************************* */
-/* Headers */
-h1, h2, h3, h4, h5, h6 {
-    font-weight: normal;
-}
-
-h2, h3 {
-    // These are the title and subtitle of a group of components (like of a GroupBox-alike)
-    padding: 0.3em 0.7em;
-}
 
 /* ********************************************************************************************* */
 /* The colophon, "about nCoda." */
@@ -117,86 +69,6 @@ h2, h3 {
     align-items: center;
 }
 
-/* ********************************************************************************************* */
-/* The top-level components (header and everything else) */
-
-.am-topbar-inverse {
-    background-color: @gray-darker;
-    border-color: @global-primary;
-    border-width: 0 0 3px;
-    color: @gray-light;
-}
-
-.am-topbar-inverse .am-topbar-nav > li > a:hover, .am-topbar-inverse .am-topbar-nav > li > a:focus {
-    background-color: darken(@gray-darker, 5%);
-}
-
-// this is for the triangle under the Topbar button
-.am-topbar-inverse .am-topbar-nav > li > a:hover:after, .am-topbar-inverse .am-topbar-nav > li > a:focus:after {
-    border-bottom-color: @global-primary;
-}
-
-.ncoda-logo {
-    color: @global-primary;
-    font-weight: normal;
-    padding-left: 1em;
-
-    img {
-        height: 100%;
-    }
-}
-
-.ncoda-logo img {
-}
-
-#ncoda-global-header button {
-    margin: 0 0 0 1em;
-    padding: 0.5em 0.5em 0.5em 0.5em;
-    background: inherit;
-    border: none;
-    color: @global-primary;
-}
-
-#ncoda-global-header button:hover {
-    color: @global-secondary;
-}
-
-#ncoda-global-header h1 {
-    // display: inline;
-    margin: 0;
-}
-
-/*************************/
-/* nCoda Menus Generally */
-// TODO: abandon these in favour of amazeui menus
-nav {
-    background: @gray-darker;
-    color: @gray-darker;
-    margin: 0;
-    padding: 0;
-    min-width: 10em;
-}
-
-nav ul {
-    padding: 0;
-    margin: 0;
-}
-
-nav li {
-    display: block;
-    padding: 0.25em 1.25em;
-    border-left: 3px solid @gray-darker;
-    transition: border-left 0.25s ease-in-out;
-}
-
-nav li:hover {
-    border-left: 3px solid @global-secondary;
-}
-
-nav li a {
-    color: inherit;
-    text-decoration: inherit;
-}
 
 /* ********************************************************************************************* */
 /* Dialogue Boxes and Related */
@@ -214,7 +86,7 @@ nav li a {
 
 .nc-dialogue-box {
     background: @white;
-    color: @gray-darkest;
+    color: @gray-darker;
     display: block;
     width: 80%;
     margin: 10% auto 0 auto;
@@ -292,10 +164,3 @@ nav li a {
 .nc-dialogue-question .nc-dialogue-type {
     border-bottom-color: @global-primary;
 }
-
-/* ********************************************************************************************* */
-/* Import LESS files for the other components. */
-
-@import "code_score_view.less";
-@import "structure_view.less";
-@import "codemirror-ncoda.less";

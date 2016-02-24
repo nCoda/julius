@@ -185,7 +185,7 @@ const WorkTable = React.createClass({
             <SplitPane split="vertical" ref="workTable" className="ncoda-work-table" minSize="20" defaultSize="40%">
                 <div className="ncoda-text-editor panel-container">
                     <div className="panel-head">
-                        <h1>{`Text Editor`}</h1>
+                        <h2>{`Text Editor`}</h2>
                     </div>
                     <TextEditor
                         ref="textEditor"
@@ -261,9 +261,9 @@ const TerminalOutput = React.createClass({
     render() {
         return (
             <SplitPane split="vertical" id="ncoda-terminal-output" className="ncoda-terminal-output">
-                <div className="ncoda-terminal-in panel-container">
+                <div className="panel-container">
                     <div className="panel-head">
-                        <h1>{`Your Input`}</h1>
+                        <h2>{`Your Input`}</h2>
                     </div>
                     <div className="terminal-in-root">
                         <Scrollbars className="custom-scrollbars">
@@ -271,9 +271,9 @@ const TerminalOutput = React.createClass({
                         </Scrollbars>
                     </div>
                 </div>
-                <div className="ncoda-terminal-out panel-container">
+                <div className="panel-container">
                     <div className="panel-head">
-                        <h1>{`Python Output`}</h1>
+                        <h2>{`Python Output`}</h2>
                     </div>
                     <div className="terminal-out-root">
                         <Scrollbars className="custom-scrollbars">

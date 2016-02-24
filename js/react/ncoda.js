@@ -23,7 +23,7 @@
 // ------------------------------------------------------------------------------------------------
 
 
-import {Button, CollapsibleNav, Dropdown, Nav, NavItem, Topbar} from 'amazeui-react';
+import {Button, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
 import React from 'react';
 import {Link} from 'react-router';
 
@@ -54,7 +54,7 @@ const MainScreenQuote = React.createClass({
     },
     render() {
         return (
-            <blockquote cite={this.state.cite}>
+            <blockquote cite={this.state.cite} className="nc-quote">
                 <i className="fa fa-quote-left"/>
                 <p>{this.state.quote}</p>
                 <i className="fa fa-quote-right"/>
@@ -66,18 +66,62 @@ const MainScreenQuote = React.createClass({
 
 
 const Colophon = React.createClass({
+    // NOTE: the logo image doesn't help comprehension at all; an empty @alt attribute tells screenreaders
+    // NOTE: there should only be one <h2>, which is in the title bar; therefore this is an <h2>
     render() {
         return (
             <div id="ncoda-colophon">
-                <img src="img/nCoda-logo.svg" alt="nCoda" />
+                <img src="img/nCoda-logo.svg" alt=""/>
                 <div>
-                    <h1>{`About nCoda`}</h1>
+                    <h2>{`About nCoda`}</h2>
                     <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
                     <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
                     <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
                     <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
                 </div>
             </div>
+        );
+    },
+});
+
+
+const GlobalMenu = React.createClass({
+    propTypes: {
+        showMenu: React.PropTypes.bool,
+        handleHide: React.PropTypes.func.isRequired,
+    },
+    getDefaultProps() {
+        return {showMenu: false};
+    },
+    render() {
+        let offCanvas = 'am-offcanvas';
+        let offCanvasBar = 'am-offcanvas-bar am-offcanvas-bar-overlay';
+        if (this.props.showMenu) {
+            offCanvas += ' am-active';
+            offCanvasBar += ' am-offcanvas-bar-active';
+        }
+
+        return (
+            <nav data-am-widget="menu" className="am-menu am-menu-offcanvas1" data-am-menu-offcanvas>
+                <div className={offCanvas} onClick={this.props.handleHide}>
+                    <div className={offCanvasBar}>
+                        <Nav className="am-menu-nav">
+                            <NavItem linkComponent={Link} linkProps={{to: "/"}}>
+                                {`nCoda Home`}
+                            </NavItem>
+                            <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
+                                {`About`}
+                            </NavItem>
+                            <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
+                                {`CodeScoreView`}
+                            </NavItem>
+                            <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
+                                {`StructureView`}
+                            </NavItem>
+                        </Nav>
+                    </div>
+                </div>
+            </nav>
         );
     },
 });
@@ -97,21 +141,16 @@ const GlobalHeader = React.createClass({
     render() {
         const brand = (
             <h1 className="ncoda-logo">
-                <Link to="/"><img src="img/nCoda-logo.svg" /></Link>
+                <a><img src="img/apple-touch-icon-57x57.png" height="40px" width="40px"/></a>
             </h1>
         );
 
         return (
-            <Topbar brand={brand} toggleNavKey="nav" inverse fixedTop>
-                <CollapsibleNav eventKey="nav">
-                    <Nav topbar>
-                        <NavItem><Link to="/">{`Home`}</Link></NavItem>
-                        <NavItem><Link to="/colophon">{`About`}</Link></NavItem>
-                        <NavItem><Link to="/codescore">{`CodeScoreView`}</Link></NavItem>
-                        <NavItem><Link to="/structure">{`StructureView`}</Link></NavItem>
-                        <NavItem><DeveloperMenu/></NavItem>
-                    </Nav>
-                </CollapsibleNav>
+            <Topbar brand={brand} fixedTop>
+                <Button onClick={this.props.handleShowMenu}>
+                    <Icon icon="bars"/>
+                </Button>
+                <DeveloperMenu/>
             </Topbar>
         );
     },
@@ -252,6 +291,7 @@ const NCoda = React.createClass({
             <div id="ncoda">
                 <GlobalHeader handleShowMenu={this.showOrHideGlobalMenu} handleShowDevelMenu={this.showOrHideDevelMenu}/>
                 <DialogueBox/>
+                <GlobalMenu showMenu={this.state.menuShown} handleHide={this.showOrHideGlobalMenu}/>
                 {this.props.children}
             </div>
         );

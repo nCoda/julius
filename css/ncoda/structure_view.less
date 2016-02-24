@@ -22,22 +22,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-@import "variables.less";
-@import "../../node_modules/amazeui/less/mixins.less";
-
-
-/*************************************************************************************************/
-/* StructureView colour definitions */
-@strv-widget-background: darken(Green, 10%);
-@strv-widget-border: darken(@strv-widget-background, 10%);
-@strv-widget-shadow: Black;
-@strv-inner-line: darken(@strv-widget-background, 5%);
-@strv-text: Black;
-@strv-menu-background: darken(Green, 10%);
-// highlighting colours
-@strv-primary: @global-secondary;
-@strv-secondary: @global-secondary;
-
 
 /*************************************************************************************************/
 /* Shared stuff */
@@ -48,16 +32,16 @@
      */
     height: 100%;
     flex: 1 1 0%;
-    background: @gray-darker;
+    background: @view-bg;
     display: flex;
     flex-flow: column;
     align-items: stretch;
 
     ::-webkit-scrollbar {
-        background: @strv-widget-border;
+        background: @comp-l1-border;
         width: 0.75rem;
     }
-    ::-webkit-scrollbar-thumb { background: darken(@strv-widget-border, 7%); }
+    ::-webkit-scrollbar-thumb { background: darken(@comp-l1-border, 7%); }
 }
 
 #nc-strv-corner-menus {
@@ -79,15 +63,8 @@
 /* active section <article> */
 .nc-active-sections {
     z-index: 1;
-    background: @strv-widget-background;
-    border: 0.1rem solid @strv-widget-border;
-    box-shadow: 0 0.5rem 1rem @strv-widget-shadow;
-    border-radius: 0.5rem;
-
-    h2, h3 {
-        margin: unset;
-        padding: unset;
-    }
+    background: @comp-l1-bg;
+    border: 1px solid @comp-l1-border;
 }
 .nc-active-sections > header {
     text-align: center;
@@ -112,18 +89,18 @@
         margin: unset;
     }
     .am-panel-default {
-        border-color: @strv-inner-line;
+        border-color: @comp-l1-line;
         transition: box-shadow @nc-strv-section-shadow-transition;
         .am-panel-hd {
-            color: @strv-text;
-            background-color: darken(@strv-widget-background, 5%);
+            color: @base-text-color;
+            background-color: darken(@comp-l1-bg, 5%);
             transition: opacity 1s;
-            border-color: @strv-inner-line;
+            border-color: @comp-l1-line;
             transition: box-shadow @nc-strv-section-shadow-transition;
         }
         .am-panel-footer {
-            border-color: @strv-inner-line;
-            background-color: darken(@strv-widget-background, 5%);
+            border-color: @comp-l1-line;
+            background-color: darken(@comp-l1-bg, 5%);
             address {
                 margin: unset;
             }
@@ -134,14 +111,14 @@
 
 .nc-strv-section:hover {
     .am-panel-hd {
-        box-shadow: inset 0 0.75rem 0.75rem 0 Green;
+        box-shadow: inset 0 0.25rem 0.75rem 0 @global-primary;
     }
     .am-panel-default {
-        box-shadow: inset 0 0 0.75rem 0 Green;
-        border-color: darken(@strv-inner-line, 5%);
+        box-shadow: inset 0 0 0.75rem 0 @global-primary;
+        border-color: darken(@comp-l1-line, 5%);
     }
     .am-panel-footer {
-        box-shadow: inset 0 -0.75rem 0.75rem 0 Green;
+        box-shadow: inset 0 -0.25rem 0.75rem 0 @global-primary;
     }
 }
 
@@ -150,16 +127,16 @@
     display: none;
     position: absolute;
     z-index: 251;  // just above the corner menus
-}
-#ncoda-section-menu a {
-    cursor: default;
+    a {
+        cursor: default;
+    }
 }
 
 
 /*************************************************************************************************/
 /* StructureView Corner Menus */
 .nc-strv-menu {
-    background: @strv-menu-background;
+    background: @comp-l1-bg;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
@@ -167,7 +144,7 @@
     max-width: 80%;
     max-height: 80%;
     padding: 1rem;
-    color: @strv-text;
+    color: @base-text-color;
 }
 .nc-strv-menu .header {
     cursor: default;
@@ -199,30 +176,26 @@
 // Extra classes that set the corners
 // tr: top right; bl: bottom left; etc.
 .nc-strv-menu-tr {
-    border-left: .1rem solid @black;
-    border-bottom: .1rem solid @black;
+    border-left: .1rem solid @comp-l1-border;
+    border-bottom: .1rem solid @comp-l1-border;
     right: 0;
-    .box-shadow(@black);
 }
 .nc-strv-menu-tl {
-    border-right: .1rem solid @black;
-    border-bottom: .1rem solid @black;
+    border-right: .1rem solid @comp-l1-border;
+    border-bottom: .1rem solid @comp-l1-border;
     left: 0;
-    .box-shadow(@black);
 }
 .nc-strv-menu-br {
-    border-left: .1rem solid @black;
-    border-top: .1rem solid @black;
+    border-left: .1rem solid @comp-l1-border;
+    border-top: .1rem solid @comp-l1-border;
     bottom: 0;
     right: 0;
-    .box-shadow(@black);
 }
 .nc-strv-menu-bl {
-    border-right: .1rem solid @black;
-    border-top: .1rem solid @black;
+    border-right: .1rem solid @comp-l1-border;
+    border-top: .1rem solid @comp-l1-border;
     bottom: 0;
     left: 0;
-    .box-shadow(@black);
 }
 
 
@@ -237,7 +210,7 @@
     margin: 0;
     margin-top: 0.75rem;
     padding: 0.25rem 0.5rem;
-    background: @gray;  // TODO: this should be set programmatically
+    background: @comp-l1-bg;  // TODO: this should be set programmatically
 }
 #ncoda-expanded-section-svg img {
     width: 100%;
@@ -250,12 +223,12 @@
 #nc-strv-collaboration .am-comments-list { overflow-y: scroll; }
 #nc-strv-collaboration {
     li:hover { background: unset; }
-    .am-comment-main:before { border-right-color: @strv-widget-border; }
-    .am-comment-main:after { border-right-color: @strv-widget-border; }
-    .am-comment-main { border-color: @strv-widget-border; }
+    .am-comment-main:before { border-right-color: @comp-l1-border; }
+    .am-comment-main:after { border-right-color: @comp-l1-border; }
+    .am-comment-main { border-color: @comp-l1-border; }
     .am-comment-hd {
-        background: @strv-widget-border;
-        border-color: @strv-widget-border;
+        background: @comp-l1-border;
+        border-color: @comp-l1-border;
     }
     .am-comment-author { color: inherit; }
     .am-comment-meta { color: inherit; }

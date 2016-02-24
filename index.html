@@ -6,12 +6,14 @@
     <title>nCoda</title>
     <!-- TODO: figure out how to do this without digging into "node_modules" -->
     <link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css" />
+    <!-- TODO: pretty sure we don't need FontAwesome any more because amazeUI does it for us -->
     <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <!-- TODO: incorporate the "fira" stylesheet in "main.css" -->
     <link rel="stylesheet" href="css/fira.css" />
-    <link rel="stylesheet" href="node_modules/amazeui/dist/css/amazeui.css" />
-    <link rel="stylesheet" href="css/ncoda/julius.css" />
+    <link rel="stylesheet" href="css/ncoda/main.css" />
 
     <!-- favicons -->
+    <!-- TODO: non-proprietary favicons -->
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="57x57" href="img/apple-touch-icon-57x57.png" />
@@ -27,11 +29,13 @@
 <body class="am-with-topbar-fixed-top">
     <div id="julius-goes-here"></div>
 
+    <!-- TODO: a better message in the <noscript> element -->
     <noscript>Unfortunately, nCoda uses JavaScript extensively, and cannot run without it.</noscript>
 
     <!-- NOTE: we're not loading this with Browserify because, if we did, we couldn't do it
          asynchronously, so *everything* would have to wait while the browser compiles Verovio.
     -->
+    <!-- TODO: load Verovio in a ServiceWorker -->
     <script async src="js/verovio-toolkit-0.9.9.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/ncoda-compiled.js" type="text/javascript" charset="utf-8"></script>
 </body>
