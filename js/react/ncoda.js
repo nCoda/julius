@@ -215,7 +215,7 @@ const DeveloperMenu = React.createClass({
     },
     render() {
         return (
-            <Dropdown title={<i className="fa fa-wrench fa-2x"/>} btnStyle="link">
+            <Dropdown title={<Icon icon="wrench" amSize="md"/>} btnStyle="link">
                 <Dropdown.Item header>{`Fujian WebSocket Connection`}</Dropdown.Item>
                 <Dropdown.Item closeOnClick>
                     <Button id="devel-0" amStyle="link" onClick={this.handleClick}>
