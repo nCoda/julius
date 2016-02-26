@@ -116,7 +116,7 @@ def the_script():
         # first compile the files initially
         for each_file in _COMPILE_WITH_LESSC:
             try:
-                kummand = [_PATH_TO_LESSC, '--clean-css', each_file[1], each_file[2]]
+                kummand = [_PATH_TO_LESSC, '--clean-css', '--source-map', each_file[1], each_file[2]]
                 subprocess.check_output(kummand)
             except subprocess.CalledProcessError as cperr:
                 print('Encountered the following error while starting lessc:\n{}'.format(cperr))
@@ -134,7 +134,7 @@ def the_script():
                 kummand.append('-p')
                 kummand.append('{}'.format(each_file[0]))
                 kummand.append('-t')
-                kummand.append("--clean-css {0} {1}".format(each_file[1], each_file[2]))
+                kummand.append("--clean-css --source-map {0} {1}".format(each_file[1], each_file[2]))
             try:
                 subprocesses.append(subprocess.Popen(kummand))
             except subprocess.CalledProcessError as cperr:
