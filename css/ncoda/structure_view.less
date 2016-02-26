@@ -84,52 +84,40 @@
 /* <section> corresponding to an MEI <section> */
 @nc-strv-section-shadow-transition: 0.5s;
 .nc-strv-section {
-    .am-panel {
-        background: unset;
-        margin: unset;
+    .am-dropdown-toggle {
+        border: none;
+        padding: 0;
+        .am-icon-caret-down, .am-icon-caret-up {
+            display: none;
+        }
     }
-    .am-panel-default {
-        border-color: @comp-l1-line;
-        transition: box-shadow @nc-strv-section-shadow-transition;
+    .am-panel {
+        margin-bottom: 0;
         .am-panel-hd {
-            color: @base-text-color;
-            background-color: darken(@comp-l1-bg, 5%);
-            transition: opacity 1s;
-            border-color: @comp-l1-line;
-            transition: box-shadow @nc-strv-section-shadow-transition;
+            border-bottom: none;
+            h3 {
+                margin: none;
+            }
         }
         .am-panel-footer {
-            border-color: @comp-l1-line;
-            background-color: darken(@comp-l1-bg, 5%);
+            border-top: none;
             address {
                 margin: unset;
             }
-            transition: box-shadow @nc-strv-section-shadow-transition;
+        }
+        .nc-strv-section-img { flex: 1; width: 10rem; display: block; overflow: hidden; }
+        img { width: 100%; }
+        .am-icon-primary {
+            background-color: @comp-l2-bg;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            transition: background-color .5s;
         }
     }
 }
 
-.nc-strv-section:hover {
-    .am-panel-hd {
-        box-shadow: inset 0 0.25rem 0.75rem 0 @global-primary;
-    }
-    .am-panel-default {
-        box-shadow: inset 0 0 0.75rem 0 @global-primary;
-        border-color: darken(@comp-l1-line, 5%);
-    }
-    .am-panel-footer {
-        box-shadow: inset 0 -0.25rem 0.75rem 0 @global-primary;
-    }
-}
-
-/* context menu when clicking on a <section>-corresponding <article> */
-#ncoda-section-menu {
-    display: none;
-    position: absolute;
-    z-index: 251;  // just above the corner menus
-    a {
-        cursor: default;
-    }
+.nc-strv-section:hover .am-icon-primary {
+    background-color: @global-primary;
 }
 
 
@@ -144,56 +132,77 @@
     max-width: 80%;
     max-height: 80%;
     padding: 1rem;
-    color: @base-text-color;
-}
-.nc-strv-menu .header {
-    cursor: default;
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    align-items: center;
-}
-.nc-strv-menu .header span {
-    margin: 0 1rem 0 0.5rem;
-}
-.nc-strv-menu ul {
-    margin: 0;
-    list-style-type: none;
-    padding: 0;
-}
-.nc-strv-menu > ul { margin-top: 0.5rem; }
-.nc-strv-menu li {
-    margin-top: 0.2rem;
-    padding: 0.2rem 0.5rem;
-    border: unset;  background: unset;  // undo amazeUI defaults
-}
-.nc-strv-menu li:hover {
-    // We do this with transparency so that nested lists will show as doubly darkened
-    background: fade(Black, 20%);
+    .header {
+        cursor: default;
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: center;
+        span {
+            margin: 0 1rem 0 0.5rem;
+        }
+    }
+    ul {
+        list-style-type: none;
+    }
+    > ul {
+        margin-top: 0.5rem;
+    }
+    li {
+        margin-bottom: unset;
+        padding: 0.2rem 0.5rem;
+        border: none;
+        .am-btn {
+            color:        @btn-default-color;
+            background:   @btn-default-bg;
+            border-color: @btn-default-border;
+        }
+        &:hover {
+            // We do this with transparency so that nested lists will show as doubly darkened
+            background: fade(@black, 20%);
+            // This bit could probably be more elegant... oh well!
+            .am-btn-danger {
+                color:        @btn-danger-color;
+                background:   @btn-danger-bg;
+                border-color: @btn-danger-border;
+            }
+            .am-btn-warning {
+                color:        @btn-warning-color;
+                background:   @btn-warning-bg;
+                border-color: @btn-warning-border;
+            }
+            .am-btn-success {
+                color:        @btn-success-color;
+                background:   @btn-success-bg;
+                border-color: @btn-success-border;
+            }
+        }
+    }
 }
 
 
 // Extra classes that set the corners
 // tr: top right; bl: bottom left; etc.
+@corner-menu-border: .1rem solid @comp-l1-border;
 .nc-strv-menu-tr {
-    border-left: .1rem solid @comp-l1-border;
-    border-bottom: .1rem solid @comp-l1-border;
+    border-left:   @corner-menu-border;
+    border-bottom: @corner-menu-border;
     right: 0;
 }
 .nc-strv-menu-tl {
-    border-right: .1rem solid @comp-l1-border;
-    border-bottom: .1rem solid @comp-l1-border;
+    border-right:  @corner-menu-border;
+    border-bottom: @corner-menu-border;
     left: 0;
 }
 .nc-strv-menu-br {
-    border-left: .1rem solid @comp-l1-border;
-    border-top: .1rem solid @comp-l1-border;
+    border-left: @corner-menu-border;
+    border-top:  @corner-menu-border;
     bottom: 0;
     right: 0;
 }
 .nc-strv-menu-bl {
-    border-right: .1rem solid @comp-l1-border;
-    border-top: .1rem solid @comp-l1-border;
+    border-right: @corner-menu-border;
+    border-top:   @corner-menu-border;
     bottom: 0;
     left: 0;
 }

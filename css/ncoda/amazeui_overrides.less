@@ -75,6 +75,8 @@
 @base-text-color:          @gray-dark;
 @base-heading-font-weight: 400;
 
+@component-active-color: @base-text-color;
+
 @base-blockquote-small-color: @gray;
 blockquote {
     font-family: inherit;
@@ -227,3 +229,35 @@ a {
         }
     }
 }
+
+
+// =============================================================================
+// List and ListItem
+// =============================================================================
+
+@list-bg:            @comp-l1-bg;
+@list-border:        @comp-l1-border;
+// does not work:
+// @list-hover-bg
+
+
+// =============================================================================
+// Panel
+// =============================================================================
+
+@panel-bg:            @comp-l1-bg;
+@panel-border-radius: @global-radius;
+// @panel-hd-padding:            .6rem 1.25rem;
+// @panel-bd-padding:            1.25rem;
+
+@panel-footer-bg:    @comp-l1-bg;
+@panel-inner-border: @comp-l1-line;
+// @panel-footer-padding:       .6rem 1.25rem;
+
+@panel-default-bd:    @comp-l1-border;
+@panel-default-hd-bg: @comp-l1-bg;
+@panel-default-text:  @base-text-color;
+
+@panel-primary-bd:    darken(@global-primary, 5%);
+@panel-primary-hd-bg: @global-primary;
+@panel-primary-text:  @global-contrast-color;

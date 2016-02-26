@@ -22,7 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Button, Icon, Image, List, ListItem, Panel} from 'amazeui-react';
+import {Button, Dropdown, Icon, Image, List, ListItem, Menu, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
 
@@ -95,7 +95,7 @@ const HeaderList = React.createClass({
     },
     render() {
         return (
-            <List id="headerbar-list">
+            <List>
                 {this.state.headers.map((value, name) =>
                     <HeaderField key={name} name={name} value={value}/>
                 ).toArray()}
@@ -130,7 +130,7 @@ const HeaderBar = React.createClass({
         }
 
         return (
-            <div className="nc-strv-menu nc-strv-menu-tl" id="nc-strv-header-bar">
+            <div className="nc-strv-menu nc-strv-menu-tl">
                 <div className="header">
                     <ShowOrHideButton
                         func={this.showOrHide}
@@ -225,7 +225,7 @@ const ShowOrHideButton = React.createClass({
             // the chevron points opposite the direction of this.props.expands
             switch (this.props.expands) {
             case 'down':
-                className = 'hevron-up';
+                className = 'chevron-up';
                 break;
             case 'left':
                 className = 'chevron-right';
@@ -511,15 +511,39 @@ const Collaboration = React.createClass({
         return (
             <div className="nc-strv-menu nc-strv-menu-br" id="nc-strv-collaboration">
                 <div className="header">
+                    {`Collaborators`}
                     <ShowOrHideButton
                         func={this.showOrHide}
                         expands="up"
                         isShown={this.state.showCollaborators}
                     />
-                    {`Collaborators`}
                 </div>
                 {collabList}
             </div>
+        );
+    },
+});
+
+
+/** SectionContextMenu: Subcomponent of Section, the menu when you click on the button.
+ */
+const SectionContextMenu = React.createClass({
+    propTypes: {
+        section: React.PropTypes.element.isRequired,
+    },
+    render() {
+        return (
+            <Dropdown title={this.props.section}>
+                <Dropdown.Item>
+                    Placeholder Action 1
+                </Dropdown.Item>
+                <Dropdown.Item>
+                    Placeholder Action 2
+                </Dropdown.Item>
+                <Dropdown.Item>
+                    Placeholder Action 3
+                </Dropdown.Item>
+            </Dropdown>
         );
     },
 });
@@ -580,11 +604,15 @@ const Section = React.createClass({
             );
         }
 
+        const sectionToRender = (
+            <Panel header={header} footer={footer}>
+                {image}
+            </Panel>
+        );
+
         return (
             <section className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.handleClick}>
-                <Panel header={header} footer={footer}>
-                    {image}
-                </Panel>
+                <SectionContextMenu section={sectionToRender}/>
             </section>
         );
     },
@@ -662,10 +690,9 @@ const StructureView = React.createClass({
     render() {
         return (
             <div id="nc-strv-frame">
-                <ContextMenus/>
                 <div id="nc-strv-corner-menus">
                     <HeaderBar/>
-                    <ExpSectView/>
+                    <AnalysisView/>
                     <StavesStructure/>
                     <Collaboration/>
                 </div>
