@@ -251,39 +251,6 @@ const ShowOrHideButton = React.createClass({
 });
 
 
-const SectionContextMenu = React.createClass({
-    // This menu appears when users click on a Section component.
-    //
-
-    mixins: [reactor.ReactMixin],
-    getDataBindings() {
-        return {style: getters.sectionContextMenu};
-    },
-    closeMenu() {
-        // Handle a click on the menu items.
-        signals.emitters.sectionContextMenu({show: false});
-    },
-    render() {
-        return (
-            <nav id="ncoda-section-menu" style={this.state.style.toObject()}>
-                <ul>
-                    <MenuItem id="ncoda-section-menu-1" label="Open CodeScoreView" linkTo="/structure" closeThatMenu={this.closeMenu}/>
-                    <MenuItem id="ncoda-section-menu-2" label="View Version History" linkTo="/structure" closeThatMenu={this.closeMenu}/>
-                    <MenuItem id="ncoda-section-menu-3" label="Download Source File" linkTo="/structure" closeThatMenu={this.closeMenu}/>
-                </ul>
-            </nav>
-        );
-    },
-});
-
-
-const ContextMenus = React.createClass({
-    render() {
-        return <div><SectionContextMenu/></div>;
-    },
-});
-
-
 /** StaffGroupOrStaff: Subcomponent of PartsList, which renders the data for a part or group of them.
  *
  * This component calls itself recursively to deal with nested <staffGroup> elements
@@ -578,13 +545,6 @@ const Section = React.createClass({
         }),
         name: React.PropTypes.string.isRequired,
         pathToImage: React.PropTypes.string,
-    },
-    handleClick(event) {
-        // Set the NuclearJS state required to show the context menu.
-        const style = {show: true};
-        style.left = `${event.clientX}px`;
-        style.top = `${event.clientY}px`;
-        signals.emitters.sectionContextMenu(style);
     },
     render() {
         // TODO: figure out how to re-enable this when you deal with Julius issue #27

@@ -53,8 +53,6 @@ const names = {
     FUJIAN_START_WS: 'FUJIAN_START_WS',
     FUJIAN_RESTAT_WS: 'FUJIAN_RESTAT_WS',
     FUJIAN_CLOSE_WS: 'FUJIAN_CLOSE_WS',
-    // StructureView stuff
-    SECTION_CONTEXT_MENU: 'SECTION_CONTEXT_MENU',
     // Logging
     SET_LOG_LEVEL: 'SET_LOG_LEVEL',
     // DialogueBox
@@ -159,13 +157,6 @@ const emitters = {
         // For code being submitted by the human user.
         //
         fujian.sendAjax(code);
-    },
-
-    // StructureView GUI state
-    sectionContextMenu(style) {
-        // Call this with an object that has "show" (boolean) and "left" and "top" (in pixels).
-        //
-        reactor.dispatch(names.SECTION_CONTEXT_MENU, style);
     },
 
     // Logging

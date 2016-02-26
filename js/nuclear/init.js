@@ -30,7 +30,6 @@ import mercurial from './stores/mercurial';
 import document from './stores/document';
 import stdio from './stores/stdio';
 import verovio from './stores/verovio';
-import structureView from './stores/structure_view';
 import {stores as juliusStores} from './stores/julius';
 import {generics} from './stores/generics';
 
@@ -43,7 +42,6 @@ reactor.registerStores({
     stdout: stdio.Stdout,
     stderr: stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView
     meiForVerovio: verovio.MeiForVerovio,
-    sectionContextMenu: structureView.SectionContextMenu,
     logLevel: juliusStores.LogLevel,
     DialogueBox: generics.DialogueBox,
 });
