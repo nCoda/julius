@@ -146,27 +146,26 @@ const HeaderBar = React.createClass({
 });
 
 
-/** ExpSectViewGraph: Subcomponent of ExpSectView, the analysis graph itself.
+/** AnalysisViewGraph: Subcomponent of AnalysisView, the analysis graph itself.
  */
-const ExpSectViewGraph = React.createClass({
+const AnalysisViewGraph = React.createClass({
     render() {
         return (
-            <div id="ncoda-expanded-section-svg">
-                <h2>{`A`}</h2>
-                <img alt="music analysis graph" src="structureview_mock/expanded_section_view.svg"/>
-            </div>
+            <p>
+                {`Oh, awkward, this is just a placeholder... yeah, sorry about that.`}
+            </p>
         );
     },
 });
 
 
-/** ExpSectView: In the top-right corner, the "expanded section view" analytic graph.
+/** AnalysisView: In the top-right corner, the "expanded section view" analytic graph.
  *
  * State
  * -----
  * @param {boolean} showGraph - Whether the graph is currently displayed.
  */
-const ExpSectView = React.createClass({
+const AnalysisView = React.createClass({
     getInitialState() {
         return {showGraph: false};
     },
@@ -176,13 +175,13 @@ const ExpSectView = React.createClass({
     render() {
         let graph;
         if (this.state.showGraph) {
-            graph = <ExpSectViewGraph/>;
+            graph = <AnalysisViewGraph/>;
         }
 
         return (
-            <div className="nc-strv-menu nc-strv-menu-tr" id="nc-strv-expanded-section">
+            <div className="nc-strv-menu nc-strv-menu-tr">
                 <div className="header">
-                    {`Expanded Section View`}
+                    {`Analysis Graph`}
                     <ShowOrHideButton func={this.showOrHide} expands="down" isShown={this.state.showGraph}/>
                 </div>
                 {graph}
