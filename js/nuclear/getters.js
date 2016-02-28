@@ -123,10 +123,41 @@ function headerFlattener(headers) {
 }
 
 
+/** Make the SectionCursor store "friendly" by interleaving @xml:id and "sections."
+ *
+ * @param {ImmutableJS.List} cursor - The cursor itself, as a List of @xml:id attributes.
+ * @returns {ImmutableJS.List} The cursor with "sections" interleaved between @xml:id attributes.
+ *
+ * This function makes the following modification, so that callers can use getIn() on the Section
+ * store without doing the interleaving themselves.
+ *    Input:  ['123']
+ *    Output: ['123']
+ *    Input:  []
+ *    Output: []
+ *    Input:  ['123', '996']
+ *    Output: ['123', 'sections', '996']
+ *
+ */
+function cursorFriendlyMaker(cursor) {
+    let post = cursor;
+    if (post.count() > 1) {
+        post = post.reduce((previous, current) => {
+            previous = previous.push(current);
+            previous = previous.push('sections');
+            return previous;
+        }, Immutable.List());
+        post = post.butLast();
+    }
+    return post;
+}
+
+
 const getters = {
     headers: ['headers'],
     headersFlat: [['headers'], headerFlattener],  // for human-readable names in a "flat" Object
     sections: ['sections'],
+    sectionCursor: ['sectionCursor'],
+    sectionCursorFriendly: [['sectionCursor'], cursorFriendlyMaker],
     stdin: [['stdin'], stdioConcatter],
     stdout: [['stdout'], stdioConcatter],
     stderr: [['stderr'], stdioConcatter],
@@ -138,5 +169,5 @@ const getters = {
     vcsChangesets: [['revlog'], vcsChangesets],
 };
 
-export {getters, stdioConcatter};
+export {cursorFriendlyMaker, getters, stdioConcatter};
 export default getters;

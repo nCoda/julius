@@ -38,6 +38,7 @@ reactor.registerStores({
     headers: document.Headers,
     revlog: mercurial.Revlog,
     sections: document.Sections,
+    sectionCursor: document.Cursor,
     stdin: stdio.Stdin,
     stdout: stdio.Stdout,
     stderr: stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView

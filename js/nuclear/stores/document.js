@@ -24,10 +24,34 @@
 
 
 import {Store, toImmutable} from 'nuclear-js';
+import {cursorFriendlyMaker, getters} from '../getters';
 import signals from '../signals';
+import reactor from '../reactor';
 
 
 const document = {
+    /** Mark the <section> current being edited.
+     *
+     * The cursor is a List of @xml:id attributes as they appear in nested <section> elements in
+     * the Sections store. If the List is empty, it means no <section> is selected and the cursor
+     * effectively points to the document root. Otherwise, the Cursor might look like one of the
+     * following examples:
+     *
+     *    List(['Sme-s-m-l-e9029823'])
+     *    --> points to a top-level <section>
+     *
+     *    List(['Sme-s-m-l-e9176572', 'Sme-s-m-l-e9029823'])
+     *    --> points to <section> e9029823, a subsection of e9176572
+     */
+    Cursor: Store({
+        getInitialState() {
+            return toImmutable([]);
+        },
+        initialize() {
+            this.on(signals.names.MOVE_SECTION_CURSOR, moveSectionCursor);
+        },
+    }),
+
     /** Holds the "headers" object produced by Lychee's "document_outbound" convert. */
     Headers: Store({
         getInitialState() {
@@ -61,6 +85,27 @@ const document = {
  */
 function replaceWithLychee(currentState, payload) {
     return toImmutable(payload);
+}
+
+
+/** Move the cursor that indicates the currently-selected <section>.
+ *
+ * @param {ImmutableJS.List} currentState - Path to the currently-selected <section>.
+ * @param {array of str} payload - List of @xml:id attributes giving the "path" to a <section>.
+ * @returns {ImmutableJS.List} The store's new state if it is valid, otherwise the old cursor.
+ *
+ * Do note that this function requires an "absolute" path, starting from the document root. Thus it
+ * is important to call the moveSectionCursor() signal, which produces the output required in this
+ * function.
+ */
+function moveSectionCursor(currentState, payload) {
+    if (reactor.evaluate(getters.sections).hasIn(cursorFriendlyMaker(payload))) {
+        return toImmutable(payload);
+    }
+    else {
+
+        return currentState;
+    }
 }
 
 
