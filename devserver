@@ -106,7 +106,7 @@ def the_script():
         for each_file in _COMPILE_WITH_WATCHIFY:
             print('Starting Watchify for {}'.format(each_file[0]))
             try:
-                kummand = [_PATH_TO_WATCHIFY, each_file[0], '-o', each_file[1]]
+                kummand = [_PATH_TO_WATCHIFY, each_file[0], '-o', each_file[1], '--debug']
                 subprocesses.append(subprocess.Popen(kummand))
             except subprocess.CalledProcessError as cperr:
                 print('Encountered the following error while starting Watchify:\n{}'.format(cperr))
