@@ -96,7 +96,7 @@
         .am-panel-hd {
             border-bottom: none;
             h3 {
-                margin: none;
+                margin: 0;
             }
         }
         .am-panel-footer {
@@ -109,8 +109,6 @@
         img { width: 100%; }
         .am-icon-primary {
             background-color: @comp-l2-bg;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
             transition: background-color .5s;
         }
     }
@@ -205,6 +203,32 @@
     border-top:   @corner-menu-border;
     bottom: 0;
     left: 0;
+}
+
+.nc-strv-breadcrumbs {
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    .am-breadcrumb {
+        .am-active {
+            color: @global-primary;
+        }
+        &:hover .am-active {
+            color: inherit;
+        }
+        button {
+            background: none;
+            border: none;
+            border-bottom: 2px solid @view-bg;
+            &:hover {
+                color: @global-primary;
+                border-bottom-color: @global-primary;
+            }
+        }
+    }
 }
 
 

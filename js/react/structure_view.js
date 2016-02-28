@@ -22,7 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Button, Dropdown, Icon, Image, List, ListItem, Menu, Panel} from 'amazeui-react';
+import {Button, Breadcrumb, Dropdown, Icon, Image, List, ListItem, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
 
@@ -30,8 +30,6 @@ import getters from '../nuclear/getters';
 import log from '../util/log';
 import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
-
-import {MenuItem} from './ncoda';
 
 
 // when we get a datestring from Lychee, we need to multiply it by 1000 for JavaScript
@@ -526,23 +524,50 @@ const Collaboration = React.createClass({
 
 
 /** SectionContextMenu: Subcomponent of Section, the menu when you click on the button.
+ *
+ * Props:
+ * ------
+ * @param {bool} hasSubsections - Whether this Section has child Sections. Defaults to false.
+ * @param {Element} section - The React element to use as the "title" of this Dropdown element.
+ * @param {string} name - Optional. This section's name.
  */
 const SectionContextMenu = React.createClass({
     propTypes: {
+        hasSubsections: React.PropTypes.bool,
+        name: React.PropTypes.string,
         section: React.PropTypes.element.isRequired,
+        sectionID: React.PropTypes.string.isRequired,
+    },
+    getDefaultProps() {
+        return {hasSubsections: false};
+    },
+    /** Move the SectionCursor to this <section>. */
+    cursorToThis() {
+        signals.emitters.moveSectionCursor([this.props.sectionID]);
     },
     render() {
+        let name = 'This Section';
+        if (this.props.name) {
+            name = `Section ${this.props.name}`;
+        }
+
+        let subsections;
+        const thisSection = [<Dropdown.Item header key="a">{name}</Dropdown.Item>];
+        if (this.props.hasSubsections) {
+            subsections = [
+                <Dropdown.Item key="b" header>{`Subsections`}</Dropdown.Item>,
+                <Dropdown.Item key="c" onClick={this.cursorToThis}>{`Zoom in on Subsections`}</Dropdown.Item>,
+                <Dropdown.Item key="d">{`Take all Subsections to CodeScoreView`}</Dropdown.Item>,
+            ];
+        }
+        else {
+            thisSection.push(<Dropdown.Item key="e">{`Take to CodeScoreView`}</Dropdown.Item>);
+        }
+
         return (
             <Dropdown title={this.props.section}>
-                <Dropdown.Item>
-                    Placeholder Action 1
-                </Dropdown.Item>
-                <Dropdown.Item>
-                    Placeholder Action 2
-                </Dropdown.Item>
-                <Dropdown.Item>
-                    Placeholder Action 3
-                </Dropdown.Item>
+                {subsections}
+                {thisSection}
             </Dropdown>
         );
     },
@@ -554,6 +579,7 @@ const SectionContextMenu = React.createClass({
  * Props
  * -----
  * @param {string} colour - If there is a section colour, put the CSS-compatible string here.
+ * @param {bool} hasSubsections - Whether this Section has child Sections. Defaults to false.
  * @param {string} id - REQUIRED: this section's "id"
  * @param {Object} lastUpdated - The "name" and "date" of this section's most recent changeset.
  * @param {string} name - REQUIRED: this section's "name"
@@ -562,6 +588,7 @@ const SectionContextMenu = React.createClass({
 const Section = React.createClass({
     propTypes: {
         colour: React.PropTypes.string,
+        hasSubsections: React.PropTypes.bool,
         id: React.PropTypes.string.isRequired,
         lastUpdated: React.PropTypes.shape({
             name: React.PropTypes.string,
@@ -612,7 +639,12 @@ const Section = React.createClass({
 
         return (
             <section className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.handleClick}>
-                <SectionContextMenu section={sectionToRender}/>
+                <SectionContextMenu
+                    hasSubsections={this.props.hasSubsections}
+                    name={this.props.name}
+                    section={sectionToRender}
+                    sectionID={this.props.id}
+                />
             </section>
         );
     },
@@ -624,19 +656,38 @@ const Section = React.createClass({
  * State
  * -----
  * @param {ImmutableJS.List} changesets - From the NuclearJS "vcsChangesets" getter.
+ * @param {ImmutableJS.List} cursor - From the NuclearJS "sectionCursorFriendly" getter.
  * @param {ImmutableJS.Map} sections - From the NuclearJS "sections" getter.
  */
 const ActiveSections = React.createClass({
     mixins: [reactor.ReactMixin],
     getDataBindings() {
-        return {changesets: getters.vcsChangesets, sections: getters.sections};
+        return {
+            changesets: getters.vcsChangesets,
+            cursor: getters.sectionCursorFriendly,
+            sections: getters.sections,
+        };
     },
     render() {
-        const order = this.state.sections.get('score_order');
-        let sections;
+        let activeSectionsTitle = 'Active Sections';
+        let order = this.state.sections.get('score_order');
+        let sections = this.state.sections;
+        let sectionElements;
         if (order) {
-            sections = order.map((sectId, i) => {
-                const lastHash = this.state.sections.getIn([sectId, 'last_changeset']);
+            if (this.state.cursor.count() > 0) {
+                let section = this.state.sections.getIn(this.state.cursor);
+                if (!section.has('sections')) {
+                    // If the cursor points to a <section> without subsections, we'll show that
+                    // section's parent.
+                    section = this.state.sections.getIn(this.state.cursor.skipLast(2));
+                }
+                activeSectionsTitle = `Section ${section.get('label')}`;
+                order = section.getIn(['sections', 'score_order']);
+                sections = section.get('sections');
+            }
+
+            sectionElements = order.map((sectId, i) => {
+                const lastHash = sections.getIn([sectId, 'last_changeset']);
                 let lastUpdated;
                 if (this.state.changesets.has(lastHash)) {
                     let name = this.state.changesets.getIn([lastHash, 'user']);
@@ -650,29 +701,82 @@ const ActiveSections = React.createClass({
                         date: date,
                     };
                 }
+                let hasSubsections = false;
+                if (sections.getIn([sectId, 'sections'])) {
+                    hasSubsections = true;
+                }
+
                 return (
                     <Section
                         key={i}
                         id={sectId}
-                        name={this.state.sections.getIn([sectId, 'label'])}
+                        name={sections.getIn([sectId, 'label'])}
                         lastUpdated={lastUpdated}
+                        hasSubsections={hasSubsections}
                     />
                 );
             });
         }
         else {
-            sections = <Icon icon="circle-o-notch" spin amSize="lg" className="am-text-primary"/>;
+            sectionElements = <Icon icon="circle-o-notch" spin amSize="lg" className="am-text-primary"/>;
         }
 
         return (
             <article className="nc-active-sections">
                 <header>
-                    <h2>{`Active Score`}</h2>
+                    <h2>{activeSectionsTitle}</h2>
                 </header>
                 <div>
-                    {sections}
+                    {sectionElements}
                 </div>
             </article>
+        );
+    },
+});
+
+
+/** StructureBreadCrumbs: TODO
+ */
+const StructureBreadCrumbs = React.createClass({
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {cursor: getters.sectionCursor, sections: getters.sections};
+    },
+    handleCursorToRoot() {
+        signals.emitters.moveSectionCursor(['/']);
+    },
+    render() {
+        // TODO: the am-active thing
+
+        // <Breadcrumb.Item><button>{`A`}</button></Breadcrumb.Item>
+        // <Breadcrumb.Item className="am-active"><button>{`B`}</button></Breadcrumb.Item>
+
+        const cursor = this.state.cursor;
+        let sections = this.state.sections;
+        const innerSections = [];
+        if (sections.size > 0) {
+            for (const sectID of cursor) {
+                innerSections.push(
+                    <Breadcrumb.Item key={sectID}>
+                        <button>{sections.getIn([sectID, 'label'])}</button>
+                    </Breadcrumb.Item>
+                );
+                sections = sections.getIn([sectID, 'sections']);
+            }
+        }
+
+        return (
+            <div className="nc-strv-breadcrumbs">
+                <Breadcrumb slash>
+                    <Breadcrumb.Item>
+                        <button onClick={this.handleCursorToRoot}>
+                            <Icon icon="sitemap"/>{`Active Sections`}
+                        </button>
+                    </Breadcrumb.Item>
+                    {innerSections}
+                    <Breadcrumb.Item><Icon icon="arrow-down"/></Breadcrumb.Item>
+                </Breadcrumb>
+            </div>
         );
     },
 });
@@ -695,6 +799,7 @@ const StructureView = React.createClass({
                     <AnalysisView/>
                     <StavesStructure/>
                     <Collaboration/>
+                    <StructureBreadCrumbs/>
                 </div>
                 <div id="nc-strv-view">
                     <ActiveSections/>
