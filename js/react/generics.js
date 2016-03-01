@@ -165,7 +165,9 @@ const OffCanvas = React.createClass({
     // - and we call this.props.handleHide() so the parent knows we're hiding
     //
     // If the browser is doing a lot of processing, the timing might be different, but I don't think
-    // users will mind missing some gliding action once in a while.
+    // users will mind missing some gliding action once in a while. To reduce the chances of this
+    // failing, we set the timeout in componentDidUpdate() which is called after the component
+    // ought to have rendered already.
     //
     propTypes: {
         handleHide: React.PropTypes.func.isRequired,
@@ -186,17 +188,22 @@ const OffCanvas = React.createClass({
         this.setState({showBackdrop: false});
     },
     componentWillReceiveProps(nextProps) {
-        if (this.props.showContents !== nextProps.showContents) {
-            if (nextProps.showContents) {
+        if ((this.props.showContents !== nextProps.showContents) &&
+            nextProps.showContents) {
                 this.setState({showBackdrop: true});
-                window.setTimeout(this.showMenu, 10);
-            }
         }
     },
     handleHide() {
         this.setState({showPanel: false});
         window.setTimeout(this.hideBackdrop, 300);
         this.props.handleHide();
+    },
+    componentDidUpdate(prevProps) {
+        if ((this.props.showContents !== prevProps.showContents) &&
+            this.props.showContents &&
+            !this.state.showPanel) {
+                window.setTimeout(this.showMenu, 10);
+        }
     },
     render() {
         let offCanvas = 'am-offcanvas';
