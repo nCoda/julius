@@ -58,6 +58,10 @@
     align-items: center;
 }
 
+.nc-strv-box-shadow {
+    box-shadow: 0 0 @global-padding 0 @comp-l1-border;
+}
+
 
 /*************************************************************************************************/
 /* active section <article> */
@@ -65,6 +69,7 @@
     z-index: 1;
     background: @comp-l1-bg;
     border: 1px solid @comp-l1-border;
+    .nc-strv-box-shadow;
 }
 .nc-active-sections > header {
     text-align: center;
@@ -130,6 +135,7 @@
     max-width: 80%;
     max-height: 80%;
     padding: @global-padding;
+    .nc-strv-box-shadow;
     .header {
         cursor: default;
         display: flex;
