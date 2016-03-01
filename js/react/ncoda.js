@@ -29,7 +29,7 @@ import {Link} from 'react-router';
 
 import {log} from '../util/log';
 import signals from '../nuclear/signals';
-import {DialogueBox} from './generics';
+import {DialogueBox, OffCanvas} from './generics';
 
 
 const MainScreen = React.createClass({
@@ -87,40 +87,28 @@ const Colophon = React.createClass({
 
 const GlobalMenu = React.createClass({
     propTypes: {
-        showMenu: React.PropTypes.bool,
+        showMenu: React.PropTypes.bool.isRequired,
         handleHide: React.PropTypes.func.isRequired,
     },
-    getDefaultProps() {
-        return {showMenu: false};
-    },
     render() {
-        let offCanvas = 'am-offcanvas';
-        let offCanvasBar = 'am-offcanvas-bar am-offcanvas-bar-overlay';
-        if (this.props.showMenu) {
-            offCanvas += ' am-active';
-            offCanvasBar += ' am-offcanvas-bar-active';
-        }
-
         return (
             <nav data-am-widget="menu" className="am-menu am-menu-offcanvas1" data-am-menu-offcanvas>
-                <div className={offCanvas} onClick={this.props.handleHide}>
-                    <div className={offCanvasBar}>
-                        <Nav className="am-menu-nav">
-                            <NavItem linkComponent={Link} linkProps={{to: "/"}}>
-                                {`nCoda Home`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
-                                {`About`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
-                                {`CodeScoreView`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
-                                {`StructureView`}
-                            </NavItem>
-                        </Nav>
-                    </div>
-                </div>
+                <OffCanvas padding={false} showContents={this.props.showMenu} handleHide={this.props.handleHide}>
+                    <Nav className="am-menu-nav">
+                        <NavItem linkComponent={Link} linkProps={{to: "/"}}>
+                            {`nCoda Home`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
+                            {`About`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
+                            {`CodeScoreView`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
+                            {`StructureView`}
+                        </NavItem>
+                    </Nav>
+                </OffCanvas>
             </nav>
         );
     },
