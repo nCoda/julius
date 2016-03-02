@@ -99,7 +99,8 @@ body {
     cursor: default;
 }
 
-@global-padding: 1.5rem;  // NB: this isn't in amazeUI
+// NOTE: these aren't in amazeUI, but we'll use them there anyway
+@global-padding: 1.5rem;
 
 
 // =============================================================================
@@ -128,7 +129,7 @@ body {
 @btn-danger-color:               @white;
 
 .am-btn, .am-btn-link {
-    border-radius: 0.2rem;
+    border-radius: @radius-normal;
     cursor: default;
     &:focus, &:active:focus {
         outline: none;
@@ -257,7 +258,7 @@ button {
 // =============================================================================
 
 @panel-bg:            @comp-l1-bg;
-@panel-border-radius: @global-radius;
+@panel-border-radius: @radius-normal;
 // @panel-hd-padding:            .6rem 1.25rem;
 // @panel-bd-padding:            1.25rem;
 
