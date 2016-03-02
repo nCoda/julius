@@ -22,10 +22,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Button, Breadcrumb, Dropdown, Icon, Image, List, ListItem, Panel} from 'amazeui-react';
+import {Button, Breadcrumb, Dropdown, Icon, Image, List, ListItem, Nav, NavItem, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
 
+import {OffCanvas} from './generics';
 import getters from '../nuclear/getters';
 import log from '../util/log';
 import reactor from '../nuclear/reactor';
@@ -286,26 +287,63 @@ const StaffGroupOrStaff = React.createClass({
 
 /** PartsList: Subcomponent of PartsList, the actual content.
  *
- * State
+ * Props
  * -----
- * @param {ImmutableJS.List} sections - Data about <section> elements in the score, provided by
- *     Lychee's "document-outbound" converter.
+ * @param {ImmutableJS.List} sections - Data about <section> elements at a given hierarchic level,
+ *     in the format provided by Lychee's "document-outbound" converter.
+ *
+ * Data from the sections are given as a prop, rather than as state, so that this component can
+ * render itself recursively for nested sections.
  */
 const PartsList = React.createClass({
-    mixins: [reactor.ReactMixin],
-    getDataBindings() {
-        return {sections: getters.sections};
+    propTypes: {
+        sections: React.PropTypes.instanceOf(Immutable.Map).isRequired,
+    },
+    getInitialState() {
+        return {showThing: false, selectedID: ''};
+    },
+    handleShowPanel(event) {
+        event.stopPropagation();
+        this.setState({showThing: true, selectedID: event.target.getAttribute('value')});
+    },
+    handleHidePanel(event) {
+        this.setState(this.getInitialState());
+        event.stopPropagation();
+        event.preventDefault();
     },
     render() {
-        // TODO: find a better solution to which staves to display... Julius issue #14.
-        const scoreOrder = this.state.sections.get('score_order').get(0);
-        const partsList = this.state.sections.get(scoreOrder).get('staffGrp');
+        // TODO: add a <buttonN> in the <NavItem>
+
+        let offCanvasContents;
+
+        if (this.state.selectedID) {
+            if (this.props.sections.hasIn([this.state.selectedID, 'staffGrp'])) {
+                offCanvasContents = (
+                    <List>
+                        {this.props.sections.getIn([this.state.selectedID, 'staffGrp']).map((parts, index) =>
+                            <StaffGroupOrStaff key={index} names={parts}/>
+                        )}
+                    </List>
+                );
+            }
+            else {
+                offCanvasContents = <PartsList sections={this.props.sections.getIn([this.state.selectedID, 'sections'])}/>;
+            }
+        }
+
         return (
-            <List>
-                {partsList.map((parts, index) =>
-                    <StaffGroupOrStaff key={index} names={parts}/>
-                )}
-            </List>
+            <div className="nc-strv-partslist-container">
+                <Nav>
+                    {this.props.sections.get('score_order').map((id, index) =>
+                        <NavItem key={index} onClick={this.handleShowPanel} value={id}>
+                            {`Section ${this.props.sections.getIn([id, 'label'])}`}
+                        </NavItem>
+                    )}
+                </Nav>
+                <OffCanvas showContents={this.state.showThing} handleHide={this.handleHidePanel}>
+                    {offCanvasContents}
+                </OffCanvas>
+            </div>
         );
     },
 });
@@ -316,8 +354,13 @@ const PartsList = React.createClass({
  * State
  * -----
  * @param {boolean} showParts - Whether the contents are currently displayed.
+ * @param {ImmutableJS.Map} sections - Data from the "sections" getter.
  */
 const StavesStructure = React.createClass({
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {sections: getters.sections};
+    },
     getInitialState() {
         return {showParts: false};
     },
@@ -325,13 +368,15 @@ const StavesStructure = React.createClass({
         this.setState({showParts: !this.state.showParts});
     },
     render() {
+        let sizeStyle;
         let partsList;
         if (this.state.showParts) {
-            partsList = <PartsList/>;
+            partsList = <PartsList sections={this.state.sections}/>;
+            sizeStyle = {height: '100%', width: '100%'};
         }
 
         return (
-            <div className="nc-strv-menu nc-strv-menu-bl" id="nc-strv-staves">
+            <div className="nc-strv-menu nc-strv-menu-bl" id="nc-strv-staves" style={sizeStyle}>
                 <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showParts}/>
                     {`Staves Structure`}

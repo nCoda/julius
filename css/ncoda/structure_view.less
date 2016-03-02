@@ -127,6 +127,10 @@
 
 /*************************************************************************************************/
 /* StructureView Corner Menus */
+.li-hover {
+    // We do this with transparency so that nested lists will show as doubly darkened
+    background: fade(@black, 15%);
+}
 .nc-strv-menu {
     background: @comp-l1-bg;
     display: flex;
@@ -163,8 +167,7 @@
             border-color: @btn-default-border;
         }
         &:hover {
-            // We do this with transparency so that nested lists will show as doubly darkened
-            background: fade(@black, 20%);
+            .li-hover;
             // This bit could probably be more elegant... oh well!
             .am-btn-danger {
                 color:        @btn-danger-color;
@@ -267,4 +270,50 @@
 
 //////////////////////////////////////////////////////////
 // Staves Structure
-#nc-strv-staves > ul { overflow-y: scroll; }
+#nc-strv-staves {
+    > ul {
+        overflow-y: scroll;
+    }
+    max-height: 50%;
+    max-width: 50rem;
+    .nc-strv-partslist-container {
+        .am-nav {
+            margin-top: @global-padding;
+        }
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        position: relative;
+        .am-offcanvas {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            .am-offcanvas-bar {
+                position: absolute;
+                height: 100%;
+                max-width: 80%;
+                background: @comp-l2-bg;
+                .am-offcanvas-content {
+                    color: inherit;
+                    height: 100%;
+                }
+                .am-offcanvas-bar {
+                    // for <section>s inside <section>s
+                    background: @comp-l3-bg;
+                    border-color: @comp-l3-border;
+                    box-shadow: 0 0 @global-padding 0 @comp-l3-border;
+                    color: @global-contrast-color;
+                    &:after {
+                        background: @comp-l3-bg;
+                    }
+                }
+            }
+        }
+    }
+    .am-list > li {
+        background: inherit;
+        &:hover {
+            .li-hover;
+        }
+    }
+}
