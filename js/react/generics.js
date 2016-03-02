@@ -140,6 +140,7 @@ const DialogueBox = React.createClass({
  * Props:
  * ------
  * @param {func} handleHide - This function will be called as the component wants to hide itself.
+ *    The click event is given as the first argument to this function.
  * @param {bool} padding - Whether to include the "am-offcanvas-conent" <div>. Default is true.
  * @param {bool} showContents - Changing this from `false` to `true` will make the panel show up.
  * @param {str} side - Either "left" or "right" depending on which side of the parent container
@@ -193,10 +194,10 @@ const OffCanvas = React.createClass({
                 this.setState({showBackdrop: true});
         }
     },
-    handleHide() {
+    handleHide(event) {
         this.setState({showPanel: false});
         window.setTimeout(this.hideBackdrop, 300);
-        this.props.handleHide();
+        this.props.handleHide(event);
     },
     componentDidUpdate(prevProps) {
         if ((this.props.showContents !== prevProps.showContents) &&
