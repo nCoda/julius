@@ -22,49 +22,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
+'use strict';
 
-// Report crashes to our server.
-// require('crash-reporter').start();
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const menu = require('menu');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow = null;
 
-// Quit when all windows are closed.
 app.on('window-all-closed', function() {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform != 'darwin') {
         app.quit();
     }
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
 app.on('ready', function() {
-    // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600});
-
-    // and load the index.html of the app.
     mainWindow.loadURL('file://' + __dirname + '/../index.html');
-
-    // Open the DevTools.
-    // mainWindow.openDevTools();
-
-    // Emitted when the window is closed.
     mainWindow.on('closed', function() {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
         mainWindow = null;
     });
+
+    // Open the DevTools.
+    // mainWindow.webContents.openDevTools();
 });
 
 
-var Menu = require('menu');
-var template = [
+var menuTemplate = [
     {
         label: 'nCoda',
         submenu: [
@@ -101,5 +88,61 @@ var template = [
     },
 ];
 
-menu = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(menu);
+if (process.platform == 'darwin') {
+    var name = 'nCoda';
+    menuTemplate.unshift({
+        label: name,
+        submenu: [
+            {
+                label: 'About ' + name,
+                role: 'about'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Services',
+                role: 'services',
+                submenu: []
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Hide ' + name,
+                accelerator: 'Command+H',
+                role: 'hide'
+            },
+            {
+                label: 'Hide Others',
+                accelerator: 'Command+Alt+H',
+                role: 'hideothers'
+            },
+            {
+                label: 'Show All',
+                role: 'unhide'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Quit',
+                accelerator: 'Command+Q',
+                click: function() { app.quit(); }
+            },
+        ]
+    });
+    // Window menu.
+    menuTemplate[3].submenu.push(
+        {
+            type: 'separator'
+        },
+        {
+            label: 'Bring All to Front',
+            role: 'front'
+        }
+    );
+}
+
+var ncodaMenu = menu.buildFromTemplate(menuTemplate);
+menu.setApplicationMenu(ncodaMenu);
