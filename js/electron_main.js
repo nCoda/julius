@@ -133,15 +133,15 @@ if (process.platform == 'darwin') {
         ]
     });
     // Window menu.
-    menuTemplate[3].submenu.push(
-        {
-            type: 'separator'
-        },
-        {
-            label: 'Bring All to Front',
-            role: 'front'
-        }
-    );
+    // menuTemplate[3].submenu.push(
+    //     {
+    //         type: 'separator'
+    //     },
+    //     {
+    //         label: 'Bring All to Front',
+    //         role: 'front'
+    //     }
+    // );
 }
 
 var ncodaMenu = menu.buildFromTemplate(menuTemplate);
