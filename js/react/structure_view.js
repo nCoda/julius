@@ -719,48 +719,54 @@ const ActiveSections = React.createClass({
         let sections = this.state.sections;
         let sectionElements;
         if (order) {
-            if (this.state.cursor.count() > 0) {
-                let section = this.state.sections.getIn(this.state.cursor);
-                if (!section.has('sections')) {
-                    // If the cursor points to a <section> without subsections, we'll show that
-                    // section's parent.
-                    section = this.state.sections.getIn(this.state.cursor.skipLast(2));
-                }
-                activeSectionsTitle = `Section ${section.get('label')}`;
-                order = section.getIn(['sections', 'score_order']);
-                sections = section.get('sections');
+            if (order.size === 0) {
+                sectionElements = <p>{`This document has no sections.`}</p>;
             }
 
-            sectionElements = order.map((sectId, i) => {
-                const lastHash = sections.getIn([sectId, 'last_changeset']);
-                let lastUpdated;
-                if (this.state.changesets.has(lastHash)) {
-                    let name = this.state.changesets.getIn([lastHash, 'user']);
-                    name = name.slice(0, name.indexOf(' <'));  // TODO: this is not foolproof
-
-                    const date = new Date();
-                    date.setTime(this.state.changesets.getIn([lastHash, 'date']) * DATE_MULTIPLIER);
-
-                    lastUpdated = {
-                        name: name,
-                        date: date,
-                    };
-                }
-                let hasSubsections = false;
-                if (sections.getIn([sectId, 'sections'])) {
-                    hasSubsections = true;
+            else {
+                if (this.state.cursor.count() > 0) {
+                    let section = this.state.sections.getIn(this.state.cursor);
+                    if (!section.has('sections')) {
+                        // If the cursor points to a <section> without subsections, we'll show that
+                        // section's parent.
+                        section = this.state.sections.getIn(this.state.cursor.skipLast(2));
+                    }
+                    activeSectionsTitle = `Section ${section.get('label')}`;
+                    order = section.getIn(['sections', 'score_order']);
+                    sections = section.get('sections');
                 }
 
-                return (
-                    <Section
-                        key={i}
-                        id={sectId}
-                        name={sections.getIn([sectId, 'label'])}
-                        lastUpdated={lastUpdated}
-                        hasSubsections={hasSubsections}
-                    />
-                );
-            });
+                sectionElements = order.map((sectId, i) => {
+                    const lastHash = sections.getIn([sectId, 'last_changeset']);
+                    let lastUpdated;
+                    if (this.state.changesets.has(lastHash)) {
+                        let name = this.state.changesets.getIn([lastHash, 'user']);
+                        name = name.slice(0, name.indexOf(' <'));  // TODO: this is not foolproof
+
+                        const date = new Date();
+                        date.setTime(this.state.changesets.getIn([lastHash, 'date']) * DATE_MULTIPLIER);
+
+                        lastUpdated = {
+                            name: name,
+                            date: date,
+                        };
+                    }
+                    let hasSubsections = false;
+                    if (sections.getIn([sectId, 'sections'])) {
+                        hasSubsections = true;
+                    }
+
+                    return (
+                        <Section
+                            key={i}
+                            id={sectId}
+                            name={sections.getIn([sectId, 'label'])}
+                            lastUpdated={lastUpdated}
+                            hasSubsections={hasSubsections}
+                        />
+                    );
+                });
+            }
         }
         else {
             sectionElements = <Icon icon="circle-o-notch" spin amSize="lg" className="am-text-primary"/>;
