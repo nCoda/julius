@@ -23,7 +23,7 @@
 // ------------------------------------------------------------------------------------------------
 
 
-import {Button, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
+import {Button, ButtonGroup, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
 import React from 'react';
 import {Link} from 'react-router';
 
@@ -33,10 +33,45 @@ import {DialogueBox, OffCanvas} from './generics';
 
 
 const MainScreen = React.createClass({
+    handleOpen() {
+        if (require) {
+            const remote = require('electron').remote;
+            const dir = remote.dialog.showOpenDialog(
+                {
+                    title: 'title',
+                    properties: ['openDirectory', 'creatDirectory'],
+                }
+            );
+            signals.emitters.setRepositoryDirectory(dir);
+        }
+        else {
+            // this is a much worse solution than the native dialogue above
+            signals.emitters.dialogueBoxShow({
+                type: 'question',
+                message: 'Please enter the repository directory',
+                detail: 'This can break pretty easily, so be careful!',
+                callback: (answer) => signals.emitters.setRepositoryDirectory(answer),
+            });
+        }
+    },
+    handleDefaultOpen() {
+        signals.emitters.setRepositoryDirectory('testrepo');
+    },
+    handleTempOpen() {
+        signals.emitters.setRepositoryDirectory('');
+    },
     render() {
         return (
             <div id="ncoda-loading">
-                <p>{`Use the menus above to navigate the program.`}</p>
+                <p>{`Use the menus above to navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
+                <div>
+                    <p>{`Use this button to open a repository directory.`}</p>
+                    <ButtonGroup>
+                        <Button onClick={this.handleOpen}>Open</Button>
+                        <Button onClick={this.handleDefaultOpen}>(Try to) Load Default Repository</Button>
+                        <Button onClick={this.handleTempOpen}>Load an empty, temporary repository.</Button>
+                    </ButtonGroup>
+                </div>
                 <MainScreenQuote/>
             </div>
         );
