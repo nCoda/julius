@@ -22,7 +22,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-@import "codemirror-ncoda.less";
+@import "amazeui_overrides";
+@import "codemirror-ncoda";
 
 
 // The <div> framing CodeScoreView
@@ -32,99 +33,6 @@
     height:100%;
     background: @view-bg;
 }
-
-
-/* ********************************************************************************************* */
-/* 'root' containers needed for Scrollbars elements (from react-custom-scrollbars */
-
-.verovio-root, .codemirror-root, .terminal-in-root, .terminal-out-root {
-    position: absolute; //needed to fill flexbox parent
-    width: 100%;
-    height: 100%;
-
-    .custom-scrollbars {
-        width: 100%;
-        height: 100%;
-    }
-}
-
-.codemirror-root, .terminal-in-root, .terminal-out-root {
-    padding-top: 3rem;  //padding for panels with headings (.panel-head)
-}
-
-/* ********************************************************************************************* */
-/* Things for SplitPane and Resizer elements (from react-split-pane) */
-
-.Resizer {
-    background: @black;
-    opacity: .2;
-    z-index: 1;
-    -webkit-background-clip: padding;
-       -moz-background-clip: padding;
-            background-clip: padding-box;
-    -webkit-transition: border .5s ease-in-out;
-       -moz-transition: border .5s ease-in-out;
-         -o-transition: border .5s ease-in-out;
-            transition: border .5s ease-in-out;
-
-    &.horizontal {
-        height: 11px;
-        margin: -5px 0;
-        border-top: 5px solid rgba(red(@white), green(@white), blue(@white), 0);
-        border-bottom: 5px solid rgba(red(@white), green(@white), blue(@white), 0);
-        cursor: row-resize;
-        width: 100%;
-
-        &:hover {
-            border-top: 5px solid rgba(red(@black), green(@black), blue(@black), 0.8);
-            border-bottom: 5px solid rgba(red(@black), green(@black), blue(@black), 0.8);
-        }
-    }
-    &.vertical {
-        width: 11px;
-        margin: 0 -5px;
-        border-left: 5px solid rgba(red(@white), green(@white), blue(@white), 0);
-        border-right: 5px solid rgba(red(@white), green(@white), blue(@white), 0);
-        cursor: col-resize;
-        height: 100%;
-
-        &:hover {
-            border-left: 5px solid rgba(red(@black), green(@black), blue(@black), 0.8);
-            border-right: 5px solid rgba(red(@black), green(@black), blue(@black), 0.8);
-        }
-    }
-}
-
-/* ********************************************************************************************* */
-/* For all panels in the CodeScoreView */
-
-#nc-csv-frame {
-    .panel-container {
-        background-color: @comp-l1-bg;
-        color: @base-text-color;
-        position: absolute; //needed to fill flexbox parent
-        width: 100%;
-        height: 100%;
-
-        .panel-head {
-            // name of panel
-            display: block;
-            background-color: @comp-l1-bg;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 99;
-
-            h2 {
-                display: inline-block;
-                margin: 0;
-                padding: .5rem;
-                font-size: 1.5rem;
-            }
-        }
-    }
-}
-
 
 /* ********************************************************************************************* */
 /* Things for the WorkTable (middle) */
@@ -137,11 +45,15 @@
 .ncoda-text-editor {
     .ncoda-text-editor-controls {
         // buttons ("Run as Python" and "Submit as Lilypond")
-        background: @comp-l1-bg;
         position: absolute;
         bottom: 0;
         right: 0;
         z-index: 99;
+        text-align: right;
+
+        button {
+            float: none;
+        }
     }
 
     .CodeMirror {

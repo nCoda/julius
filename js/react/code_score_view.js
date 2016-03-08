@@ -70,7 +70,7 @@ const TextEditor = React.createClass({
                                             // better IME and and screen reader support
         };
         return (
-            <div className="codemirror-root">
+            <div className="custom-scrollbars-container">
                 <div className="ncoda-text-editor-controls">
                     <ButtonGroup>
                         <Button onClick={this.handleSubmitPython}>
@@ -193,7 +193,7 @@ const WorkTable = React.createClass({
                         submitToLychee={this.props.submitToLychee}
                     />
                 </div>
-                <div className="verovio-root">
+                <div className="custom-scrollbars-container">
                     <Scrollbars className="custom-scrollbars">
                         <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
                     </Scrollbars>
@@ -265,7 +265,7 @@ const TerminalOutput = React.createClass({
                     <div className="panel-head">
                         <h2>{`Your Input`}</h2>
                     </div>
-                    <div className="terminal-in-root">
+                    <div className="custom-scrollbars-container">
                         <Scrollbars className="custom-scrollbars">
                             <TerminalWindow outputThis={this.state.stdin}/>
                         </Scrollbars>
@@ -275,7 +275,7 @@ const TerminalOutput = React.createClass({
                     <div className="panel-head">
                         <h2>{`Python Output`}</h2>
                     </div>
-                    <div className="terminal-out-root">
+                    <div className="custom-scrollbars-container">
                         <Scrollbars className="custom-scrollbars">
                             <TerminalWindow outputThis={this.state.stdout}/>
                         </Scrollbars>
