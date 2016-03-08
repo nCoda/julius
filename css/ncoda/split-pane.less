@@ -25,43 +25,42 @@
 @import "amazeui_overrides";
 
 .Resizer {
-    background: @black;
-    opacity: .2;
+    background: @gray;
     z-index: 1;
     -webkit-background-clip: padding;
     -moz-background-clip: padding;
     background-clip: padding-box;
-    -webkit-transition: border .2s ease-in-out;
-    -moz-transition: border .2s ease-in-out;
-    -o-transition: border .2s ease-in-out;
-    transition: border .2s ease-in-out;
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
 
     &.horizontal {
-        height: 11px;
-        margin: -5px 0;
-        border-top: 5px solid transparent;
-        border-bottom: 5px solid transparent;
+        height: 15px;  // divider is 3px (margin x2 subtracted)
+        margin: -6px 0;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
         cursor: row-resize;
         width: 100%;
         z-index: 999;
 
         &:hover {
-            border-top: 5px solid rgba(red(@black), green(@black), blue(@black), 1);
-            border-bottom: 5px solid rgba(red(@black), green(@black), blue(@black), 1);
+            background-color: @white;
+            border-color: rgba(red(@black), green(@black), blue(@black), .3);
         }
     }
     &.vertical {
-        width: 11px;
-        margin: 0 -5px;
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
+        width: 15px;
+        margin: 0 -6px;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
         cursor: col-resize;
         height: 100%;
         z-index: 999;
 
         &:hover {
-            border-left: 5px solid rgba(red(@black), green(@black), blue(@black), 1);
-            border-right: 5px solid rgba(red(@black), green(@black), blue(@black), 1);
+            background-color: @white;
+            border-color: rgba(red(@black), green(@black), blue(@black), .3);
         }
     }
 }
