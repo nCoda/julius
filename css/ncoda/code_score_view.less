@@ -85,14 +85,18 @@
 /* ********************************************************************************************* */
 /* Things for the terminals (bottom) */
 
-.ncoda-terminal-window {
-    // This is the terminal itself.
-    position: absolute; //needed to fill flexbox parent
-    width: 100%;
-    height: 100%;
-    pre {
+.panel-container {
+    background-color: @code-bg;
+    color: @code-color;
+    .ncoda-terminal-window {
+        // This is the terminal itself.
+        position: absolute; //needed to fill flexbox parent
         width: 100%;
         height: 100%;
-        margin: 0;
+        pre {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
     }
 }
