@@ -25,10 +25,10 @@
 
 import {Store, toImmutable} from 'nuclear-js';
 import signals from '../signals';
+import {Vida} from '../../lib/vida';
 
 
 // TODO: move all the Verovio-rendering stuff to here.
-
 
 const MeiForVerovio = Store({
     // Representing the MEI document to send to Verovio.
@@ -39,9 +39,26 @@ const MeiForVerovio = Store({
     getInitialState() {
         return toImmutable('');
     },
+
     initialize() {
+        // Called once to initialize the Vida object
+        this.on(signals.names.INITIALIZE_VIDA, this.initializeVida);
+
+        this.on(signals.names.LOAD_MEI, this.loadMEI);
         this.on(signals.names.RENDER_TO_VEROVIO, renderToVerovio);
     },
+
+    initializeVida(previousState, vidaParams) 
+    {
+        this.vida = new Vida(vidaParams);
+        if (this.mei) this.vida.refreshVerovio(this.mei);
+    },
+
+    loadMEI(previousState, mei)
+    {
+        this.mei = mei;
+        if (this.vida) this.vida.refreshVerovio(this.mei);
+    }
 });
 
 

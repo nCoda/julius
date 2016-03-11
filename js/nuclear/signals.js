@@ -52,6 +52,8 @@ const names = {
     STDOUT: 'STDOUT',
     STDERR: 'STDERR',
     // Verovio
+    INITIALIZE_VIDA: 'INITIALIZE_VIDA',
+    LOAD_MEI: 'LOAD_MEI',
     RENDER_TO_VEROVIO: 'RENDER_TO_VEROVIO',
     // Fujian PyPy Server (currently doesn't affect NuclearJS)
     FUJIAN_START_WS: 'FUJIAN_START_WS',
@@ -113,6 +115,14 @@ const emitters = {
     },
 
     // Verovio
+    initializeVida(settings) {
+        reactor.dispatch(names.INITIALIZE_VIDA, settings);
+    },
+
+    loadMEI(mei) {
+        reactor.dispatch(names.LOAD_MEI, mei)
+    },
+
     renderToVerovio(mei) {
         reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
     },

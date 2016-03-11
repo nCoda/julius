@@ -114,48 +114,7 @@ const Verovio = React.createClass({
         // - meiForVerovio: do NOT set in this function (set by the ReactMixin)
         return {verovio: null, renderedMei: ''};
     },
-    renderWithVerovio(renderThis) {
-        // Ensure there's an instance of Verovio available, and use it to render "renderThis."
-        //
-        // TODO: move all the interaction with Verovio to part of the model
-        //
-
-        if (null === this.state.verovio) {
-            return (
-                <div class="verovio-waiting">
-                    <i class="fa fa-spinner fa-5x fa-spin"></i>
-                    <div>{'Loading ScoreView'}</div>
-                </div>
-            );
-        }
-        else if (null === renderThis) {
-            return 'Received no MEI to render.';
-        }
-
-        let theOptions = {inputFormat: 'mei'};
-        theOptions = JSON.stringify(theOptions);
-        let rendered = this.state.verovio.renderData(renderThis, theOptions);
-        // TODO: dynamically set the height of the .ncoda-verovio <div> so it automatically responds proportionally to width changes
-        rendered = rendered.replace('width="2100px" height="2970px"', '');
-        return rendered;
-    },
-    makeVerovio() {
-        // TODO: consider whether we should be making a global instance? (I'm thinking one per Verovio component is good though)
-
-        try {
-            this.setState({verovio: new verovio.toolkit()});
-        }
-        catch (err) {
-            if ('ReferenceError' === err.name) {
-                window.setTimeout(this.makeVerovio, 250);
-            }
-            else {
-                throw err;
-            }
-        }
-    },
     componentWillMount() {
-        this.makeVerovio();
         signals.emitters.registerOutboundFormat('verovio', 'Verovio component', true);
     },
     componentWillUnmount() {
@@ -163,11 +122,17 @@ const Verovio = React.createClass({
         delete this.state.verovio;
     },
     render() {
-        const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
+        signals.emitters.loadMEI(this.state.meiForVerovio);
         return (
-            <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
+            <div className="ncoda-verovio" ref="verovioFrame"></div> 
         );
     },
+    componentDidMount() {
+        signals.emitters.initializeVida({
+            'parentElement': document.querySelector('.ncoda-verovio'),
+            'workerLocation': '/js/lib/verovioWorker.js'
+        });
+    }
 });
 
 
