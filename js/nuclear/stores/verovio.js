@@ -37,6 +37,7 @@ const MeiForVerovio = Store({
     //
 
     getInitialState() {
+        this.vida = new Vida();
         return toImmutable('');
     },
 
@@ -50,7 +51,7 @@ const MeiForVerovio = Store({
 
     initializeVida(previousState, vidaParams) 
     {
-        this.vida = new Vida(vidaParams);
+        this.vida.setDefaults(vidaParams);
         if (this.mei) this.vida.refreshVerovio(this.mei);
     },
 

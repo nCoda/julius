@@ -130,7 +130,8 @@ const Verovio = React.createClass({
     componentDidMount() {
         signals.emitters.initializeVida({
             'parentElement': document.querySelector('.ncoda-verovio'),
-            'workerLocation': '/js/lib/verovioWorker.js'
+            'workerLocation': '/js/lib/verovioWorker.js',
+            'verovioLocation': '/js/verovio-toolkit-0.9.9.js'
         });
     }
 });
