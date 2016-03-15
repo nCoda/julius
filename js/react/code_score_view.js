@@ -28,7 +28,7 @@ import React from 'react';
 import ReactCodeMirror from './CodeMirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
-import Scrollbars from '../../node_modules/react-custom-scrollbars';
+import CustomScrollbars from './CustomScrollbars';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
@@ -64,7 +64,6 @@ const TextEditor = React.createClass({
             lineNumbers: true,
             autofocus: true,
             lineWrapping: true,
-            scrollbarStyle: null,
             inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
                                             // desktop and may not be so good for us, but it has
                                             // better IME and and screen reader support
@@ -81,14 +80,14 @@ const TextEditor = React.createClass({
                         </Button>
                     </ButtonGroup>
                 </div>
-                <Scrollbars className="custom-scrollbars">
+                <CustomScrollbars>
                     <ReactCodeMirror
                         path="ncoda-editor"
                         options={codeMirrorOptions}
                         value={this.state.editorValue}
                         onChange={this.handleEditorChange}
                     />
-                </Scrollbars>
+                </CustomScrollbars>
             </div>
         );
     },
@@ -194,9 +193,9 @@ const WorkTable = React.createClass({
                     />
                 </div>
                 <div className="custom-scrollbars-container">
-                    <Scrollbars className="custom-scrollbars">
+                    <CustomScrollbars>
                         <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
-                    </Scrollbars>
+                    </CustomScrollbars>
                 </div>
             </SplitPane>
         );
@@ -266,9 +265,9 @@ const TerminalOutput = React.createClass({
                         <h2>{`Your Input`}</h2>
                     </div>
                     <div className="custom-scrollbars-container">
-                        <Scrollbars className="custom-scrollbars">
+                        <CustomScrollbars>
                             <TerminalWindow outputThis={this.state.stdin}/>
-                        </Scrollbars>
+                        </CustomScrollbars>
                     </div>
                 </div>
                 <div className="panel-container">
@@ -276,9 +275,9 @@ const TerminalOutput = React.createClass({
                         <h2>{`Python Output`}</h2>
                     </div>
                     <div className="custom-scrollbars-container">
-                        <Scrollbars className="custom-scrollbars">
+                        <CustomScrollbars>
                             <TerminalWindow outputThis={this.state.stdout}/>
-                        </Scrollbars>
+                        </CustomScrollbars>
                     </div>
                 </div>
             </SplitPane>
