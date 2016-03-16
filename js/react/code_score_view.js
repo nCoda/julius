@@ -28,7 +28,7 @@ import React from 'react';
 import ReactCodeMirror from './CodeMirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
-import CustomScrollbars from './CustomScrollbars';
+import CustomScrollbars from './custom_scrollbars';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';

@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/react/CustomScrollbars.js
+// Filename:               js/react/custom_scrollbars.js
 // Purpose:                Customization of react-custom-scrollbars
 //
 // Copyright (C) 2016 Sienna M. Wood
