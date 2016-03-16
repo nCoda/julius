@@ -31,24 +31,21 @@
     position: relative;
     display: block;
     height:100%;
-    background: @gray-darker;
+    background: @code-bg;
 }
 
 /* ********************************************************************************************* */
 /* Things for the WorkTable (middle) */
 
-.ncoda-work-table {
-    width: inherit;
-}
-
 /* TextEditor (middle-left) */
 .ncoda-text-editor {
+
     .ncoda-text-editor-controls {
         // buttons ("Run as Python" and "Submit as Lilypond")
         position: absolute;
         bottom: 0;
         right: 0;
-        z-index: 99;
+        z-index: 2;
         text-align: right;
 
         button {
@@ -89,11 +86,9 @@
 .panel-container {
     background-color: @code-bg;
     color: @code-color;
+
     .ncoda-terminal-window {
-        // This is the terminal itself.
-        position: absolute; //needed to fill flexbox parent
-        width: 100%;
-        height: 100%;
+
         pre {
             width: 100%;
             min-height: 100%;
