@@ -50,12 +50,16 @@
         }
     }
 
-    .CodeMirror {
+    .CodeMirror { // see codemirror_ncoda.less for colors
         position: absolute; //needed to fill flexbox parent
         width: 100%;
-        height: 100%;
+        min-height: 100%;
         font-size: smaller;
         overflow: hidden;
+
+        .CodeMirror-gutters {
+            min-height: 100%;
+        }
     }
 }
 
