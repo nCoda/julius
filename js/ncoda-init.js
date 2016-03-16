@@ -39,6 +39,7 @@ import NCoda from './react/ncoda';
 import {MainScreen, Colophon} from './react/ncoda';
 import StructureView from './react/structure_view';
 import CodeScoreView from './react/code_score_view';
+import RevisionView from './react/revision_view';
 
 // Set the default log level and connect to Fujian.
 import signals from './nuclear/signals';
@@ -54,6 +55,7 @@ ReactDOM.render((
             <IndexRoute component={MainScreen}/>
             <Route path="codescore" component={CodeScoreView}/>
             <Route path="structure" component={StructureView}/>
+            <Route path="revision" component={RevisionView}/>
             <Route path="colophon" component={Colophon}/>
         </Route>
     </Router>
