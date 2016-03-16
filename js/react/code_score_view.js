@@ -70,24 +70,29 @@ const TextEditor = React.createClass({
         };
         return (
             <div className="custom-scrollbars-container">
-                <div className="ncoda-text-editor-controls">
-                    <ButtonGroup>
-                        <Button onClick={this.handleSubmitPython}>
-                            {`Run as Python`}
-                        </Button>
-                        <Button onClick={this.handleSubmitLilyPond}>
-                            {`Submit as Lilypond`}
-                        </Button>
-                    </ButtonGroup>
+                <div className="panel-head">
+                    <h2>{`Text Editor`}</h2>
+                    <div className="ncoda-text-editor-controls">
+                        <ButtonGroup>
+                            <Button onClick={this.handleSubmitPython}>
+                                {`Run as Python`}
+                            </Button>
+                            <Button onClick={this.handleSubmitLilyPond}>
+                                {`Submit as Lilypond`}
+                            </Button>
+                        </ButtonGroup>
+                    </div>
                 </div>
-                <CustomScrollbars>
-                    <ReactCodeMirror
-                        path="ncoda-editor"
-                        options={codeMirrorOptions}
-                        value={this.state.editorValue}
-                        onChange={this.handleEditorChange}
-                    />
-                </CustomScrollbars>
+                <div className="custom-scrollbars-container">
+                    <CustomScrollbars>
+                        <ReactCodeMirror
+                            path="ncoda-editor"
+                            options={codeMirrorOptions}
+                            value={this.state.editorValue}
+                            onChange={this.handleEditorChange}
+                        />
+                    </CustomScrollbars>
+                </div>
             </div>
         );
     },
@@ -181,21 +186,25 @@ const WorkTable = React.createClass({
     },
     render() {
         return (
-            <SplitPane split="vertical" ref="workTable" className="ncoda-work-table" minSize="20" defaultSize="40%">
+            <SplitPane split="vertical"
+                       ref="workTable"
+                       className="ncoda-work-table"
+                       minSize="20"
+                       defaultSize="40%"
+                       primary="second">
                 <div className="ncoda-text-editor panel-container">
-                    <div className="panel-head">
-                        <h2>{`Text Editor`}</h2>
-                    </div>
                     <TextEditor
                         ref="textEditor"
                         submitToPyPy={this.props.submitToPyPy}
                         submitToLychee={this.props.submitToLychee}
                     />
                 </div>
-                <div className="custom-scrollbars-container">
-                    <CustomScrollbars>
-                        <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
-                    </CustomScrollbars>
+                <div className="ncoda-verovio panel-container">
+                    <div className="custom-scrollbars-container">
+                        <CustomScrollbars>
+                            <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
+                        </CustomScrollbars>
+                    </div>
                 </div>
             </SplitPane>
         );
