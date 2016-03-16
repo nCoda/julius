@@ -43,12 +43,8 @@
         cursor: row-resize;
         width: 100%;
         z-index: 999;
-
-        &:hover {
-            background-color: @white;
-            border-color: rgba(red(@black), green(@black), blue(@black), .3);
-        }
     }
+
     &.vertical {
         width: 15px;
         margin: 0 -6px;
@@ -58,10 +54,11 @@
         height: 100%;
         z-index: 999;
 
-        &:hover {
-            background-color: @white;
-            border-color: rgba(red(@black), green(@black), blue(@black), .3);
-        }
+    }
+
+    &:hover {
+        background-color: @white;
+        border-color: rgba(red(@black), green(@black), blue(@black), .3);
     }
 }
 
@@ -72,22 +69,21 @@
 
     .panel-head {
         display: block;
-        background-color: inherit;
-        color: inherit;
         position: absolute;
-        height: 4.7rem;
+        height: 3.8rem;
         width: 100%;
-        min-width: 38rem;
-        padding: .7rem .5rem;
+        min-width: 35rem;
+        padding: .5rem;
+        background-color: @gray-darker;
+        color: inherit;
         top: 0;
         left: 0;
-        z-index: 99;
-        white-space: nowrap;
 
         h2 {
             font-size: 1.6rem;
             line-height: 1;
-            padding: .8rem;
+            padding: .6rem;
+            margin: 0;
             display: inline-block;
             float: left;
         }

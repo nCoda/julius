@@ -69,15 +69,15 @@ const TextEditor = React.createClass({
                                             // better IME and and screen reader support
         };
         return (
-            <div className="custom-scrollbars-container">
+            <div>
                 <div className="panel-head">
                     <h2>{`Text Editor`}</h2>
                     <div className="ncoda-text-editor-controls">
                         <ButtonGroup>
-                            <Button onClick={this.handleSubmitPython}>
+                            <Button className="am-btn-xs" onClick={this.handleSubmitPython}>
                                 {`Run as Python`}
                             </Button>
-                            <Button onClick={this.handleSubmitLilyPond}>
+                            <Button className="am-btn-xs" onClick={this.handleSubmitLilyPond}>
                                 {`Submit as Lilypond`}
                             </Button>
                         </ButtonGroup>
@@ -268,7 +268,11 @@ const TerminalOutput = React.createClass({
     },
     render() {
         return (
-            <SplitPane split="vertical" id="ncoda-terminal-output" className="ncoda-terminal-output">
+            <SplitPane
+                split="vertical"
+                id="ncoda-terminal-output"
+                className="ncoda-terminal-output"
+                primary="second">
                 <div className="panel-container">
                     <div className="panel-head">
                         <h2>{`Your Input`}</h2>
