@@ -37,7 +37,10 @@ export default createClass({
 
     renderThumb({ style, ...props }) {
         const thumbStyle = {
-            backgroundColor: 'red',
+            transparency: '.7',
+            backgroundColor: '#FFFFFF',
+            border: 'solid #000000 1px',
+            borderRadius: '5px'
         };
         return (
             <div
