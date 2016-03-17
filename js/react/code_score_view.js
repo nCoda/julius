@@ -74,11 +74,11 @@ const TextEditor = React.createClass({
                     <h2>{`Text Editor`}</h2>
                     <div className="ncoda-text-editor-controls">
                         <ButtonGroup>
-                            <Button className="am-btn-xs" onClick={this.handleSubmitPython}>
-                                {`Run as Python`}
+                            <Button title="Run as Python" className="am-btn-xs" onClick={this.handleSubmitPython}>
+                                <img className="icon-python" alt="Run as Python"></img>
                             </Button>
-                            <Button className="am-btn-xs" onClick={this.handleSubmitLilyPond}>
-                                {`Submit as Lilypond`}
+                            <Button title="Submit as Lilypond" className="am-btn-xs" onClick={this.handleSubmitLilyPond}>
+                                <img className="icon-lilypond" alt="Submit as Lilypond"></img>
                             </Button>
                         </ButtonGroup>
                     </div>
