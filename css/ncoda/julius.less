@@ -70,6 +70,35 @@ blockquote.nc-quote {
 }
 
 
+// =============================================================================
+// Off-screen main menu
+// =============================================================================
+
+.am-menu-offcanvas1 {
+    .am-offcanvas-bar {
+        background: @topbar-bg;
+        box-shadow: 0 0 1rem 0 @black;
+        &:after {
+            background: @topbar-border;
+        }
+    }
+    .am-menu-nav {
+    border-bottom: 1px solid fade(@black, 30%);
+    box-shadow: 0 1px 0 fade(@white, 5%);
+
+        > li > a {
+            border-top: 1px solid fade(@black, 30%);
+            box-shadow: inset 0 1px 0 fade(@white, 7.5%);
+            color: @global-contrast-color;
+            &:focus, &:hover {
+                color: @global-primary;
+                background: unset;
+            }
+        }
+    }
+}
+
+
 /* ********************************************************************************************* */
 /* Dialogue Boxes and Related */
 // TODO: abandon these in favour of amazeui Modal
