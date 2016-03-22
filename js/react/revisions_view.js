@@ -3,10 +3,10 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/react/structure_view.js
-// Purpose:                React components for RevisionView.
+// Filename:               js/react/revisions_view.js
+// Purpose:                React components for RevisionsView.
 //
-// Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Wei Gao
+// Copyright (C) 2016 Wei Gao
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as

@@ -6,7 +6,7 @@
 // Filename:               js/ncoda-init.js
 // Purpose:                Initializes Julius for nCoda.
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2016 Christopher Antila, Wei Gao
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,7 @@ import NCoda from './react/ncoda';
 import {MainScreen, Colophon} from './react/ncoda';
 import StructureView from './react/structure_view';
 import CodeScoreView from './react/code_score_view';
-import RevisionView from './react/revision_view';
+import RevisionsView from './react/revisions_view';
 
 // Set the default log level and connect to Fujian.
 import signals from './nuclear/signals';
@@ -55,7 +55,7 @@ ReactDOM.render((
             <IndexRoute component={MainScreen}/>
             <Route path="codescore" component={CodeScoreView}/>
             <Route path="structure" component={StructureView}/>
-            <Route path="revision" component={RevisionView}/>
+            <Route path="revisions" component={RevisionsView}/>
             <Route path="colophon" component={Colophon}/>
         </Route>
     </Router>
