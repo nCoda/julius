@@ -23,20 +23,55 @@
 // ------------------------------------------------------------------------------------------------
 
 
-import {Button, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
+import {Button, ButtonGroup, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
 import React from 'react';
 import {Link} from 'react-router';
 
 import {log} from '../util/log';
 import signals from '../nuclear/signals';
-import {DialogueBox} from './generics';
+import {DialogueBox, OffCanvas} from './generics';
 
 
 const MainScreen = React.createClass({
+    handleOpen() {
+        if (require) {
+            const remote = require('electron').remote;
+            const dir = remote.dialog.showOpenDialog(
+                {
+                    title: 'title',
+                    properties: ['openDirectory', 'creatDirectory'],
+                }
+            );
+            signals.emitters.setRepositoryDirectory(dir);
+        }
+        else {
+            // this is a much worse solution than the native dialogue above
+            signals.emitters.dialogueBoxShow({
+                type: 'question',
+                message: 'Please enter the repository directory',
+                detail: 'This can break pretty easily, so be careful!',
+                callback: (answer) => signals.emitters.setRepositoryDirectory(answer),
+            });
+        }
+    },
+    handleDefaultOpen() {
+        signals.emitters.setRepositoryDirectory('testrepo');
+    },
+    handleTempOpen() {
+        signals.emitters.setRepositoryDirectory('');
+    },
     render() {
         return (
             <div id="ncoda-loading">
-                <p>{`Use the menus above to navigate the program.`}</p>
+                <p>{`Use the menus above to navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
+                <div>
+                    <p>{`Use this button to open a repository directory.`}</p>
+                    <ButtonGroup>
+                        <Button onClick={this.handleOpen}>Open</Button>
+                        <Button onClick={this.handleDefaultOpen}>(Try to) Load Default Repository</Button>
+                        <Button onClick={this.handleTempOpen}>Load an empty, temporary repository.</Button>
+                    </ButtonGroup>
+                </div>
                 <MainScreenQuote/>
             </div>
         );
@@ -87,43 +122,31 @@ const Colophon = React.createClass({
 
 const GlobalMenu = React.createClass({
     propTypes: {
-        showMenu: React.PropTypes.bool,
+        showMenu: React.PropTypes.bool.isRequired,
         handleHide: React.PropTypes.func.isRequired,
     },
-    getDefaultProps() {
-        return {showMenu: false};
-    },
     render() {
-        let offCanvas = 'am-offcanvas';
-        let offCanvasBar = 'am-offcanvas-bar am-offcanvas-bar-overlay';
-        if (this.props.showMenu) {
-            offCanvas += ' am-active';
-            offCanvasBar += ' am-offcanvas-bar-active';
-        }
-
         return (
             <nav data-am-widget="menu" className="am-menu am-menu-offcanvas1" data-am-menu-offcanvas>
-                <div className={offCanvas} onClick={this.props.handleHide}>
-                    <div className={offCanvasBar}>
-                        <Nav className="am-menu-nav">
-                            <NavItem linkComponent={Link} linkProps={{to: "/"}}>
-                                {`nCoda Home`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
-                                {`About`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
-                                {`CodeScoreView`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
-                                {`StructureView`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/revision"}}>
-                                {`RevisionView`}
-                            </NavItem>
-                        </Nav>
-                    </div>
-                </div>
+                <OffCanvas padding={false} showContents={this.props.showMenu} handleHide={this.props.handleHide}>
+                    <Nav className="am-menu-nav">
+                        <NavItem linkComponent={Link} linkProps={{to: "/"}}>
+                            {`nCoda Home`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
+                            {`About`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
+                            {`CodeScoreView`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
+                            {`StructureView`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/revision"}}>
+                            {`RevisionView`}
+                        </NavItem>
+                    </Nav>
+                </OffCanvas>
             </nav>
         );
     },
