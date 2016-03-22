@@ -25,7 +25,7 @@
 @import "amazeui_overrides";
 
 .Resizer {
-    background: @gray;
+    background: @comp-l1-border;
     z-index: 1;
     -webkit-background-clip: padding;
     -moz-background-clip: padding;
@@ -74,8 +74,9 @@
         width: 100%;
         min-width: 35rem;
         padding: .5rem;
-        background-color: @gray-darker;
-        color: inherit;
+        background-color: @comp-l1-bg;
+        border-bottom: solid 1px @comp-l1-border;
+        color: @base-text-color;
         top: 0;
         left: 0;
         z-index: 99;

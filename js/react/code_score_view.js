@@ -56,7 +56,7 @@ const TextEditor = React.createClass({
     render() {
         const codeMirrorOptions = {
             mode: "python",
-            theme: "codemirror-ncoda dark",
+            theme: "codemirror-ncoda light",
             indentUnit: 4,
             indentWithTabs: false,
             smartIndent: true,
