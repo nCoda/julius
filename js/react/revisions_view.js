@@ -6,7 +6,7 @@
 // Filename:               js/react/revisions_view.js
 // Purpose:                React components for RevisionsView.
 //
-// Copyright (C) 2016 Wei Gao
+// Copyright (C) 2016 Wei Gao, Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -25,22 +25,20 @@
 import {Badge, List, ListItem} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
-import moment from 'moment';
 
-const RevisionList = React.createClass({
+import getters from '../nuclear/getters';
+import reactor from '../nuclear/reactor';
+import {emitters as signals} from '../nuclear/signals';
+
+
+const Revlog = React.createClass({
+    propTypes: {
+        revlog: React.PropTypes.instanceOf(Immutable.List).isRequired,
+    },
     render() {
-        const rawDate= moment(new Date()).format('MMM Do YYYY');
-
-        const d = rawDate.toString();
-        const mockData = [
-          {msg: 'commit 1  ', author: 'Balzac', date: d, revNumber: '9gfgj4lj4fgf', section: 'A'},
-          {msg: 'commit 2  ', author: 'Wei G', date: d, revNumber: '4kjh42lkhl5jl', section: 'B'},
-          {msg: 'commit 3  ', author: 'Christopher A', date: d, revNumber: '43kjhkkk3k3kk3', section: 'C'},
-        ];
-
         return (
             <div className="nc-rv-frame">
-                <table width="100%" class="am-table am-table-striped">
+                <table width="100%" className="am-table am-table-striped">
                     <thead>
                         <tr>
                             <th>DATE</th>
@@ -51,12 +49,13 @@ const RevisionList = React.createClass({
                         </tr>
                     </thead>
                     <tbody>
-                        {mockData.map((m, key) =>
-                            <Revision date={m.date}
-                                      msg={m.msg}
-                                      author={m.author}
-                                      revNumber={m.revNumber}
-                                      section={m.section}/>
+                        {this.props.revlog.map((m, key) =>
+                            <Changeset key={key}
+                                       date={m.get('date')}
+                                       msg={m.get('msg')}
+                                       author={m.get('author')}
+                                       revNumber={m.get('revNumber')}
+                                       section={m.get('section')}/>
                         )}
                   </tbody>
                 </table>
@@ -65,7 +64,8 @@ const RevisionList = React.createClass({
     },
 });
 
-const Revision = React.createClass({
+
+const Changeset = React.createClass({
   propTypes: {
       date: React.PropTypes.string.isRequired,
       msg: React.PropTypes.string.isRequired,
@@ -86,6 +86,7 @@ const Revision = React.createClass({
     },
 });
 
+
 const TextualDiff = React.createClass({
   propTypes: {
 
@@ -96,4 +97,27 @@ const TextualDiff = React.createClass({
       );
     },
 });
-export default RevisionList;
+
+
+/** RevlogNuclear: wrapper for Revlog that connects to NuclearJS for nCoda.
+ */
+const RevlogNuclear = React.createClass({
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {revlog: getters.vcsRevlog};
+    },
+    componentWillMount() {
+        // tell Lychee we want VCS data
+        signals.registerOutboundFormat('vcs', 'RevisionsView', true);
+    },
+    componentWillUnmount() {
+        // tell Lychee we don't need VCS data any more
+        signals.unregisterOutboundFormat('vcs', 'RevisionsView');
+    },
+    render() {
+        return <Revlog revlog={this.state.revlog}/>;
+    },
+});
+
+
+export default RevlogNuclear;
