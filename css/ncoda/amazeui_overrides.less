@@ -33,7 +33,7 @@
 
 @import "../../amazeui/less/variables";
 
-@white: #fbfffd;
+@white: #fbfbfb;
 @black: #000;
 @clear: rgba(0, 0, 0, 0);
 
@@ -213,8 +213,8 @@ button {
 // =============================================================================
 
 // TODO: pull out these colours from whatever theme is chosen for text editing windows
-@code-color: @gray-light;
-@code-bg:    @gray-darker;
+@code-color: lighten(@gray-darker, 37.2%);  // @base00 from codemirror_ncoda.less
+@code-bg:    lighten(@gray-darker, 87.5%);  // @base3 from codemirror_ncoda.less
 @pre-bg:     @code-bg;
 @pre-color:  @code-color;
 @pre-border: 1px solid @pre-bg;
