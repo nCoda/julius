@@ -101,6 +101,9 @@ body {
     cursor: default;
 }
 
+// NOTE: these aren't in amazeUI, but we'll use them there anyway
+@global-padding: 1.5rem;
+
 
 // =============================================================================
 // Fonts
@@ -128,7 +131,7 @@ body {
 @btn-danger-color:               @white;
 
 .am-btn, .am-btn-link {
-    border-radius: 0.2rem;
+    border-radius: @radius-normal;
     cursor: default;
     &:focus, &:active:focus {
         outline: none;
@@ -221,20 +224,23 @@ button {
 
 
 // =============================================================================
-// Off-screen Menu
+// OffCanvas (a React component defined in "generics.js" built on amazeUI)
 // =============================================================================
 
-.am-menu-offcanvas1 .am-menu-nav {
-    border-bottom: 1px solid rgba(0,0,0,.3);
-    box-shadow: 0 1px 0 rgba(255,255,255,.05);
+@offcanvas-dimmer-background: fade(@black, 30%);
+@offcanvas-bar-background:    @comp-l1-bg;
+@offcanvas-bar-border-color:  @comp-l1-border;
 
-    > li > a {
-        border-top: 1px solid rgba(0,0,0,.3);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
-        color: @global-contrast-color;
-        &:focus, &:hover {
-            color: @global-primary;
-        }
+.am-offcanvas-bar {
+    box-shadow: 0 0 2rem 0 @comp-l1-border;
+}
+
+.am-offcanvas-content {
+    padding: @global-padding;
+    background: inherit;
+    color: @base-text-color;
+    a {
+        color: @global-primary;
     }
 }
 
@@ -254,7 +260,7 @@ button {
 // =============================================================================
 
 @panel-bg:            @comp-l1-bg;
-@panel-border-radius: @global-radius;
+@panel-border-radius: @radius-normal;
 // @panel-hd-padding:            .6rem 1.25rem;
 // @panel-bd-padding:            1.25rem;
 
