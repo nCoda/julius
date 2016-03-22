@@ -78,7 +78,7 @@
     margin: 0 1rem;
 }
 .nc-active-sections > div {
-    padding: @global-padding;
+    padding: @global-padding 0px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -122,6 +122,17 @@
 
 .nc-strv-section:hover .am-icon-primary {
     background-color: @global-primary;
+}
+
+@drop-transition: width 0.2s ease-in-out;
+.nc-strv-drop-target {
+    width: @global-padding;
+    transition: @drop-transition;
+}
+.nc-strv-drop-target-active {
+    width: @global-padding * 4;
+    background: @comp-l2-bg;
+    transition: @drop-transition;
 }
 
 
