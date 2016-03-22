@@ -29,6 +29,7 @@ import ReactCodeMirror from './CodeMirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
 import CustomScrollbars from './custom_scrollbars';
+import {IconPython, IconLilypond} from './svg_icons';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
@@ -75,10 +76,10 @@ const TextEditor = React.createClass({
                     <div className="ncoda-text-editor-controls">
                         <ButtonGroup>
                             <Button title="Run as Python" className="am-btn-xs" onClick={this.handleSubmitPython}>
-                                <img className="icon-python" alt="Run as Python"></img>
+                                <IconPython />
                             </Button>
                             <Button title="Submit as Lilypond" className="am-btn-xs" onClick={this.handleSubmitLilyPond}>
-                                <img className="icon-lilypond" alt="Submit as Lilypond"></img>
+                                <IconLilypond />
                             </Button>
                         </ButtonGroup>
                     </div>
