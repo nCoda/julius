@@ -340,7 +340,14 @@ const emitters = {
 
         // otherwise ask Lychee to move the <section>
         log.debug(`moving ${sectionID} to index ${moveToIndex}`);
-        console.log(`moving ${sectionID} to index ${moveToIndex}`);  // TODO: actually emit signal to Lychee
+        // TODO: double-check there isn't a ' in "sectionID"
+        if (sectionID.indexOf("'") >= 0) {
+            log.error('Cannot move a section with an xmlid that contains the \' character.');
+        }
+        else {
+            const code = `import lychee\nlychee.signals.document.MOVE_SECTION_TO.emit(xmlid='${sectionID}', position=${moveToIndex})`;
+            fujian.sendWS(code);
+        }
     },
 };
 
