@@ -65,6 +65,7 @@ const TextEditor = React.createClass({
             lineNumbers: true,
             autofocus: true,
             lineWrapping: true,
+            scrollbarStyle: null,
             inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
                                             // desktop and may not be so good for us, but it has
                                             // better IME and and screen reader support
@@ -84,16 +85,14 @@ const TextEditor = React.createClass({
                         </ButtonGroup>
                     </div>
                 </div>
-                <div className="custom-scrollbars-container">
-                    <CustomScrollbars>
-                        <ReactCodeMirror
-                            path="ncoda-editor"
-                            options={codeMirrorOptions}
-                            value={this.state.editorValue}
-                            onChange={this.handleEditorChange}
-                        />
-                    </CustomScrollbars>
-                </div>
+                <CustomScrollbars>
+                    <ReactCodeMirror
+                        path="ncoda-editor"
+                        options={codeMirrorOptions}
+                        value={this.state.editorValue}
+                        onChange={this.handleEditorChange}
+                    />
+                </CustomScrollbars>
             </div>
         );
     },
@@ -201,11 +200,9 @@ const WorkTable = React.createClass({
                     />
                 </div>
                 <div className="ncoda-verovio panel-container">
-                    <div className="custom-scrollbars-container">
-                        <CustomScrollbars>
-                            <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
-                        </CustomScrollbars>
-                    </div>
+                    <CustomScrollbars>
+                        <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
+                    </CustomScrollbars>
                 </div>
             </SplitPane>
         );
@@ -279,21 +276,17 @@ const TerminalOutput = React.createClass({
                     <div className="panel-head">
                         <h2>{`Your Input`}</h2>
                     </div>
-                    <div className="custom-scrollbars-container">
-                        <CustomScrollbars>
-                            <TerminalWindow outputThis={this.state.stdin}/>
-                        </CustomScrollbars>
-                    </div>
+                    <CustomScrollbars>
+                        <TerminalWindow outputThis={this.state.stdin}/>
+                    </CustomScrollbars>
                 </div>
                 <div className="panel-container">
                     <div className="panel-head">
                         <h2>{`Python Output`}</h2>
                     </div>
-                    <div className="custom-scrollbars-container">
-                        <CustomScrollbars>
-                            <TerminalWindow outputThis={this.state.stdout}/>
-                        </CustomScrollbars>
-                    </div>
+                    <CustomScrollbars>
+                        <TerminalWindow outputThis={this.state.stdout}/>
+                    </CustomScrollbars>
                 </div>
             </SplitPane>
         );

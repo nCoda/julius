@@ -54,13 +54,13 @@ export default createClass({
         const { style } = this.props;
         const containerStyle = {
             ...style,
-            position: 'relative',
+            position: 'absolute',
             width: '100%',
             height: '100%'
         };
 
         return (
-            <div style={containerStyle}>
+            <div className="custom-scrollbars-container" style={containerStyle}>
                 <Scrollbars
                     className="custom-scrollbars"
                     ref="scrollbars"
