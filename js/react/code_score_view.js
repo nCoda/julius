@@ -190,9 +190,9 @@ const WorkTable = React.createClass({
             <SplitPane split="vertical"
                        ref="workTable"
                        className="ncoda-work-table"
+                       primary="second"
                        minSize="20"
-                       defaultSize="40%"
-                       primary="second">
+                       defaultSize="60%">
                 <div className="ncoda-text-editor panel-container">
                     <TextEditor
                         ref="textEditor"
@@ -269,11 +269,12 @@ const TerminalOutput = React.createClass({
     },
     render() {
         return (
-            <SplitPane
-                split="vertical"
-                id="ncoda-terminal-output"
-                className="ncoda-terminal-output"
-                primary="second">
+            <SplitPane split="vertical"
+                       id="ncoda-terminal-output"
+                       className="ncoda-terminal-output"
+                       primary="second"
+                       minSize="20"
+                       defaultSize="50%">
                 <div className="panel-container">
                     <div className="panel-head">
                         <h2>{`Your Input`}</h2>
