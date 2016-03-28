@@ -310,6 +310,45 @@ const emitters = {
             fujian.sendWS(`import lychee\nlychee.set_repo_dir('${path}')`);
         }
     },
+
+    /** Change the order of the active score by moving the <section> with a given @xml:id to have
+     * another index in the score_order list.
+     *
+     * Params:
+     * -------
+     * @param {string} sectionID - The @xml:id of the <section> to move.
+     * @param {int} moveToIndex - The requested new index of the <section> in the score_order.
+     *
+     * Note that the <section> may not end up with the requested index. For example, if the
+     * <section> is already in the score_order and "moveToIndex" is higher than its current index,
+     * the actual new index will probably be one less than "moveToIndex."
+     */
+    changeSectionOrder(sectionID, moveToIndex) {
+        const scoreOrder = reactor.evaluate(getters.sections).get('score_order');
+
+        // if the <section> is already in the requested place, don't do anything
+        if (scoreOrder.get(moveToIndex) === sectionID) {
+            log.debug(`section ${sectionID} is already at index ${moveToIndex}`);
+            return;
+        }
+
+        // if the <section> is being moved to the end, but is already at the end, don't do anything
+        if (moveToIndex >= scoreOrder.size && scoreOrder.last() === sectionID) {
+            log.debug(`section ${sectionID} is already at the end`);
+            return;
+        }
+
+        // otherwise ask Lychee to move the <section>
+        log.debug(`moving ${sectionID} to index ${moveToIndex}`);
+        // TODO: double-check there isn't a ' in "sectionID"
+        if (sectionID.indexOf("'") >= 0) {
+            log.error('Cannot move a section with an xmlid that contains the \' character.');
+        }
+        else {
+            const code = `import lychee\nlychee.signals.document.MOVE_SECTION_TO.emit(xmlid='${sectionID}', position=${moveToIndex})`;
+            fujian.sendWS(code);
+        }
+    },
 };
 
 
