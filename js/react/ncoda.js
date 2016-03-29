@@ -111,7 +111,7 @@ const Colophon = React.createClass({
             <div id="ncoda-colophon">
                 <div className="am-g am-text-center">
                     <div className="am-u-sm-12 am-u-md-12 am-u-lg-12">
-                        <IconLogo />
+                        <IconLogo className="am-img-responsive am-center" />
                         <div>
                             <h2>{`About nCoda`}</h2>
                             <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
