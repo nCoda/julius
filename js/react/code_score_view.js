@@ -72,7 +72,7 @@ const TextEditor = React.createClass({
         };
         return (
             <div>
-                <div className="panel-head">
+                <div className="pane-head">
                     <h2>{`Text Editor`}</h2>
                     <div className="ncoda-text-editor-controls">
                         <ButtonGroup>
@@ -192,14 +192,14 @@ const WorkTable = React.createClass({
                        primary="second"
                        minSize="20"
                        defaultSize="60%">
-                <div className="ncoda-text-editor panel-container">
+                <div className="ncoda-text-editor pane-container">
                     <TextEditor
                         ref="textEditor"
                         submitToPyPy={this.props.submitToPyPy}
                         submitToLychee={this.props.submitToLychee}
                     />
                 </div>
-                <div className="ncoda-verovio panel-container">
+                <div className="ncoda-verovio pane-container">
                     <CustomScrollbars>
                         <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
                     </CustomScrollbars>
@@ -272,16 +272,16 @@ const TerminalOutput = React.createClass({
                        primary="second"
                        minSize="20"
                        defaultSize="50%">
-                <div className="panel-container">
-                    <div className="panel-head">
+                <div className="pane-container">
+                    <div className="pane-head">
                         <h2>{`Your Input`}</h2>
                     </div>
                     <CustomScrollbars>
                         <TerminalWindow outputThis={this.state.stdin}/>
                     </CustomScrollbars>
                 </div>
-                <div className="panel-container">
-                    <div className="panel-head">
+                <div className="pane-container">
+                    <div className="pane-head">
                         <h2>{`Python Output`}</h2>
                     </div>
                     <CustomScrollbars>
