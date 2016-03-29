@@ -65,7 +65,7 @@ const TextEditor = React.createClass({
             lineNumbers: true,
             autofocus: true,
             lineWrapping: true,
-            scrollbarStyle: null,
+            scrollbarStyle: "native",
             inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
                                             // desktop and may not be so good for us, but it has
                                             // better IME and and screen reader support
