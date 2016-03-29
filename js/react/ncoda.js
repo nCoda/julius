@@ -30,6 +30,7 @@ import {Link} from 'react-router';
 import {log} from '../util/log';
 import signals from '../nuclear/signals';
 import {DialogueBox, OffCanvas} from './generics';
+import {IconCoda, IconLogo} from './svg_icons';
 
 
 const MainScreen = React.createClass({
@@ -106,7 +107,7 @@ const Colophon = React.createClass({
     render() {
         return (
             <div id="ncoda-colophon">
-                <img src="img/nCoda-logo.svg" alt=""/>
+                <IconLogo />
                 <div>
                     <h2>{`About nCoda`}</h2>
                     <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
@@ -164,7 +165,7 @@ const GlobalHeader = React.createClass({
     render() {
         const brand = (
             <h1 className="ncoda-logo">
-                <a><img src="img/nCoda-logo-favicon.svg" height="100%" width="auto"/></a>
+                <IconCoda height="100%" />
             </h1>
         );
 
