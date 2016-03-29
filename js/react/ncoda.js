@@ -64,7 +64,7 @@ const MainScreen = React.createClass({
     render() {
         return (
             <div id="ncoda-loading">
-                <p>{`Use the menus above to navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
+                <p>{`Click on the coda symbol above to access the menu and navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
                 <div>
                     <p>{`Use this button to open a repository directory.`}</p>
                     <ButtonGroup>
@@ -102,8 +102,6 @@ const MainScreenQuote = React.createClass({
 
 
 const Colophon = React.createClass({
-    // NOTE: the logo image doesn't help comprehension at all; an empty @alt attribute tells screenreaders
-    // NOTE: there should only be one <h2>, which is in the title bar; therefore this is an <h2>
     render() {
         return (
             <div id="ncoda-colophon">
@@ -164,16 +162,13 @@ const GlobalHeader = React.createClass({
     },
     render() {
         const brand = (
-            <h1 className="ncoda-logo">
-                <IconCoda height="100%" />
+            <h1>
+                <a onClick={this.props.handleShowMenu} title="Click for Menu"><IconCoda height="100%" /></a>
             </h1>
         );
 
         return (
             <Topbar brand={brand} fixedTop>
-                <Button onClick={this.props.handleShowMenu}>
-                    <Icon icon="bars"/>
-                </Button>
                 <DeveloperMenu/>
             </Topbar>
         );
