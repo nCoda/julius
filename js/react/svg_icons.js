@@ -27,8 +27,8 @@ import React from "react";
 export const IconPython = React.createClass({
     getDefaultProps() {
         return {
-            width: '200',
-            height: '200',
+            width: '512',
+            height: '512',
             iconfill: '#000'
         };
     },
@@ -48,8 +48,8 @@ export const IconPython = React.createClass({
 export const IconLilypond = React.createClass({
     getDefaultProps() {
         return {
-            width: '200',
-            height: '200',
+            width: '512',
+            height: '512',
             iconfill: '#000'
         };
     },
@@ -74,7 +74,7 @@ export const IconCoda = React.createClass({
     },
     render() {
         return (
-            <svg className="icon-coda" xmlns="http://www.w3.org/2000/svg" width={this.props.height}
+            <svg className="icon-coda" xmlns="http://www.w3.org/2000/svg"
                  height={this.props.height} viewBox="0 0 200 200" aria-labelledby="title">
                 <title id="title">Coda Icon</title>
                 <path fill={this.props.iconfill} d="M158.867 103.242c-.393 1.867-1.3 3.326-3.312 2.9l-17.094-3.603c-7.1 26.56-31.813 44.156-55.48 41.118l-4.238 20.112c-.424 2.012-2.125 2.252-3.993 1.858-1.868-.396-3.328-1.302-2.903-3.312l4.24-20.112c-22.88-6.772-38.245-32.817-34.163-60.014L22.96 78.196c-2.01-.424-2.252-2.125-1.86-3.992.395-1.868 1.302-3.327 3.313-2.903L43.376 75.3c7.303-26.82 31.812-44.158 55.48-41.12l3.904-18.532c.394-1.867 2.095-2.11 3.962-1.715s3.326 1.303 2.934 3.17l-3.906 18.532c22.88 6.773 38.418 32.704 34.164 60.015l17.094 3.604c2.012.423 2.254 2.124 1.86 3.992zm-91.07-22.797l20.4 4.3 8.963-42.522c-20.763-2.576-24.457 14.95-29.362 38.222zm9.742 54.867l9.204-43.672-20.4-4.3c-4.518 22.154-6.883 41.91 11.195 47.972zm26.515-91.635l-8.963 42.52 21.117 4.453c4.905-23.273 7.595-41.01-12.155-46.973zm10.7 53.868l-21.116-4.45-9.206 43.67c18.412 1.63 25.26-17.33 30.322-39.22z"/>
