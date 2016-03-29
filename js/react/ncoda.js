@@ -64,14 +64,18 @@ const MainScreen = React.createClass({
     render() {
         return (
             <div id="ncoda-loading">
-                <p>{`Click on the coda symbol above to access the menu and navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
-                <div>
-                    <p>{`Use this button to open a repository directory.`}</p>
-                    <ButtonGroup>
-                        <Button onClick={this.handleOpen}>Open</Button>
-                        <Button onClick={this.handleDefaultOpen}>(Try to) Load Default Repository</Button>
-                        <Button onClick={this.handleTempOpen}>Load an empty, temporary repository.</Button>
-                    </ButtonGroup>
+                <div className="am-g am-text-center">
+                    <div className="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <p>{`Click on the coda symbol above to access the menu and navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
+                        <div>
+                            <p>{`Use this button to open a repository directory.`}</p>
+                            <ButtonGroup>
+                                <Button onClick={this.handleOpen}>Open</Button>
+                                <Button onClick={this.handleDefaultOpen}>(Try to) Load Default Repository</Button>
+                                <Button onClick={this.handleTempOpen}>Load an empty, temporary repository.</Button>
+                            </ButtonGroup>
+                        </div>
+                    </div>
                 </div>
                 <MainScreenQuote/>
             </div>
@@ -105,13 +109,17 @@ const Colophon = React.createClass({
     render() {
         return (
             <div id="ncoda-colophon">
-                <IconLogo />
-                <div>
-                    <h2>{`About nCoda`}</h2>
-                    <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
-                    <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
-                    <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
-                    <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
+                <div className="am-g am-text-center">
+                    <div className="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <IconLogo />
+                        <div>
+                            <h2>{`About nCoda`}</h2>
+                            <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
+                            <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
+                            <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
+                            <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
