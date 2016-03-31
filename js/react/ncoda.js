@@ -170,9 +170,7 @@ const GlobalHeader = React.createClass({
     },
     render() {
         const brand = (
-            <h1>
-                <a onClick={this.props.handleShowMenu} title="Click for Menu"><IconCoda height="100%" /></a>
-            </h1>
+            <Button amStyle="link" onClick={this.props.handleShowMenu} title="Click for Menu"><IconCoda height="100%" /></Button>
         );
 
         return (
