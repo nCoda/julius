@@ -64,17 +64,15 @@ const MainScreen = React.createClass({
     render() {
         return (
             <div id="ncoda-loading">
-                <div className="am-g am-text-center">
-                    <div className="am-u-sm-12 am-u-md-12 am-u-lg-12">
-                        <p>{`Click on the coda symbol above to access the menu and navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
-                        <div>
-                            <p>{`Use this button to open a repository directory.`}</p>
-                            <ButtonGroup>
-                                <Button onClick={this.handleOpen}>Open</Button>
-                                <Button onClick={this.handleDefaultOpen}>(Try to) Load Default Repository</Button>
-                                <Button onClick={this.handleTempOpen}>Load an empty, temporary repository.</Button>
-                            </ButtonGroup>
-                        </div>
+                <div className="am-container am-text-center">
+                    <p>{`Click on the coda symbol above to access the menu and navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
+                    <div>
+                        <p>{`Use this button to open a repository directory.`}</p>
+                        <ButtonGroup>
+                            <Button onClick={this.handleOpen}>Open</Button>
+                            <Button onClick={this.handleDefaultOpen}>(Try to) Load Default Repository</Button>
+                            <Button onClick={this.handleTempOpen}>Load an empty, temporary repository.</Button>
+                        </ButtonGroup>
                     </div>
                 </div>
                 <MainScreenQuote/>
@@ -94,12 +92,16 @@ const MainScreenQuote = React.createClass({
     },
     render() {
         return (
-            <blockquote cite={this.state.cite} className="nc-quote">
-                <i className="fa fa-quote-left"/>
-                <p>{this.state.quote}</p>
-                <i className="fa fa-quote-right"/>
-                <small>{`\u2014 ${this.state.attribution}`}</small>
-            </blockquote>
+            <div className="am-g">
+                <div className="am-u-sm-6 am-u-sm-offset-3 am-u-md-6 am-u-md-offset-3 am-u-lg-6 am-u-lg-offset-3 am-u-end">
+                    <blockquote cite={this.state.cite} className="nc-quote">
+                        <i className="fa fa-quote-left"/>
+                        <p>{this.state.quote}</p>
+                        <i className="fa fa-quote-right"/>
+                        <small>{`\u2014 ${this.state.attribution}`}</small>
+                    </blockquote>
+                </div>
+            </div>
         );
     },
 });
@@ -109,16 +111,14 @@ const Colophon = React.createClass({
     render() {
         return (
             <div id="ncoda-colophon">
-                <div className="am-g am-text-center">
-                    <div className="am-u-sm-12 am-u-md-12 am-u-lg-12">
-                        <IconLogo className="am-img-responsive am-center" />
-                        <div>
-                            <h2>{`About nCoda`}</h2>
-                            <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
-                            <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
-                            <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
-                            <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
-                        </div>
+                <div className="am-container am-text-center">
+                    <IconLogo className="am-img-responsive am-center" />
+                    <div>
+                        <h2>{`About nCoda`}</h2>
+                        <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
+                        <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
+                        <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
+                        <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
                     </div>
                 </div>
             </div>
