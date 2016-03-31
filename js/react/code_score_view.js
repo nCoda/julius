@@ -30,7 +30,7 @@ import CustomScrollbars from './custom_scrollbars';
 
 import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
-import {TerminalView} from './terminal_view';
+import {TerminalViewIn, TerminalViewOut} from './terminal_view';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
@@ -96,7 +96,15 @@ const CodeScoreView = React.createClass({
                         submitToLychee={signals.emitters.submitToLychee}
                         meiForVerovio={this.props.meiForVerovio}
                     />
-                    <TerminalView ref="terminalOutput"/>
+                    <SplitPane split="vertical"
+                               id="ncoda-terminal-output"
+                               className="ncoda-terminal-output"
+                               primary="second"
+                               minSize="20"
+                               defaultSize="50%">
+                        <TerminalViewIn ref="terminalIn"/>
+                        <TerminalViewOut ref="terminalOut"/>
+                    </SplitPane>
                 </SplitPane>
             </div>
         );

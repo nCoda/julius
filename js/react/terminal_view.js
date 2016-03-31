@@ -24,7 +24,6 @@
 
 import React from 'react';
 
-import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
 import CustomScrollbars from './custom_scrollbars';
 
 import getters from '../nuclear/getters';
@@ -78,7 +77,7 @@ const TerminalWindow = React.createClass({
 });
 
 
-export const TerminalView = React.createClass({
+export const TerminalViewIn = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     mixins: [reactor.ReactMixin],
     getDataBindings() {
@@ -86,29 +85,34 @@ export const TerminalView = React.createClass({
     },
     render() {
         return (
-            <SplitPane split="vertical"
-                       id="ncoda-terminal-output"
-                       className="ncoda-terminal-output"
-                       primary="second"
-                       minSize="20"
-                       defaultSize="50%">
-                <div className="pane-container">
-                    <div className="pane-head">
-                        <h2>{`Your Input`}</h2>
-                    </div>
-                    <CustomScrollbars>
-                        <TerminalWindow outputThis={this.state.stdin}/>
-                    </CustomScrollbars>
+            <div className="pane-container">
+                <div className="pane-head">
+                    <h2>{`Your Input`}</h2>
                 </div>
-                <div className="pane-container">
-                    <div className="pane-head">
-                        <h2>{`Python Output`}</h2>
-                    </div>
-                    <CustomScrollbars>
-                        <TerminalWindow outputThis={this.state.stdout}/>
-                    </CustomScrollbars>
+                <CustomScrollbars>
+                    <TerminalWindow outputThis={this.state.stdin}/>
+                </CustomScrollbars>
+            </div>
+        );
+    },
+});
+
+export const TerminalViewOut = React.createClass({
+    // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {stdout: getters.stdout, stderr: getters.stderr, stdin: getters.stdin};
+    },
+    render() {
+        return (
+            <div className="pane-container">
+                <div className="pane-head">
+                    <h2>{`Python Output`}</h2>
                 </div>
-            </SplitPane>
+                <CustomScrollbars>
+                    <TerminalWindow outputThis={this.state.stdout}/>
+                </CustomScrollbars>
+            </div>
         );
     },
 });
