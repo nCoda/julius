@@ -31,7 +31,9 @@
 // Base Colours
 // =============================================================================
 
-@white: #fbfffd;
+@import "../../amazeui/less/variables";
+
+@white: #fbfbfb;
 @black: #000;
 @clear: rgba(0, 0, 0, 0);
 
@@ -69,7 +71,7 @@
 // =============================================================================
 
 @global-background:     @white;
-@global-border:         @gray-lighter
+@global-border:         @gray-lighter;
 @global-contrast-color: @white;
 
 @base-text-color:          @gray-dark;
@@ -214,8 +216,8 @@ button {
 // =============================================================================
 
 // TODO: pull out these colours from whatever theme is chosen for text editing windows
-@code-color: #657b83;  // solarized Base00
-@code-bg:    #002b36;  // solarized Base03
+@code-color: lighten(@gray-darker, 37.2%);  // @base00 from codemirror_ncoda.less
+@code-bg:    lighten(@gray-darker, 87.5%);  // @base3 from codemirror_ncoda.less
 @pre-bg:     @code-bg;
 @pre-color:  @code-color;
 @pre-border: 1px solid @pre-bg;
@@ -273,3 +275,22 @@ button {
 @panel-primary-bd:    darken(@global-primary, 5%);
 @panel-primary-hd-bg: @global-primary;
 @panel-primary-text:  @global-contrast-color;
+
+
+// =============================================================================
+// Split Panes and Custom Scrollbars
+// =============================================================================
+@pane-head-font-size: @btn-xs-font-size + .5em;
+@pane-head-line-height: @btn-line-height;
+@pane-head-font-padding: .25em;
+@pane-head-height: @pane-head-font-size + @pane-head-line-height + (@global-padding);
+    // only half of @global-padding used on top and bottom of panes
+
+
+// =============================================================================
+// Mixins
+// =============================================================================
+
+.global-box-shadow() {
+    box-shadow: 0 0 @global-padding 0 @comp-l1-border;
+}

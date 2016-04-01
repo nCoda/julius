@@ -28,7 +28,8 @@ import React from 'react';
 import ReactCodeMirror from './CodeMirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
-import Scrollbars from '../../node_modules/react-custom-scrollbars';
+import CustomScrollbars from './custom_scrollbars';
+import {IconPython, IconLilypond} from './svg_icons';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
@@ -56,7 +57,7 @@ const TextEditor = React.createClass({
     render() {
         const codeMirrorOptions = {
             mode: "python",
-            theme: "codemirror-ncoda dark",
+            theme: "codemirror-ncoda light",
             indentUnit: 4,
             indentWithTabs: false,
             smartIndent: true,
@@ -64,31 +65,34 @@ const TextEditor = React.createClass({
             lineNumbers: true,
             autofocus: true,
             lineWrapping: true,
-            scrollbarStyle: null,
+            scrollbarStyle: "native",
             inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
                                             // desktop and may not be so good for us, but it has
                                             // better IME and and screen reader support
         };
         return (
-            <div className="codemirror-root">
-                <div className="ncoda-text-editor-controls">
-                    <ButtonGroup>
-                        <Button onClick={this.handleSubmitPython}>
-                            {`Run as Python`}
-                        </Button>
-                        <Button onClick={this.handleSubmitLilyPond}>
-                            {`Submit as Lilypond`}
-                        </Button>
-                    </ButtonGroup>
+            <div>
+                <div className="pane-head">
+                    <h2>{`Text Editor`}</h2>
+                    <div className="ncoda-text-editor-controls">
+                        <ButtonGroup>
+                            <Button title="Run as Python" className="am-btn-xs" onClick={this.handleSubmitPython}>
+                                <IconPython />
+                            </Button>
+                            <Button title="Submit as Lilypond" className="am-btn-xs" onClick={this.handleSubmitLilyPond}>
+                                <IconLilypond />
+                            </Button>
+                        </ButtonGroup>
+                    </div>
                 </div>
-                <Scrollbars className="custom-scrollbars">
+                <CustomScrollbars>
                     <ReactCodeMirror
                         path="ncoda-editor"
                         options={codeMirrorOptions}
                         value={this.state.editorValue}
                         onChange={this.handleEditorChange}
                     />
-                </Scrollbars>
+                </CustomScrollbars>
             </div>
         );
     },
@@ -182,21 +186,23 @@ const WorkTable = React.createClass({
     },
     render() {
         return (
-            <SplitPane split="vertical" ref="workTable" className="ncoda-work-table" minSize="20" defaultSize="40%">
-                <div className="ncoda-text-editor panel-container">
-                    <div className="panel-head">
-                        <h2>{`Text Editor`}</h2>
-                    </div>
+            <SplitPane split="vertical"
+                       ref="workTable"
+                       className="ncoda-work-table"
+                       primary="second"
+                       minSize="20"
+                       defaultSize="60%">
+                <div className="ncoda-text-editor pane-container">
                     <TextEditor
                         ref="textEditor"
                         submitToPyPy={this.props.submitToPyPy}
                         submitToLychee={this.props.submitToLychee}
                     />
                 </div>
-                <div className="verovio-root">
-                    <Scrollbars className="custom-scrollbars">
+                <div className="ncoda-verovio pane-container">
+                    <CustomScrollbars>
                         <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
-                    </Scrollbars>
+                    </CustomScrollbars>
                 </div>
             </SplitPane>
         );
@@ -260,26 +266,27 @@ const TerminalOutput = React.createClass({
     },
     render() {
         return (
-            <SplitPane split="vertical" id="ncoda-terminal-output" className="ncoda-terminal-output">
-                <div className="panel-container">
-                    <div className="panel-head">
+            <SplitPane split="vertical"
+                       id="ncoda-terminal-output"
+                       className="ncoda-terminal-output"
+                       primary="second"
+                       minSize="20"
+                       defaultSize="50%">
+                <div className="pane-container">
+                    <div className="pane-head">
                         <h2>{`Your Input`}</h2>
                     </div>
-                    <div className="terminal-in-root">
-                        <Scrollbars className="custom-scrollbars">
-                            <TerminalWindow outputThis={this.state.stdin}/>
-                        </Scrollbars>
-                    </div>
+                    <CustomScrollbars>
+                        <TerminalWindow outputThis={this.state.stdin}/>
+                    </CustomScrollbars>
                 </div>
-                <div className="panel-container">
-                    <div className="panel-head">
+                <div className="pane-container">
+                    <div className="pane-head">
                         <h2>{`Python Output`}</h2>
                     </div>
-                    <div className="terminal-out-root">
-                        <Scrollbars className="custom-scrollbars">
-                            <TerminalWindow outputThis={this.state.stdout}/>
-                        </Scrollbars>
-                    </div>
+                    <CustomScrollbars>
+                        <TerminalWindow outputThis={this.state.stdout}/>
+                    </CustomScrollbars>
                 </div>
             </SplitPane>
         );
