@@ -40,7 +40,7 @@ const MainScreen = React.createClass({
             const dir = remote.dialog.showOpenDialog(
                 {
                     title: 'title',
-                    properties: ['openDirectory', 'creatDirectory'],
+                    properties: ['openDirectory', 'createDirectory'],
                 }
             );
             signals.emitters.setRepositoryDirectory(dir);
