@@ -37,41 +37,6 @@ import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 
 
-const WorkTable = React.createClass({
-    propTypes: {
-        meiForVerovio: React.PropTypes.string,
-        submitToLychee: React.PropTypes.func.isRequired,
-        submitToPyPy: React.PropTypes.func.isRequired,
-    },
-    getDefaultProps() {
-        return {meiForVerovio: ''};
-    },
-    render() {
-        return (
-            <SplitPane split="vertical"
-                       ref="workTable"
-                       className="ncoda-work-table"
-                       primary="second"
-                       minSize="20"
-                       defaultSize="60%">
-                <div className="ncoda-text-editor pane-container">
-                    <CodeView
-                        ref="codeView"
-                        submitToPyPy={this.props.submitToPyPy}
-                        submitToLychee={this.props.submitToLychee}
-                    />
-                </div>
-                <div className="ncoda-verovio pane-container">
-                    <CustomScrollbars>
-                        <ScoreView ref="verovio" meiForVerovio={this.props.meiForVerovio} />
-                    </CustomScrollbars>
-                </div>
-            </SplitPane>
-        );
-    },
-});
-
-
 
 const CodeScoreView = React.createClass({
     propTypes: {
@@ -90,12 +55,25 @@ const CodeScoreView = React.createClass({
         return (
             <div id="nc-csv-frame">
                 <SplitPane split="horizontal" minSize="20" defaultSize="70%">
-                    <WorkTable
-                        ref="workTable"
-                        submitToPyPy={signals.emitters.submitToPyPy}
-                        submitToLychee={signals.emitters.submitToLychee}
-                        meiForVerovio={this.props.meiForVerovio}
-                    />
+                    <SplitPane split="vertical"
+                               ref="workTable"
+                               className="ncoda-work-table"
+                               primary="second"
+                               minSize="20"
+                               defaultSize="60%">
+                        <div className="ncoda-text-editor pane-container">
+                            <CodeView
+                                ref="codeView"
+                                submitToPyPy={signals.emitters.submitToPyPy}
+                                submitToLychee={signals.emitters.submitToLychee}
+                            />
+                        </div>
+                        <div className="ncoda-verovio pane-container">
+                            <CustomScrollbars>
+                                <ScoreView ref="verovio" meiForVerovio={this.props.meiForVerovio} />
+                            </CustomScrollbars>
+                        </div>
+                    </SplitPane>
                     <SplitPane split="vertical"
                                id="ncoda-terminal-output"
                                className="ncoda-terminal-output"
