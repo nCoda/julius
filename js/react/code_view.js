@@ -29,23 +29,41 @@ import {Button, ButtonGroup} from 'amazeui-react';
 import CustomScrollbars from './custom_scrollbars';
 import {IconPython, IconLilypond} from './svg_icons';
 
-export const CodeView = React.createClass({
+const CodeViewButtons = React.createClass({
     propTypes: {
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
+        editorValue: React.PropTypes.any.isRequired,
     },
+    handleSubmitPython() {
+        this.props.submitToPyPy(this.props.editorValue);
+    },
+    handleSubmitLilyPond() {
+        this.props.submitToLychee(this.props.editorValue, 'lilypond');
+    },
+    render() {
+        return (
+            <div className="ncoda-text-editor-controls">
+                <ButtonGroup>
+                    <Button title="Run as Python" className="am-btn-xs" onClick={this.handleSubmitPython}>
+                        <IconPython />
+                    </Button>
+                    <Button title="Submit as Lilypond" className="am-btn-xs" onClick={this.handleSubmitLilyPond}>
+                        <IconLilypond />
+                    </Button>
+                </ButtonGroup>
+            </div>
+        )
+    }
+});
+
+export const CodeView = React.createClass({
     getInitialState() {
         return {editorValue: ''};
     },
     handleEditorChange(withThis) {
         // TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
         this.setState({editorValue: withThis});
-    },
-    handleSubmitPython() {
-        this.props.submitToPyPy(this.state.editorValue);
-    },
-    handleSubmitLilyPond() {
-        this.props.submitToLychee(this.state.editorValue, 'lilypond');
     },
     render() {
         const codeMirrorOptions = {
@@ -67,16 +85,9 @@ export const CodeView = React.createClass({
             <div>
                 <div className="pane-head">
                     <h2>{`Text Editor`}</h2>
-                    <div className="ncoda-text-editor-controls">
-                        <ButtonGroup>
-                            <Button title="Run as Python" className="am-btn-xs" onClick={this.handleSubmitPython}>
-                                <IconPython />
-                            </Button>
-                            <Button title="Submit as Lilypond" className="am-btn-xs" onClick={this.handleSubmitLilyPond}>
-                                <IconLilypond />
-                            </Button>
-                        </ButtonGroup>
-                    </div>
+                    <CodeViewButtons submitToPyPy={this.props.submitToPyPy}
+                                     submitToLychee={this.props.submitToLychee}
+                                     editorValue={this.state.editorValue}/>
                 </div>
                 <CustomScrollbars>
                     <ReactCodeMirror
