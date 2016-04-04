@@ -81,18 +81,11 @@ export const TerminalViewIn = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     mixins: [reactor.ReactMixin],
     getDataBindings() {
-        return {stdout: getters.stdout, stderr: getters.stderr, stdin: getters.stdin};
+        return {stdin: getters.stdin};
     },
     render() {
         return (
-            <div className="pane-container">
-                <div className="pane-head">
-                    <h2>{`Your Input`}</h2>
-                </div>
-                <CustomScrollbars>
-                    <TerminalWindow outputThis={this.state.stdin}/>
-                </CustomScrollbars>
-            </div>
+            <TerminalWindow outputThis={this.state.stdin}/>
         );
     },
 });
@@ -101,18 +94,24 @@ export const TerminalViewOut = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     mixins: [reactor.ReactMixin],
     getDataBindings() {
-        return {stdout: getters.stdout, stderr: getters.stderr, stdin: getters.stdin};
+        return {stdout: getters.stdout};
     },
     render() {
         return (
-            <div className="pane-container">
-                <div className="pane-head">
-                    <h2>{`Python Output`}</h2>
-                </div>
-                <CustomScrollbars>
-                    <TerminalWindow outputThis={this.state.stdout}/>
-                </CustomScrollbars>
-            </div>
+            <TerminalWindow outputThis={this.state.stdout}/>
+        );
+    },
+});
+
+export const TerminalViewErr = React.createClass({
+    // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {stderr: getters.stderr};
+    },
+    render() {
+        return (
+            <TerminalWindow outputThis={this.state.stderr}/>
         );
     },
 });

@@ -102,8 +102,22 @@ const CodeScoreView = React.createClass({
                                primary="second"
                                minSize="20"
                                defaultSize="50%">
-                        <TerminalViewIn ref="terminalIn"/>
-                        <TerminalViewOut ref="terminalOut"/>
+                        <div className="pane-container">
+                            <div className="pane-head">
+                                <h2>{`Your Input`}</h2>
+                            </div>
+                            <CustomScrollbars>
+                                <TerminalViewIn ref="terminalIn"/>
+                            </CustomScrollbars>
+                        </div>
+                        <div className="pane-container">
+                            <div className="pane-head">
+                                <h2>{`Python Output`}</h2>
+                            </div>
+                            <CustomScrollbars>
+                                <TerminalViewOut ref="terminalOut"/>
+                            </CustomScrollbars>
+                        </div>
                     </SplitPane>
                 </SplitPane>
             </div>
