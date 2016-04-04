@@ -36,20 +36,20 @@
     transition: all .2s ease-in-out;
 
     &.horizontal {
-        height: 15px;  // divider is 3px (margin x2 subtracted)
-        margin: -6px 0;
-        border-top: 6px solid transparent;
-        border-bottom: 6px solid transparent;
+        height: @pane-resizer-thickness + (2 * @pane-resizer-hover-thickness);
+        margin: -(@pane-resizer-hover-thickness) 0;
+        border-top: @pane-resizer-hover-thickness solid transparent;
+        border-bottom: @pane-resizer-hover-thickness solid transparent;
         cursor: row-resize;
         width: 100%;
         z-index: 999;
     }
 
     &.vertical {
-        width: 15px;
-        margin: 0 -6px;
-        border-left: 6px solid transparent;
-        border-right: 6px solid transparent;
+        width:  @pane-resizer-thickness + (2 * @pane-resizer-hover-thickness);
+        margin: 0 -(@pane-resizer-hover-thickness);
+        border-left: @pane-resizer-hover-thickness solid transparent;
+        border-right: @pane-resizer-hover-thickness solid transparent;
         cursor: col-resize;
         height: 100%;
         z-index: 999;
