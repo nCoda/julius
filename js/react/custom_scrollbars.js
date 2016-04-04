@@ -35,12 +35,13 @@ export default createClass({
     },
 
 
-    renderThumb({ style, ...props }) {
+    renderThumbV({ style, ...props }) {  // vertical thumb
         const thumbStyle = {
             transparency: '.7',
             backgroundColor: '#FFFFFF',
             border: 'solid #000000 1px',
-            borderRadius: '5px'
+            borderRadius: '5px',
+            width: '15px'
         };
         return (
             <div
@@ -49,6 +50,20 @@ export default createClass({
         );
     },
 
+    renderThumbH({ style, ...props }) {  // horizontal thumb
+        const thumbStyle = {
+            transparency: '.7',
+            backgroundColor: '#FFFFFF',
+            border: 'solid #000000 1px',
+            borderRadius: '5px',
+            height: '15px'
+        };
+        return (
+            <div
+                style={{ ...style, ...thumbStyle }}
+                {...props}></div>
+        );
+    },
 
     render() {
         const { style } = this.props;
@@ -64,8 +79,8 @@ export default createClass({
                 <Scrollbars
                     className="custom-scrollbars"
                     ref="scrollbars"
-                    renderThumbHorizontal={this.renderThumb}
-                    renderThumbVertical={this.renderThumb}
+                    renderThumbHorizontal={this.renderThumbH}
+                    renderThumbVertical={this.renderThumbV}
                     {...this.props}/>
             </div>
         );
