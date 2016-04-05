@@ -94,12 +94,17 @@ export const TerminalView = React.createClass({
         };
     },
     getDataBindings() {
-        return {stdin: getters.stdin, stdout: getters.stdout, stderr: getters.stderr};
+        return {
+            stdin: getters.stdin,
+            stdout: getters.stdout,
+            stderr: getters.stderr
+        };
     },
     whichOutput() {
-        if(this.props.termOutput === 'out' || this.props.termOutput === 'stdout') {
+        let termOutput = this.props.termOutput;
+        if(termOutput === 'out' || termOutput === 'stdout') {
             return <TerminalWindow extraClass="nc-terminal-out" outputThis={this.state.stdout}/>
-        } else if(this.props.termOutput === 'err' || this.props.termOutput === 'stderr') {
+        } else if(termOutput === 'err' || termOutput === 'stderr') {
             return <TerminalWindow extraClass="nc-terminal-err" outputThis={this.state.stderr}/>
         } else {
             return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.state.stdin}/>
