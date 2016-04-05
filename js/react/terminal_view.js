@@ -26,6 +26,54 @@ import React from 'react';
 
 import CustomScrollbars from './custom_scrollbars';
 
+export const TerminalView = React.createClass({
+    // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
+    propTypes: {
+        title: React.PropTypes.string,
+        termOutput: React.PropTypes.string,
+        stdin: React.PropTypes.string.isRequired,
+        stdout: React.PropTypes.string.isRequired,
+        stderr: React.PropTypes.string.isRequired
+    },
+    getDefaultProps() {
+        return {
+            title: 'Terminal',
+            termOutput: 'in'
+        };
+    },
+    whichOutput() {
+        let termOutput = this.props.termOutput;
+        if(termOutput === 'out' || termOutput === 'stdout') {
+            return <TerminalWindow extraClass="nc-terminal-out" outputThis={this.props.stdout}/>
+        } else if(termOutput === 'err' || termOutput === 'stderr') {
+            return <TerminalWindow extraClass="nc-terminal-err" outputThis={this.props.stderr}/>
+        } else {
+            return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.props.stdin}/>
+        }
+    },
+    whichTitle() {
+        let title = this.props.title;
+        if(title === 'Terminal'){
+            title = title + "-" + this.props.termOutput.toUpperCase();
+            return title;
+        } else {
+            return title;
+        }
+    },
+    render() {
+        return (
+            <div className="nc-terminal-container">
+                <div className="pane-head">
+                    <h2>{this.whichTitle()}</h2>
+                </div>
+                <CustomScrollbars>
+                    {this.whichOutput()}
+                </CustomScrollbars>
+            </div>
+        );
+    },
+});
+
 const TerminalWindow = React.createClass({
     propTypes: {
         outputThis: React.PropTypes.string,
@@ -72,55 +120,6 @@ const TerminalWindow = React.createClass({
         }
         return (
             <div className={className} dangerouslySetInnerHTML={innerHtml}></div>
-        );
-    },
-});
-
-
-export const TerminalView = React.createClass({
-    // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
-    propTypes: {
-        title: React.PropTypes.string,
-        termOutput: React.PropTypes.string,
-        stdin: React.PropTypes.any.isRequired,
-        stdout: React.PropTypes.any.isRequired,
-        stderr: React.PropTypes.any.isRequired
-    },
-    getDefaultProps() {
-        return {
-            title: 'Terminal',
-            termOutput: 'in'
-        };
-    },
-    whichOutput() {
-        let termOutput = this.props.termOutput;
-        if(termOutput === 'out' || termOutput === 'stdout') {
-            return <TerminalWindow extraClass="nc-terminal-out" outputThis={this.props.stdout}/>
-        } else if(termOutput === 'err' || termOutput === 'stderr') {
-            return <TerminalWindow extraClass="nc-terminal-err" outputThis={this.props.stderr}/>
-        } else {
-            return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.props.stdin}/>
-        }
-    },
-    whichTitle() {
-        let title = this.props.title;
-        if(title === 'Terminal'){
-            title = title + "-" + this.props.termOutput.toUpperCase();
-            return title;
-        } else {
-            return title;
-        }
-    },
-    render() {
-        return (
-            <div className="nc-terminal-container">
-                <div className="pane-head">
-                    <h2>{this.whichTitle()}</h2>
-                </div>
-                <CustomScrollbars>
-                    {this.whichOutput()}
-                </CustomScrollbars>
-            </div>
         );
     },
 });
