@@ -128,6 +128,19 @@ const emitters = {
     fujianStopWS() {
         fujian.stopWS();
     },
+    /** lyInitializeSession(): Initialize a session management object in Lychee.
+     *
+     * Runs this code:
+     * >>> import lychee
+     * >>> _JULIUS_SESSION = lychee.workflow.session.InteractiveSession()
+     *
+     * NB: the "ly" prefix is for signals doing something with Lychee
+     */
+    lyInitializeSession() {
+        fujian.sendWS(
+            `import lychee\n_JULIUS_SESSION = lychee.workflow.session.InteractiveSession()\n`
+        );
+    },
     submitToLychee(data, format) {
         // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
         // currently-active score/section.
