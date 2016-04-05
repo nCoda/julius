@@ -29,6 +29,62 @@ import {Button, ButtonGroup} from 'amazeui-react';
 import CustomScrollbars from './custom_scrollbars';
 import {IconPython, IconLilypond} from './svg_icons';
 
+
+export const CodeView = React.createClass({
+    propTypes: {
+        submitToLychee: React.PropTypes.func.isRequired,
+        submitToPyPy: React.PropTypes.func.isRequired,
+        title: React.PropTypes.string
+    },
+    getDefaultProps() {
+        return {
+            title: 'Code Editor'
+        };
+    },
+    getInitialState() {
+        return {editorValue: ''};
+    },
+    handleEditorChange(withThis) {
+        // TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
+        this.setState({editorValue: withThis});
+    },
+    render() {
+        const codeMirrorOptions = {
+            mode: "python",
+            theme: "codemirror-ncoda light",
+            indentUnit: 4,
+            indentWithTabs: false,
+            smartIndent: true,
+            electricChars: true,
+            lineNumbers: true,
+            autofocus: true,
+            lineWrapping: true,
+            scrollbarStyle: "native",
+            inputStyle: "contenteditable"   // NOTE: this usually defaults to "textarea" on
+                                            // desktop and may not be so good for us, but it has
+                                            // better IME and and screen reader support
+        };
+        return (
+            <div>
+                <div className="pane-head">
+                    <h2>{this.props.title}</h2>
+                    <CodeViewButtons submitToPyPy={this.props.submitToPyPy}
+                                     submitToLychee={this.props.submitToLychee}
+                                     editorValue={this.state.editorValue}/>
+                </div>
+                <CustomScrollbars>
+                    <ReactCodeMirror
+                        path="ncoda-editor"
+                        options={codeMirrorOptions}
+                        value={this.state.editorValue}
+                        onChange={this.handleEditorChange}
+                    />
+                </CustomScrollbars>
+            </div>
+        );
+    },
+});
+
 const CodeViewButtons = React.createClass({
     propTypes: {
         submitToLychee: React.PropTypes.func.isRequired,
@@ -55,49 +111,4 @@ const CodeViewButtons = React.createClass({
             </div>
         )
     }
-});
-
-export const CodeView = React.createClass({
-    getInitialState() {
-        return {editorValue: ''};
-    },
-    handleEditorChange(withThis) {
-        // TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
-        this.setState({editorValue: withThis});
-    },
-    render() {
-        const codeMirrorOptions = {
-            mode: "python",
-            theme: "codemirror-ncoda light",
-            indentUnit: 4,
-            indentWithTabs: false,
-            smartIndent: true,
-            electricChars: true,
-            lineNumbers: true,
-            autofocus: true,
-            lineWrapping: true,
-            scrollbarStyle: "native",
-            inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
-                                            // desktop and may not be so good for us, but it has
-                                            // better IME and and screen reader support
-        };
-        return (
-            <div>
-                <div className="pane-head">
-                    <h2>{`Text Editor`}</h2>
-                    <CodeViewButtons submitToPyPy={this.props.submitToPyPy}
-                                     submitToLychee={this.props.submitToLychee}
-                                     editorValue={this.state.editorValue}/>
-                </div>
-                <CustomScrollbars>
-                    <ReactCodeMirror
-                        path="ncoda-editor"
-                        options={codeMirrorOptions}
-                        value={this.state.editorValue}
-                        onChange={this.handleEditorChange}
-                    />
-                </CustomScrollbars>
-            </div>
-        );
-    },
 });
