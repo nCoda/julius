@@ -34,9 +34,10 @@
 }
 
 /* ********************************************************************************************* */
-/* Things for the WorkTable (middle) */
+/* CodeMirror text editor pane */
 
-/* TextEditor (middle-left) */
+// Should these be moved into codemirror_ncoda.less?
+
 .ncoda-text-editor {
 
     .ncoda-text-editor-controls { // container for buttons ("Run as Python" and "Submit as Lilypond")
@@ -74,7 +75,9 @@
     }
 }
 
-/* Verovio (middle-right) */
+/* ********************************************************************************************* */
+/* Verovio pane */
+
 .ncoda-verovio {
     background: @view-bg;
     svg {
@@ -93,18 +96,4 @@
 }
 
 /* ********************************************************************************************* */
-/* Things for the terminals (bottom) */
-
-.pane-container {
-    background-color: @code-bg;
-    color: @code-color;
-
-    .ncoda-terminal-window {
-
-        pre {
-            width: 100%;
-            min-height: 100%;
-            margin: 0;
-        }
-    }
-}
+/* See split_panes.less for pane and resizer styling */
