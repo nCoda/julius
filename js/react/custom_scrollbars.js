@@ -41,6 +41,7 @@ export default createClass({
             backgroundColor: '#FFFFFF',
             border: 'solid #000000 1px',
             borderRadius: '5px',
+            left: '-5px',
             width: '15px'
         };
         return (
@@ -56,6 +57,7 @@ export default createClass({
             backgroundColor: '#FFFFFF',
             border: 'solid #000000 1px',
             borderRadius: '5px',
+            top: '-5px',
             height: '15px'
         };
         return (
