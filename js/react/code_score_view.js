@@ -31,16 +31,25 @@ import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
 import {TerminalView} from './terminal_view';
 
+import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
-
+import getters from '../nuclear/getters';
 
 
 const CodeScoreView = React.createClass({
+    mixins: [reactor.ReactMixin],
     propTypes: {
         meiForVerovio: React.PropTypes.string,
     },
     getDefaultProps() {
         return {meiForVerovio: '', sendToConsole: '', sendToConsoleType: null};
+    },
+    getDataBindings() {
+        return {
+            stdin: getters.stdin,
+            stdout: getters.stdout,
+            stderr: getters.stderr
+        }
     },
     getInitialState() {
         return {
@@ -76,10 +85,22 @@ const CodeScoreView = React.createClass({
                                minSize="20"
                                defaultSize="50%">
                         <div className="pane-container">
-                            <TerminalView ref="terminalIn" termOutput="in" title="Your Input"/>
+                            <TerminalView ref="terminalIn"
+                                          termOutput="in"
+                                          title="Your Input"
+                                          stdin={this.state.stdin}
+                                          stdout={this.state.stdout}
+                                          stderr={this.state.stderr}
+                            />
                         </div>
                         <div className="pane-container">
-                            <TerminalView ref="terminalOut" termOutput="out" title="Python Output"/>
+                            <TerminalView ref="terminalOut"
+                                          termOutput="out"
+                                          title="Python Output"
+                                          stdin={this.state.stdin}
+                                          stdout={this.state.stdout}
+                                          stderr={this.state.stderr}
+                            />
                         </div>
                     </SplitPane>
                 </SplitPane>

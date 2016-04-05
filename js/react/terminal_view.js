@@ -26,9 +26,6 @@ import React from 'react';
 
 import CustomScrollbars from './custom_scrollbars';
 
-import getters from '../nuclear/getters';
-import reactor from '../nuclear/reactor';
-
 const TerminalWindow = React.createClass({
     propTypes: {
         outputThis: React.PropTypes.string,
@@ -82,10 +79,12 @@ const TerminalWindow = React.createClass({
 
 export const TerminalView = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
-    mixins: [reactor.ReactMixin],
     propTypes: {
         title: React.PropTypes.string,
         termOutput: React.PropTypes.string,
+        stdin: React.PropTypes.any.isRequired,
+        stdout: React.PropTypes.any.isRequired,
+        stderr: React.PropTypes.any.isRequired
     },
     getDefaultProps() {
         return {
@@ -93,21 +92,14 @@ export const TerminalView = React.createClass({
             termOutput: 'in'
         };
     },
-    getDataBindings() {
-        return {
-            stdin: getters.stdin,
-            stdout: getters.stdout,
-            stderr: getters.stderr
-        };
-    },
     whichOutput() {
         let termOutput = this.props.termOutput;
         if(termOutput === 'out' || termOutput === 'stdout') {
-            return <TerminalWindow extraClass="nc-terminal-out" outputThis={this.state.stdout}/>
+            return <TerminalWindow extraClass="nc-terminal-out" outputThis={this.props.stdout}/>
         } else if(termOutput === 'err' || termOutput === 'stderr') {
-            return <TerminalWindow extraClass="nc-terminal-err" outputThis={this.state.stderr}/>
+            return <TerminalWindow extraClass="nc-terminal-err" outputThis={this.props.stderr}/>
         } else {
-            return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.state.stdin}/>
+            return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.props.stdin}/>
         }
     },
     whichTitle() {
