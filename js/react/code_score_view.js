@@ -38,14 +38,12 @@ import getters from '../nuclear/getters';
 
 const CodeScoreView = React.createClass({
     mixins: [reactor.ReactMixin],
-    propTypes: {
-        meiForVerovio: React.PropTypes.string,
-    },
     getDefaultProps() {
         return {meiForVerovio: '', sendToConsole: '', sendToConsoleType: null};
     },
     getDataBindings() {
         return {
+            meiForVerovio: getters.meiForVerovio,
             stdin: getters.stdin,
             stdout: getters.stdout,
             stderr: getters.stderr
@@ -75,7 +73,11 @@ const CodeScoreView = React.createClass({
                             />
                         </div>
                         <div className="ncoda-verovio pane-container">
-                            <ScoreView ref="verovio" meiForVerovio={this.props.meiForVerovio} />
+                            <ScoreView ref="verovio" 
+                                       meiForVerovio={this.state.meiForVerovio}
+                                       registerOutboundFormat={signals.emitters.registerOutboundFormat}
+                                       unregisterOutboundFormat={signals.emitters.unregisterOutboundFormat}
+                            />
                         </div>
                     </SplitPane>
                     <SplitPane split="vertical"

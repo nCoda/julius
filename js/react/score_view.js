@@ -26,11 +26,6 @@ import React from 'react';
 
 import CustomScrollbars from './custom_scrollbars';
 
-import getters from '../nuclear/getters';
-import reactor from '../nuclear/reactor';
-import signals from '../nuclear/signals';
-
-
 export const ScoreView = React.createClass({
     //
     // State
@@ -39,16 +34,19 @@ export const ScoreView = React.createClass({
     // - renderedMei
     // - verovio
     //
-
-    mixins: [reactor.ReactMixin],
-    getDataBindings() {
-        return {meiForVerovio: getters.meiForVerovio};
+    propTypes: {
+        meiForVerovio: React.PropTypes.string.isRequired,
+        registerOutboundFormat: React.PropTypes.func.isRequired,
+        unregisterOutboundFormat: React.PropTypes.func.isRequired
     },
     getInitialState() {
         // - verovio: the instance of Verovio Toolkit
         // - renderedMei: the current SVG score as a string
-        // - meiForVerovio: do NOT set in this function (set by the ReactMixin)
-        return {verovio: null, renderedMei: ''};
+        // - meiForVerovio: do NOT set in this function (set in code_score_view.js)
+        return {
+            verovio: null, 
+            renderedMei: ''
+        };
     },
     renderWithVerovio(renderThis) {
         // Ensure there's an instance of Verovio available, and use it to render "renderThis."
@@ -92,10 +90,10 @@ export const ScoreView = React.createClass({
     },
     componentWillMount() {
         this.makeVerovio();
-        signals.emitters.registerOutboundFormat('verovio', 'Verovio component', true);
+        this.props.registerOutboundFormat('verovio', 'Verovio component', true);
     },
     componentWillUnmount() {
-        signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
+        this.props.unregisterOutboundFormat('verovio', 'Verovio component');
         delete this.state.verovio;
     },
     render() {
