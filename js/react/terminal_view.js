@@ -26,12 +26,12 @@ import React from 'react';
 
 import CustomScrollbars from './custom_scrollbars';
 
+
 export const TerminalView = React.createClass({
-    // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     propTypes: {
-        title: React.PropTypes.string,
-        termOutput: React.PropTypes.string,
-        stdin: React.PropTypes.string.isRequired,
+        title: React.PropTypes.string,              // title for <h2> in .pane-head
+        termOutput: React.PropTypes.string,         // in/stdin, out/stdout, err/stderr; defaults to 'in' if none declared
+        stdin: React.PropTypes.string.isRequired,   // connect to NuclearJS data sources
         stdout: React.PropTypes.string.isRequired,
         stderr: React.PropTypes.string.isRequired
     },
@@ -51,7 +51,7 @@ export const TerminalView = React.createClass({
             return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.props.stdin}/>
         }
     },
-    whichTitle() {
+    whichTitle() { // Terminal-IN, -STDIN, -OUT, -STDOUT, -ERR, or -STDERR if no other title specified
         let title = this.props.title;
         if(title === 'Terminal'){
             title = title + "-" + this.props.termOutput.toUpperCase();
@@ -85,10 +85,10 @@ const TerminalWindow = React.createClass({
             extraClass: ''
         };
     },
-    formatString(outputThis) {
+    formatString(x) {
         // Formats a string properly so it can be outputted in the window as dangerouslySetInnerHTML.
         //
-        let post = outputThis;
+        let post = x;
 
         // TODO: how to make this replace all occurrences?
         // TODO: how to avoid other possible attacks?
