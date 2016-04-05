@@ -26,14 +26,11 @@
 import React from 'react';
 
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
-import CustomScrollbars from './custom_scrollbars';
 
 import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
 import {TerminalView} from './terminal_view';
 
-import getters from '../nuclear/getters';
-import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 
 
@@ -69,9 +66,7 @@ const CodeScoreView = React.createClass({
                             />
                         </div>
                         <div className="ncoda-verovio pane-container">
-                            <CustomScrollbars>
-                                <ScoreView ref="verovio" meiForVerovio={this.props.meiForVerovio} />
-                            </CustomScrollbars>
+                            <ScoreView ref="verovio" meiForVerovio={this.props.meiForVerovio} />
                         </div>
                     </SplitPane>
                     <SplitPane split="vertical"

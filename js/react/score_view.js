@@ -24,6 +24,8 @@
 
 import React from 'react';
 
+import CustomScrollbars from './custom_scrollbars';
+
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
@@ -99,7 +101,9 @@ export const ScoreView = React.createClass({
     render() {
         const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
         return (
-            <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
+            <CustomScrollbars>
+                <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
+            </CustomScrollbars>
         );
     },
 });
