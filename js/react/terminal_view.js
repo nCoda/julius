@@ -31,11 +31,14 @@ import reactor from '../nuclear/reactor';
 
 const TerminalWindow = React.createClass({
     propTypes: {
-        extraClass: React.PropTypes.string,
         outputThis: React.PropTypes.string,
+        extraClass: React.PropTypes.string,
     },
     getDefaultProps() {
-        return {outputThis: '', extraClass: ''};
+        return {
+            outputThis: '',
+            extraClass: ''
+        };
     },
     formatString(outputThis) {
         // Formats a string properly so it can be outputted in the window as dangerouslySetInnerHTML.
@@ -66,8 +69,8 @@ const TerminalWindow = React.createClass({
     },
     render() {
         const innerHtml = {__html: this.formatString(this.props.outputThis)};
-        let className = 'ncoda-terminal-window';
-        if (this.props.extraClass.length > 0) {
+        let className = 'ncoda-terminal-window ';
+        if (this.props.extraClass !== '') {
             className += `${className} ${this.props.extraClass}`;
         }
         return (
@@ -77,41 +80,41 @@ const TerminalWindow = React.createClass({
 });
 
 
-export const TerminalViewIn = React.createClass({
+export const TerminalView = React.createClass({
     // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
     mixins: [reactor.ReactMixin],
+    propTypes: {
+        title: React.PropTypes.string,
+        termOutput: React.PropTypes.string,
+    },
+    getDefaultProps() {
+        return {
+            title: 'Your Input',
+            termOutput: 'in'
+        };
+    },
     getDataBindings() {
-        return {stdin: getters.stdin};
+        return {stdin: getters.stdin, stdout: getters.stdout, stderr: getters.stderr};
+    },
+    whichOutput() {
+        if(this.props.termOutput === 'out' || this.props.termOutput === 'stdout') {
+            return <TerminalWindow extraClass="nc-terminal-out" outputThis={this.state.stdout}/>
+        } else if(this.props.termOutput === 'err' || this.props.termOutput === 'stderr') {
+            return <TerminalWindow extraClass="nc-terminal-err" outputThis={this.state.stderr}/>
+        } else {
+            return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.state.stdin}/>
+        }
     },
     render() {
         return (
-            <TerminalWindow outputThis={this.state.stdin}/>
-        );
-    },
-});
-
-export const TerminalViewOut = React.createClass({
-    // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
-    mixins: [reactor.ReactMixin],
-    getDataBindings() {
-        return {stdout: getters.stdout};
-    },
-    render() {
-        return (
-            <TerminalWindow outputThis={this.state.stdout}/>
-        );
-    },
-});
-
-export const TerminalViewErr = React.createClass({
-    // NOTE: if the output isn't changing, you can use ``null`` for props.outputType
-    mixins: [reactor.ReactMixin],
-    getDataBindings() {
-        return {stderr: getters.stderr};
-    },
-    render() {
-        return (
-            <TerminalWindow outputThis={this.state.stderr}/>
+            <div className="nc-terminal-container">
+                <div className="pane-head">
+                    <h2>{this.props.title}</h2>
+                </div>
+                <CustomScrollbars>
+                    {this.whichOutput()}
+                </CustomScrollbars>
+            </div>
         );
     },
 });

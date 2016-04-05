@@ -30,7 +30,7 @@ import CustomScrollbars from './custom_scrollbars';
 
 import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
-import {TerminalViewIn, TerminalViewOut} from './terminal_view';
+import {TerminalView} from './terminal_view';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
@@ -81,20 +81,10 @@ const CodeScoreView = React.createClass({
                                minSize="20"
                                defaultSize="50%">
                         <div className="pane-container">
-                            <div className="pane-head">
-                                <h2>{`Your Input`}</h2>
-                            </div>
-                            <CustomScrollbars>
-                                <TerminalViewIn ref="terminalIn"/>
-                            </CustomScrollbars>
+                            <TerminalView ref="terminalIn" termOutput="in" title="Your Input"/>
                         </div>
                         <div className="pane-container">
-                            <div className="pane-head">
-                                <h2>{`Python Output`}</h2>
-                            </div>
-                            <CustomScrollbars>
-                                <TerminalViewOut ref="terminalOut"/>
-                            </CustomScrollbars>
+                            <TerminalView ref="terminalOut" termOutput="out" title="Python Output"/>
                         </div>
                     </SplitPane>
                 </SplitPane>
