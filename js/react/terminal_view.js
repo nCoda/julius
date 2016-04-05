@@ -89,7 +89,7 @@ export const TerminalView = React.createClass({
     },
     getDefaultProps() {
         return {
-            title: 'Your Input',
+            title: 'Terminal',
             termOutput: 'in'
         };
     },
@@ -105,11 +105,20 @@ export const TerminalView = React.createClass({
             return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.state.stdin}/>
         }
     },
+    whichTitle() {
+        let title = this.props.title;
+        if(title === 'Terminal'){
+            title = title + "-" + this.props.termOutput.toUpperCase();
+            return title;
+        } else {
+            return title;
+        }
+    },
     render() {
         return (
             <div className="nc-terminal-container">
                 <div className="pane-head">
-                    <h2>{this.props.title}</h2>
+                    <h2>{this.whichTitle()}</h2>
                 </div>
                 <CustomScrollbars>
                     {this.whichOutput()}
