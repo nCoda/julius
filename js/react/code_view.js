@@ -33,7 +33,7 @@ const CodeViewButtons = React.createClass({
     propTypes: {
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
-        editorValue: React.PropTypes.any.isRequired,
+        editorValue: React.PropTypes.string.isRequired,
     },
     handleSubmitPython() {
         this.props.submitToPyPy(this.props.editorValue);
