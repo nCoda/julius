@@ -314,13 +314,19 @@ const emitters = {
      * This is equivalent to "opening" an existing project, or creating a new one. This does *not*
      * move an existing repository directory.
      */
-    setRepositoryDirectory(path) {
+    lySetRepoDir(path) {
         if (path.indexOf(';') > -1 || path.indexOf(')') > -1 || path.indexOf("'") > -1) {
             // TODO: blacklisting like this isn't sufficient
             log.error('The pathname is invalid');
         }
         else {
-            fujian.sendWS(`import lychee\nlychee.set_repo_dir('${path}')`);
+            const code =
+`if _JULIUS_SESSION:
+    _JULIUS_SESSION.set_repo_dir('${path}')
+else:
+    raise RuntimeError('you set repo dir before you made a _JULIUS_SESSION')
+`;
+            fujian.sendWS(code);
         }
     },
 
