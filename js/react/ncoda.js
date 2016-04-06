@@ -43,7 +43,7 @@ const MainScreen = React.createClass({
                     properties: ['openDirectory', 'createDirectory'],
                 }
             );
-            signals.emitters.setRepositoryDirectory(dir);
+            signals.emitters.lySetRepoDir(dir);
         }
         else {
             // this is a much worse solution than the native dialogue above
@@ -51,15 +51,15 @@ const MainScreen = React.createClass({
                 type: 'question',
                 message: 'Please enter the repository directory',
                 detail: 'This can break pretty easily, so be careful!',
-                callback: (answer) => signals.emitters.setRepositoryDirectory(answer),
+                callback: (answer) => signals.emitters.lySetRepoDir(answer),
             });
         }
     },
     handleDefaultOpen() {
-        signals.emitters.setRepositoryDirectory('testrepo');
+        signals.emitters.lySetRepoDir('testrepo');
     },
     handleTempOpen() {
-        signals.emitters.setRepositoryDirectory('');
+        signals.emitters.lySetRepoDir('');
     },
     render() {
         return (

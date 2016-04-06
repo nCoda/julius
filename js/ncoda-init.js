@@ -45,6 +45,10 @@ import signals from './nuclear/signals';
 signals.emitters.setLogLevel(log.LEVELS.DEBUG);
 signals.emitters.fujianStartWS();
 
+// Initialize a Lychee session object.
+// (Runs only when the WebSocket connection is ready).
+signals.emitters.lyInitializeSession();
+
 
 // Render the react-router components -----------------------------------------
 // TODO: move this to a submodule
