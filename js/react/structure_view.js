@@ -22,10 +22,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Button, Breadcrumb, Dropdown, Icon, Image, List, ListItem, Panel} from 'amazeui-react';
+import {Button, Breadcrumb, Dropdown, Icon, Image, List, ListItem, Nav, NavItem, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
 
+import {OffCanvas} from './generics';
 import getters from '../nuclear/getters';
 import log from '../util/log';
 import reactor from '../nuclear/reactor';
@@ -286,26 +287,63 @@ const StaffGroupOrStaff = React.createClass({
 
 /** PartsList: Subcomponent of PartsList, the actual content.
  *
- * State
+ * Props
  * -----
- * @param {ImmutableJS.List} sections - Data about <section> elements in the score, provided by
- *     Lychee's "document-outbound" converter.
+ * @param {ImmutableJS.List} sections - Data about <section> elements at a given hierarchic level,
+ *     in the format provided by Lychee's "document-outbound" converter.
+ *
+ * Data from the sections are given as a prop, rather than as state, so that this component can
+ * render itself recursively for nested sections.
  */
 const PartsList = React.createClass({
-    mixins: [reactor.ReactMixin],
-    getDataBindings() {
-        return {sections: getters.sections};
+    propTypes: {
+        sections: React.PropTypes.instanceOf(Immutable.Map).isRequired,
+    },
+    getInitialState() {
+        return {showThing: false, selectedID: ''};
+    },
+    handleShowPanel(event) {
+        event.stopPropagation();
+        this.setState({showThing: true, selectedID: event.target.getAttribute('value')});
+    },
+    handleHidePanel(event) {
+        this.setState(this.getInitialState());
+        event.stopPropagation();
+        event.preventDefault();
     },
     render() {
-        // TODO: find a better solution to which staves to display... Julius issue #14.
-        const scoreOrder = this.state.sections.get('score_order').get(0);
-        const partsList = this.state.sections.get(scoreOrder).get('staffGrp');
+        // TODO: add a <buttonN> in the <NavItem>
+
+        let offCanvasContents;
+
+        if (this.state.selectedID) {
+            if (this.props.sections.hasIn([this.state.selectedID, 'staffGrp'])) {
+                offCanvasContents = (
+                    <List>
+                        {this.props.sections.getIn([this.state.selectedID, 'staffGrp']).map((parts, index) =>
+                            <StaffGroupOrStaff key={index} names={parts}/>
+                        )}
+                    </List>
+                );
+            }
+            else {
+                offCanvasContents = <PartsList sections={this.props.sections.getIn([this.state.selectedID, 'sections'])}/>;
+            }
+        }
+
         return (
-            <List>
-                {partsList.map((parts, index) =>
-                    <StaffGroupOrStaff key={index} names={parts}/>
-                )}
-            </List>
+            <div className="nc-strv-partslist-container">
+                <Nav>
+                    {this.props.sections.get('score_order').map((id, index) =>
+                        <NavItem key={index} onClick={this.handleShowPanel} value={id}>
+                            {`Section ${this.props.sections.getIn([id, 'label'])}`}
+                        </NavItem>
+                    )}
+                </Nav>
+                <OffCanvas showContents={this.state.showThing} handleHide={this.handleHidePanel}>
+                    {offCanvasContents}
+                </OffCanvas>
+            </div>
         );
     },
 });
@@ -316,8 +354,13 @@ const PartsList = React.createClass({
  * State
  * -----
  * @param {boolean} showParts - Whether the contents are currently displayed.
+ * @param {ImmutableJS.Map} sections - Data from the "sections" getter.
  */
 const StavesStructure = React.createClass({
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {sections: getters.sections};
+    },
     getInitialState() {
         return {showParts: false};
     },
@@ -325,13 +368,15 @@ const StavesStructure = React.createClass({
         this.setState({showParts: !this.state.showParts});
     },
     render() {
+        let sizeStyle;
         let partsList;
         if (this.state.showParts) {
-            partsList = <PartsList/>;
+            partsList = <PartsList sections={this.state.sections}/>;
+            sizeStyle = {height: '100%', width: '100%'};
         }
 
         return (
-            <div className="nc-strv-menu nc-strv-menu-bl" id="nc-strv-staves">
+            <div className="nc-strv-menu nc-strv-menu-bl" id="nc-strv-staves" style={sizeStyle}>
                 <div className="header">
                     <ShowOrHideButton func={this.showOrHide} expands="up" isShown={this.state.showParts}/>
                     {`Staves Structure`}
@@ -597,6 +642,9 @@ const Section = React.createClass({
         name: React.PropTypes.string.isRequired,
         pathToImage: React.PropTypes.string,
     },
+    handleDragStart(event) {
+        event.dataTransfer.setData('text/plain', this.props.id);
+    },
     render() {
         // TODO: figure out how to re-enable this when you deal with Julius issue #27
         // let headerStyleAttr = {};
@@ -638,7 +686,13 @@ const Section = React.createClass({
         );
 
         return (
-            <section className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.handleClick}>
+            <section
+                className="nc-strv-section"
+                id={`section-${this.props.id}`}
+                onClick={this.handleClick}
+                draggable={true}
+                onDragStart={this.handleDragStart}
+            >
                 <SectionContextMenu
                     hasSubsections={this.props.hasSubsections}
                     name={this.props.name}
@@ -646,6 +700,58 @@ const Section = React.createClass({
                     sectionID={this.props.id}
                 />
             </section>
+        );
+    },
+});
+
+
+/** SectionDropTarget: Subcomponent of ActiveSections, used when drag-and-drop changing <section> order
+ *
+ * Props:
+ * ------
+ * @param {Number} moveToIndex - When a <section> is dropped on this SectionDropTarget, this integer
+ *     indicates the position the <section> should be moved to. For example, if "moveToIndex" is
+ *     zero, a <section> dropped on this SectionDropTarget will become the first <section> in the
+ *     active score.
+ */
+const SectionDropTarget = React.createClass({
+    propTypes: {
+        moveToIndex: React.PropTypes.number.isRequired,
+    },
+    getInitialState() {
+        return {dragOver: false};
+    },
+    handleDrop(event) {
+        this.setState({dragOver: false});
+        signals.emitters.changeSectionOrder(
+            event.dataTransfer.getData('text/plain'),
+            this.props.moveToIndex
+        );
+    },
+    handleDragEnter(event) {
+        this.setState({dragOver: true});
+        event.preventDefault();
+    },
+    handleDragLeave(){
+        this.setState({dragOver: false});
+    },
+    handleDragOver(event) {
+        event.preventDefault();
+    },
+    render() {
+        let className = 'nc-strv-drop-target';
+        if (this.state.dragOver) {
+            className = 'nc-strv-drop-target-active';
+        }
+
+        return (
+            <div
+                className={className}
+                onDrop={this.handleDrop}
+                onDragEnter={this.handleDragEnter}
+                onDragLeave={this.handleDragLeave}
+                onDragOver={this.handleDragOver}
+            />
         );
     },
 });
@@ -670,52 +776,69 @@ const ActiveSections = React.createClass({
     },
     render() {
         let activeSectionsTitle = 'Active Sections';
-        let order = this.state.sections.get('score_order');
+        let order;
+        const constOrder = this.state.sections.get('score_order');
         let sections = this.state.sections;
         let sectionElements;
-        if (order) {
-            if (this.state.cursor.count() > 0) {
-                let section = this.state.sections.getIn(this.state.cursor);
-                if (!section.has('sections')) {
-                    // If the cursor points to a <section> without subsections, we'll show that
-                    // section's parent.
-                    section = this.state.sections.getIn(this.state.cursor.skipLast(2));
-                }
-                activeSectionsTitle = `Section ${section.get('label')}`;
-                order = section.getIn(['sections', 'score_order']);
-                sections = section.get('sections');
+        if (constOrder) {
+            if (constOrder.size === 0) {
+                sectionElements = <p>{`This document has no sections.`}</p>;
             }
 
-            sectionElements = order.map((sectId, i) => {
-                const lastHash = sections.getIn([sectId, 'last_changeset']);
-                let lastUpdated;
-                if (this.state.changesets.has(lastHash)) {
-                    let name = this.state.changesets.getIn([lastHash, 'user']);
-                    name = name.slice(0, name.indexOf(' <'));  // TODO: this is not foolproof
-
-                    const date = new Date();
-                    date.setTime(this.state.changesets.getIn([lastHash, 'date']) * DATE_MULTIPLIER);
-
-                    lastUpdated = {
-                        name: name,
-                        date: date,
-                    };
-                }
-                let hasSubsections = false;
-                if (sections.getIn([sectId, 'sections'])) {
-                    hasSubsections = true;
+            else {
+                // interleave targets for drag-and-drop <section> reordering
+                order = ['dropTarget'];
+                for (const sectID of constOrder) {
+                    order.push(sectID, 'dropTarget');
                 }
 
-                return (
-                    <Section
-                        key={i}
-                        id={sectId}
-                        name={sections.getIn([sectId, 'label'])}
-                        lastUpdated={lastUpdated}
-                        hasSubsections={hasSubsections}
-                    />
-                );
-            });
+                if (this.state.cursor.count() > 0) {
+                    let section = this.state.sections.getIn(this.state.cursor);
+                    if (!section.has('sections')) {
+                        // If the cursor points to a <section> without subsections, we'll show that
+                        // section's parent.
+                        section = this.state.sections.getIn(this.state.cursor.skipLast(2));
+                    }
+                    activeSectionsTitle = `Section ${section.get('label')}`;
+                    order = section.getIn(['sections', 'score_order']);
+                    sections = section.get('sections');
+                }
+
+                sectionElements = order.map((sectId, i) => {
+                    if (sectId === 'dropTarget') {
+                            return <SectionDropTarget key={i} moveToIndex={i / 2}/>;
+                    }
+
+                    const lastHash = sections.getIn([sectId, 'last_changeset']);
+                    let lastUpdated;
+                    if (this.state.changesets.has(lastHash)) {
+                        let name = this.state.changesets.getIn([lastHash, 'user']);
+                        name = name.slice(0, name.indexOf(' <'));  // TODO: this is not foolproof
+
+                        const date = new Date();
+                        date.setTime(this.state.changesets.getIn([lastHash, 'date']) * DATE_MULTIPLIER);
+
+                        lastUpdated = {
+                            name: name,
+                            date: date,
+                        };
+                    }
+                    let hasSubsections = false;
+                    if (sections.getIn([sectId, 'sections'])) {
+                        hasSubsections = true;
+                    }
+
+                    return (
+                        <Section
+                            key={sectId}
+                            id={sectId}
+                            name={sections.getIn([sectId, 'label'])}
+                            lastUpdated={lastUpdated}
+                            hasSubsections={hasSubsections}
+                        />
+                    );
+                });
+            }
         }
         else {
             sectionElements = <Icon icon="circle-o-notch" spin amSize="lg" className="am-text-primary"/>;

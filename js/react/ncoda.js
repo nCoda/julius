@@ -23,20 +23,58 @@
 // ------------------------------------------------------------------------------------------------
 
 
-import {Button, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
+import {Button, ButtonGroup, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
 import React from 'react';
 import {Link} from 'react-router';
 
 import {log} from '../util/log';
 import signals from '../nuclear/signals';
-import {DialogueBox} from './generics';
+import {DialogueBox, OffCanvas} from './generics';
+import {IconCoda, IconLogo} from './svg_icons';
 
 
 const MainScreen = React.createClass({
+    handleOpen() {
+        if (require) {
+            const remote = require('electron').remote;
+            const dir = remote.dialog.showOpenDialog(
+                {
+                    title: 'title',
+                    properties: ['openDirectory', 'createDirectory'],
+                }
+            );
+            signals.emitters.lySetRepoDir(dir);
+        }
+        else {
+            // this is a much worse solution than the native dialogue above
+            signals.emitters.dialogueBoxShow({
+                type: 'question',
+                message: 'Please enter the repository directory',
+                detail: 'This can break pretty easily, so be careful!',
+                callback: (answer) => signals.emitters.lySetRepoDir(answer),
+            });
+        }
+    },
+    handleDefaultOpen() {
+        signals.emitters.lySetRepoDir('testrepo');
+    },
+    handleTempOpen() {
+        signals.emitters.lySetRepoDir('');
+    },
     render() {
         return (
             <div id="ncoda-loading">
-                <p>{`Use the menus above to navigate the program.`}</p>
+                <div className="am-container am-text-center">
+                    <p>{`Click on the coda symbol above to access the menu and navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
+                    <div>
+                        <p>{`Use this button to open a repository directory.`}</p>
+                        <ButtonGroup>
+                            <Button onClick={this.handleOpen}>Open</Button>
+                            <Button onClick={this.handleDefaultOpen}>(Try to) Load Default Repository</Button>
+                            <Button onClick={this.handleTempOpen}>Load an empty, temporary repository.</Button>
+                        </ButtonGroup>
+                    </div>
+                </div>
                 <MainScreenQuote/>
             </div>
         );
@@ -54,30 +92,34 @@ const MainScreenQuote = React.createClass({
     },
     render() {
         return (
-            <blockquote cite={this.state.cite} className="nc-quote">
-                <i className="fa fa-quote-left"/>
-                <p>{this.state.quote}</p>
-                <i className="fa fa-quote-right"/>
-                <small>{`\u2014 ${this.state.attribution}`}</small>
-            </blockquote>
+            <div className="am-g">
+                <div className="am-u-sm-6 am-u-sm-offset-3 am-u-md-6 am-u-md-offset-3 am-u-lg-6 am-u-lg-offset-3 am-u-end">
+                    <blockquote cite={this.state.cite} className="nc-quote">
+                        <i className="fa fa-quote-left"/>
+                        <p>{this.state.quote}</p>
+                        <i className="fa fa-quote-right"/>
+                        <small>{`\u2014 ${this.state.attribution}`}</small>
+                    </blockquote>
+                </div>
+            </div>
         );
     },
 });
 
 
 const Colophon = React.createClass({
-    // NOTE: the logo image doesn't help comprehension at all; an empty @alt attribute tells screenreaders
-    // NOTE: there should only be one <h2>, which is in the title bar; therefore this is an <h2>
     render() {
         return (
             <div id="ncoda-colophon">
-                <img src="img/nCoda-logo.svg" alt=""/>
-                <div>
-                    <h2>{`About nCoda`}</h2>
-                    <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
-                    <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
-                    <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
-                    <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
+                <div className="am-container am-text-center">
+                    <IconLogo className="am-img-responsive am-center" />
+                    <div>
+                        <h2>{`About nCoda`}</h2>
+                        <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
+                        <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
+                        <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
+                        <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
+                    </div>
                 </div>
             </div>
         );
@@ -87,40 +129,28 @@ const Colophon = React.createClass({
 
 const GlobalMenu = React.createClass({
     propTypes: {
-        showMenu: React.PropTypes.bool,
+        showMenu: React.PropTypes.bool.isRequired,
         handleHide: React.PropTypes.func.isRequired,
     },
-    getDefaultProps() {
-        return {showMenu: false};
-    },
     render() {
-        let offCanvas = 'am-offcanvas';
-        let offCanvasBar = 'am-offcanvas-bar am-offcanvas-bar-overlay';
-        if (this.props.showMenu) {
-            offCanvas += ' am-active';
-            offCanvasBar += ' am-offcanvas-bar-active';
-        }
-
         return (
             <nav data-am-widget="menu" className="am-menu am-menu-offcanvas1" data-am-menu-offcanvas>
-                <div className={offCanvas} onClick={this.props.handleHide}>
-                    <div className={offCanvasBar}>
-                        <Nav className="am-menu-nav">
-                            <NavItem linkComponent={Link} linkProps={{to: "/"}}>
-                                {`nCoda Home`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
-                                {`About`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
-                                {`CodeScoreView`}
-                            </NavItem>
-                            <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
-                                {`StructureView`}
-                            </NavItem>
-                        </Nav>
-                    </div>
-                </div>
+                <OffCanvas padding={false} showContents={this.props.showMenu} handleHide={this.props.handleHide}>
+                    <Nav className="am-menu-nav">
+                        <NavItem linkComponent={Link} linkProps={{to: "/"}}>
+                            {`nCoda Home`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
+                            {`About`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
+                            {`CodeScoreView`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
+                            {`StructureView`}
+                        </NavItem>
+                    </Nav>
+                </OffCanvas>
             </nav>
         );
     },
@@ -140,16 +170,11 @@ const GlobalHeader = React.createClass({
     },
     render() {
         const brand = (
-            <h1 className="ncoda-logo">
-                <a><img src="img/apple-touch-icon-57x57.png" height="40px" width="40px"/></a>
-            </h1>
+            <Button amStyle="link" onClick={this.props.handleShowMenu} title="Click for Menu"><IconCoda height="100%" /></Button>
         );
 
         return (
             <Topbar brand={brand} fixedTop>
-                <Button onClick={this.props.handleShowMenu}>
-                    <Icon icon="bars"/>
-                </Button>
                 <DeveloperMenu/>
             </Topbar>
         );

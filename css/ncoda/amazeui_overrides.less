@@ -31,7 +31,9 @@
 // Base Colours
 // =============================================================================
 
-@white: #fbfffd;
+@import "../../amazeui/less/variables";
+
+@white: #fbfbfb;
 @black: #000;
 @clear: rgba(0, 0, 0, 0);
 
@@ -69,7 +71,7 @@
 // =============================================================================
 
 @global-background:     @white;
-@global-border:         @gray-lighter
+@global-border:         @gray-lighter;
 @global-contrast-color: @white;
 
 @base-text-color:          @gray-dark;
@@ -99,6 +101,9 @@ body {
     cursor: default;
 }
 
+// NOTE: these aren't in amazeUI, but we'll use them there anyway
+@global-padding: 1.5rem;
+
 
 // =============================================================================
 // Fonts
@@ -126,7 +131,7 @@ body {
 @btn-danger-color:               @white;
 
 .am-btn, .am-btn-link {
-    border-radius: 0.2rem;
+    border-radius: @radius-normal;
     cursor: default;
     &:focus, &:active:focus {
         outline: none;
@@ -211,28 +216,31 @@ button {
 // =============================================================================
 
 // TODO: pull out these colours from whatever theme is chosen for text editing windows
-@code-color: #657b83;  // solarized Base00
-@code-bg:    #002b36;  // solarized Base03
+@code-color: lighten(@gray-darker, 37.2%);  // @base00 from codemirror_ncoda.less
+@code-bg:    lighten(@gray-darker, 87.5%);  // @base3 from codemirror_ncoda.less
 @pre-bg:     @code-bg;
 @pre-color:  @code-color;
 @pre-border: 1px solid @pre-bg;
 
 
 // =============================================================================
-// Off-screen Menu
+// OffCanvas (a React component defined in "generics.js" built on amazeUI)
 // =============================================================================
 
-.am-menu-offcanvas1 .am-menu-nav {
-    border-bottom: 1px solid rgba(0,0,0,.3);
-    box-shadow: 0 1px 0 rgba(255,255,255,.05);
+@offcanvas-dimmer-background: fade(@black, 30%);
+@offcanvas-bar-background:    @comp-l1-bg;
+@offcanvas-bar-border-color:  @comp-l1-border;
 
-    > li > a {
-        border-top: 1px solid rgba(0,0,0,.3);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
-        color: @global-contrast-color;
-        &:focus, &:hover {
-            color: @global-primary;
-        }
+.am-offcanvas-bar {
+    box-shadow: 0 0 2rem 0 @comp-l1-border;
+}
+
+.am-offcanvas-content {
+    padding: @global-padding;
+    background: inherit;
+    color: @base-text-color;
+    a {
+        color: @global-primary;
     }
 }
 
@@ -252,7 +260,7 @@ button {
 // =============================================================================
 
 @panel-bg:            @comp-l1-bg;
-@panel-border-radius: @global-radius;
+@panel-border-radius: @radius-normal;
 // @panel-hd-padding:            .6rem 1.25rem;
 // @panel-bd-padding:            1.25rem;
 
@@ -267,3 +275,22 @@ button {
 @panel-primary-bd:    darken(@global-primary, 5%);
 @panel-primary-hd-bg: @global-primary;
 @panel-primary-text:  @global-contrast-color;
+
+
+// =============================================================================
+// Split Panes and Custom Scrollbars
+// =============================================================================
+@pane-head-font-size: @btn-xs-font-size + .5em;
+@pane-head-line-height: @btn-line-height;
+@pane-head-font-padding: .25em;
+@pane-head-height: @pane-head-font-size + @pane-head-line-height + (@global-padding);
+    // only half of @global-padding used on top and bottom of panes
+
+
+// =============================================================================
+// Mixins
+// =============================================================================
+
+.global-box-shadow() {
+    box-shadow: 0 0 @global-padding 0 @comp-l1-border;
+}

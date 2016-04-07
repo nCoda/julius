@@ -22,6 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
+@import "amazeui_overrides";
 
 /*************************************************************************************************/
 /* Shared stuff */
@@ -65,6 +66,8 @@
     z-index: 1;
     background: @comp-l1-bg;
     border: 1px solid @comp-l1-border;
+    .global-box-shadow();
+    border-radius: @radius-lg;
 }
 .nc-active-sections > header {
     text-align: center;
@@ -72,7 +75,7 @@
     margin: 0 1rem;
 }
 .nc-active-sections > div {
-    padding: 1rem;
+    padding: @global-padding 0px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -118,9 +121,24 @@
     background-color: @global-primary;
 }
 
+@drop-transition: width 0.2s ease-in-out;
+.nc-strv-drop-target {
+    width: @global-padding;
+    transition: @drop-transition;
+}
+.nc-strv-drop-target-active {
+    width: @global-padding * 4;
+    background: @comp-l2-bg;
+    transition: @drop-transition;
+}
+
 
 /*************************************************************************************************/
 /* StructureView Corner Menus */
+.li-hover {
+    // We do this with transparency so that nested lists will show as doubly darkened
+    background: fade(@black, 15%);
+}
 .nc-strv-menu {
     background: @comp-l1-bg;
     display: flex;
@@ -129,7 +147,8 @@
     position: absolute;
     max-width: 80%;
     max-height: 80%;
-    padding: 1rem;
+    padding: @global-padding;
+    .global-box-shadow();
     .header {
         cursor: default;
         display: flex;
@@ -156,8 +175,7 @@
             border-color: @btn-default-border;
         }
         &:hover {
-            // We do this with transparency so that nested lists will show as doubly darkened
-            background: fade(@black, 20%);
+            .li-hover;
             // This bit could probably be more elegant... oh well!
             .am-btn-danger {
                 color:        @btn-danger-color;
@@ -186,23 +204,27 @@
     border-left:   @corner-menu-border;
     border-bottom: @corner-menu-border;
     right: 0;
+    border-bottom-left-radius: @radius-lg;
 }
 .nc-strv-menu-tl {
     border-right:  @corner-menu-border;
     border-bottom: @corner-menu-border;
     left: 0;
+    border-bottom-right-radius: @radius-lg;
 }
 .nc-strv-menu-br {
     border-left: @corner-menu-border;
     border-top:  @corner-menu-border;
     bottom: 0;
     right: 0;
+    border-top-left-radius: @radius-lg;
 }
 .nc-strv-menu-bl {
     border-right: @corner-menu-border;
     border-top:   @corner-menu-border;
     bottom: 0;
     left: 0;
+    border-top-right-radius: @radius-lg
 }
 
 .nc-strv-breadcrumbs {
@@ -256,4 +278,50 @@
 
 //////////////////////////////////////////////////////////
 // Staves Structure
-#nc-strv-staves > ul { overflow-y: scroll; }
+#nc-strv-staves {
+    > ul {
+        overflow-y: scroll;
+    }
+    max-height: 50%;
+    max-width: 50rem;
+    .nc-strv-partslist-container {
+        .am-nav {
+            margin-top: @global-padding;
+        }
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        position: relative;
+        .am-offcanvas {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            .am-offcanvas-bar {
+                position: absolute;
+                height: 100%;
+                max-width: 80%;
+                background: @comp-l2-bg;
+                .am-offcanvas-content {
+                    color: inherit;
+                    height: 100%;
+                }
+                .am-offcanvas-bar {
+                    // for <section>s inside <section>s
+                    background: @comp-l3-bg;
+                    border-color: @comp-l3-border;
+                    box-shadow: 0 0 @global-padding 0 @comp-l3-border;
+                    color: @global-contrast-color;
+                    &:after {
+                        background: @comp-l3-bg;
+                    }
+                }
+            }
+        }
+    }
+    .am-list > li {
+        background: inherit;
+        &:hover {
+            .li-hover;
+        }
+    }
+}
