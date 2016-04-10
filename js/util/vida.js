@@ -3,10 +3,10 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/nuclear/stores/verovio.js
-// Purpose:                NuclearJS Stores related to Verovio.
+// Filename:               js/util/vida.js
+// Purpose:                Interface between various nCoda components and the Vida6 library.
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2016 Andrew Horwitz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -22,31 +22,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
+import {VidaController, VidaView} from '../lib/vida';
 
-import {Store, toImmutable} from 'nuclear-js';
-import signals from '../signals';
-
-const MeiForVerovio = Store({
-    // Representing the MEI document to send to Verovio.
-    //
-    // This should be a string.
-    //
-
-    getInitialState() {
-        return toImmutable('');
-    },
-
-    initialize() {
-        this.on(signals.names.RENDER_TO_VEROVIO, renderToVerovio);
-    },
+export const vidaView = VidaView;
+export const vidaController = new VidaController({
+    'workerLocation': '/js/lib/verovioWorker.js',
+    'verovioLocation': '/js/verovio-toolkit-0.9.9.js'
 });
-
-
-function renderToVerovio(previousState, payload) {
-    return toImmutable(payload);
-}
-
-
-export default {
-    MeiForVerovio: MeiForVerovio,
-};

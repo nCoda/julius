@@ -30,6 +30,7 @@ import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
 import CustomScrollbars from './custom_scrollbars';
 import {IconPython, IconLilypond} from './svg_icons';
+import {vidaView, vidaController} from '../util/vida.js';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
@@ -126,16 +127,15 @@ const Verovio = React.createClass({
         delete this.state.verovio;
     },
     render() {
-        signals.emitters.loadMEI(this.state.meiForVerovio);
+        if (this.vidaView) this.vidaView.refreshVerovio(this.state.meiForVerovio);
         return (
             <div className="ncoda-verovio" ref="verovioFrame"></div> 
         );
     },
     componentDidMount() {
-        signals.emitters.initializeVida({
-            'parentElement': document.querySelector('.ncoda-verovio'),
-            'workerLocation': '/js/lib/verovioWorker.js',
-            'verovioLocation': '/js/verovio-toolkit-0.9.9.js'
+        this.vidaView = new vidaView({
+            parentElement: this.refs.verovioFrame,
+            controller: vidaController
         });
     }
 });
