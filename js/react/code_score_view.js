@@ -7,7 +7,7 @@
 // Purpose:                React components for CodeScoreView.
 //
 // Copyright (C) 2015 Wei Gao
-// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Andrew Horwitz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
 import CustomScrollbars from './custom_scrollbars';
 import {IconPython, IconLilypond} from './svg_icons';
-import {vidaView, vidaController} from '../util/vida.js';
+import {createNewVidaView, vidaController} from '../nuclear/stores/verovio';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
@@ -118,19 +118,18 @@ const Verovio = React.createClass({
         signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
         signals.emitters.lyGetSectionById(this.props.sectId);
     },
-    componentDidMount() {
-        this.vidaView = new vidaView({
-            parentElement: this.refs.verovioFrame,
-            controller: vidaController
-        });
+    componentDidMount() { // Create the vidaView 
+        signals.emitters.addNewVidaView(this.refs.verovioFrame, "Sme-s-m-l-e4375357");
+        // signals.emitters.addNewVidaView(this.refs.verovioFrame, this.props.sectId, this.state.meiForVerovio);
     },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
+        //TODO: destroyVidaView signal
+    },
+    shouldComponentUpdate(nextProps, nextState) {
+        return true;
     },
     render() {
-        if (this.vidaView) {
-            this.vidaView.refreshVerovio(this.state.meiForVerovio);
-        }
         return <div className="ncoda-verovio" ref="verovioFrame"/>;
     },
 });

@@ -52,8 +52,7 @@ const names = {
     STDOUT: 'STDOUT',
     STDERR: 'STDERR',
     // Verovio
-    INITIALIZE_VIDA: 'INITIALIZE_VIDA',
-    LOAD_MEI: 'LOAD_MEI',
+    ADD_NEW_VIDAVIEW: 'ADD_NEW_VIDAVIEW',
     RENDER_TO_VEROVIO: 'RENDER_TO_VEROVIO',
     // Fujian PyPy Server (currently doesn't affect NuclearJS)
     FUJIAN_START_WS: 'FUJIAN_START_WS',
@@ -115,6 +114,9 @@ const emitters = {
     },
 
     // Verovio
+    addNewVidaView(parentElement, sectID, mei) {
+        reactor.dispatch(names.ADD_NEW_VIDAVIEW, {parentElement, sectID, mei});
+    },
     renderToVerovio(mei) {
         reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
     },
@@ -150,7 +152,7 @@ const emitters = {
      * @param {string} sectId - The @xml:id value of the <section> to request.
      */
     lyGetSectionById(sectId) {
-        console.info(`lyGetSectionById() called with ${sectId} but function isn't implemented yet.`);
+        console.info(`lyGetSectionById() called with ${sectId} but function is not implemented yet.`);
     },
     submitToLychee(data, format) {
         // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
