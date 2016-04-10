@@ -26,6 +26,6 @@ import {VidaController, VidaView} from '../lib/vida';
 
 export const vidaView = VidaView;
 export const vidaController = new VidaController({
-    'workerLocation': '/js/lib/verovioWorker.js',
-    'verovioLocation': '/js/verovio-toolkit-0.9.9.js'
+    'workerLocation': 'js/lib/verovioWorker.js',
+    'verovioLocation': '../verovio-toolkit-0.9.9.js'
 });
