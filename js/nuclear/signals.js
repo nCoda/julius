@@ -115,14 +115,6 @@ const emitters = {
     },
 
     // Verovio
-    initializeVida(settings) {
-        reactor.dispatch(names.INITIALIZE_VIDA, settings);
-    },
-
-    loadMEI(mei) {
-        reactor.dispatch(names.LOAD_MEI, mei)
-    },
-
     renderToVerovio(mei) {
         reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
     },

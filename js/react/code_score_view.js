@@ -100,74 +100,68 @@ const TextEditor = React.createClass({
 });
 
 
+/** Verovio: a React container for Vida6.
+ *
+ * Props:
+ * ------
+ * @param {str} sectID: The @xml:id attribute of the <section> to display.
+ */
 const Verovio = React.createClass({
-    //
-    // State
-    // =====
-    // - meiForVerovio
-    // - renderedMei
-    // - verovio
-    //
-
+    propTypes: {
+        sectID: React.PropTypes.string.isRequired,
+    },
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {meiForVerovio: getters.meiForVerovio};
     },
-    getInitialState() {
-        // - verovio: the instance of Verovio Toolkit
-        // - renderedMei: the current SVG score as a string
-        // - meiForVerovio: do NOT set in this function (set by the ReactMixin)
-        return {verovio: null, renderedMei: ''};
-    },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('verovio', 'Verovio component', true);
-    },
-    componentWillUnmount() {
-        signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
-        delete this.state.verovio;
-    },
-    render() {
-        if (this.vidaView) this.vidaView.refreshVerovio(this.state.meiForVerovio);
-        return (
-            <div className="ncoda-verovio" ref="verovioFrame"></div> 
-        );
     },
     componentDidMount() {
         this.vidaView = new vidaView({
             parentElement: this.refs.verovioFrame,
             controller: vidaController
         });
-    }
+    },
+    componentWillUnmount() {
+        signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
+    },
+    render() {
+        console.log('boobs');
+        console.log(this.props.sectID);
+        if (this.vidaView) {
+            this.vidaView.refreshVerovio(this.state.meiForVerovio);
+        }
+        return <div className="ncoda-verovio" ref="verovioFrame"/>;
+    },
 });
 
 
 const WorkTable = React.createClass({
     propTypes: {
-        meiForVerovio: React.PropTypes.string,
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
     },
-    getDefaultProps() {
-        return {meiForVerovio: ''};
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {sectionCursor: getters.sectionCursor};
     },
     render() {
         return (
             <SplitPane split="vertical"
-                       ref="workTable"
                        className="ncoda-work-table"
                        primary="second"
                        minSize="20"
                        defaultSize="60%">
                 <div className="ncoda-text-editor pane-container">
                     <TextEditor
-                        ref="textEditor"
                         submitToPyPy={this.props.submitToPyPy}
                         submitToLychee={this.props.submitToLychee}
                     />
                 </div>
                 <div className="ncoda-verovio pane-container">
                     <CustomScrollbars>
-                        <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
+                        <Verovio sectID={this.state.sectionCursor.pop()}/>
                     </CustomScrollbars>
                 </div>
             </SplitPane>
