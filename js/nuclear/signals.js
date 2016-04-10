@@ -143,6 +143,15 @@ const emitters = {
             `import lychee\n_JULIUS_SESSION = lychee.workflow.session.InteractiveSession()\n`
         );
     },
+    /** lyGetSectionById(): Run the outbound steps to get MEI data for a specific section.
+     *
+     * Parameters:
+     * -----------
+     * @param {string} sectId - The @xml:id value of the <section> to request.
+     */
+    lyGetSectionById(sectId) {
+        console.info(`lyGetSectionById() called with ${sectId} but function isn't implemented yet.`);
+    },
     submitToLychee(data, format) {
         // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
         // currently-active score/section.

@@ -104,18 +104,19 @@ const TextEditor = React.createClass({
  *
  * Props:
  * ------
- * @param {str} sectID: The @xml:id attribute of the <section> to display.
+ * @param {str} sectId: The @xml:id attribute of the <section> to display.
  */
 const Verovio = React.createClass({
     propTypes: {
-        sectID: React.PropTypes.string.isRequired,
+        sectId: React.PropTypes.string.isRequired,
     },
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {meiForVerovio: getters.meiForVerovio};
     },
     componentWillMount() {
-        signals.emitters.registerOutboundFormat('verovio', 'Verovio component', true);
+        signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
+        signals.emitters.lyGetSectionById(this.props.sectId);
     },
     componentDidMount() {
         this.vidaView = new vidaView({
@@ -127,8 +128,6 @@ const Verovio = React.createClass({
         signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
     },
     render() {
-        console.log('boobs');
-        console.log(this.props.sectID);
         if (this.vidaView) {
             this.vidaView.refreshVerovio(this.state.meiForVerovio);
         }
@@ -161,7 +160,7 @@ const WorkTable = React.createClass({
                 </div>
                 <div className="ncoda-verovio pane-container">
                     <CustomScrollbars>
-                        <Verovio sectID={this.state.sectionCursor.pop()}/>
+                        <Verovio sectId={this.state.sectionCursor.last()}/>
                     </CustomScrollbars>
                 </div>
             </SplitPane>
