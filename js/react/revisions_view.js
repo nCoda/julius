@@ -107,12 +107,12 @@ const RevlogNuclear = React.createClass({
         return {revlog: getters.vcsRevlog};
     },
     componentWillMount() {
-        // tell Lychee we want VCS data
         signals.registerOutboundFormat('vcs', 'RevisionsView', true);
+        signals.registerOutboundFormat('document', 'RevisionsView', true);
     },
     componentWillUnmount() {
-        // tell Lychee we don't need VCS data any more
         signals.unregisterOutboundFormat('vcs', 'RevisionsView');
+        signals.unregisterOutboundFormat('document', 'RevisionsView');
     },
     render() {
         return <Revlog revlog={this.state.revlog}/>;
