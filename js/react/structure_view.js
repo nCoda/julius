@@ -641,6 +641,9 @@ const Section = React.createClass({
         name: React.PropTypes.string.isRequired,
         pathToImage: React.PropTypes.string,
     },
+    handleDragStart(event) {
+        event.dataTransfer.setData('text/plain', this.props.id);
+    },
     render() {
         // TODO: figure out how to re-enable this when you deal with Julius issue #27
         // let headerStyleAttr = {};
@@ -682,7 +685,13 @@ const Section = React.createClass({
         );
 
         return (
-            <section className="nc-strv-section" id={`section-${this.props.id}`} onClick={this.handleClick}>
+            <section
+                className="nc-strv-section"
+                id={`section-${this.props.id}`}
+                onClick={this.handleClick}
+                draggable={true}
+                onDragStart={this.handleDragStart}
+            >
                 <SectionContextMenu
                     hasSubsections={this.props.hasSubsections}
                     name={this.props.name}
@@ -690,6 +699,58 @@ const Section = React.createClass({
                     sectionID={this.props.id}
                 />
             </section>
+        );
+    },
+});
+
+
+/** SectionDropTarget: Subcomponent of ActiveSections, used when drag-and-drop changing <section> order
+ *
+ * Props:
+ * ------
+ * @param {Number} moveToIndex - When a <section> is dropped on this SectionDropTarget, this integer
+ *     indicates the position the <section> should be moved to. For example, if "moveToIndex" is
+ *     zero, a <section> dropped on this SectionDropTarget will become the first <section> in the
+ *     active score.
+ */
+const SectionDropTarget = React.createClass({
+    propTypes: {
+        moveToIndex: React.PropTypes.number.isRequired,
+    },
+    getInitialState() {
+        return {dragOver: false};
+    },
+    handleDrop(event) {
+        this.setState({dragOver: false});
+        signals.emitters.changeSectionOrder(
+            event.dataTransfer.getData('text/plain'),
+            this.props.moveToIndex
+        );
+    },
+    handleDragEnter(event) {
+        this.setState({dragOver: true});
+        event.preventDefault();
+    },
+    handleDragLeave(){
+        this.setState({dragOver: false});
+    },
+    handleDragOver(event) {
+        event.preventDefault();
+    },
+    render() {
+        let className = 'nc-strv-drop-target';
+        if (this.state.dragOver) {
+            className = 'nc-strv-drop-target-active';
+        }
+
+        return (
+            <div
+                className={className}
+                onDrop={this.handleDrop}
+                onDragEnter={this.handleDragEnter}
+                onDragLeave={this.handleDragLeave}
+                onDragOver={this.handleDragOver}
+            />
         );
     },
 });
@@ -714,15 +775,22 @@ const ActiveSections = React.createClass({
     },
     render() {
         let activeSectionsTitle = 'Active Sections';
-        let order = this.state.sections.get('score_order');
+        let order;
+        const constOrder = this.state.sections.get('score_order');
         let sections = this.state.sections;
         let sectionElements;
-        if (order) {
-            if (order.size === 0) {
+        if (constOrder) {
+            if (constOrder.size === 0) {
                 sectionElements = <p>{`This document has no sections.`}</p>;
             }
 
             else {
+                // interleave targets for drag-and-drop <section> reordering
+                order = ['dropTarget'];
+                for (const sectID of constOrder) {
+                    order.push(sectID, 'dropTarget');
+                }
+
                 if (this.state.cursor.count() > 0) {
                     let section = this.state.sections.getIn(this.state.cursor);
                     if (!section.has('sections')) {
@@ -736,6 +804,10 @@ const ActiveSections = React.createClass({
                 }
 
                 sectionElements = order.map((sectId, i) => {
+                    if (sectId === 'dropTarget') {
+                            return <SectionDropTarget key={i} moveToIndex={i / 2}/>;
+                    }
+
                     const lastHash = sections.getIn([sectId, 'last_changeset']);
                     let lastUpdated;
                     if (this.state.changesets.has(lastHash)) {
@@ -757,7 +829,7 @@ const ActiveSections = React.createClass({
 
                     return (
                         <Section
-                            key={i}
+                            key={sectId}
                             id={sectId}
                             name={sections.getIn([sectId, 'label'])}
                             lastUpdated={lastUpdated}

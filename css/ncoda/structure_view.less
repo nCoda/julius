@@ -22,6 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
+@import "amazeui_overrides";
 
 /*************************************************************************************************/
 /* Shared stuff */
@@ -58,10 +59,6 @@
     align-items: center;
 }
 
-.nc-strv-box-shadow {
-    box-shadow: 0 0 @global-padding 0 @comp-l1-border;
-}
-
 
 /*************************************************************************************************/
 /* active section <article> */
@@ -69,7 +66,7 @@
     z-index: 1;
     background: @comp-l1-bg;
     border: 1px solid @comp-l1-border;
-    .nc-strv-box-shadow;
+    .global-box-shadow();
     border-radius: @radius-lg;
 }
 .nc-active-sections > header {
@@ -78,7 +75,7 @@
     margin: 0 1rem;
 }
 .nc-active-sections > div {
-    padding: @global-padding;
+    padding: @global-padding 0px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -124,6 +121,17 @@
     background-color: @global-primary;
 }
 
+@drop-transition: width 0.2s ease-in-out;
+.nc-strv-drop-target {
+    width: @global-padding;
+    transition: @drop-transition;
+}
+.nc-strv-drop-target-active {
+    width: @global-padding * 4;
+    background: @comp-l2-bg;
+    transition: @drop-transition;
+}
+
 
 /*************************************************************************************************/
 /* StructureView Corner Menus */
@@ -140,7 +148,7 @@
     max-width: 80%;
     max-height: 80%;
     padding: @global-padding;
-    .nc-strv-box-shadow;
+    .global-box-shadow();
     .header {
         cursor: default;
         display: flex;
