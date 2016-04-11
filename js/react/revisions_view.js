@@ -41,11 +41,11 @@ const Revlog = React.createClass({
                 <table width="100%" className="am-table am-table-striped">
                     <thead>
                         <tr>
-                            <th>DATE</th>
-                            <th>MSG</th>
-                            <th>REVISION</th>
-                            <th>SECTION</th>
-                            <th>VIEW DIFF</th>
+                            <th>{`Date`}</th>
+                            <th>{`Message`}</th>
+                            <th>{`Revision`}</th>
+                            <th>{`Sections`}</th>
+                            <th>{`View`}</th>
                         </tr>
                     </thead>
                     <tbody>
