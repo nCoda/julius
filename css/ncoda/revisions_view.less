@@ -3,8 +3,8 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               css/ncoda/main.less
-// Purpose:                Primary LESS file for all Julius components.
+// Filename:               css/ncoda/revisions_view.less
+// Purpose:                LESS file for the RevisionsView
 //
 // Copyright (C) 2016 Christopher Antila
 //
@@ -21,31 +21,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
-//
-// This is the primary LESS file for all Julius components.
-//
-// For Julius, this stylesheet is the only one you need to compile. All the other stylesheets and
-// themes and libraries are included here.
-//
-// NOTE: please do not define anything in this file. This file should only import others.
 
 
-// 1.) The amazeUI base styles.
-@import "../../amazeui/less/amui";
-
-// 2.) Our nCoda-specific overrides.
-@import "amazeui_overrides";
-
-// 3.) The amazeUI widgets, which build on our base and overridden styles.
-//     (I know it's from another theme---trust me!)
-@import "../../amazeui/less/themes/one/widgets";
-
-// 4.) Additional widgets and styling for Julius modules.
-//     (Alphabetical order).
-@import "codemirror_ncoda";
-@import "code_score_view";
-@import "julius";
-// scrollbar styles found in js/react/custom_scrollbars.js
-@import "split_panes";
-@import "structure_view";
-@import "revisions_view";
+.nc-rv-frame {
+    background: @view-bg;
+    color: @base-text-color;
+    height: 100%;
+    overflow-y: scroll;
+    padding: @global-padding;
+}
