@@ -152,7 +152,10 @@ const emitters = {
      * @param {string} sectId - The @xml:id value of the <section> to request.
      */
     lyGetSectionById(sectId) {
-        console.info(`lyGetSectionById() called with ${sectId} but function is not implemented yet.`);
+        console.info(`lyGetSectionById() called with ${sectId}`);
+        fujian.sendWS(
+            `lychee.signals.ACTION_START.emit(views_info="${sectId}")\n`
+        );
     },
     submitToLychee(data, format) {
         // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
