@@ -77,12 +77,13 @@ function vcsChangesets(revlog) {
 /** vcsRevlog() - Extract a List of changesets for RevisionsView.
  *
  * @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
+ * @param {ImmutableJS.Map} sections - Data from the document.Sections Store.
  * @returns {ImmutableJS.List} List of Map objects representing a changeset. The order is from
  *     oldest (first item in List) to most recent (last item in List). Each changeset includes the
  *     following fields: date, author, msg, revNumber, sections.
  */
-function vcsRevlog(revlog) {
-    if (revlog.get('history')) {
+function vcsRevlog(revlog, sections) {
+    if (revlog.get('history') && sections.get('score_order')) {
         return revlog.get('history').map((hash) => {
             const changeset = revlog.getIn(['changesets', hash]);
 
@@ -93,12 +94,25 @@ function vcsRevlog(revlog) {
             let msg = changeset.get('description');
             msg = msg.slice(0, msg.indexOf('\n'));
 
+            let section = [];
+            for (const file of changeset.get('files')) {
+                if (file !== 'all_files' && file !== 'score' && file !== 'head') {
+                    if (sections.getIn([file, 'label'])) {
+                        section.push(sections.getIn([file, 'label']));
+                    }
+                    else {
+                        section.push(file);
+                    }
+                }
+            }
+            section = section.join(' ');
+
             return Immutable.Map({
                 author: name,
                 date: moment(changeset.get('date'), 'X').format('MMM Do YYYY'),
                 msg: msg,
-                revNumber: 'N',
-                section: 'S',
+                revNumber: changeset.get('number').toString(),
+                section: section,
             })
         });
     }
@@ -200,7 +214,7 @@ const getters = {
     logLevel: ['logLevel'],
     DialogueBox: ['DialogueBox'],
     vcsChangesets: [['revlog'], vcsChangesets],
-    vcsRevlog: [['revlog'], vcsRevlog],
+    vcsRevlog: [['revlog'], ['sections'], vcsRevlog],
     vcsUsers: [['revlog'], vcsUsers],
 };
 
