@@ -26,7 +26,7 @@ import React from 'react';
 
 import ReactCodeMirror from './CodeMirror';
 import {Button, ButtonGroup} from 'amazeui-react';
-import CustomScrollbars from './custom_scrollbars';
+import Scroll from './scroll';
 import {IconPython, IconLilypond} from './svg_icons';
 
 
@@ -72,14 +72,14 @@ export const CodeView = React.createClass({
                                      submitToLychee={this.props.submitToLychee}
                                      editorValue={this.state.editorValue}/>
                 </div>
-                <CustomScrollbars>
+                <Scroll>
                     <ReactCodeMirror
                         path="ncoda-editor"
                         options={codeMirrorOptions}
                         value={this.state.editorValue}
                         onChange={this.handleEditorChange}
                     />
-                </CustomScrollbars>
+                </Scroll>
             </div>
         );
     },

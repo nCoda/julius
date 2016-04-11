@@ -24,7 +24,7 @@
 
 import React from 'react';
 
-import CustomScrollbars from './custom_scrollbars';
+import Scroll from './scroll';
 
 
 export const TerminalView = React.createClass({
@@ -66,9 +66,9 @@ export const TerminalView = React.createClass({
                 <div className="pane-head">
                     <h2>{this.whichTitle()}</h2>
                 </div>
-                <CustomScrollbars>
+                <Scroll>
                     {this.whichOutput()}
-                </CustomScrollbars>
+                </Scroll>
             </div>
         );
     },

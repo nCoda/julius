@@ -24,7 +24,7 @@
 
 import React from 'react';
 
-import CustomScrollbars from './custom_scrollbars';
+import Scroll from './scroll';
 
 export const ScoreView = React.createClass({
     //
@@ -99,9 +99,9 @@ export const ScoreView = React.createClass({
     render() {
         const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
         return (
-            <CustomScrollbars>
+            <Scroll>
                 <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
-            </CustomScrollbars>
+            </Scroll>
         );
     },
 });
