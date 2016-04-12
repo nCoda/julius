@@ -36,6 +36,8 @@ import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 
+import {log} from '../util/log';
+
 
 const TextEditor = React.createClass({
     propTypes: {
@@ -116,7 +118,10 @@ const Verovio = React.createClass({
     },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
-        if (!this.props.sectId) console.warn("Verovio state not instantiated with 'sectId' prop. Defaulting.");
+        if (!this.props.sectId) 
+        {
+            log.warn("Verovio state not instantiated with 'sectId' prop. Defaulting.");
+        }
 
         this.sectId = this.props.sectId || 'Sme-s-m-l-e8726689';
         signals.emitters.lyGetSectionById(this.sectId);
@@ -129,7 +134,16 @@ const Verovio = React.createClass({
         signals.emitters.destroyVidaView(this.sectId);
     },
     shouldComponentUpdate(nextProps, nextState) {
-        return true;
+        // if the sectIds don't line up, we want to re-render
+        if (this.sectId !== nextProps.sectId)
+        {
+            signals.emitters.destroyVidaView(this.sectId);
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
     },
     render() {
         return <div className="ncoda-verovio" ref="verovioFrame"/>;

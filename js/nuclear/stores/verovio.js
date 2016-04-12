@@ -29,6 +29,8 @@ import getters from '../getters';
 import reactor from '../reactor';
 import {VidaController, VidaView} from '../../lib/vida';
 
+import {log} from '../../util/log';
+
 const vidaController = new VidaController({
     'workerLocation': 'js/lib/verovioWorker.js',
     'verovioLocation': '../verovio-toolkit-0.9.9.js'
@@ -50,11 +52,14 @@ const MeiForVerovio = Store({
     }
 });
 
-function addNewVidaView(previousState, payload)
+function addNewVidaView(previousState, payload) // payload.sectID, payload.parentElement
 {
     if (previousState) previousState = previousState.toJS();
 
-    if (payload.sectID in previousState) console.warn("Duplicate sectID " + payload.sectID + " in verovio store - shouldn't be happening.");
+    if (payload.sectID in previousState) 
+    {
+        console.warn("Duplicate sectID " + payload.sectID + " in verovio store - shouldn't be happening.");
+    }
     else
     {
         let vidaView = new VidaView({
@@ -75,20 +80,25 @@ function addNewVidaView(previousState, payload)
     return toImmutable(previousState);
 };
 
-function destroyVidaView(previousState, payload)
+function destroyVidaView(previousState, payload) // payload is sectID
 {
-    if (previousState) previousState = previousState.toJS();
-
-    if (payload.sectID in previousState)
+    if (previousState) 
     {
-        var vidaIdx = previousState[payload.sectID];
+        previousState = previousState.toJS();
+    }
+
+    if (payload in previousState)
+    {
+        var vidaIdx = previousState[payload];
         viewsArr[vidaIdx].destroy();
         delete viewsArr[vidaIdx];
         viewsArr.splice(vidaIdx, 1);
-        delete previousState[payload.sectID];
-        console.log(previousState, viewsArr);
+        delete previousState[payload];
     }
-    else console.warn("Tried to destroy VidaView for sectID " + payload.sectID + " - not active.");
+    else 
+    {
+        log.warn("Tried to destroy VidaView for sectID " + payload + " - not active.");
+    }
 
     return toImmutable(previousState);
 };
