@@ -7,7 +7,7 @@
 // Purpose:                React components for CodeScoreView.
 //
 // Copyright (C) 2015 Wei Gao
-// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Andrew Horwitz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -30,10 +30,13 @@ import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
 import CustomScrollbars from './custom_scrollbars';
 import {IconPython, IconLilypond} from './svg_icons';
+import {createNewVidaView, vidaController} from '../nuclear/stores/verovio';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
+
+import {log} from '../util/log';
 
 
 const TextEditor = React.createClass({
@@ -99,109 +102,84 @@ const TextEditor = React.createClass({
 });
 
 
+/** Verovio: a React container for Vida6.
+ *
+ * Props:
+ * ------
+ * @param {str} sectId: The @xml:id attribute of the <section> to display.
+ *
+ * NOTE: this component does not update in the usual React way because it is a React wrapper around
+ *       Vida6. The data rendered by Vida6 is managed in the "verovio" NuclearJS Store file.
+ */
 const Verovio = React.createClass({
-    //
-    // State
-    // =====
-    // - meiForVerovio
-    // - renderedMei
-    // - verovio
-    //
-
+    propTypes: {
+        sectId: React.PropTypes.string.isRequired,
+    },
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {meiForVerovio: getters.meiForVerovio};
     },
-    getInitialState() {
-        // - verovio: the instance of Verovio Toolkit
-        // - renderedMei: the current SVG score as a string
-        // - meiForVerovio: do NOT set in this function (set by the ReactMixin)
-        return {verovio: null, renderedMei: ''};
-    },
-    renderWithVerovio(renderThis) {
-        // Ensure there's an instance of Verovio available, and use it to render "renderThis."
-        //
-        // TODO: move all the interaction with Verovio to part of the model
-        //
-
-        if (null === this.state.verovio) {
-            return (
-                <div class="verovio-waiting">
-                    <i class="fa fa-spinner fa-5x fa-spin"></i>
-                    <div>{'Loading ScoreView'}</div>
-                </div>
-            );
-        }
-        else if (null === renderThis) {
-            return 'Received no MEI to render.';
-        }
-
-        let theOptions = {inputFormat: 'mei'};
-        theOptions = JSON.stringify(theOptions);
-        let rendered = this.state.verovio.renderData(renderThis, theOptions);
-        // TODO: dynamically set the height of the .ncoda-verovio <div> so it automatically responds proportionally to width changes
-        rendered = rendered.replace('width="2100px" height="2970px"', '');
-        return rendered;
-    },
-    makeVerovio() {
-        // TODO: consider whether we should be making a global instance? (I'm thinking one per Verovio component is good though)
-
-        try {
-            this.setState({verovio: new verovio.toolkit()});
-        }
-        catch (err) {
-            if ('ReferenceError' === err.name) {
-                window.setTimeout(this.makeVerovio, 250);
-            }
-            else {
-                throw err;
-            }
-        }
-    },
     componentWillMount() {
-        this.makeVerovio();
-        signals.emitters.registerOutboundFormat('verovio', 'Verovio component', true);
+        signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
+        signals.emitters.lyGetSectionById(this.props.sectId);
+    },
+    componentDidMount() { // Create the vidaView
+        signals.emitters.addNewVidaView(this.refs.verovioFrame, this.props.sectId);
+    },
+    componentWillReceiveProps(nextProps) {
+        if (this.props.sectId !== nextProps.sectId) {
+            signals.emitters.destroyVidaView(this.props.sectId);
+        }
+    },
+    shouldComponentUpdate(nextProps, nextState) {
+        // if the sectIds don't line up, we want to re-render
+        if (this.props.sectId !== nextProps.sectId) {
+            return true;
+        }
+        return false;
+    },
+    componentDidUpdate() { // Create the vidaView
+        signals.emitters.addNewVidaView(this.refs.verovioFrame, this.props.sectId);
     },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
-        delete this.state.verovio;
+        signals.emitters.destroyVidaView(this.props.sectId);
     },
     render() {
-        const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
-        return (
-            <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
-        );
+        return <div className="ncoda-verovio" ref="verovioFrame"/>;
     },
 });
 
 
 const WorkTable = React.createClass({
     propTypes: {
-        meiForVerovio: React.PropTypes.string,
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
     },
-    getDefaultProps() {
-        return {meiForVerovio: ''};
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {sectionCursor: getters.sectionCursor};
     },
     render() {
+        const sectId = this.state.sectionCursor.last() || 'Sme-s-m-l-e8726689';
+        if (!this.state.sectionCursor.last()) {
+            log.debug('Document cursor is not set; using default section');
+        }
         return (
             <SplitPane split="vertical"
-                       ref="workTable"
                        className="ncoda-work-table"
                        primary="second"
                        minSize="20"
                        defaultSize="60%">
                 <div className="ncoda-text-editor pane-container">
                     <TextEditor
-                        ref="textEditor"
                         submitToPyPy={this.props.submitToPyPy}
                         submitToLychee={this.props.submitToLychee}
                     />
                 </div>
                 <div className="ncoda-verovio pane-container">
                     <CustomScrollbars>
-                        <Verovio ref="verovio" meiForVerovio={this.props.meiForVerovio} />
+                        <Verovio sectId={sectId}/>
                     </CustomScrollbars>
                 </div>
             </SplitPane>

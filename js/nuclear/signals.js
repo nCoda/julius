@@ -52,6 +52,8 @@ const names = {
     STDOUT: 'STDOUT',
     STDERR: 'STDERR',
     // Verovio
+    ADD_NEW_VIDAVIEW: 'ADD_NEW_VIDAVIEW',
+    DESTROY_VIDAVIEW: 'DESTROY_VIDAVIEW',
     RENDER_TO_VEROVIO: 'RENDER_TO_VEROVIO',
     // Fujian PyPy Server (currently doesn't affect NuclearJS)
     FUJIAN_START_WS: 'FUJIAN_START_WS',
@@ -113,6 +115,12 @@ const emitters = {
     },
 
     // Verovio
+    addNewVidaView(parentElement, sectID) {
+        reactor.dispatch(names.ADD_NEW_VIDAVIEW, {parentElement, sectID});
+    },
+    destroyVidaView(sectID) {
+        reactor.dispatch(names.DESTROY_VIDAVIEW, {sectID});
+    },
     renderToVerovio(mei) {
         reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
     },
@@ -139,6 +147,17 @@ const emitters = {
     lyInitializeSession() {
         fujian.sendWS(
             `import lychee\n_JULIUS_SESSION = lychee.workflow.session.InteractiveSession()\n`
+        );
+    },
+    /** lyGetSectionById(): Run the outbound steps to get MEI data for a specific section.
+     *
+     * Parameters:
+     * -----------
+     * @param {string} sectId - The @xml:id value of the <section> to request.
+     */
+    lyGetSectionById(sectId) {
+        fujian.sendWS(
+            `lychee.signals.ACTION_START.emit(views_info="${sectId}")\n`
         );
     },
     submitToLychee(data, format) {
