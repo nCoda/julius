@@ -107,6 +107,9 @@ const TextEditor = React.createClass({
  * Props:
  * ------
  * @param {str} sectId: The @xml:id attribute of the <section> to display.
+ *
+ * NOTE: this component does not update in the usual React way because it is a React wrapper around
+ *       Vida6. The data rendered by Vida6 is managed in the "verovio" NuclearJS Store file.
  */
 const Verovio = React.createClass({
     propTypes: {
@@ -118,32 +121,29 @@ const Verovio = React.createClass({
     },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
-        if (!this.props.sectId) 
-        {
-            log.warn("Verovio state not instantiated with 'sectId' prop. Defaulting.");
+        signals.emitters.lyGetSectionById(this.props.sectId);
+    },
+    componentDidMount() { // Create the vidaView
+        signals.emitters.addNewVidaView(this.refs.verovioFrame, this.props.sectId);
+    },
+    componentWillReceiveProps(nextProps) {
+        if (this.props.sectId !== nextProps.sectId) {
+            signals.emitters.destroyVidaView(this.props.sectId);
         }
-
-        this.sectId = this.props.sectId || 'Sme-s-m-l-e8726689';
-        signals.emitters.lyGetSectionById(this.sectId);
-    },
-    componentDidMount() { // Create the vidaView 
-        signals.emitters.addNewVidaView(this.refs.verovioFrame, this.sectId);
-    },
-    componentWillUnmount() {
-        signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
-        signals.emitters.destroyVidaView(this.sectId);
     },
     shouldComponentUpdate(nextProps, nextState) {
         // if the sectIds don't line up, we want to re-render
-        if (this.sectId !== nextProps.sectId)
-        {
-            signals.emitters.destroyVidaView(this.sectId);
+        if (this.props.sectId !== nextProps.sectId) {
             return true;
         }
-        else 
-        {
-            return false;
-        }
+        return false;
+    },
+    componentDidUpdate() { // Create the vidaView
+        signals.emitters.addNewVidaView(this.refs.verovioFrame, this.props.sectId);
+    },
+    componentWillUnmount() {
+        signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
+        signals.emitters.destroyVidaView(this.props.sectId);
     },
     render() {
         return <div className="ncoda-verovio" ref="verovioFrame"/>;
@@ -161,6 +161,10 @@ const WorkTable = React.createClass({
         return {sectionCursor: getters.sectionCursor};
     },
     render() {
+        const sectId = this.state.sectionCursor.last() || 'Sme-s-m-l-e8726689';
+        if (!this.state.sectionCursor.last()) {
+            log.debug('Document cursor is not set; using default section');
+        }
         return (
             <SplitPane split="vertical"
                        className="ncoda-work-table"
@@ -175,7 +179,7 @@ const WorkTable = React.createClass({
                 </div>
                 <div className="ncoda-verovio pane-container">
                     <CustomScrollbars>
-                        <Verovio sectId={this.state.sectionCursor.last()}/>
+                        <Verovio sectId={sectId}/>
                     </CustomScrollbars>
                 </div>
             </SplitPane>
