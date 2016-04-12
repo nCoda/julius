@@ -44,26 +44,51 @@ const MeiForVerovio = Store({
     },
 
     initialize() {
-        this.on(signals.names.ADD_NEW_VIDAVIEW, addNewVidaView)
+        this.on(signals.names.ADD_NEW_VIDAVIEW, addNewVidaView);
+        this.on(signals.names.DESTROY_VIDAVIEW, destroyVidaView);
         this.on(signals.names.RENDER_TO_VEROVIO, renderToVerovio);
     }
 });
 
-function addNewVidaView(previousState, payload, mei)
+function addNewVidaView(previousState, payload)
 {
     if (previousState) previousState = previousState.toJS();
 
-    let vidaView = new VidaView({
-        parentElement: payload.parentElement,
-        controller: vidaController
-    });
+    if (payload.sectID in previousState) console.warn("Duplicate sectID " + payload.sectID + " in verovio store - shouldn't be happening.");
+    else
+    {
+        let vidaView = new VidaView({
+            parentElement: payload.parentElement,
+            controller: vidaController,
+            iconClasses: {
+                nextPage: 'am-icon-arrow-right',
+                prevPage: 'am-icon-arrow-left',
+                zoomIn: 'am-icon-plus-circle',
+                zoomOut: 'am-icon-minus-circle'
+            }
+        });
 
-    let viewIndex = viewsArr.push(vidaView) - 1; // push returns length, we want index
+        let viewIndex = viewsArr.push(vidaView) - 1; // push returns length, we want index
+        previousState[payload.sectID] = viewIndex;
+    }
 
-    if (payload.sectID in previousState) // it's going to be a string representation of the MEI
-        vidaView.refreshVerovio(previousState[payload.sectID]);
+    return toImmutable(previousState);
+};
 
-    previousState[payload.sectID] = viewIndex;
+function destroyVidaView(previousState, payload)
+{
+    if (previousState) previousState = previousState.toJS();
+
+    if (payload.sectID in previousState)
+    {
+        var vidaIdx = previousState[payload.sectID];
+        viewsArr[vidaIdx].destroy();
+        delete viewsArr[vidaIdx];
+        viewsArr.splice(vidaIdx, 1);
+        delete previousState[payload.sectID];
+        console.log(previousState, viewsArr);
+    }
+    else console.warn("Tried to destroy VidaView for sectID " + payload.sectID + " - not active.");
 
     return toImmutable(previousState);
 };
@@ -71,14 +96,13 @@ function addNewVidaView(previousState, payload, mei)
 function renderToVerovio(previousState, payload) {
     if (previousState) previousState = previousState.toJS();
 
-    let firstID = payload.match(/xml:id="[^"]*/i)[0].split('xml:id="')[1]; // there's a better way to do this but JS regex reacharounds aren't cooperating
+    // there's a better way to do this but JS regex reacharounds don't exist
+    let firstID = payload.match(/xml:id="[^"]*/i)[0].split('xml:id="')[1];
 
     // If something in the state is a number, it represents the index in viewsArr
-    if ((firstID in previousState) && (typeof previousState[firstID] === "number"))
-            viewsArr[previousState[firstID]].refreshVerovio(payload);
+    if (firstID in previousState) viewsArr[previousState[firstID]].refreshVerovio(payload);
     // Else there's still no vidaView for that MEI, so just set it as a string
-    else
-        previousState[firstID] = payload;        
+    else console.error("renderToVerovio called for a section that does not have a registered VidaView yet.");
 
     return toImmutable(previousState);
 }

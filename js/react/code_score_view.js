@@ -116,15 +116,17 @@ const Verovio = React.createClass({
     },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
-        signals.emitters.lyGetSectionById(this.props.sectId);
+        if (!this.props.sectId) console.warn("Verovio state not instantiated with 'sectId' prop. Defaulting.");
+
+        this.sectId = this.props.sectId || 'Sme-s-m-l-e8726689';
+        signals.emitters.lyGetSectionById(this.sectId);
     },
     componentDidMount() { // Create the vidaView 
-        signals.emitters.addNewVidaView(this.refs.verovioFrame, "Sme-s-m-l-e4375357");
-        // signals.emitters.addNewVidaView(this.refs.verovioFrame, this.props.sectId, this.state.meiForVerovio);
+        signals.emitters.addNewVidaView(this.refs.verovioFrame, this.sectId);
     },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
-        //TODO: destroyVidaView signal
+        signals.emitters.destroyVidaView(this.sectId);
     },
     shouldComponentUpdate(nextProps, nextState) {
         return true;
