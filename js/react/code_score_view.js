@@ -26,9 +26,7 @@
 import React from 'react';
 
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
-import CustomScrollbars from './custom_scrollbars';
-import {IconPython, IconLilypond} from './svg_icons';
-import {createNewVidaView, vidaController} from '../nuclear/stores/verovio';
+import {createNewVidaView} from '../nuclear/stores/verovio';
 
 import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
@@ -41,6 +39,54 @@ import getters from '../nuclear/getters';
 import {log} from '../util/log';
 
 
+/** Verovio: a React container for Vida6.
+ *
+ * Props:
+ * ------
+ * @param {str} sectId: The @xml:id attribute of the <section> to display.
+ *
+ * NOTE: this component does not update in the usual React way because it is a React wrapper around
+ *       Vida6. The data rendered by Vida6 is managed in the "verovio" NuclearJS Store file.
+ */
+const Verovio = React.createClass({
+    propTypes: {
+        sectId: React.PropTypes.string.isRequired,
+    },
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {meiForVerovio: getters.meiForVerovio};
+    },
+    componentWillMount() {
+        signals.emitters.registerOutboundFormat('verovio', 'Verovio component');
+        signals.emitters.lyGetSectionById(this.props.sectId);
+    },
+    componentDidMount() { // Create the vidaView
+        signals.emitters.addNewVidaView(this.refs.verovioFrame, this.props.sectId);
+    },
+    componentWillReceiveProps(nextProps) {
+        if (this.props.sectId !== nextProps.sectId) {
+            signals.emitters.destroyVidaView(this.props.sectId);
+        }
+    },
+    shouldComponentUpdate(nextProps, nextState) {
+        // if the sectIds don't line up, we want to re-render
+        if (this.props.sectId !== nextProps.sectId) {
+            return true;
+        }
+        return false;
+    },
+    componentDidUpdate() { // Create the vidaView
+        signals.emitters.addNewVidaView(this.refs.verovioFrame, this.props.sectId);
+    },
+    componentWillUnmount() {
+        signals.emitters.unregisterOutboundFormat('verovio', 'Verovio component');
+        signals.emitters.destroyVidaView(this.props.sectId);
+    },
+    render() {
+        return <div className="ncoda-verovio" ref="verovioFrame"/>;
+    },
+});
+
 const CodeScoreView = React.createClass({
     mixins: [reactor.ReactMixin],
     getDefaultProps() {
@@ -49,6 +95,7 @@ const CodeScoreView = React.createClass({
     getDataBindings() {
         return {
             meiForVerovio: getters.meiForVerovio,
+            sectionCursor: getters.sectionCursor,
             stdin: getters.stdin,
             stdout: getters.stdout,
             stderr: getters.stderr
@@ -61,6 +108,10 @@ const CodeScoreView = React.createClass({
         };
     },
     render() {
+        const sectId = this.state.sectionCursor.last() || 'Sme-s-m-l-e8726689';
+        if (!this.state.sectionCursor.last()) {
+            log.debug('Document cursor is not set; using default section');
+        }
         return (
             <div id="nc-csv-frame">
                 <SplitPane split="horizontal" minSize="20" defaultSize="70%">
@@ -78,11 +129,15 @@ const CodeScoreView = React.createClass({
                             />
                         </div>
                         <div className="ncoda-verovio pane-container">
-                            <ScoreView ref="verovio" 
+                            <ScoreView ref="verovio"
+                                       sectId={sectId}
+                                       lyGetSectionById={signals.emitters.lyGetSectionById}
                                        meiForVerovio={this.state.meiForVerovio}
                                        registerOutboundFormat={signals.emitters.registerOutboundFormat}
                                        unregisterOutboundFormat={signals.emitters.unregisterOutboundFormat}
-                            />
+                                       addNewVidaView={signals.emitters.addNewVidaView}
+                                       destroyVidaView={signals.emitters.destroyVidaView}
+                        />
                         </div>
                     </SplitPane>
                     <SplitPane split="vertical"

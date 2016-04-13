@@ -1,1 +1,1 @@
-../../lib/vida/verovioWorker.js
+/Users/Sienna/Code/nCoda/julius/lib/Vida6/verovioWorker.js
