@@ -123,8 +123,8 @@ export const ScoreView = React.createClass({
         meiForVerovio: React.PropTypes.object.isRequired,
         registerOutboundFormat: React.PropTypes.func.isRequired,
         unregisterOutboundFormat: React.PropTypes.func.isRequired,
-        addNewVidaView: React.PropTypes.any.isRequired,
-        destroyVidaView: React.PropTypes.any.isRequired
+        addNewVidaView: React.PropTypes.func.isRequired,
+        destroyVidaView: React.PropTypes.func.isRequired
     },
     getDataBindings() {
         return {
