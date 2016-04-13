@@ -26,86 +26,6 @@ import React from 'react';
 
 import Scroll from './scroll';
 
-export const OldScoreView = React.createClass({
-    //
-    // State
-    // =====
-    // - meiForVerovio
-    // - renderedMei
-    // - verovio
-    //
-    propTypes: {
-        meiForVerovio: React.PropTypes.string.isRequired,
-        registerOutboundFormat: React.PropTypes.func.isRequired,
-        unregisterOutboundFormat: React.PropTypes.func.isRequired
-    },
-    getInitialState() {
-        // - verovio: the instance of Verovio Toolkit
-        // - renderedMei: the current SVG score as a string
-        // - meiForVerovio: do NOT set in this function (set in code_score_view.js)
-        return {
-            verovio: null, 
-            renderedMei: ''
-        };
-    },
-    renderWithVerovio(renderThis) {
-        // Ensure there's an instance of Verovio available, and use it to render "renderThis."
-        //
-        // TODO: move all the interaction with Verovio to part of the model
-        //
-
-        if (null === this.state.verovio) {
-            return (
-                <div class="verovio-waiting">
-                    <i class="fa fa-spinner fa-5x fa-spin"></i>
-                    <div>{'Loading ScoreView'}</div>
-                </div>
-            );
-        }
-        else if (null === renderThis) {
-            return 'Received no MEI to render.';
-        }
-
-        let theOptions = {inputFormat: 'mei'};
-        theOptions = JSON.stringify(theOptions);
-        let rendered = this.state.verovio.renderData(renderThis, theOptions);
-        // TODO: dynamically set the height of the .ncoda-verovio <div> so it automatically responds proportionally to width changes
-        rendered = rendered.replace('width="2100px" height="2970px"', '');
-        return rendered;
-    },
-    makeVerovio() {
-        // TODO: consider whether we should be making a global instance? (I'm thinking one per Verovio component is good though)
-
-        try {
-            this.setState({verovio: new verovio.toolkit()});
-        }
-        catch (err) {
-            if ('ReferenceError' === err.name) {
-                window.setTimeout(this.makeVerovio, 250);
-            }
-            else {
-                throw err;
-            }
-        }
-    },
-    componentWillMount() {
-        this.makeVerovio();
-        this.props.registerOutboundFormat('verovio', 'Verovio component', true);
-    },
-    componentWillUnmount() {
-        this.props.unregisterOutboundFormat('verovio', 'Verovio component');
-        delete this.state.verovio;
-    },
-    render() {
-        const innerHtml = {__html: this.renderWithVerovio(this.state.meiForVerovio)};
-        return (
-            <Scroll>
-                <div className="ncoda-verovio" ref="verovioFrame" dangerouslySetInnerHTML={innerHtml}></div>
-            </Scroll>
-        );
-    },
-});
-
 /** ScoreView: a React container for Vida6.
  *
  * Props:
@@ -119,8 +39,8 @@ export const OldScoreView = React.createClass({
 export const ScoreView = React.createClass({
     propTypes: {
         sectId: React.PropTypes.string.isRequired,
-        lyGetSectionById: React.PropTypes.func.isRequired,
         meiForVerovio: React.PropTypes.object.isRequired,
+        lyGetSectionById: React.PropTypes.func.isRequired,
         registerOutboundFormat: React.PropTypes.func.isRequired,
         unregisterOutboundFormat: React.PropTypes.func.isRequired,
         addNewVidaView: React.PropTypes.func.isRequired,
