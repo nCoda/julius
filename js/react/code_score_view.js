@@ -25,7 +25,7 @@
 
 import React from 'react';
 
-import ReactCodeMirror from './CodeMirror';
+import CodeMirror from './codemirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
 import CustomScrollbars from './custom_scrollbars';
@@ -47,8 +47,13 @@ const TextEditor = React.createClass({
     getInitialState() {
         return {editorValue: ''};
     },
+    shouldComponentUpdate(nextProps) {
+        if (nextProps !== this.props) {
+            return true;
+        }
+        return false;
+    },
     handleEditorChange(withThis) {
-        // TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
         this.setState({editorValue: withThis});
     },
     handleSubmitPython() {
@@ -58,21 +63,6 @@ const TextEditor = React.createClass({
         this.props.submitToLychee(this.state.editorValue, 'lilypond');
     },
     render() {
-        const codeMirrorOptions = {
-            mode: "python",
-            theme: "codemirror-ncoda light",
-            indentUnit: 4,
-            indentWithTabs: false,
-            smartIndent: true,
-            electricChars: true,
-            lineNumbers: true,
-            autofocus: true,
-            lineWrapping: true,
-            scrollbarStyle: "native",
-            inputStyle: "contenteditable",  // NOTE: this usually defaults to "textarea" on
-                                            // desktop and may not be so good for us, but it has
-                                            // better IME and and screen reader support
-        };
         return (
             <div>
                 <div className="pane-head">
@@ -89,12 +79,7 @@ const TextEditor = React.createClass({
                     </div>
                 </div>
                 <CustomScrollbars>
-                    <ReactCodeMirror
-                        path="ncoda-editor"
-                        options={codeMirrorOptions}
-                        value={this.state.editorValue}
-                        onChange={this.handleEditorChange}
-                    />
+                    <CodeMirror onChange={this.handleEditorChange}/>
                 </CustomScrollbars>
             </div>
         );
