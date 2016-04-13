@@ -22,9 +22,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Badge, List, ListItem} from 'amazeui-react';
+import {Badge, Button, ButtonGroup, List, ListItem, Nav, NavItem, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
+// import ReactCodeMirror from './CodeMirror';
+import CodeMirror from './codemirror';
+import {Link} from 'react-router';
 
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
@@ -37,64 +40,130 @@ const Revlog = React.createClass({
     },
     render() {
         return (
-            <div className="nc-rv-frame">
-                <table width="100%" className="am-table am-table-striped">
-                    <thead>
-                        <tr>
-                            <th>{`Date`}</th>
-                            <th>{`Message`}</th>
-                            <th>{`Revision`}</th>
-                            <th>{`Sections`}</th>
-                            <th>{`View`}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.props.revlog.map((m, key) =>
-                            <Changeset key={key}
-                                       date={m.get('date')}
-                                       msg={m.get('msg')}
-                                       author={m.get('author')}
-                                       revNumber={m.get('revNumber')}
-                                       section={m.get('section')}/>
-                        )}
-                  </tbody>
-                </table>
-            </div>
+            <table width="100%" className="am-table am-table-striped">
+                <thead>
+                    <tr>
+                        <th>{`Date`}</th>
+                        <th>{`Message`}</th>
+                        <th>{`Revision`}</th>
+                        <th>{`Sections`}</th>
+                        <th>{`View`}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.props.revlog.map((m, key) =>
+                        <Changeset key={key}
+                                   date={m.get('date')}
+                                   msg={m.get('msg')}
+                                   author={m.get('author')}
+                                   revNumber={m.get('revNumber')}
+                                   section={m.get('section')}/>
+                    )}
+                </tbody>
+            </table>
         );
     },
 });
 
 
 const Changeset = React.createClass({
-  propTypes: {
-      date: React.PropTypes.string.isRequired,
-      msg: React.PropTypes.string.isRequired,
-      author: React.PropTypes.string.isRequired,
-      revNumber: React.PropTypes.string.isRequired,
-      section: React.PropTypes.string.isRequired,
-  },
+    propTypes: {
+        date: React.PropTypes.string.isRequired,
+        msg: React.PropTypes.string.isRequired,
+        author: React.PropTypes.string.isRequired,
+        revNumber: React.PropTypes.string.isRequired,
+        section: React.PropTypes.string.isRequired,
+    },
     render() {
-      return (
-          <tr>
-              <td>{this.props.date} </td>
-              <td>{this.props.author} : {this.props.msg}</td>
-              <td><Badge amStyle="success">{this.props.revNumber}</Badge></td>
-              <td>{this.props.section}</td>
-              <td>checkbox</td>
-          </tr>
-      );
+        return (
+            <tr>
+                <td>{this.props.date} </td>
+                <td>{this.props.author} : {this.props.msg}</td>
+                <td><Badge amStyle="success">{this.props.revNumber}</Badge></td>
+                <td>{this.props.section}</td>
+                <td>
+                    <Link className="am-btn am-btn-default" to="/revisions/diff">{`View`}</Link>
+                </td>
+            </tr>
+        );
     },
 });
 
 
 const TextualDiff = React.createClass({
-  propTypes: {
-
-  },
+    propTypes: {
+        params: React.PropTypes.shape({format: React.PropTypes.string.isRequired}),
+    },
     render() {
-      return (
-        <p> textual diff coming up ... </p>
-      );
+        const footer = (
+            <ButtonGroup>
+                <Button>{`View in CodeScoreView`}</Button>
+                <Button>{`View in StructureView`}</Button>
+                <Button>{`Reset to this Revision`}</Button>
+            </ButtonGroup>
+        );
+
+        let tempLeftText, tempRightText;
+
+        if (this.props.params.format === 'mei') {
+        tempLeftText =
+`<mei:measure n="3" xml:id="bRSpLKHj1AmciRevlagX77fH1Pn4OzuZ">
+    <mei:layer n="1" xml:id="Pnlw09CayKDdWZ1CTdg61K9tbS7iueqp">
+        <mei:note dur="4" oct="3" pname="a" xml:id="Z3fWjWbLurFLehBaNdJrPi8CErBPlgs9"/>
+        <mei:note dur="4" oct="3" pname="b" xml:id="VgGGONcE1g25QuShUWBVHaP9OsHlFDKj"/>
+        <mei:note dur="4" oct="4" pname="c" xml:id="uWSf385T5iCi79L5qU2IhVCCG1cmQnfg"/>
+        <mei:note dur="4" oct="3" pname="a" xml:id="n5QoXB8dG76vKnD9Iq4tiTPF5ggAS1gJz"/>
+        <mei:note dur="4" oct="3" pname="b" xml:id="FUjR2DufIzXuJrm26f83yzupMXSQoI7Z"/>
+        <mei:note dur="4" oct="4" pname="c" xml:id="n4s0y8ltqjSSfjrnqwBGWDu3m07Vu9F99"/>
+    </mei:layer>
+</mei:measure>`;
+        tempRightText =
+`<mei:measure n="3" xml:id="bRSpLKHj1AmciRevlagX77fH1Pn4OzuZ">
+    <mei:layer n="1" xml:id="Pnlw09CayKDdWZ1CTdg61K9tbS7iueqp">
+        <mei:note dur="4" oct="3" pname="a" xml:id="Z3fWjWbLurFLehBaNdJrPi8CErBPlgs9"/>
+        <mei:note dur="4" oct="3" pname="b" xml:id="VgGGONcE1g25QuShUWBVHaP9OsHlFDKj"/>
+        <mei:note dur="4" oct="4" pname="c" xml:id="uWSf385T5iCi79L5qU2IhVCCG1cmQnfg"/>
+        <mei:note dur="4" oct="3" pname="d" xml:id="n5QoXB8dG24vKnD9Iq4tiTPF5ggAS1gJz"/>
+        <mei:note dur="4" oct="3" pname="b" xml:id="FUjR2DufIzXuJrm26f83yzupMXSQoI7Z"/>
+        <mei:note dur="4" oct="4" pname="c" xml:id="n4s0y8ltqjSSfjrnqwBGWDu3m07Vu9F99"/>
+    </mei:layer>
+</mei:measure>`
+        }
+        else if (this.props.params.format === 'lilypond') {
+            tempLeftText = `\\clef "treble"\na,4 b, c a, b, c`;
+            tempRightText = `\\clef "bass"\na,4 b, c a, b, c`;
+        }
+        else {
+            console.error('AHHH!');
+        }
+
+        return (
+            <Panel className="nc-rv-textual" footer={footer}>
+                <h2>{`这是一个 ${this.props.params.format} Diff`}</h2>
+                <CodeMirror
+                    diff={true}
+                    leftText={tempLeftText}
+                    rightText={tempRightText}
+                />
+            </Panel>
+        );
+    },
+});
+
+
+const DiffView = React.createClass({
+    render() {
+        return (
+            <div>
+                <Nav pills>
+                    <NavItem><Link to="/revisions">{`Back to Revlog`}</Link></NavItem>
+                    <NavItem><Link to="/revisions/diff/text/lilypond">{`LilyPond Diff`}</Link></NavItem>
+                    <NavItem><Link to="/revisions/diff/text/mei">{`MEI Diff`}</Link></NavItem>
+                    <NavItem href="#" disabled>{`ScoreView Diff`}</NavItem>
+                </Nav>
+                {this.props.children}
+            </div>
+        );
     },
 });
 
@@ -120,4 +189,23 @@ const RevlogNuclear = React.createClass({
 });
 
 
-export default RevlogNuclear;
+/** RevisionsView: Top-level container component.
+ */
+const RevisionsView = React.createClass({
+    render() {
+        return (
+            <div className="nc-rv-frame">
+                {this.props.children}
+            </div>
+        );
+    },
+});
+
+
+const FOR_EXPORT = {
+    'DiffView': DiffView,
+    'RevisionsView': RevisionsView,
+    'Revlog': RevlogNuclear,
+    'TextualDiff': TextualDiff,
+};
+export default FOR_EXPORT;
