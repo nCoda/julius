@@ -7,7 +7,7 @@
 // Purpose:                React components for CodeScoreView.
 //
 // Copyright (C) 2015 Wei Gao
-// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Andrew Horwitz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,9 @@
 import React from 'react';
 
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
+import CustomScrollbars from './custom_scrollbars';
+import {IconPython, IconLilypond} from './svg_icons';
+import {createNewVidaView, vidaController} from '../nuclear/stores/verovio';
 
 import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
@@ -34,6 +37,8 @@ import {TerminalView} from './terminal_view';
 import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 import getters from '../nuclear/getters';
+
+import {log} from '../util/log';
 
 
 const CodeScoreView = React.createClass({
