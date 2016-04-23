@@ -39,7 +39,7 @@ const vidaController = new VidaController({
 const viewsArr = [];
 
 const MeiForVerovio = Store({
-    // Represents an object mapping root xml:id of each MEI section rendered in Verovio to the index of its corresponding vidaView.
+    // Represents an object mapping root xml:id of each MEI section rendered in Verovio to the index of its corresponding vidaView in the viewsArr above.
 
     getInitialState() {
         return toImmutable({});
@@ -73,6 +73,10 @@ function addNewVidaView(previousState, payload) // payload.sectID, payload.paren
             }
         });
 
+        vidaView.subscribe("PageRendered", (mei) => {
+            signals.emitters.submitToLychee(mei, "lilypond");
+        });
+
         let viewIndex = viewsArr.push(vidaView) - 1; // push returns length, we want index
         previousState[payload.sectID] = viewIndex;
     }
@@ -87,17 +91,19 @@ function destroyVidaView(previousState, payload) // payload is sectID
         previousState = previousState.toJS();
     }
 
-    if (payload in previousState)
+    let sectID = payload.sectID;
+    if (sectID in previousState)
     {
-        var vidaIdx = previousState[payload];
+        var vidaIdx = previousState[sectID];
+
         viewsArr[vidaIdx].destroy();
         delete viewsArr[vidaIdx];
         viewsArr.splice(vidaIdx, 1);
-        delete previousState[payload];
+        delete previousState[sectID];
     }
     else 
     {
-        log.warn("Tried to destroy VidaView for sectID " + payload + " - not active.");
+        log.warn("Tried to destroy VidaView for sectID " + sectID + " - not active.");
     }
 
     return toImmutable(previousState);
