@@ -185,6 +185,11 @@ const emitters = {
                 log.error('Invalid LilyPond code. Please do not use """ in your LilyPond code.');
             }
         }
+        else if ('mei' === format) {
+            // Prolly gonna crash, but YOLO.
+            const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='MEI', doc="""${data}""")`;
+            fujian.sendWS(code);
+        }
         else {
             log.error('submitToLychee() received an unknown "format" argument.');
         }
