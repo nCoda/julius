@@ -46,7 +46,7 @@ const Revlog = React.createClass({
                         <th>{`Date`}</th>
                         <th>{`Message`}</th>
                         <th>{`Revision`}</th>
-                        <th>{`Sections`}</th>
+                        <th>{`Sections Modified`}</th>
                         <th>{`View`}</th>
                     </tr>
                 </thead>
