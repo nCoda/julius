@@ -74,7 +74,7 @@ function addNewVidaView(previousState, payload) // payload.sectID, payload.paren
         });
 
         vidaView.subscribe("PageRendered", (mei) => {
-            signals.emitters.submitToLychee(mei, "lilypond");
+            signals.emitters.submitToLychee(mei, "mei");
         });
 
         let viewIndex = viewsArr.push(vidaView) - 1; // push returns length, we want index
