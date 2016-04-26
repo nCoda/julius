@@ -22,7 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-
+import moment from 'moment';
 import {Immutable} from 'nuclear-js';
 
 
@@ -61,16 +61,64 @@ function vcsUsers(revlog) {
 
 
 /** vcsChangesets() - Extract an ImmutableJS Map of changesets from the revlog.
-*
-* @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
-* @returns {ImmutableJS.List} A list of Map objects representing a user. Each user has "rname"
-*    and "email" fields, each of which is a string, and "changesets," which is a List of strings,
-*    each of which is the hexadecimal hash of a changeset for which the user is responsible. The
-*    "changesets" List will be in chronological order, so the last element is the has of the most
-*    recent changeset.
-*/
+ *
+ * @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
+ * @returns {ImmutableJS.List} A list of Map objects representing a user. Each user has "rname"
+ *    and "email" fields, each of which is a string, and "changesets," which is a List of strings,
+ *    each of which is the hexadecimal hash of a changeset for which the user is responsible. The
+ *    "changesets" List will be in chronological order, so the last element is the has of the most
+ *    recent changeset.
+ */
 function vcsChangesets(revlog) {
     return revlog.get('changesets');
+}
+
+
+/** vcsRevlog() - Extract a List of changesets for RevisionsView.
+ *
+ * @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
+ * @param {ImmutableJS.Map} sections - Data from the document.Sections Store.
+ * @returns {ImmutableJS.List} List of Map objects representing a changeset. The order is from
+ *     oldest (first item in List) to most recent (last item in List). Each changeset includes the
+ *     following fields: date, author, msg, revNumber, sections.
+ */
+function vcsRevlog(revlog, sections) {
+    if (revlog.get('history') && sections.get('score_order')) {
+        return revlog.get('history').map((hash) => {
+            const changeset = revlog.getIn(['changesets', hash]);
+
+            // TODO: this is not foolproof
+            let name = changeset.get('user');
+            name = name.slice(0, name.indexOf(' <'));
+
+            let msg = changeset.get('description');
+            msg = msg.slice(0, msg.indexOf('\n'));
+
+            let section = [];
+            for (const file of changeset.get('files')) {
+                if (file !== 'all_files' && file !== 'score' && file !== 'head') {
+                    if (sections.getIn([file, 'label'])) {
+                        section.push(sections.getIn([file, 'label']));
+                    }
+                    else {
+                        section.push(file);
+                    }
+                }
+            }
+            section = section.join(' ');
+
+            return Immutable.Map({
+                author: name,
+                date: moment(changeset.get('date'), 'X').format('MMM Do YYYY'),
+                msg: msg,
+                revNumber: changeset.get('number').toString(),
+                section: section,
+            })
+        });
+    }
+    else {
+        return Immutable.List();
+    }
 }
 
 
@@ -165,8 +213,9 @@ const getters = {
     sectionContextMenu: ['sectionContextMenu'],
     logLevel: ['logLevel'],
     DialogueBox: ['DialogueBox'],
-    vcsUsers: [['revlog'], vcsUsers],
     vcsChangesets: [['revlog'], vcsChangesets],
+    vcsRevlog: [['revlog'], ['sections'], vcsRevlog],
+    vcsUsers: [['revlog'], vcsUsers],
 };
 
 export {cursorFriendlyMaker, getters, stdioConcatter};
