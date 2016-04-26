@@ -34,57 +34,10 @@ import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 import getters from '../nuclear/getters';
 
-import CodeMirror from './codemirror';
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
 
 import {log} from '../util/log';
 
-const TextEditor = React.createClass({
-    propTypes: {
-        submitToLychee: React.PropTypes.func.isRequired,
-        submitToPyPy: React.PropTypes.func.isRequired,
-    },
-    getInitialState() {
-        return {editorValue: ''};
-    },
-    shouldComponentUpdate(nextProps) {
-        if (nextProps !== this.props) {
-            return true;
-        }
-        return false;
-    },
-    handleEditorChange(withThis) {
-        this.setState({editorValue: withThis});
-    },
-    handleSubmitPython() {
-        this.props.submitToPyPy(this.state.editorValue);
-    },
-    handleSubmitLilyPond() {
-        this.props.submitToLychee(this.state.editorValue, 'lilypond');
-    },
-    render() {
-        return (
-            <div>
-                <div className="pane-head">
-                    <h2>{`Text Editor`}</h2>
-                    <div className="ncoda-text-editor-controls">
-                        <ButtonGroup>
-                            <Button title="Run as Python" className="am-btn-xs" onClick={this.handleSubmitPython}>
-                                <IconPython />
-                            </Button>
-                            <Button title="Submit as Lilypond" className="am-btn-xs" onClick={this.handleSubmitLilyPond}>
-                                <IconLilypond />
-                            </Button>
-                        </ButtonGroup>
-                    </div>
-                </div>
-                <CustomScrollbars>
-                    <CodeMirror onChange={this.handleEditorChange}/>
-                </CustomScrollbars>
-            </div>
-        );
-    },
-});
 
 const CodeScoreView = React.createClass({
     mixins: [reactor.ReactMixin],

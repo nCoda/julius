@@ -24,7 +24,7 @@
 
 import React from 'react';
 
-import ReactCodeMirror from './CodeMirror';
+import CodeMirror from './codemirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import Scroll from './scroll';
 import {IconPython, IconLilypond} from './svg_icons';
@@ -45,25 +45,9 @@ export const CodeView = React.createClass({
         return {editorValue: ''};
     },
     handleEditorChange(withThis) {
-        // TODO: is this too much re-rendering? To be going through TextEditor with "state" on every single key press?
         this.setState({editorValue: withThis});
     },
     render() {
-        const codeMirrorOptions = {
-            mode: "python",
-            theme: "codemirror-ncoda light",
-            indentUnit: 4,
-            indentWithTabs: false,
-            smartIndent: true,
-            electricChars: true,
-            lineNumbers: true,
-            autofocus: true,
-            lineWrapping: true,
-            scrollbarStyle: "native",
-            inputStyle: "contenteditable"   // NOTE: this usually defaults to "textarea" on
-                                            // desktop and may not be so good for us, but it has
-                                            // better IME and and screen reader support
-        };
         return (
             <div>
                 <div className="pane-head">
@@ -73,10 +57,7 @@ export const CodeView = React.createClass({
                                      editorValue={this.state.editorValue}/>
                 </div>
                 <Scroll>
-                    <ReactCodeMirror
-                        path="ncoda-editor"
-                        options={codeMirrorOptions}
-                        value={this.state.editorValue}
+                    <CodeMirror
                         onChange={this.handleEditorChange}
                     />
                 </Scroll>
