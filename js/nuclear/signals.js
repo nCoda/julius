@@ -187,8 +187,9 @@ const emitters = {
         }
         else if ('mei' === format) {
             // Prolly gonna crash, but YOLO.
-            const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='MEI', doc="""${data}""")`;
-            fujian.sendWS(code);
+            log.info(`submitToLychee() was called with MEI data, but that's not implemented yet!`);
+            // const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='MEI', doc="""${data}""")`;
+            // fujian.sendWS(code);
         }
         else {
             log.error('submitToLychee() received an unknown "format" argument.');
