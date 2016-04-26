@@ -80,9 +80,7 @@ export const ScoreView = React.createClass({
     },
     render() {
         return (
-            <Scroll>
-                <div className="ncoda-verovio" ref="verovioFrame"></div>
-            </Scroll>
+            <div className="ncoda-verovio" ref="verovioFrame"></div>
         );
     },
 });
