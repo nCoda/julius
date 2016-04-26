@@ -1,6 +1,6 @@
 [submodule "amazeui"]
 	path = amazeui
 	url = https://github.com/amazeui/amazeui.git
-[submodule "lib/Vida6"]
-	path = lib/Vida6
-	url = https://github.com/ahwitz/Vida6.git
+[submodule "lib/vida"]
+	path = lib/vida
+	url = git@github.com:ahwitz/Vida6

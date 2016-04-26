@@ -1,1 +1,1 @@
-/Users/Sienna/Code/nCoda/julius/lib/Vida6/vida.js
+../../lib/vida/vida.js
