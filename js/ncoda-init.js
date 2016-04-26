@@ -28,7 +28,7 @@ import {init} from './nuclear/init';
 // third-party libraries
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router, IndexRoute, Route} from 'react-router';  // TODO: move to submodule
+import {hashHistory, Router, IndexRoute, Route} from 'react-router';  // TODO: move to submodule
 
 // log!
 import log from './util/log';
@@ -54,7 +54,7 @@ signals.emitters.lyInitializeSession();
 // Render the react-router components -----------------------------------------
 // TODO: move this to a submodule
 ReactDOM.render((
-    <Router>
+    <Router history={hashHistory}>
         <Route path="/" component={NCoda}>
             <IndexRoute component={MainScreen}/>
             <Route path="codescore" component={CodeScoreView}/>
