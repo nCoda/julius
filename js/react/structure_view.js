@@ -461,7 +461,6 @@ const Collaborator = React.createClass({
         case 'Fortitude Johnson':
             imgSrc = 'img/sample_repo_avatars/fortitude.jpg';
             break;
-        case 'Honoré de Belzac':
         case 'Honoré de Balzac':
             imgSrc = 'img/sample_repo_avatars/honoré.jpg';
             break;

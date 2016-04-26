@@ -6,7 +6,7 @@
 // Filename:               js/react/ncoda.js
 // Purpose:                React components for nCoda in general.
 //
-// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Wei Gao
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -148,6 +148,9 @@ const GlobalMenu = React.createClass({
                         </NavItem>
                         <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
                             {`StructureView`}
+                        </NavItem>
+                        <NavItem linkComponent={Link} linkProps={{to: "/revisions"}}>
+                            {`RevisionsView`}
                         </NavItem>
                     </Nav>
                 </OffCanvas>
