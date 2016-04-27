@@ -154,11 +154,20 @@ const emitters = {
      * Parameters:
      * -----------
      * @param {string} sectId - The @xml:id value of the <section> to request.
+     * @param {string} revision - Optional changeset identifier if you wish to receive "historical"
+     *     data from the document.
      */
-    lyGetSectionById(sectId) {
-        fujian.sendWS(
-            `lychee.signals.ACTION_START.emit(views_info="${sectId}")\n`
-        );
+    lyGetSectionById(sectId, revision) {
+        if (revision) {
+            fujian.sendWS(
+                `lychee.signals.ACTION_START.emit(views_info="${sectId}", revision="${revision}")\n`
+            );
+        }
+        else {
+            fujian.sendWS(
+                `lychee.signals.ACTION_START.emit(views_info="${sectId}")\n`
+            );
+        }
     },
     submitToLychee(data, format) {
         // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
