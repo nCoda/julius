@@ -4,3 +4,6 @@
 [submodule "lib/vida"]
 	path = lib/vida
 	url = git@github.com:ahwitz/vida6.git
+[submodule "lib/amazeui"]
+	path = lib/amazeui
+	url = https://github.com/amazeui/amazeui.git
