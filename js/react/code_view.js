@@ -36,13 +36,17 @@ const SubmitCodeButton = React.createClass({
         codeLanguage: React.PropTypes.string.isRequired,
         displayText: React.PropTypes.string,
         hoverText: React.PropTypes.string,
-        logo: React.PropTypes.bool
+        logo: React.PropTypes.bool,
+        amSize: React.PropTypes.string,  // AmazeUI: xl, lg, default, sm, xs
+        amStyle: React.PropTypes.string  // AmazeUI: default, primary, secondary, success, warning, danger, link
     },
     getDefaultProps() {
         return {
             displayText: '',
             hoverText: '',
-            logo: false
+            logo: false,
+            amSize: 'xs',
+            amStyle: 'default'
         };
     },
     whichLogo() {
@@ -57,7 +61,6 @@ const SubmitCodeButton = React.createClass({
                 return <IconCoda />; // backup logo is coda symbol
             }
         } else {
-            return;
         }
     },
     whichTitle() {
@@ -90,7 +93,7 @@ const SubmitCodeButton = React.createClass({
     },
     render() {
         return (
-            <Button title={this.whichTitle()} className="am-btn-xs" onClick={this.props.onClick}>
+            <Button title={this.whichTitle()} amSize={this.props.amSize} amStyle={this.props.amStyle} onClick={this.props.onClick}>
                 {this.whichLogo()}{this.whichText()}
             </Button>
         );
@@ -121,10 +124,7 @@ export const CodeView = React.createClass({
         this.props.submitToLychee(this.state.editorValue, 'lilypond');
     },
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.editorValue !== this.state.editorValue) {
-            return true;
-        }
-        return false;
+        return nextState.editorValue !== this.state.editorValue;
     },
     render() {
         return (
