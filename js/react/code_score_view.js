@@ -29,14 +29,11 @@ import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
 import {TerminalView} from './terminal_view';
 
-import {createNewVidaView} from '../nuclear/stores/verovio';
 import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 import getters from '../nuclear/getters';
 
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
-
-import {log} from '../util/log';
 
 
 const CodeScoreView = React.createClass({
@@ -47,11 +44,12 @@ const CodeScoreView = React.createClass({
     getDataBindings() {
         return {
             meiForVerovio: getters.meiForVerovio,
-            sectionCursor: getters.sectionCursor,
+            sections: getters.sections,
+            sectionCursor: getters.sectionCursorFriendly,
             stdin: getters.stdin,
             stdout: getters.stdout,
-            stderr: getters.stderr
-        }
+            stderr: getters.stderr,
+        };
     },
     getInitialState() {
         return {
@@ -62,64 +60,101 @@ const CodeScoreView = React.createClass({
     componentWillMount() {
         signals.emitters.registerOutboundFormat('document', 'codescoreview', false);
     },
+    componentDidMount() {
+        // If the document cursor is not set, we need to choose a default.
+        this.checkForValidCursor(this.state.sections, this.state.sectionCursor);
+    },
+    componentWillUpdate(nextProps, nextState) {
+        // If the document cursor is not set, we need to choose a default.
+        if (nextState.sections !== this.state.sections
+            || nextState.sectionCursor !== this.state.sectionCursor) {
+            this.checkForValidCursor(nextState.sections, nextState.sectionCursor);
+        }
+    },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('document', 'codescoreview');
     },
-    render() {
-        const sectId = this.state.sectionCursor.last() || 'Sme-s-m-l-e8726689';
-        if (!this.state.sectionCursor.last()) {
-            log.debug('Document cursor is not set; using default section');
+    checkForValidCursor(sections, cursor) {
+        if (sections.size === 0) {
+            // the section data aren't loaded yet, so we'll just quit
+            return;
         }
+        if (cursor.size === 0) {
+            signals.emitters.moveSectionCursor([sections.get('score_order').get(0)]);
+        }
+    },
+    render() {
+        const sectId = this.state.sectionCursor.last();
+
+        let scoreView;
+        if (sectId) {
+            scoreView = (
+                <ScoreView
+                    sectId={sectId}
+                    lyGetSectionById={signals.emitters.lyGetSectionById}
+                    meiForVerovio={this.state.meiForVerovio}
+                    registerOutboundFormat={signals.emitters.registerOutboundFormat}
+                    unregisterOutboundFormat={signals.emitters.unregisterOutboundFormat}
+                    addNewVidaView={signals.emitters.addNewVidaView}
+                    destroyVidaView={signals.emitters.destroyVidaView}
+                />
+            );
+        }
+        else {
+            scoreView = (
+                <div>
+                    <p>{`A score will show up when the section cursor is set.`}</p>
+                    <p>{`If the score doesn't show up in a moment, try running this code:`}</p>
+                    <pre>{`lychee.signals.ACTION_START.emit()`}</pre>
+                    <p>{`That only works if there are sections in the score to begin with.`}</p>
+                </div>
+            );
+        }
+
         return (
             <div id="nc-csv-frame">
                 <SplitPane split="horizontal" minSize="20" defaultSize="70%">
-                    <SplitPane split="vertical"
-                               ref="workTable"
-                               className="ncoda-work-table"
-                               primary="second"
-                               minSize="20"
-                               defaultSize="60%">
+                    <SplitPane
+                        split="vertical"
+                        className="ncoda-work-table"
+                        primary="second"
+                        minSize="20"
+                        defaultSize="60%"
+                    >
                         <div className="ncoda-text-editor pane-container">
                             <CodeView
-                                ref="codeView"
                                 submitToPyPy={signals.emitters.submitToPyPy}
                                 submitToLychee={signals.emitters.submitToLychee}
                             />
                         </div>
                         <div className="ncoda-verovio pane-container">
-                            <ScoreView ref="verovio"
-                                       sectId={sectId}
-                                       lyGetSectionById={signals.emitters.lyGetSectionById}
-                                       meiForVerovio={this.state.meiForVerovio}
-                                       registerOutboundFormat={signals.emitters.registerOutboundFormat}
-                                       unregisterOutboundFormat={signals.emitters.unregisterOutboundFormat}
-                                       addNewVidaView={signals.emitters.addNewVidaView}
-                                       destroyVidaView={signals.emitters.destroyVidaView}
-                        />
+                            {scoreView}
                         </div>
                     </SplitPane>
-                    <SplitPane split="vertical"
-                               id="ncoda-terminal-output"
-                               className="ncoda-terminal-output"
-                               primary="second"
-                               minSize="20"
-                               defaultSize="50%">
+                    <SplitPane
+                        split="vertical"
+                        id="ncoda-terminal-output"
+                        className="ncoda-terminal-output"
+                        primary="second"
+                        minSize="20"
+                        defaultSize="50%"
+                    >
                         <div className="pane-container">
-                            <TerminalView ref="terminalIn"
-                                          termOutput="in"
-                                          title="Your Input"
-                                          stdin={this.state.stdin}
-                                          stdout={this.state.stdout}
-                                          stderr={this.state.stderr}
+                            <TerminalView
+                                termOutput="in"
+                                title="Your Input"
+                                stdin={this.state.stdin}
+                                stdout={this.state.stdout}
+                                stderr={this.state.stderr}
                             />
                         </div>
                         <div className="pane-container">
-                            <TerminalView ref="terminalOut"
-                                          termOutput="out"
-                                          title="Python Output"
-                                          stdin={this.state.stdin}
-                                          stdout={this.state.stdout}
-                                          stderr={this.state.stderr}
+                            <TerminalView
+                                termOutput="out"
+                                title="Python Output"
+                                stdin={this.state.stdin}
+                                stdout={this.state.stdout}
+                                stderr={this.state.stderr}
                             />
                         </div>
                     </SplitPane>
