@@ -805,45 +805,55 @@ const ActiveSections = React.createClass({
                         // section's parent.
                         section = this.state.sections.getIn(this.state.cursor.skipLast(2));
                     }
-                    activeSectionsTitle = `Section ${section.get('label')}`;
+                    if (section.get('label')) {
+                        activeSectionsTitle = `Section ${section.get('label')}`;
+                    }
                     order = section.getIn(['sections', 'score_order']);
                     sections = section.get('sections');
                 }
 
-                sectionElements = order.map((sectId, i) => {
-                    if (sectId === 'dropTarget') {
+                if (order) {
+                    // If "order" is undefined, the cursor is (temporarily?) point to a <section>
+                    // that has no subsections. This will be fixed in a moment by the StructureView
+                    // component, so we'll just wait.
+                    sectionElements = order.map((sectId, i) => {
+                        if (sectId === 'dropTarget') {
                             return <SectionDropTarget key={i} moveToIndex={i / 2}/>;
-                    }
+                        }
 
-                    const lastHash = sections.getIn([sectId, 'last_changeset']);
-                    let lastUpdated;
-                    if (this.state.changesets.has(lastHash)) {
-                        let name = this.state.changesets.getIn([lastHash, 'user']);
-                        name = name.slice(0, name.indexOf(' <'));  // TODO: this is not foolproof
+                        const lastHash = sections.getIn([sectId, 'last_changeset']);
+                        let lastUpdated;
+                        if (this.state.changesets.has(lastHash)) {
+                            let name = this.state.changesets.getIn([lastHash, 'user']);
+                            name = name.slice(0, name.indexOf(' <'));  // TODO: this is not foolproof
 
-                        const date = new Date();
-                        date.setTime(this.state.changesets.getIn([lastHash, 'date']) * DATE_MULTIPLIER);
+                            const date = new Date();
+                            date.setTime(this.state.changesets.getIn([lastHash, 'date']) * DATE_MULTIPLIER);
 
-                        lastUpdated = {
-                            name: name,
-                            date: date,
-                        };
-                    }
-                    let hasSubsections = false;
-                    if (sections.getIn([sectId, 'sections'])) {
-                        hasSubsections = true;
-                    }
+                            lastUpdated = {
+                                name: name,
+                                date: date,
+                            };
+                        }
+                        let hasSubsections = false;
+                        if (sections.getIn([sectId, 'sections'])) {
+                            hasSubsections = true;
+                        }
 
-                    return (
-                        <Section
-                            key={sectId}
-                            id={sectId}
-                            name={sections.getIn([sectId, 'label'])}
-                            lastUpdated={lastUpdated}
-                            hasSubsections={hasSubsections}
-                        />
-                    );
-                });
+                        return (
+                            <Section
+                                key={sectId}
+                                id={sectId}
+                                name={sections.getIn([sectId, 'label'])}
+                                lastUpdated={lastUpdated}
+                                hasSubsections={hasSubsections}
+                            />
+                        );
+                    });
+                }
+                else {
+                    sectionElements = <Icon icon="circle-o-notch" spin amSize="lg" className="am-text-primary"/>;
+                }
             }
         }
         else {
@@ -912,13 +922,40 @@ const StructureBreadCrumbs = React.createClass({
 
 
 const StructureView = React.createClass({
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {
+            sections: getters.sections,
+            sectionCursor: getters.sectionCursorFriendly,
+        };
+    },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('vcs', 'StructureView', true);
         signals.emitters.registerOutboundFormat('document', 'StructureView', true);
     },
+    componentDidMount() {
+        // If the document cursor is set to a section that doesn't have subsections, we'll set it
+        // one level higher. This prevents weird problems in subcomponents.
+        this.checkForValidCursor(this.state.sections, this.state.sectionCursor);
+    },
+    componentWillUpdate(nextProps, nextState) {
+        if (nextState.sections !== this.state.sections
+            || nextState.sectionCursor !== this.state.sectionCursor) {
+            this.checkForValidCursor(nextState.sections, nextState.sectionCursor);
+        }
+    },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('vcs', 'StructureView');
         signals.emitters.unregisterOutboundFormat('document', 'StructureView');
+    },
+    checkForValidCursor(sections, cursor) {
+        if (sections.size === 0) {
+            return;
+        }
+        const section = sections.getIn(cursor);
+        if (!section.has('score_order')) {
+            signals.emitters.moveSectionCursor(['..']);
+        }
     },
     render() {
         return (
