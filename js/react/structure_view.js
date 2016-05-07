@@ -25,6 +25,7 @@
 import {Button, Breadcrumb, Dropdown, Icon, Image, List, ListItem, Nav, NavItem, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import React from 'react';
+import {Link} from 'react-router';
 
 import {OffCanvas} from './generics';
 import getters from '../nuclear/getters';
@@ -605,7 +606,13 @@ const SectionContextMenu = React.createClass({
             ];
         }
         else {
-            thisSection.push(<Dropdown.Item key="e">{`Take to CodeScoreView`}</Dropdown.Item>);
+            thisSection.push(
+                <li key="e">
+                    <Link to="/codescore" onClick={this.cursorToThis}>
+                        {`Take to CodeScoreView`}
+                    </Link>
+                </li>
+            );
         }
 
         return (
