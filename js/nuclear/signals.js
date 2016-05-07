@@ -146,7 +146,10 @@ const emitters = {
      */
     lyInitializeSession() {
         fujian.sendWS(
-            `import lychee\n_JULIUS_SESSION = lychee.workflow.session.InteractiveSession()\n`
+`if 'lychee' not in globals():
+    import lychee
+if '_JULIUS_SESSION' not in globals():
+    _JULIUS_SESSION = lychee.workflow.session.InteractiveSession()\n`
         );
     },
     /** lyGetSectionById(): Run the outbound steps to get MEI data for a specific section.
