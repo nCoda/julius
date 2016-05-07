@@ -61,14 +61,14 @@ function vcsUsers(revlog) {
 
 
 /** vcsChangesets() - Extract an ImmutableJS Map of changesets from the revlog.
-*
-* @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
-* @returns {ImmutableJS.List} A list of Map objects representing a user. Each user has "rname"
-*    and "email" fields, each of which is a string, and "changesets," which is a List of strings,
-*    each of which is the hexadecimal hash of a changeset for which the user is responsible. The
-*    "changesets" List will be in chronological order, so the last element is the has of the most
-*    recent changeset.
-*/
+ *
+ * @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
+ * @returns {ImmutableJS.List} A list of Map objects representing a user. Each user has "rname"
+ *    and "email" fields, each of which is a string, and "changesets," which is a List of strings,
+ *    each of which is the hexadecimal hash of a changeset for which the user is responsible. The
+ *    "changesets" List will be in chronological order, so the last element is the has of the most
+ *    recent changeset.
+ */
 function vcsChangesets(revlog) {
     return revlog.get('changesets');
 }

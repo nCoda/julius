@@ -7,6 +7,6 @@ The file "python-logo.svg" was downloaded from https://www.iconfinder.com/icons/
 
 The file "lilypond-logo.svg" was created by Sienna M. Wood (2016), inspired by the current Lilypond logo (visit http://www.lilypond.org/ for an example).
 
-The nCoda logos, icons, and favicons were created by Sienna M. Wood (2016) with the exception of "nCoda-temporary_logo_square-180x180.png".
+The nCoda logos, icons, and favicons were created by Sienna M. Wood (2016).
 
 I, Sienna M. Wood, hereby grant permission for use of the images listed above created by me for any purpose related to the nCoda music notation software.

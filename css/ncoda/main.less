@@ -6,7 +6,7 @@
 // Filename:               css/ncoda/main.less
 // Purpose:                Primary LESS file for all Julius components.
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -31,21 +31,20 @@
 
 
 // 1.) The amazeUI base styles.
-@import "../../amazeui/less/amui";
+@import "../../lib/amazeui/less/amui";
 
 // 2.) Our nCoda-specific overrides.
 @import "amazeui_overrides";
 
 // 3.) The amazeUI widgets, which build on our base and overridden styles.
 //     (I know it's from another theme---trust me!)
-@import "../../amazeui/less/themes/one/widgets";
+@import "../../lib/amazeui/less/themes/one/widgets";
 
 // 4.) Additional widgets and styling for Julius modules.
 //     (Alphabetical order).
 @import "codemirror_ncoda";
 @import "code_score_view";
 @import "julius";
-// scrollbar styles found in js/react/custom_scrollbars.js
 @import "split_panes";
 @import "structure_view";
 @import "revisions_view";

@@ -24,7 +24,6 @@
 
 @import "amazeui_overrides";
 
-
 // The <div> framing CodeScoreView
 #nc-csv-frame {
     position: relative;
@@ -34,9 +33,10 @@
 }
 
 /* ********************************************************************************************* */
-/* Things for the WorkTable (middle) */
+/* CodeView - CodeMirror text editor pane */
 
-/* TextEditor (middle-left) */
+// TODO: Should these be moved into codemirror_ncoda.less?
+
 .ncoda-text-editor {
 
     .ncoda-text-editor-controls { // container for buttons ("Run as Python" and "Submit as Lilypond")
@@ -44,10 +44,12 @@
         border-radius: @global-radius;
 
         button {
+            padding-top: @pane-head-font-padding;
+            padding-bottom: @pane-head-font-padding;
+
             svg {
-                height: 1.7rem;
+                height: @pane-head-font-size;
                 width: auto;
-                margin: -.5rem;
 
                 path {
                     fill: @btn-default-color;
@@ -74,13 +76,27 @@
     }
 }
 
-/* Verovio (middle-right) */
+/* ********************************************************************************************* */
+/* TerminalView pane(s) */
+
+.ncoda-terminal-window {
+    margin: 0;
+    padding: 0;
+
+    pre {
+        margin: 0;
+        padding: @global-padding;
+    }
+}
+
+
+/* ********************************************************************************************* */
+/* ScoreView (Verovio) pane */
+
 .ncoda-verovio {
     height: 100%;
     background: @view-bg;
-
-    svg {
-    }
+    overflow: hidden;
     .verovio-waiting {
         height: 100%;
         color: @base-text-color;
@@ -92,18 +108,4 @@
 }
 
 /* ********************************************************************************************* */
-/* Things for the terminals (bottom) */
-
-.pane-container {
-    background-color: @code-bg;
-    color: @code-color;
-
-    .ncoda-terminal-window {
-
-        pre {
-            width: 100%;
-            min-height: 100%;
-            margin: 0;
-        }
-    }
-}
+/* See split_panes.less for pane and resizer styling */
