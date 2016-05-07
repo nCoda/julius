@@ -176,8 +176,8 @@ const RevlogNuclear = React.createClass({
         return {revlog: getters.vcsRevlog};
     },
     componentWillMount() {
-        signals.registerOutboundFormat('vcs', 'RevisionsView', true);
-        signals.registerOutboundFormat('document', 'RevisionsView', true);
+        signals.registerOutboundFormat('vcs', 'RevisionsView', false);
+        signals.registerOutboundFormat('document', 'RevisionsView', false);
     },
     componentWillUnmount() {
         signals.unregisterOutboundFormat('vcs', 'RevisionsView');

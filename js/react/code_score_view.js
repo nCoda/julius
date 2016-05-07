@@ -59,6 +59,12 @@ const CodeScoreView = React.createClass({
             sendToConsoleType: 'welcome',
         };
     },
+    componentWillMount() {
+        signals.emitters.registerOutboundFormat('document', 'codescoreview', false);
+    },
+    componentWillUnmount() {
+        signals.emitters.unregisterOutboundFormat('document', 'codescoreview');
+    },
     render() {
         const sectId = this.state.sectionCursor.last() || 'Sme-s-m-l-e8726689';
         if (!this.state.sectionCursor.last()) {

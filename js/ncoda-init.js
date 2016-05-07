@@ -49,6 +49,8 @@ signals.emitters.fujianStartWS();
 // Initialize a Lychee session object.
 // (Runs only when the WebSocket connection is ready).
 signals.emitters.lyInitializeSession();
+signals.emitters.registerOutboundFormat('document', 'ncoda-init', false);
+signals.emitters.registerOutboundFormat('vcs', 'ncoda-init', false);
 
 
 // Render the react-router components -----------------------------------------

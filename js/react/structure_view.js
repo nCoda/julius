@@ -930,8 +930,8 @@ const StructureView = React.createClass({
         };
     },
     componentWillMount() {
-        signals.emitters.registerOutboundFormat('vcs', 'StructureView', true);
-        signals.emitters.registerOutboundFormat('document', 'StructureView', true);
+        signals.emitters.registerOutboundFormat('vcs', 'StructureView', false);
+        signals.emitters.registerOutboundFormat('document', 'StructureView', false);
     },
     componentDidMount() {
         // If the document cursor is set to a section that doesn't have subsections, we'll set it
