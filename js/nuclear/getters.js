@@ -22,7 +22,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import moment from 'moment';
 import {Immutable} from 'nuclear-js';
 
 
@@ -109,7 +108,7 @@ function vcsRevlog(revlog, sections) {
 
             return Immutable.Map({
                 author: name,
-                date: moment(changeset.get('date'), 'X').format('MMM Do YYYY'),
+                date: changeset.get('date'),
                 msg: msg,
                 revNumber: changeset.get('number').toString(),
                 section: section,

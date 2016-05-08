@@ -63,7 +63,7 @@ ReactDOM.render((
             <Route path="structure" component={StructureView}/>
             <Route path="revisions" component={revisions.RevisionsView}>
                 <IndexRoute component={revisions.Revlog}/>
-                <Route path="diff" component={revisions.DiffView}>
+                <Route path="diff/:revNumber" component={revisions.DiffView}>
                     <Route path="text/:format" component={revisions.TextualDiff}/>
                 </Route>
             </Route>

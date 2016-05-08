@@ -24,11 +24,11 @@
 
 import {Badge, Button, ButtonGroup, List, ListItem, Nav, NavItem, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
+import moment from 'moment';
 import React from 'react';
-// import ReactCodeMirror from './CodeMirror';
-import CodeMirror from './codemirror';
 import {Link} from 'react-router';
 
+import CodeMirror from './codemirror';
 import getters from '../nuclear/getters';
 import reactor from '../nuclear/reactor';
 import {emitters as signals} from '../nuclear/signals';
@@ -39,11 +39,14 @@ const Revlog = React.createClass({
         revlog: React.PropTypes.instanceOf(Immutable.List).isRequired,
     },
     render() {
+        // to show the revlog with most recent changeset at the top
+        const reversed = this.props.revlog.reverse();
         return (
             <table width="100%" className="am-table am-table-striped">
                 <thead>
                     <tr>
                         <th>{`Date`}</th>
+                        <th>{`Author`}</th>
                         <th>{`Message`}</th>
                         <th>{`Revision`}</th>
                         <th>{`Sections Modified`}</th>
@@ -51,7 +54,7 @@ const Revlog = React.createClass({
                     </tr>
                 </thead>
                 <tbody>
-                    {this.props.revlog.map((m, key) =>
+                    {reversed.map((m, key) =>
                         <Changeset key={key}
                                    date={m.get('date')}
                                    msg={m.get('msg')}
@@ -68,21 +71,29 @@ const Revlog = React.createClass({
 
 const Changeset = React.createClass({
     propTypes: {
-        date: React.PropTypes.string.isRequired,
+        date: React.PropTypes.number.isRequired,
         msg: React.PropTypes.string.isRequired,
         author: React.PropTypes.string.isRequired,
         revNumber: React.PropTypes.string.isRequired,
         section: React.PropTypes.string.isRequired,
     },
     render() {
+        const theDate = moment(this.props.date, 'X');
         return (
             <tr>
-                <td>{this.props.date} </td>
-                <td>{this.props.author} : {this.props.msg}</td>
+                <td>
+                    <time dateTime={theDate.format('YYYY-MM-DDTHH:mm')}>
+                        {theDate.format('D MMM YYYY, HH:mm')}
+                    </time>
+                </td>
+                <td>{this.props.author}</td>
+                <td>{this.props.msg}</td>
                 <td><Badge amStyle="success">{this.props.revNumber}</Badge></td>
                 <td>{this.props.section}</td>
                 <td>
-                    <Link className="am-btn am-btn-default" to="/revisions/diff">{`View`}</Link>
+                    <Link className="am-btn am-btn-default" to={`/revisions/diff/${this.props.revNumber}`}>
+                        {`View`}
+                    </Link>
                 </td>
             </tr>
         );
@@ -152,13 +163,20 @@ const TextualDiff = React.createClass({
 
 
 const DiffView = React.createClass({
+    propTypes: {
+        params: React.PropTypes.shape({revNumber: React.PropTypes.string.isRequired}),
+    },
     render() {
         return (
             <div>
                 <Nav pills>
                     <NavItem><Link to="/revisions">{`Back to Revlog`}</Link></NavItem>
-                    <NavItem><Link to="/revisions/diff/text/lilypond">{`LilyPond Diff`}</Link></NavItem>
-                    <NavItem><Link to="/revisions/diff/text/mei">{`MEI Diff`}</Link></NavItem>
+                    <NavItem><Link to={`/revisions/diff/${this.props.params.revNumber}/text/lilypond`}>
+                        {`LilyPond Diff`}
+                    </Link></NavItem>
+                    <NavItem><Link to={`/revisions/diff/${this.props.params.revNumber}/text/mei`}>
+                        {`MEI Diff`}
+                    </Link></NavItem>
                     <NavItem href="#" disabled>{`ScoreView Diff`}</NavItem>
                 </Nav>
                 {this.props.children}
