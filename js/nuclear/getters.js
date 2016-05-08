@@ -210,6 +210,7 @@ const getters = {
     stdout: [['stdout'], stdioConcatter],
     stderr: [['stderr'], stdioConcatter],
     meiForVerovio: ['meiForVerovio'],
+    revisions: ['revisions'],
     sectionContextMenu: ['sectionContextMenu'],
     logLevel: ['logLevel'],
     DialogueBox: ['DialogueBox'],

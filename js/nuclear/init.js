@@ -25,9 +25,10 @@
 // NOTE: You must import this module as early as possible during application startup!
 // NOTE: You must also import this module for any tests that use NuclearJS.
 
-import reactor from './reactor';
-import mercurial from './stores/mercurial';
 import document from './stores/document';
+import mercurial from './stores/mercurial';
+import reactor from './reactor';
+import revisions from './stores/revisions';
 import stdio from './stores/stdio';
 import verovio from './stores/verovio';
 import {stores as juliusStores} from './stores/julius';
@@ -45,6 +46,7 @@ reactor.registerStores({
     meiForVerovio: verovio.MeiForVerovio,
     logLevel: juliusStores.LogLevel,
     DialogueBox: generics.DialogueBox,
+    revisions: revisions.Revisions,
 });
 
 
