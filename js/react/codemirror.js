@@ -67,8 +67,6 @@ import '../../node_modules/codemirror/addon/merge/merge.js';
  * State:
  * ------
  * @param {object} codemirror - The CodeMirror instance rendered inside this component.
- * @param {object} currentOptions - All the CodeMirror options as they were most recently given to
- *     the CodeMirror instance.
  *
  */
 const CodeMirrorReactWrapper = React.createClass({
@@ -120,7 +118,7 @@ const CodeMirrorReactWrapper = React.createClass({
         };
     },
     getInitialState() {
-        return {codemirror: null, currentOptions: null};
+        return {codemirror: null};
     },
     /** Format a set of "props" so they can be given to CodeMirror as "options."
      */
@@ -174,8 +172,7 @@ const CodeMirrorReactWrapper = React.createClass({
             editor.on('change', this.onChange);  // call the "props" function indirectly
         }
 
-        // save the editor so we can change options later, and the options so we know what's changed
-        this.setState({codemirror: editor, currentOptions: options});
+        this.setState({codemirror: editor});
     },
     componentWillReceiveProps(nextProps) {
         // As much as possible, we want to allow props to take effect in render(). Unfortunately,
@@ -197,12 +194,10 @@ const CodeMirrorReactWrapper = React.createClass({
                 const options = this.propsToOptions(nextProps);
                 for (const key in options) {
                     // only update if it's different
-                    if (options[key] !== this.state.currentOptions[key]) {
+                    if (options[key] !== this.state.codemirror.options[key]) {
                         this.state.codemirror.setOption(key, options[key]);
                     }
                 }
-                // save the options so we know what's changed in the future
-                this.setState({currentOptions: options});
             }
         }
     },
