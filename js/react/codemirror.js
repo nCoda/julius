@@ -195,7 +195,13 @@ const CodeMirrorReactWrapper = React.createClass({
                 for (const key in options) {
                     // only update if it's different
                     if (options[key] !== this.state.codemirror.options[key]) {
-                        this.state.codemirror.setOption(key, options[key]);
+                        if (key === 'origLeft') {
+                            // simply setting "origLeft" again doesn't work
+                            this.state.codemirror.state.diffViews[0].orig.setOption('value', options[key]);
+                        }
+                        else {
+                            this.state.codemirror.setOption(key, options[key]);
+                        }
                     }
                 }
             }
