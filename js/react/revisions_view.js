@@ -102,59 +102,109 @@ const Changeset = React.createClass({
 
 
 const TextualDiff = React.createClass({
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {
+            revisions: getters.revisions,
+            sections: getters.sections,
+            sectionCursor: getters.sectionCursor,
+        };
+    },
     propTypes: {
-        params: React.PropTypes.shape({format: React.PropTypes.string.isRequired}),
+        params: React.PropTypes.shape({
+            format: React.PropTypes.string.isRequired,
+            revNumber: React.PropTypes.string.isRequired,
+        }),
+    },
+    componentWillMount() {
+        signals.registerOutboundFormat(this.props.params.format, 'TextualDiff', false);
+    },
+    componentDidMount() {
+        // If the document cursor is not set, we need to choose a default.
+        const sectID = this.state.sectionCursor.last();
+        if (sectID) {
+            this.fetchSections(sectID);
+        }
+        else {
+            this.checkForValidCursor(this.state.sections, this.state.sectionCursor);
+        }
+    },
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.format !== this.props.params.format) {
+            signals.unregisterOutboundFormat(this.props.params.format, 'TextualDiff');
+            signals.registerOutboundFormat(nextProps.params.format, 'TextualDiff', false);
+            // If the document cursor is not set, we need to choose a default.
+            const sectID = this.state.sectionCursor.last();
+            if (sectID) {
+                this.fetchSections(sectID);
+            }
+            else {
+                this.checkForValidCursor(this.state.sections, this.state.sectionCursor);
+            }
+        }
+    },
+    componentWillUpdate(nextProps, nextState) {
+        // If the document cursor is not set, we need to choose a default.
+        if (nextState.sections !== this.state.sections
+            || nextState.sectionCursor !== this.state.sectionCursor) {
+            const sectID = nextState.sectionCursor.last();
+            if (sectID && nextState.sectionCursor.last() !== this.state.sectionCursor.last()) {
+                this.fetchSections(sectID);
+            }
+            else {
+                this.checkForValidCursor(nextState.sections, nextState.sectionCursor);
+            }
+        }
+    },
+    componentWillUnmount() {
+        signals.unregisterOutboundFormat(this.props.params.format, 'TextualDiff');
+    },
+    checkForValidCursor(sections, cursor) {
+        if (sections.size === 0) {
+            // the section data aren't loaded yet, so we'll just quit
+            return;
+        }
+        if (cursor.size === 0) {
+            signals.moveSectionCursor([sections.get('score_order').get(0)]);
+        }
+    },
+    fetchSections(sectID) {
+        if (sectID) {
+            const revNum = Number.parseInt(this.props.params.revNumber, 10);
+            signals.lyGetSectionById(sectID, revNum);
+            signals.lyGetSectionById(sectID, revNum - 1);
+        }
     },
     render() {
         const footer = (
             <ButtonGroup>
-                <Button>{`View in CodeScoreView`}</Button>
-                <Button>{`View in StructureView`}</Button>
-                <Button>{`Reset to this Revision`}</Button>
+                <Button disabled>{`View in CodeScoreView`}</Button>
+                <Button disabled>{`View in StructureView`}</Button>
+                <Button disabled>{`Reset to this Revision`}</Button>
             </ButtonGroup>
         );
 
-        let tempLeftText, tempRightText;
+        let leftText, rightText = '(loading...)';
 
-        if (this.props.params.format === 'mei') {
-        tempLeftText =
-`<mei:measure n="3" xml:id="bRSpLKHj1AmciRevlagX77fH1Pn4OzuZ">
-    <mei:layer n="1" xml:id="Pnlw09CayKDdWZ1CTdg61K9tbS7iueqp">
-        <mei:note dur="4" oct="3" pname="a" xml:id="Z3fWjWbLurFLehBaNdJrPi8CErBPlgs9"/>
-        <mei:note dur="4" oct="3" pname="b" xml:id="VgGGONcE1g25QuShUWBVHaP9OsHlFDKj"/>
-        <mei:note dur="4" oct="4" pname="c" xml:id="uWSf385T5iCi79L5qU2IhVCCG1cmQnfg"/>
-        <mei:note dur="4" oct="3" pname="a" xml:id="n5QoXB8dG76vKnD9Iq4tiTPF5ggAS1gJz"/>
-        <mei:note dur="4" oct="3" pname="b" xml:id="FUjR2DufIzXuJrm26f83yzupMXSQoI7Z"/>
-        <mei:note dur="4" oct="4" pname="c" xml:id="n4s0y8ltqjSSfjrnqwBGWDu3m07Vu9F99"/>
-    </mei:layer>
-</mei:measure>`;
-        tempRightText =
-`<mei:measure n="3" xml:id="bRSpLKHj1AmciRevlagX77fH1Pn4OzuZ">
-    <mei:layer n="1" xml:id="Pnlw09CayKDdWZ1CTdg61K9tbS7iueqp">
-        <mei:note dur="4" oct="3" pname="a" xml:id="Z3fWjWbLurFLehBaNdJrPi8CErBPlgs9"/>
-        <mei:note dur="4" oct="3" pname="b" xml:id="VgGGONcE1g25QuShUWBVHaP9OsHlFDKj"/>
-        <mei:note dur="4" oct="4" pname="c" xml:id="uWSf385T5iCi79L5qU2IhVCCG1cmQnfg"/>
-        <mei:note dur="4" oct="3" pname="d" xml:id="n5QoXB8dG24vKnD9Iq4tiTPF5ggAS1gJz"/>
-        <mei:note dur="4" oct="3" pname="b" xml:id="FUjR2DufIzXuJrm26f83yzupMXSQoI7Z"/>
-        <mei:note dur="4" oct="4" pname="c" xml:id="n4s0y8ltqjSSfjrnqwBGWDu3m07Vu9F99"/>
-    </mei:layer>
-</mei:measure>`
+        const revNumLeft = (Number.parseInt(this.props.params.revNumber, 10) - 1).toString();
+        const revNumRight = this.props.params.revNumber;
+        const format = this.props.params.format;
+        const sectID = this.state.sectionCursor.last();
+
+        if (this.state.revisions.getIn([revNumLeft, format, sectID])) {
+            leftText = this.state.revisions.getIn([revNumLeft, format, sectID]);
         }
-        else if (this.props.params.format === 'lilypond') {
-            tempLeftText = `\\clef "treble"\na,4 b, c a, b, c`;
-            tempRightText = `\\clef "bass"\na,4 b, c a, b, c`;
-        }
-        else {
-            console.error('AHHH!');
+        if (this.state.revisions.getIn([revNumRight, format, sectID])) {
+            rightText = this.state.revisions.getIn([revNumRight, format, sectID]);
         }
 
         return (
             <Panel className="nc-rv-textual" footer={footer}>
-                <h2>{`这是一个 ${this.props.params.format} Diff`}</h2>
+                <h2>{`DiffView: ${this.props.params.format}`}</h2>
                 <CodeMirror
                     diff={true}
-                    leftText={tempLeftText}
-                    rightText={tempRightText}
+                    leftText={leftText}
+                    rightText={rightText}
                 />
             </Panel>
         );
