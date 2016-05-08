@@ -22,7 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Badge, Button, ButtonGroup, List, ListItem, Nav, NavItem, Panel} from 'amazeui-react';
+import {Badge, Button, ButtonGroup, Divider, Input, List, ListItem, Nav, NavItem, Panel} from 'amazeui-react';
 import {Immutable} from 'nuclear-js';
 import moment from 'moment';
 import React from 'react';
@@ -213,10 +213,35 @@ const TextualDiff = React.createClass({
 
 
 const DiffView = React.createClass({
+    mixins: [reactor.ReactMixin],
+    getDataBindings() {
+        return {
+            sections: getters.sections,
+            sectionCursor: getters.sectionCursor,
+        };
+    },
     propTypes: {
         params: React.PropTypes.shape({revNumber: React.PropTypes.string.isRequired}),
     },
+    handleSectionSelection(event) {
+        signals.moveSectionCursor(['/', event.target.value]);
+    },
     render() {
+        let sectionOptions;
+        if (this.state.sections.get('score_order')) {
+            sectionOptions = [];
+            for (const sectID of this.state.sections.get('score_order')) {
+                sectionOptions.push(
+                    <option value={sectID} key={sectID}>
+                        {this.state.sections.getIn([sectID, 'label'])}
+                    </option>
+                );
+            }
+        }
+        else {
+            sectionOptions = <option>{`(loading sections)`}</option>;
+        }
+
         return (
             <div>
                 <Nav pills>
@@ -229,6 +254,18 @@ const DiffView = React.createClass({
                     </Link></NavItem>
                     <NavItem href="#" disabled>{`ScoreView Diff`}</NavItem>
                 </Nav>
+                <form className="am-form" target="_blank">
+                    <Input
+                        type="select"
+                        label="Section"
+                        labelClassName="am-u-sm-2"
+                        wrapperClassName="am-u-sm-10"
+                        onChange={this.handleSectionSelection}
+                    >
+                        {sectionOptions}
+                    </Input>
+                </form>
+                <Divider/>
                 {this.props.children}
             </div>
         );
