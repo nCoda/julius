@@ -359,7 +359,7 @@ if '_JULIUS_SESSION' not in globals():
         else {
             const code =
 `if _JULIUS_SESSION:
-    _JULIUS_SESSION.set_repo_dir('${path}')
+    _JULIUS_SESSION.set_repo_dir('${path}', run_outbound=True)
 else:
     raise RuntimeError('you set repo dir before you made a _JULIUS_SESSION')
 `;
