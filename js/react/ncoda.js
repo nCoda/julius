@@ -56,8 +56,7 @@ const MainScreen = React.createClass({
         }
     },
     handleDefaultOpen() {
-        signals.emitters.lySetRepoDir('testrepo');
-        signals.emitters.submitToPyPy(`# NB: this sets hgdemo repo to clean state\n_JULIUS_SESSION._hug.update(22, clean=True)\n`);
+        signals.emitters.lyLoadDefaultRepo();
     },
     handleTempOpen() {
         signals.emitters.lySetRepoDir('');

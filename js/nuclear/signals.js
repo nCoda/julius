@@ -368,6 +368,19 @@ else:
             fujian.sendWS(code);
         }
     },
+    /** Load the default demo repository.'
+     */
+    lyLoadDefaultRepo() {
+        const code =
+`if _JULIUS_SESSION:
+    _JULIUS_SESSION.set_repo_dir('testrepo')
+    _JULIUS_SESSION._hug.update(22, clean=True)
+    lychee.signals.ACTION_START.emit()
+else:
+    raise RuntimeError('you set repo dir before you made a _JULIUS_SESSION')
+`;
+        fujian.sendWS(code);
+    },
 
     /** Change the order of the active score by moving the <section> with a given @xml:id to have
      * another index in the score_order list.
