@@ -337,7 +337,7 @@ const PartsList = React.createClass({
                 <Nav>
                     {this.props.sections.get('score_order').map((id, index) =>
                         <NavItem key={index} onClick={this.handleShowPanel} value={id}>
-                            {`Section ${this.props.sections.getIn([id, 'label'])}`}
+                            {`Section ${this.props.sections.getIn([id, 'label'])} >`}
                         </NavItem>
                     )}
                 </Nav>
