@@ -305,7 +305,7 @@ const PartsList = React.createClass({
     },
     handleShowPanel(event) {
         event.stopPropagation();
-        this.setState({showThing: true, selectedID: event.target.getAttribute('value')});
+        this.setState({showThing: true, selectedID: event.target.getAttribute('data-sectID')});
     },
     handleHidePanel(event) {
         this.setState(this.getInitialState());
@@ -335,9 +335,9 @@ const PartsList = React.createClass({
         return (
             <div className="nc-strv-partslist-container">
                 <Nav>
-                    {this.props.sections.get('score_order').map((id, index) =>
-                        <NavItem key={index} onClick={this.handleShowPanel} value={id}>
-                            {`Section ${this.props.sections.getIn([id, 'label'])} >`}
+                    {this.props.sections.get('score_order').map((sectID, index) =>
+                        <NavItem key={index} onClick={this.handleShowPanel} data-sectID={sectID}>
+                            {`Section ${this.props.sections.getIn([sectID, 'label'])} >`}
                         </NavItem>
                     )}
                 </Nav>
