@@ -33,6 +33,11 @@ const app = electron.app;
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow = null;
 
+// Set app name and app version manually.  Built-in functions fetch name and version of Julius only.
+const name = 'nCoda'; //electron.app.getName()
+const version = '0.0'; //electron.app.getVersion()
+
+
 app.on('window-all-closed', function () {
     if (process.platform != 'darwin') {
         app.quit();
@@ -53,35 +58,35 @@ app.on('ready', function () {
 
 // Menus
 let template = [{
-    label: 'Edit',
-    submenu: [{
-        label: 'Undo',
-        accelerator: 'CmdOrCtrl+Z',
-        role: 'undo'
-    }, {
-        label: 'Redo',
-        accelerator: 'Shift+CmdOrCtrl+Z',
-        role: 'redo'
-    }, {
-        type: 'separator'
-    }, {
-        label: 'Cut',
-        accelerator: 'CmdOrCtrl+X',
-        role: 'cut'
-    }, {
-        label: 'Copy',
-        accelerator: 'CmdOrCtrl+C',
-        role: 'copy'
-    }, {
-        label: 'Paste',
-        accelerator: 'CmdOrCtrl+V',
-        role: 'paste'
-    }, {
-        label: 'Select All',
-        accelerator: 'CmdOrCtrl+A',
-        role: 'selectall'
-    }]
-}, {
+//     label: 'Edit',
+//     submenu: [{
+//         label: 'Undo',
+//         accelerator: 'CmdOrCtrl+Z',
+//         role: 'undo'
+//     }, {
+//         label: 'Redo',
+//         accelerator: 'Shift+CmdOrCtrl+Z',
+//         role: 'redo'
+//     }, {
+//         type: 'separator'
+//     }, {
+//         label: 'Cut',
+//         accelerator: 'CmdOrCtrl+X',
+//         role: 'cut'
+//     }, {
+//         label: 'Copy',
+//         accelerator: 'CmdOrCtrl+C',
+//         role: 'copy'
+//     }, {
+//         label: 'Paste',
+//         accelerator: 'CmdOrCtrl+V',
+//         role: 'paste'
+//     }, {
+//         label: 'Select All',
+//         accelerator: 'CmdOrCtrl+A',
+//         role: 'selectall'
+//     }]
+// }, {
     label: 'View',
     submenu: [{
         label: 'Reload',
@@ -153,41 +158,42 @@ let template = [{
 }]
 
 function addUpdateMenuItems(items, position) {
-    const version = electron.app.getVersion()
     let updateItems = [{
         label: `Version ${version}`,
         enabled: false
-    }, {
-        label: 'Checking for Update',
-        enabled: false,
-        key: 'checkingForUpdate'
-    }, {
-        label: 'Check for Update',
-        visible: false,
-        key: 'checkForUpdate',
-        click: function () {
-            require('electron').autoUpdater.checkForUpdates()
-        }
-    }, {
-        label: 'Restart and Install Update',
-        enabled: true,
-        visible: false,
-        key: 'restartToUpdate',
-        click: function () {
-            require('electron').autoUpdater.quitAndInstall()
-        }
+    // }, {
+    //     label: 'Checking for Update',
+    //     enabled: false,
+    //     key: 'checkingForUpdate'
+    // }, {
+    //     label: 'Check for Update',
+    //     visible: false,
+    //     key: 'checkForUpdate',
+    //     click: function () {
+    //         require('electron').autoUpdater.checkForUpdates()
+    //     }
+    // }, {
+    //     label: 'Restart and Install Update',
+    //     enabled: true,
+    //     visible: false,
+    //     key: 'restartToUpdate',
+    //     click: function () {
+    //         require('electron').autoUpdater.quitAndInstall()
+    //     }
     }]
 
     items.splice.apply(items, [position, 0].concat(updateItems))
 }
 
 if (process.platform === 'darwin') {
-    const name = 'nCoda' //electron.app.getName()
     template.unshift({
         label: name,
         submenu: [{
             label: `About ${name}`,
-            role: 'about'
+            //role: 'about',
+            click: function () {
+                electron.shell.openExternal('https://ncodamusic.org/')
+            }
         }, {
             type: 'separator'
         }, {
