@@ -89,8 +89,25 @@ let template = [{
 // }, {
     label: 'View',
     submenu: [{
-        label: 'Reload',
+        label: 'Reload (Cmd/Ctrl R)',
         accelerator: 'CmdOrCtrl+R',
+        click: function (item, focusedWindow) {
+            if (focusedWindow) {
+                // on reload, start fresh and close any old
+                // open secondary windows
+                if (focusedWindow.id === 1) {
+                    BrowserWindow.getAllWindows().forEach(function (win) {
+                        if (win.id > 1) {
+                            win.close()
+                        }
+                    })
+                }
+                focusedWindow.reload()
+            }
+        }
+    }, {
+        label: 'Reload (F5)',
+        accelerator: 'F5',
         click: function (item, focusedWindow) {
             if (focusedWindow) {
                 // on reload, start fresh and close any old
