@@ -24,10 +24,10 @@
 
 'use strict';
 
-const electron = require('electron')
-const BrowserWindow = electron.BrowserWindow
-const Menu = electron.Menu
-const app = electron.app
+const electron = require('electron');
+const BrowserWindow = electron.BrowserWindow;
+const Menu = electron.Menu;
+const app = electron.app;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -40,7 +40,8 @@ app.on('window-all-closed', function () {
 });
 
 app.on('ready', function () {
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow = new BrowserWindow;
+    mainWindow.maximize();
     mainWindow.loadURL('file://' + __dirname + '/../index.html');
     mainWindow.on('closed', function () {
         mainWindow = null;
@@ -50,7 +51,7 @@ app.on('ready', function () {
     // mainWindow.webContents.openDevTools();
 });
 
-
+// Menus
 let template = [{
     label: 'Edit',
     submenu: [{
@@ -127,22 +128,6 @@ let template = [{
                 focusedWindow.toggleDevTools()
             }
         }
-    }, {
-        type: 'separator'
-    }, {
-        label: 'App Menu Demo',
-        click: function (item, focusedWindow) {
-            if (focusedWindow) {
-                const options = {
-                    type: 'info',
-                    title: 'Application Menu Demo',
-                    buttons: ['Ok'],
-                    message: 'This demo is for the Menu section, showing how to create a clickable menu item in the application menu.'
-                }
-                electron.dialog.showMessageBox(focusedWindow, options, function () {
-                })
-            }
-        }
     }]
 }, {
     label: 'Window',
@@ -162,17 +147,7 @@ let template = [{
     submenu: [{
         label: 'Learn More',
         click: function () {
-            electron.shell.openExternal('http://electron.atom.io')
-        }
-    }]
-}, {
-    label: 'nCoda',
-    submenu: [{
-        label: 'Reload nCoda',
-        accelerator: 'F5',
-        click: function(item, focusedWindow) {
-            if (focusedWindow)
-                focusedWindow.reload();
+            electron.shell.openExternal('https://ncodamusic.org/')
         }
     }]
 }]
@@ -207,7 +182,7 @@ function addUpdateMenuItems(items, position) {
 }
 
 if (process.platform === 'darwin') {
-    const name = electron.app.getName()
+    const name = 'nCoda' //electron.app.getName()
     template.unshift({
         label: name,
         submenu: [{
