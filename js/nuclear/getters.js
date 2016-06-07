@@ -91,7 +91,9 @@ function vcsRevlog(revlog, sections) {
             name = name.slice(0, name.indexOf(' <'));
 
             let msg = changeset.get('description');
-            msg = msg.slice(0, msg.indexOf('\n'));
+            if (msg.indexOf('\n') > 0) {
+                msg = msg.slice(0, msg.indexOf('\n'));
+            }
 
             let section = [];
             for (const file of changeset.get('files')) {
