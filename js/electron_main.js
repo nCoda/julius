@@ -39,7 +39,7 @@ const version = '0.0'; //electron.app.getVersion()
 
 
 app.on('window-all-closed', function () {
-    if (process.platform != 'darwin') {
+    if (process.platform !== 'darwin') {
         app.quit();
     }
 });
@@ -51,42 +51,10 @@ app.on('ready', function () {
     mainWindow.on('closed', function () {
         mainWindow = null;
     });
-
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
 });
 
 // Menus
 let template = [{
-//     label: 'Edit',
-//     submenu: [{
-//         label: 'Undo',
-//         accelerator: 'CmdOrCtrl+Z',
-//         role: 'undo'
-//     }, {
-//         label: 'Redo',
-//         accelerator: 'Shift+CmdOrCtrl+Z',
-//         role: 'redo'
-//     }, {
-//         type: 'separator'
-//     }, {
-//         label: 'Cut',
-//         accelerator: 'CmdOrCtrl+X',
-//         role: 'cut'
-//     }, {
-//         label: 'Copy',
-//         accelerator: 'CmdOrCtrl+C',
-//         role: 'copy'
-//     }, {
-//         label: 'Paste',
-//         accelerator: 'CmdOrCtrl+V',
-//         role: 'paste'
-//     }, {
-//         label: 'Select All',
-//         accelerator: 'CmdOrCtrl+A',
-//         role: 'selectall'
-//     }]
-// }, {
     label: 'View',
     submenu: [{
         label: 'Reload (Cmd/Ctrl R)',
@@ -178,25 +146,6 @@ function addUpdateMenuItems(items, position) {
     let updateItems = [{
         label: `Version ${version}`,
         enabled: false
-    // }, {
-    //     label: 'Checking for Update',
-    //     enabled: false,
-    //     key: 'checkingForUpdate'
-    // }, {
-    //     label: 'Check for Update',
-    //     visible: false,
-    //     key: 'checkForUpdate',
-    //     click: function () {
-    //         require('electron').autoUpdater.checkForUpdates()
-    //     }
-    // }, {
-    //     label: 'Restart and Install Update',
-    //     enabled: true,
-    //     visible: false,
-    //     key: 'restartToUpdate',
-    //     click: function () {
-    //         require('electron').autoUpdater.quitAndInstall()
-    //     }
     }]
 
     items.splice.apply(items, [position, 0].concat(updateItems))
@@ -249,6 +198,29 @@ if (process.platform === 'darwin') {
     })
 
     addUpdateMenuItems(template[0].submenu, 1)
+}
+else {
+    template.unshift({
+        label: name,
+        submenu: [
+            {
+                label: `About ${name}`,
+                click: function() {
+                    electron.shell.openExternal('http://ncodamusic.org/');
+                },
+            },
+            {
+                type: 'separator',
+            },
+            {
+                label: 'Quit',
+                accelerator: 'Ctrl+Q',
+                click: function() {
+                    app.quit();
+                },
+            },
+        ],
+    });
 }
 
 if (process.platform === 'win32') {
