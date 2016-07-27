@@ -25,124 +25,210 @@
 'use strict';
 
 const electron = require('electron');
-const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const menu = require('menu');
+const Menu = electron.Menu;
+const app = electron.app;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow = null;
 
-app.on('window-all-closed', function() {
-    if (process.platform != 'darwin') {
+// Set app name and app version manually.  Built-in functions fetch name and version of Julius only.
+const name = 'nCoda'; //electron.app.getName()
+const version = '0.0'; //electron.app.getVersion()
+
+
+app.on('window-all-closed', function () {
+    if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 
-app.on('ready', function() {
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+app.on('ready', function () {
+    mainWindow = new BrowserWindow;
+    mainWindow.maximize();
     mainWindow.loadURL('file://' + __dirname + '/../index.html');
-    mainWindow.on('closed', function() {
+    mainWindow.on('closed', function () {
         mainWindow = null;
     });
-
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
 });
 
+// Menus
+let template = [{
+    label: 'View',
+    submenu: [{
+        label: 'Reload (Cmd/Ctrl R)',
+        accelerator: 'CmdOrCtrl+R',
+        click: function (item, focusedWindow) {
+            if (focusedWindow) {
+                // on reload, start fresh and close any old
+                // open secondary windows
+                if (focusedWindow.id === 1) {
+                    BrowserWindow.getAllWindows().forEach(function (win) {
+                        if (win.id > 1) {
+                            win.close()
+                        }
+                    })
+                }
+                focusedWindow.reload()
+            }
+        }
+    }, {
+        label: 'Reload (F5)',
+        accelerator: 'F5',
+        click: function (item, focusedWindow) {
+            if (focusedWindow) {
+                // on reload, start fresh and close any old
+                // open secondary windows
+                if (focusedWindow.id === 1) {
+                    BrowserWindow.getAllWindows().forEach(function (win) {
+                        if (win.id > 1) {
+                            win.close()
+                        }
+                    })
+                }
+                focusedWindow.reload()
+            }
+        }
+    }, {
+        label: 'Toggle Full Screen',
+        accelerator: (function () {
+            if (process.platform === 'darwin') {
+                return 'Ctrl+Command+F'
+            } else {
+                return 'F11'
+            }
+        })(),
+        click: function (item, focusedWindow) {
+            if (focusedWindow) {
+                focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
+            }
+        }
+    }, {
+        label: 'Toggle Developer Tools',
+        accelerator: (function () {
+            if (process.platform === 'darwin') {
+                return 'Alt+Command+I'
+            } else {
+                return 'Ctrl+Shift+I'
+            }
+        })(),
+        click: function (item, focusedWindow) {
+            if (focusedWindow) {
+                focusedWindow.toggleDevTools()
+            }
+        }
+    }]
+}, {
+    label: 'Window',
+    role: 'window',
+    submenu: [{
+        label: 'Minimize',
+        accelerator: 'CmdOrCtrl+M',
+        role: 'minimize'
+    }, {
+        label: 'Close',
+        accelerator: 'CmdOrCtrl+W',
+        role: 'close'
+    }]
+}, {
+    label: 'Help',
+    role: 'help',
+    submenu: [{
+        label: 'Learn More',
+        click: function () {
+            electron.shell.openExternal('https://ncodamusic.org/')
+        }
+    }]
+}]
 
-var menuTemplate = [
-    {
-        label: 'nCoda',
+function addUpdateMenuItems(items, position) {
+    let updateItems = [{
+        label: `Version ${version}`,
+        enabled: false
+    }]
+
+    items.splice.apply(items, [position, 0].concat(updateItems))
+}
+
+if (process.platform === 'darwin') {
+    template.unshift({
+        label: name,
+        submenu: [{
+            label: `About ${name}`,
+            //role: 'about',
+            click: function () {
+                electron.shell.openExternal('https://ncodamusic.org/')
+            }
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Services',
+            role: 'services',
+            submenu: []
+        }, {
+            type: 'separator'
+        }, {
+            label: `Hide ${name}`,
+            accelerator: 'Command+H',
+            role: 'hide'
+        }, {
+            label: 'Hide Others',
+            accelerator: 'Command+Alt+H',
+            role: 'hideothers'
+        }, {
+            label: 'Show All',
+            role: 'unhide'
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Quit',
+            accelerator: 'Command+Q',
+            click: function () {
+                app.quit()
+            }
+        }]
+    })
+    // Window menu.
+    template[3].submenu.push({
+        type: 'separator'
+    }, {
+        label: 'Bring All to Front',
+        role: 'front'
+    })
+
+    addUpdateMenuItems(template[0].submenu, 1)
+}
+else {
+    template.unshift({
+        label: name,
         submenu: [
             {
-                label: 'Toggle Electron Developer Tools',
-                accelerator: (function() {
-                    if (process.platform === 'darwin')
-                    return 'Alt+Command+I';
-                    else
-                    return 'Ctrl+Shift+I';
-                })(),
-                click: function(item, focusedWindow) {
-                    if (focusedWindow)
-                    focusedWindow.toggleDevTools();
-                }
-            },
-            {
-                label: 'Reload nCoda',
-                accelerator: 'F5',
-                click: function(item, focusedWindow) {
-                    if (focusedWindow)
-                        focusedWindow.reload();
-                }
+                label: `About ${name}`,
+                click: function() {
+                    electron.shell.openExternal('http://ncodamusic.org/');
+                },
             },
             {
                 type: 'separator',
             },
             {
                 label: 'Quit',
-                accelerator: 'CmdOrCtrl+Q',
-                role: 'close',
+                accelerator: 'Ctrl+Q',
+                click: function() {
+                    app.quit();
+                },
             },
         ],
-    },
-];
-
-if (process.platform == 'darwin') {
-    var name = 'nCoda';
-    menuTemplate.unshift({
-        label: name,
-        submenu: [
-            {
-                label: 'About ' + name,
-                role: 'about'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Services',
-                role: 'services',
-                submenu: []
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Hide ' + name,
-                accelerator: 'Command+H',
-                role: 'hide'
-            },
-            {
-                label: 'Hide Others',
-                accelerator: 'Command+Alt+H',
-                role: 'hideothers'
-            },
-            {
-                label: 'Show All',
-                role: 'unhide'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Quit',
-                accelerator: 'Command+Q',
-                click: function() { app.quit(); }
-            },
-        ]
     });
-    // Window menu.
-    // menuTemplate[3].submenu.push(
-    //     {
-    //         type: 'separator'
-    //     },
-    //     {
-    //         label: 'Bring All to Front',
-    //         role: 'front'
-    //     }
-    // );
 }
 
-var ncodaMenu = menu.buildFromTemplate(menuTemplate);
-menu.setApplicationMenu(ncodaMenu);
+if (process.platform === 'win32') {
+    const helpMenu = template[template.length - 1].submenu
+    addUpdateMenuItems(helpMenu, 0)
+}
+
+app.on('ready', function () {
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
+})
