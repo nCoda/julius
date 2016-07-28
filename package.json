@@ -27,6 +27,7 @@
         "babel-preset-react": "6.5.0",
         "eslint": "2.10.2",
         "eslint-plugin-react": "5.1.1",
+        "jasmine-reporters": "2.2.x",
         "jest-cli": "12.1.0",
         "less": "2.7.1",
         "less-plugin-clean-css": "1.5.1",
@@ -45,6 +46,7 @@
     },
     "jest": {
         "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+        "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine-env.js",
         "testFileExtensions": [
             "es6",
             "js"
@@ -55,6 +57,7 @@
             "es6"
         ],
         "unmockedModulePathPatterns": [
+            "<rootDir>/node_modules/jasmine-reporters",
             "<rootDir>/node_modules/react",
             "<rootDir>/node_modules/react-dom",
             "<rootDir>/node_modules/react-addons-test-utils",
