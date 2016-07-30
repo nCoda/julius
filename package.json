@@ -4,7 +4,7 @@
     "version": "0.0.2",
     "author": "Christopher Antila <christopher@antila.ca>",
     "license": "GPL-3.0",
-    "repository": "https://jameson.adjectivenoun.ca:ncoda/julius.git",
+    "repository": "ssh://vcs@goldman.ncodamusic.org/diffusion/JL/julius.git",
     "main": "js/electron_main.js",
     "dependencies": {
         "amazeui-react": "1.1.1",
