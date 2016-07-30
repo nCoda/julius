@@ -94,8 +94,14 @@ describe('DialogueBox', () => {
         expect(detail.tagName).toBe('P');
         expect(detail.className).toBe('nc-dialogue-detail');
         expect(detail.innerHTML).toBe(props.detail);
-        // 3 is empty <div> for "answer"
-        const button = boxNode.children[0].children[4];
+        let button;
+        if (answer) {
+            // 3 is the <input> for "answer"
+            button = boxNode.children[0].children[4];
+        }
+        else {
+            button = boxNode.children[0].children[3];
+        }
         expect(button.tagName).toBe('BUTTON');
         expect(button.className).toBe('btn');
         expect(button.innerHTML).toBe('OK');

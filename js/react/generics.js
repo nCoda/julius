@@ -113,7 +113,7 @@ const DialogueBox = React.createClass({
             detail = <p className="nc-dialogue-detail">{this.state.box.get('detail')}</p>;
         }
 
-        let answer = '';
+        let answer;
         if ('question' === this.state.box.get('type')) {
             answer = <input type="text" ref="answer"/>;
         }
