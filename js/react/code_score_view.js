@@ -33,13 +33,13 @@ import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 import getters from '../nuclear/getters';
 
-import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';
+import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';  // TODO: import properly
 
 
 const CodeScoreView = React.createClass({
     mixins: [reactor.ReactMixin],
     getDefaultProps() {
-        return {meiForVerovio: '', sendToConsole: '', sendToConsoleType: null};
+        return {meiForVerovio: ''};
     },
     getDataBindings() {
         return {
@@ -49,12 +49,6 @@ const CodeScoreView = React.createClass({
             stdin: getters.stdin,
             stdout: getters.stdout,
             stderr: getters.stderr,
-        };
-    },
-    getInitialState() {
-        return {
-            sendToConsole: 'nCoda is ready for action!',
-            sendToConsoleType: 'welcome',
         };
     },
     componentWillMount() {
