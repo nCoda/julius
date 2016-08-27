@@ -373,9 +373,13 @@ else:
     lyLoadDefaultRepo() {
         const code =
 `if _JULIUS_SESSION:
-    _JULIUS_SESSION.set_repo_dir('testrepo')
-    _JULIUS_SESSION._hug.update(22, clean=True)
-    lychee.signals.ACTION_START.emit()
+    _JULIUS_SESSION.set_repo_dir('programs/hgdemo')
+    try:
+        _JULIUS_SESSION._hug.update(22, clean=True)
+    except RuntimeError:
+        raise RuntimeError('Demo repository not where we expected. Did you start Julius from the right directory?')
+    else:
+        lychee.signals.ACTION_START.emit()
 else:
     raise RuntimeError('you set repo dir before you made a _JULIUS_SESSION')
 `;
