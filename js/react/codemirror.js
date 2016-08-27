@@ -135,13 +135,13 @@ const CodeMirrorReactWrapper = React.createClass({
             smartIndent: props.smartIndent,
             value: props.text,
             theme: props.theme,
-
-            // DiffView props
-            connect: props.connect,
-            // diff is omitted; not actually sent to CodeMirror
-            origLeft: props.leftText,
-            value: props.rightText,
         };
+        if (this.props.diff) {
+            // DiffView props
+            options.connect = props.connect;
+            origLeft = props.leftText;
+            value = props.rightText;
+        }
 
         // set hardwired options
         options['revertButtons'] = false;  // for DiffView/MergeView
