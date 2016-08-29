@@ -102,6 +102,9 @@ const FUJIAN_SIGNALS = {
             signals.emitters.headersFromLychee(document.headers);
             signals.emitters.documentFromLychee(document.sections);
             break;
+        case 'lilypond':
+            signals.emitters.lilypondFromLychee(response.placement, response.document);
+            break;
         case 'vcs':
             signals.emitters.vcsNewRevlog(response.document);
             break;

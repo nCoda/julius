@@ -66,6 +66,8 @@ const names = {
     DIALOGUEBOX_HIDE: 'DIALOGUEBOX_HIDE',
     // RevisionsView
     REVISION_FROM_LYCHEE: 'REVISION_FROM_LYCHEE',
+    // LilyPond
+    LILYPOND_FROM_LYCHEE: 'LILYPOND_FROM_LYCHEE',
 };
 
 
@@ -434,6 +436,15 @@ else:
      */
     revisionFromLychee(revision) {
         reactor.dispatch(names.REVISION_FROM_LYCHEE, revision);
+    },
+
+    /** Give data to the "lilypond.Sections" Store.
+     *
+     * @param {str} placement - From the CONVERSION_FINISHED signal.
+     * @param {str} document - From the CONVERSION_FINISHED signal.
+     */
+    lilypondFromLychee(placement, document) {
+        reactor.dispatch(names.LILYPOND_FROM_LYCHEE, {placement, document});
     },
 };
 

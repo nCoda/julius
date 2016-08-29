@@ -218,6 +218,7 @@ const getters = {
     vcsChangesets: [['revlog'], vcsChangesets],
     vcsRevlog: [['revlog'], ['sections'], vcsRevlog],
     vcsUsers: [['revlog'], vcsUsers],
+    lilypond: ['lilypond'],
 };
 
 export {cursorFriendlyMaker, getters, stdioConcatter};

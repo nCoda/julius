@@ -26,6 +26,7 @@
 // NOTE: You must also import this module for any tests that use NuclearJS.
 
 import document from './stores/document';
+import lilypond from './stores/lilypond';
 import mercurial from './stores/mercurial';
 import reactor from './reactor';
 import revisions from './stores/revisions';
@@ -47,6 +48,7 @@ reactor.registerStores({
     logLevel: juliusStores.LogLevel,
     DialogueBox: generics.DialogueBox,
     revisions: revisions.Revisions,
+    lilypond: lilypond.Sections,
 });
 
 
