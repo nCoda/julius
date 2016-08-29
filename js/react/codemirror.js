@@ -199,6 +199,14 @@ const CodeMirrorReactWrapper = React.createClass({
                             // simply setting "origLeft" again doesn't work
                             this.state.codemirror.state.diffViews[0].orig.setOption('value', options[key]);
                         }
+                        else if (key === 'value') {
+                            // TODO: temporary for T50?
+                            // NOTE: aside from T50, we shouldn't be receiving a new "value"... ?
+                            //       ... if we are, it moves the cursor, so that's not good for typing
+                            if (this.state.codemirror.getOption(key) === '') {
+                                this.state.codemirror.setOption(key, options[key]);
+                            }
+                        }
                         else {
                             this.state.codemirror.setOption(key, options[key]);
                         }

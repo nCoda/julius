@@ -53,6 +53,7 @@ const CodeScoreView = React.createClass({
     },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('document', 'codescoreview', false);
+        signals.emitters.registerOutboundFormat('lilypond', 'codescoreview', false);
     },
     componentDidMount() {
         // If the document cursor is not set, we need to choose a default.
@@ -67,6 +68,7 @@ const CodeScoreView = React.createClass({
     },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('document', 'codescoreview');
+        signals.emitters.unregisterOutboundFormat('lilypond', 'codescoreview');
     },
     checkForValidCursor(sections, cursor) {
         if (sections.size === 0) {

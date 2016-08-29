@@ -24,6 +24,9 @@
 
 import React from 'react';
 
+import getters from '../nuclear/getters';  // TODO: temporary for T50?
+import reactor from '../nuclear/reactor';  // TODO: temporary for T50?
+
 import CodeMirror from './codemirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import Scroll from './scroll';
@@ -112,7 +115,10 @@ export const CodeView = React.createClass({
         };
     },
     getInitialState() {
-        return {editorValue: ''};
+        return {
+            editorValue: '',
+            timesTheStupidHackFunctionRan: 0,  // TODO: temporary for T50?
+        };
     },
     handleEditorChange(withThis) {
         this.setState({editorValue: withThis});
@@ -125,6 +131,23 @@ export const CodeView = React.createClass({
     },
     shouldComponentUpdate(nextProps, nextState) {
         return nextState.editorValue !== this.state.editorValue;
+    },
+    stupidHackFunction() {
+        // TODO: temporary for T50?
+        const cursor = reactor.evaluate(getters.sectionCursor);
+        const lilySections = reactor.evaluate(getters.lilypond);
+        if (lilySections.has(cursor.last())) {
+            this.setState({editorValue: lilySections.get(cursor.last())});
+        }
+        else {
+            this.setState({timesTheStupidHackFunctionRan: this.state.timesTheStupidHackFunctionRan + 1});
+            if (this.state.timesTheStupidHackFunctionRan < 10) {
+                window.setTimeout(this.stupidHackFunction, 500);
+            }
+        }
+    },
+    componentDidMount() {
+        this.stupidHackFunction();
     },
     render() {
         return (
@@ -147,6 +170,7 @@ export const CodeView = React.createClass({
                 <Scroll>
                     <CodeMirror
                         onChange={this.handleEditorChange}
+                        text={this.state.editorValue}
                     />
                 </Scroll>
             </div>

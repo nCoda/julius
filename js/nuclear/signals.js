@@ -194,7 +194,12 @@ if '_JULIUS_SESSION' not in globals():
             // First check there is no """ in the string, which would cause the string to terminate
             // early and allow executing arbitrary code.
             if (-1 === data.indexOf('"""')) {
-                const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='LilyPond', doc="""${data}""")`;
+                // find the @xml:id
+                const xmlid = reactor.evaluate(getters.sectionCursor).last();
+                // make sure all the "\" chars are escaped
+                data = data.replace(/\\/g, '\\\\');
+                // put the Python command around it
+                const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='LilyPond', doc="""${data}""", views_info="${xmlid}")`;
                 fujian.sendWS(code);
             }
             else {

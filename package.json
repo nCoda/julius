@@ -1,7 +1,7 @@
 {
     "name": "julius",
     "description": "Web application for formalized score control.",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "author": "Christopher Antila <christopher@antila.ca>",
     "license": "GPL-3.0",
     "repository": "ssh://vcs@goldman.ncodamusic.org/diffusion/JL/julius.git",
