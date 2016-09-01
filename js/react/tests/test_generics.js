@@ -108,7 +108,7 @@ describe('DialogueBox', () => {
 
         // write text in the <input> answer box
         if (props.type === 'question') {
-            boxNode.children[0].children[3].setAttribute('value', answer);
+            boxNode.children[0].children[3].value = answer;
         }
 
         // "click" the OK button
