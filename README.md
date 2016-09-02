@@ -1,6 +1,6 @@
 # Julius #
 
-[![Build Status](https://travis-ci.org/nCoda/julius.svg?branch=main)](https://travis-ci.org/nCoda/julius)
+[![CircleCI](https://circleci.com/gh/nCoda/julius.svg?style=svg)](https://circleci.com/gh/nCoda/julius)
 
 This repository holds Julius, the user interface, and the nCoda app itself.
 
