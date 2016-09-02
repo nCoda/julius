@@ -1,3 +1,8 @@
 machine:
   node:
     version: 6.3.0
+
+checkout:
+  post:
+    - git submodule init lib/vida
+    - git submodule update
