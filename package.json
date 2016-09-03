@@ -7,32 +7,32 @@
     "repository": "ssh://vcs@goldman.ncodamusic.org/diffusion/JL/julius.git",
     "main": "js/electron_main.js",
     "dependencies": {
-        "amazeui-react": "1.1.1",
-        "codemirror": "5.15.2",
-        "electron-prebuilt": "0.37.8",
-        "history": "2.1.1",
-        "nuclear-js": "1.3.0",
-        "react": "15.1.0",
-        "react-dom": "15.1.0",
-        "react-router": "2.4.1",
-        "react-split-pane": "0.1.42"
+        "electron": "1.3.4"
     },
     "devDependencies": {
+        "amazeui-react": "1.2.x",
         "babelify": "7.3.0",
-        "babel-jest": "12.1.0",
+        "babel-jest": "15.0.x",
         "babel-plugin-add-module-exports": "0.2.1",
-        "babel-plugin-syntax-object-rest-spread": "6.8.0",
+        "babel-plugin-syntax-object-rest-spread": "6.13.x",
         "babel-plugin-transform-object-rest-spread": "6.8.0",
-        "babel-preset-es2015": "6.9.0",
-        "babel-preset-react": "6.5.0",
+        "babel-preset-es2015": "6.14.x",
+        "babel-preset-react": "6.11.x",
+        "codemirror": "5.18.x",
         "eslint": "2.10.2",
         "eslint-plugin-react": "5.1.1",
+        "history": "3.0.x",
         "jasmine-reporters": "2.2.x",
-        "jest-cli": "12.1.0",
+        "jest-cli": "15.1.x",
         "less": "2.7.1",
         "less-plugin-clean-css": "1.5.1",
-        "moment": "2.13.0",
-        "react-addons-test-utils": "15.1.0",
+        "moment": "2.14.x",
+        "nuclear-js": "1.3.0",
+        "react": "15.3.1",
+        "react-addons-test-utils": "15.3.1",
+        "react-dom": "15.3.1",
+        "react-router": "2.7.x",
+        "react-split-pane": "0.1.44",
         "watchify": "3.7.0"
     },
     "browserify": {
@@ -45,12 +45,9 @@
         "test": "jest"
     },
     "jest": {
+        "automock": true,
         "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
         "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine-env.js",
-        "testFileExtensions": [
-            "es6",
-            "js"
-        ],
         "moduleFileExtensions": [
             "js",
             "json",
@@ -65,7 +62,7 @@
             "<rootDir>/js/nuclear",
             "<rootDir>/js/nuclear/stores"
         ],
-        "testDirectoryName": "tests"
+        "testRegex": "/tests/(.*)\\.js$"
     },
     "babel": {
         "presets": [
