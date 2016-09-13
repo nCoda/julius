@@ -55,18 +55,21 @@ signals.emitters.registerOutboundFormat('vcs', 'ncoda-init', false);
 
 // Render the react-router components -----------------------------------------
 // TODO: move this to a submodule
+
+// NB: this is the route setup for RevisionsView
+//  <Route path="revisions" component={revisions.RevisionsView}>
+//     <IndexRoute component={revisions.Revlog}/>
+//     <Route path="diff/:revNumber" component={revisions.DiffView}>
+//         <Route path="text/:format" component={revisions.TextualDiff}/>
+//     </Route>
+// </Route>
+
 ReactDOM.render((
     <Router history={hashHistory}>
         <Route path="/" component={NCoda}>
             <IndexRoute component={MainScreen}/>
             <Route path="codescore" component={CodeScoreView}/>
             <Route path="structure" component={StructureView}/>
-            <Route path="revisions" component={revisions.RevisionsView}>
-                <IndexRoute component={revisions.Revlog}/>
-                <Route path="diff/:revNumber" component={revisions.DiffView}>
-                    <Route path="text/:format" component={revisions.TextualDiff}/>
-                </Route>
-            </Route>
             <Route path="colophon" component={Colophon}/>
         </Route>
     </Router>
