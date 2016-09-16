@@ -173,8 +173,12 @@ const GlobalHeader = React.createClass({
             <Button amStyle="link" onClick={this.props.handleShowMenu} title="Click for Menu"><IconCoda height="100%" /></Button>
         );
 
+        // empty div (automatically hidden by React) used to hide hamburger dropdown menu (for narrow widths)
+        // without resorting to CSS
+        const toggleBtn = <div></div>;
+
         return (
-            <Topbar brand={brand} fixedTop>
+            <Topbar brand={brand} toggleBtn={toggleBtn} fixedTop>
                 <DeveloperMenu/>
             </Topbar>
         );
