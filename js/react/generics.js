@@ -27,39 +27,37 @@
 
 
 import React from 'react';
+import {Modal, Icon} from 'amazeui-react';
 
 import {log} from '../util/log';
 import {getters} from '../nuclear/getters';
 import {reactor} from '../nuclear/reactor';
 import {emitters as signals} from '../nuclear/signals';
 
-
-const ModalBackground = React.createClass({
-    // This component is a semi-transparent background that appears behind the global menu bar, but
-    // in front of everything else. Child components will, of course, be in front of the background.
-    //
-    // The background fills all the available screen space. Children are "flexboxxed" vertically.
-    //
-    propTypes: {
-        children: React.PropTypes.element,
-    },
-    render() {
-        return (
-            <div className="nc-modal-background">
-                {this.props.children}
-            </div>
-        );
-    },
-});
-
+/** DialgoueBox: Display alerts using amazeUI modal components
+ *
+ * No props - everything is passed in through NuclearJS
+ *
+ * Tests in tests/test_generics.js
+ */
 
 const DialogueBox = React.createClass({
     //
     //
-
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {box: getters.DialogueBox};
+    },
+    componentDidMount: function() {
+        this._documentKeyupListener = window.addEventListener('keyup', this.handleKeyUp);
+    },
+    componentWillUnmount: function() {
+        this._documentKeyupListener.off();
+    },
+    handleKeyUp(e) {
+        if (!this.props.keyboard && e.keyCode === 13) { // keyCode 13 is enter
+            this.handleClick();
+        }
     },
     handleClick() {
         if (this.state.box.get('callback')) {
@@ -74,62 +72,62 @@ const DialogueBox = React.createClass({
         }
         signals.dialogueBoxHide();
     },
+    handleConfirm() {
+        this.handleClick();
+    },
+    handleCancel() {
+        this.handleClick();
+    },
     render() {
         if (!this.state.box.get('displayed')) {
             return <div style={{display: 'none'}}/>;
         }
 
-        let iconClass, title;
+        let iconClass, type;
+        let modalType = 'alert';
 
         switch (this.state.box.get('type')) {
-        case 'error':
-            iconClass = 'exclamation-triangle';
-            title = 'Error';
-            break;
-        case 'warn':
-            iconClass = 'exclamation-circle';
-            title = 'Warning';
-            break;
-        case 'debug':
-            iconClass = 'bug';
-            title = 'Developer Message';
-            break;
-        case 'question':
-            iconClass = 'question-circle';
-            title = 'Question';
-            break;
-        case 'info':
-        default:
-            iconClass = 'info-circle';
-            title = 'Information';
-            break;
-        }
-
-        iconClass = `fa fa-${iconClass}`;
-        const boxClass = `nc-dialogue-box nc-dialogue-${this.state.box.get('type')}`;
-
-        let detail = '';
-        if (this.state.box.get('detail')) {
-            detail = <p className="nc-dialogue-detail">{this.state.box.get('detail')}</p>;
+            case 'error':
+                iconClass = 'exclamation-triangle';
+                type = 'Error';
+                break;
+            case 'warn':
+                iconClass = 'exclamation-circle';
+                type = 'Warning';
+                break;
+            case 'debug':
+                iconClass = 'bug';
+                type = 'Developer Message';
+                break;
+            case 'question':
+                iconClass = 'question-circle';
+                type = 'Question';
+                modalType = 'prompt';
+                break;
+            case 'info':
+            default:
+                iconClass = 'info-circle';
+                type = 'Information';
+                break;
         }
 
         let answer;
-        if ('question' === this.state.box.get('type')) {
-            answer = <input type="text" ref="answer"/>;
+        if (type === 'Question') {
+            answer = <input className="nc-dialogue-input" type="text" ref="answer"/>;
         }
 
         return (
-            <ModalBackground>
-                <div className={boxClass}>
-                    <div className="nc-dialogue-type">
-                        <i className={iconClass}/><h3>{title}</h3>
-                    </div>
-                    <p className="nc-dialogue-msg">{this.state.box.get('message')}</p>
-                    {detail}
-                    {answer}
-                    <button className="btn" onClick={this.handleClick}>{`OK`}</button>
-                </div>
-            </ModalBackground>
+            <Modal type={modalType}
+                   confirmText="OK"
+                   cancelText="Cancel"
+                   onConfirm={this.handleConfirm}
+                   onCancel={this.handleCancel}
+                   onRequestClose={this.handleClick}
+                   title={<Icon icon={iconClass} amSize="md" alt={type}/>}>
+                <h1>{this.state.box.get('message')}</h1>
+                <p>{this.state.box.get('detail')}</p>
+                {answer}
+            </Modal>
         );
     },
 });
@@ -191,7 +189,7 @@ const OffCanvas = React.createClass({
     componentWillReceiveProps(nextProps) {
         if ((this.props.showContents !== nextProps.showContents) &&
             nextProps.showContents) {
-                this.setState({showBackdrop: true});
+            this.setState({showBackdrop: true});
         }
     },
     handleHide(event) {
@@ -201,9 +199,8 @@ const OffCanvas = React.createClass({
     },
     componentDidUpdate(prevProps) {
         if ((this.props.showContents !== prevProps.showContents) &&
-            this.props.showContents &&
-            !this.state.showPanel) {
-                window.setTimeout(this.showMenu, 10);
+            this.props.showContents && !this.state.showPanel) {
+            window.setTimeout(this.showMenu, 10);
         }
     },
     render() {
@@ -240,4 +237,4 @@ const OffCanvas = React.createClass({
 });
 
 
-export {DialogueBox, ModalBackground, OffCanvas};
+export {DialogueBox, OffCanvas};
