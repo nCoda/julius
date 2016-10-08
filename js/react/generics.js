@@ -6,7 +6,7 @@
 // Filename:               js/react/generics.js
 // Purpose:                Generic React components for nCoda in general.
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2016 Christopher Antila, Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -42,8 +42,6 @@ import {emitters as signals} from '../nuclear/signals';
  */
 
 const DialogueBox = React.createClass({
-    //
-    //
     mixins: [reactor.ReactMixin],
     getDataBindings() {
         return {box: getters.DialogueBox};
@@ -54,6 +52,9 @@ const DialogueBox = React.createClass({
     componentWillUnmount: function() {
         this._documentKeyupListener.off();
     },
+    handleInputChange: function (text) {
+        this.setState({inputValue: text});
+    },
     handleKeyUp(e) {
         if (!this.props.keyboard && e.keyCode === 13) { // keyCode 13 is enter
             this.handleClick();
@@ -62,7 +63,7 @@ const DialogueBox = React.createClass({
     handleClick() {
         if (this.state.box.get('callback')) {
             if ('question' === this.state.box.get('type')) {
-                const answer = this.refs.answer.value;
+                const answer = this.state.inputValue;
                 log.debug(`QuestionBox answered with "${answer}".`);
                 this.state.box.get('callback')(answer);
             }
@@ -80,7 +81,7 @@ const DialogueBox = React.createClass({
     },
     render() {
         if (!this.state.box.get('displayed')) {
-            return <div style={{display: 'none'}}/>;
+            return <div ref="dialogueBoxHidden" style={{display: 'none'}}/>;
         }
 
         let iconClass, type;
@@ -113,11 +114,15 @@ const DialogueBox = React.createClass({
 
         let answer;
         if (type === 'Question') {
-            answer = <input className="nc-dialogue-input" type="text" ref="answer"/>;
+            answer = <SimpleInput handleInputChange={this.handleInputChange}
+                                  ref="dialogueBoxInput"/>;
+        } else {
+            answer = <div ref="dialogueBoxHidden" style={{display: 'none'}}/>;
         }
 
         return (
-            <Modal type={modalType}
+            <Modal ref="dialogueBoxModal"
+                   type={modalType}
                    confirmText="OK"
                    cancelText="Cancel"
                    onConfirm={this.handleConfirm}
@@ -130,6 +135,25 @@ const DialogueBox = React.createClass({
             </Modal>
         );
     },
+});
+
+const SimpleInput = React.createClass({
+    propTypes: {
+        handleInputChange: React.PropTypes.func.isRequired,
+    },
+    handleChange(event) {
+        this.setState({value: event.target.value});
+        this.props.handleInputChange(event.target.value);
+    },
+    render() {
+        return (
+            <input
+                type="text"
+                value={this.state.value}
+                onChange={this.handleChange = this.handleChange.bind(this)}
+            />
+        );
+    }
 });
 
 
