@@ -153,6 +153,7 @@ const emitters = {
 `if 'lychee' not in globals():
     import lychee
 if '_JULIUS_SESSION' not in globals():
+    import lychee.workflow.session
     _JULIUS_SESSION = lychee.workflow.session.InteractiveSession()\n`
         );
     },
