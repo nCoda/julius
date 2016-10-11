@@ -30,7 +30,7 @@ import {Link} from 'react-router';
 import {log} from '../util/log';
 import signals from '../nuclear/signals';
 import {DialogueBox, OffCanvas} from './generics';
-import {IconCoda, IconLogo} from './svg_icons';
+import {NCIcon, NCLogo} from './svg_icons';
 
 
 const MainScreen = React.createClass({
@@ -112,7 +112,7 @@ const Colophon = React.createClass({
         return (
             <div id="ncoda-colophon">
                 <div className="am-container am-text-center">
-                    <IconLogo className="am-img-responsive am-center"/>
+                    <NCLogo className="am-img-responsive am-center" />
                     <div>
                         <h2>{`About nCoda`}</h2>
                         <p><i>{`nCoda`}</i>{` is the software you're using now, and the community
@@ -197,7 +197,9 @@ const GlobalHeader = React.createClass({
     },
     render() {
         const brand = (
-            <Button amStyle="link" onClick={this.props.handleShowMenu} title="Click for Menu"><IconCoda height="100%" /></Button>
+            <Button amStyle="link" onClick={this.props.handleShowMenu} title="Click for Menu">
+                <NCIcon icontype="coda" size="100%" iconfill="#50C878" />
+            </Button>
         );
 
         // empty div (automatically hidden by React) used to hide hamburger dropdown menu (for narrow widths)

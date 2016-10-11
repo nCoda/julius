@@ -30,7 +30,7 @@ import reactor from '../nuclear/reactor';  // TODO: temporary for T50?
 import CodeMirror from './codemirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import Scroll from './scroll';
-import {IconPython, IconLilypond, IconCoda} from './svg_icons';
+import {NCIcon} from './svg_icons';
 
 
 const SubmitCodeButton = React.createClass({
@@ -40,8 +40,10 @@ const SubmitCodeButton = React.createClass({
         displayText: React.PropTypes.string,
         hoverText: React.PropTypes.string,
         logo: React.PropTypes.bool,
-        amSize: React.PropTypes.string,  // AmazeUI: xl, lg, default, sm, xs
-        amStyle: React.PropTypes.string  // AmazeUI: default, primary, secondary, success, warning, danger, link
+        amSize: React.PropTypes.oneOf(['xl', 'lg', 'default', 'sm', 'xs']),
+        amStyle: React.PropTypes.oneOf([
+            'default', 'primary', 'secondary', 'success', 'warning', 'danger', 'link'
+        ]),
     },
     getDefaultProps() {
         return {
@@ -56,19 +58,18 @@ const SubmitCodeButton = React.createClass({
         let logo = this.props.logo;
         let codeLanguage = this.props.codeLanguage.toLowerCase();
         if (logo === true) {
-            if (codeLanguage === "python") {
-                return <IconPython />;
+            if (codeLanguage === "python" || codeLanguage === "abjad" || codeLanguage === "python/abjad") {
+                return <NCIcon icontype="python" />;
             } else if (codeLanguage === "lilypond") {
-                return <IconLilypond />;
+                return <NCIcon icontype="lilypond" />;
             } else {
-                return <IconCoda />; // backup logo is coda symbol
+                return <NCIcon icontype="coda" />; // backup logo is coda symbol
             }
-        } else {
         }
     },
     whichTitle() {
         let hoverText = this.props.hoverText;
-        if (hoverText !== ''){
+        if (hoverText !== '') {
             return hoverText;
         } else { // if hoverText is not defined, generate default text
             hoverText = "Submit " + this.props.codeLanguage.toUpperCase();
