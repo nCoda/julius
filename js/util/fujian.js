@@ -115,6 +115,21 @@ const FUJIAN_SIGNALS = {
             return;
         }
     },
+
+    // TODO: add tests
+    'LOG_MESSAGE': (response) => {
+        if (response.status === 'failure') {
+            if (response.message === 'Lychee-MEI file has different version than us') {
+                log.info(response.message);
+            }
+            else if (response.level === 'CRITICAL') {
+                log.error(response.message);
+            }
+            else {
+                log.warn(response.message);
+            }
+        }
+    },
 };
 
 
@@ -307,8 +322,8 @@ class Fujian {
             });
         }
 
-        if (undefined !== response.signal) {
-            if (undefined !== FUJIAN_SIGNALS[response.signal]) {
+        if (response.signal) {
+            if (FUJIAN_SIGNALS[response.signal]) {
                 FUJIAN_SIGNALS[response.signal](response);
             }
         }
