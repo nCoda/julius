@@ -21,7 +21,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
-
 @import "amazeui_overrides";
 
 // The <div> framing CodeScoreView
@@ -95,6 +94,8 @@
 
         .am-tab-panel {
             height: 100%;
+            padding: 0;
+            background-color: @white;
         }
 
         .am-nav-tabs a:hover {
@@ -117,11 +118,33 @@
     }
 }
 
-
 /* ********************************************************************************************* */
 /* ScoreView pane */
 
 .ncoda-scoreview {
+    .nc-pdfviewer {
+        .nc-pdfviewer-btns {
+            position: fixed;
+            bottom: 1rem;
+            right: 1.5rem;
+        }
+
+        .nc-pdf {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 1rem 0 5rem 0;
+            text-align: center;
+
+            canvas {
+                width: 100% - 5rem;
+                margin: 1rem;
+                .global-box-shadow();
+            }
+
+        }
+    }
+
     .ncoda-verovio {
         height: 100%;
         background: @view-bg;

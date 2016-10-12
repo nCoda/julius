@@ -23,7 +23,7 @@
 // ------------------------------------------------------------------------------------------------
 
 import React from 'react';
-
+import PDFViewer from './pdf_viewer';
 import Scroll from './scroll';
 import {Tabs} from 'amazeui-react';
 
@@ -74,9 +74,10 @@ export const ScoreView = React.createClass({
 
 export const LilypondPDFView = React.createClass({
     render() {
+        const pdf = 'js/react/tests/dummy_multi.pdf';
         return (
             <Scroll>
-                <div>Placeholder for PDF Display</div>
+                <PDFViewer file={pdf} />
             </Scroll>
         );
     }
