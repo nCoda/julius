@@ -123,7 +123,7 @@ const CodeScoreView = React.createClass({
                                 submitToLychee={signals.emitters.submitToLychee}
                             />
                         </div>
-                        <div className="ncoda-verovio pane-container">
+                        <div className="ncoda-scoreview pane-container">
                             {scoreView}
                         </div>
                     </SplitPane>

@@ -77,6 +77,34 @@
 }
 
 /* ********************************************************************************************* */
+/* Tabs for mode switching */
+
+@mode-tab-height: 4rem;
+
+#nc-csv-frame {
+    .am-tabs {
+        height: 100%;
+
+        .am-tabs-nav {
+            height: @mode-tab-height;
+        }
+
+        .am-tabs-bd {
+            height: 100% - (@mode-tab-height * 1.75);
+        }
+
+        .am-tab-panel {
+            height: 100%;
+        }
+
+        .am-nav-tabs a:hover {
+            color: @icon-btn-hover-color;
+            background-color: @icon-btn-hover-background;
+        }
+    }
+}
+
+/* ********************************************************************************************* */
 /* TerminalView pane(s) */
 
 .ncoda-terminal-window {
@@ -91,18 +119,20 @@
 
 
 /* ********************************************************************************************* */
-/* ScoreView (Verovio) pane */
+/* ScoreView pane */
 
-.ncoda-verovio {
-    height: 100%;
-    background: @view-bg;
-    overflow: hidden;
-    .verovio-waiting {
+.ncoda-scoreview {
+    .ncoda-verovio {
         height: 100%;
-        color: @base-text-color;
-        i {
-            color: @global-primary;
-            filter: drop-shadow(0px 0px 5px @global-primary);
+        background: @view-bg;
+        overflow: hidden;
+        .verovio-waiting {
+            height: 100%;
+            color: @base-text-color;
+            i {
+                color: @global-primary;
+                filter: drop-shadow(0px 0px 5px @global-primary);
+            }
         }
     }
 }
