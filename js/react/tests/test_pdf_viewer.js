@@ -23,87 +23,60 @@
 //-------------------------------------------------------------------------------------------------
 
 
-// don't need these nuclear things now, but may need them later
-// import {init} from '../../nuclear/init';
-// import nuclear from 'nuclear-js';
-//
-// import reactor from '../../nuclear/reactor';
-// import signals from '../../nuclear/signals';
-// import getters from '../../nuclear/getters';
-
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {mount, shallow} from 'enzyme';
+import { shallow } from 'enzyme';
 
 jest.unmock('../pdf_viewer');
 import PDFViewer from '../pdf_viewer';
 
-jest.unmock('pdfjs-dist/build/pdf.combined.js');
-import PDF from 'pdfjs-dist/build/pdf.combined.js';
-
-const pdffile = "dummy_multi.pdf";
-const pdfpagecount = 2; // the number of pages of pdffile
+const pdffile = "./dummy_multi.pdf";
 const containerclass = "custom-class";
-const mockedpdfobject = {
-    pageInfo: {
-        view: [0, 0, 612, 792]
-    },
-    rotate: 0
-};
+
 
 describe('<PDFViewer>', () => {
 
     const wrapper = shallow(<PDFViewer file={pdffile} pdfContainerClass={containerclass}/>);
-    console.log(wrapper.instance());
 
     it('has an outer div with the classname nc-pdfviewer', () => {
-        expect(wrapper.node.type).toBe('div');
-        expect(wrapper.node.props.className).toBe('nc-pdfviewer');
+        // looking for nc-pdfviewer class on exactly one <div> element
+        const pdfContainerDiv = wrapper.find(`.nc-pdfviewer`);
+        expect(pdfContainerDiv.length).toBe(1);
+        expect(pdfContainerDiv.name()).toBe('div');
+
+    });
+
+    it('uses the custom container class when provided', () => {
+        // looking for containerclass on exactly one <div> element
+        const customClassDiv = wrapper.find(`.${containerclass}`);
+        expect(customClassDiv.length).toBe(1);
+        expect(customClassDiv.name()).toBe('div');
+        expect(customClassDiv.hasClass('nc-pdf')).toBe(true);  // also has the default class added
     });
 
     it('accepts a URL of a PDF via props', () => {
         expect(wrapper.instance().props.file).toBe(pdffile);
     });
 
-    it('accepts a class name for the PDF container via props', () => {
-        expect(wrapper.instance().props.pdfContainerClass).toBe(containerclass);
+    it('has a loadPDF method', () => {
+        expect(wrapper.instance().loadPDF).toBeDefined();
     });
 
-    loadPDF.mockImplementation(() => mockedpdfobject);
-
-    it('can call loadPDF', () => {
-       wrapper.instance().loadPDF(pdffile);
+    it('has a downloadPDF method', () => {
+        expect(wrapper.instance().downloadPDF).toBeDefined();
     });
 
-    // it('works with async/await', async () => {
-    //     const mwrapper = await mount(<PDFViewer file={pdffile} pdfContainerClass={containerclass}/>);
-    //     expect(mwrapper.find('canvas').length).toBe(pdfpagecount);
-    // });
+    it('has a refresh method', () => {
+        expect(wrapper.instance().refresh).toBeDefined();
+    });
+
+    it('has a button to download', () => {
+        const downloadBtn = wrapper.find('.nc-pdf-download-btn');
+        expect(downloadBtn.node.props.onClick).toBeDefined();
+    });
+
+    it('has a button to refresh', () => {
+        const refreshBtn = wrapper.find('.nc-pdf-refresh-btn');
+        expect(refreshBtn.node.props.onClick).toBeDefined();
+    });
 
 });
-
-
-// PDF.numPages.mockImplementation(() => pdfpagecount);
-// PDF.getPage(n).mockImplementation( function(n) {
-//     return mockedpdfobject[n]
-// });
-
-
-// await const wrapper = mount(<PDFViewer file={pdffile} pdfContainerClass={containerclass}/>);
-// wrapper.instance().loadPDF(pdffile);
-
-// mount(<PDFViewer file={pdffile} pdfContainerClass={containerclass}/>).then( function (node) {
-//     console.log(node);
-// });
-
-
-// The promise that is being tested should be returned.
-// it('works with promises', () => {
-//     pdfviewerwrap.loadPDF(pdffile).then( function (node) {
-//         expect(node.props.file).toBe(pdffile);
-//         expect(node.props.pdfContainerClass).toBe(containerclass);
-//         expect(node.find('canvas').length).toEqual(pdfpagecount);
-//     })
-// });
-//
-
