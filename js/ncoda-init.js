@@ -64,12 +64,15 @@ signals.emitters.registerOutboundFormat('vcs', 'ncoda-init', false);
 //     </Route>
 // </Route>
 
+// NB: this is the route setup for StructureView
+// <Route path="structure" component={StructureView}/>
+
+
 ReactDOM.render((
     <Router history={hashHistory}>
         <Route path="/" component={NCoda}>
             <IndexRoute component={MainScreen}/>
             <Route path="codescore" component={CodeScoreView}/>
-            <Route path="structure" component={StructureView}/>
             <Route path="colophon" component={Colophon}/>
         </Route>
     </Router>

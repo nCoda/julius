@@ -146,9 +146,6 @@ const GlobalMenu = React.createClass({
                         <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
                             {`CodeScoreView`}
                         </NavItem>
-                        <NavItem linkComponent={Link} linkProps={{to: "/structure"}}>
-                            {`StructureView`}
-                        </NavItem>
                     </Nav>
                 </OffCanvas>
             </nav>
