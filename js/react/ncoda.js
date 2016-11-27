@@ -112,13 +112,34 @@ const Colophon = React.createClass({
         return (
             <div id="ncoda-colophon">
                 <div className="am-container am-text-center">
-                    <IconLogo className="am-img-responsive am-center" />
+                    <IconLogo className="am-img-responsive am-center"/>
                     <div>
                         <h2>{`About nCoda`}</h2>
-                        <p>{`Many people contribute to nCoda. Learn about them at URL.`}</p>
-                        <p>{`You must follow the GPLv3 software license when you use nCoda. Learn about your rights and responsibilities at URL.`}</p>
-                        <p>{`The nCoda source code is available at no direct cost from URL.`}</p>
-                        <p>{`We use many third-party software components to build nCoda. Learn about them at URL.`}</p>
+                        <p><i>{`nCoda`}</i>{` is the software you're using now, and the community
+                            of people who make that software. If you're interested in joining our
+                            contributor community, please visit `}
+                            <a href="https://spivak.ncodamusic.org/t/getting-started-with-ncoda/154" target="_blank">
+                            {`this thread`}</a>
+                            {` on our discussion board for more information.`}
+                        </p>
+                        <p>
+                            {`The `}<i>{`nCoda`}</i>{` software is made available to you under the
+                            terms of the GNU General Public Licence (GPL), version 3 or any later
+                            version. You can learn about your rights and responsibilities from `}
+                            <a href="https://www.gnu.org/licenses/quick-guide-gplv3" target="_blank">
+                            {`this quick guide`}</a>{` or by reading `}
+                            <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">
+                            {`the full license.`}</a>
+                        </p>
+                        <p>
+                            {`In accordance with the GPL, the source code of `}
+                            <i>{`nCoda`}</i>{` is available for download at no direct cost. Our
+                            repositories are hosted on `}
+                            <a href="https://goldman.ncodamusic.org/diffusion/" target="_blank">
+                            {`Phabricator`}
+                            </a>{` in addition to a mirror on `}
+                            <a href="https://github.com/ncoda" target="_blank">{`GitHub`}</a>{`.`}
+                        </p>
                     </div>
                 </div>
             </div>
