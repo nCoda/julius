@@ -140,6 +140,15 @@ const Colophon = React.createClass({
                             </a>{` in addition to a mirror on `}
                             <a href="https://github.com/ncoda" target="_blank">{`GitHub`}</a>{`.`}
                         </p>
+                        <h2>{`Need Help?`}</h2>
+                        <p>
+                            {`We're still working on our documentation for end users. In the meantime,
+                            you may wish to consult the user documentation for `}
+                            <a href="http://lilypond.org/doc/v2.18/Documentation/notation/index" target="_blank" rel="noopener">
+                            {`LilyPond`}</a>{` and `}
+                            <a href="http://abjad.mbrsi.org/" target="_blank" rel="noopener">
+                            {`Abjad`}</a>{`.`}
+                        </p>
                     </div>
                 </div>
             </div>
