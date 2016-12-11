@@ -34,11 +34,11 @@ import { store } from './index';
  */
 
 export const LOG_LEVELS = {
-     ERROR: 0,
-     WARN: 1,
-     INFO: 2,
-     DEBUG: 3,
- };
+    ERROR: 0,
+    WARN: 1,
+    INFO: 2,
+    DEBUG: 3,
+};
 
 
 export const types = {
