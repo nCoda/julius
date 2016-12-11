@@ -38,7 +38,7 @@ import {log} from './log';
 import {signals} from '../nuclear/signals';
 
 import { store } from '../stores';
-import { getters as metaGetters } from '../stores/meta';
+import { actions as metaActions, getters as metaGetters } from '../stores/meta';
 import { actions as uiActions } from '../stores/ui';
 
 
@@ -77,7 +77,7 @@ const FUJIAN_SIGNALS = {
         else {
             message = ERROR_MESSAGES.outboundConv;
         }
-        signals.emitters.stdout(message);
+        metaActions.writeToStdio('stdout', message);
         log.error(message);
     },
 
@@ -227,7 +227,7 @@ class Fujian {
         request.open('POST', FUJIAN_AJAX_URL);
         request.send(code);
 
-        signals.emitters.stdin(code);
+        metaActions.writeToStdio('stdin', code);
     }
 
     /** A callback for the "onopen" WebSocket event that sends queued messages.
@@ -314,7 +314,8 @@ class Fujian {
 
         if ('string' === typeof response.traceback && response.traceback.length > 0) {
             doStdio = true;  /* eslint no-param-reassign: 0 */
-            signals.emitters.stdout(response.traceback);
+            // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
+            metaActions.writeToStdio('stdout', response.traceback);
             uiActions.showModal(
                 'error',
                 'Unhandled Exception in Python',
@@ -333,11 +334,11 @@ class Fujian {
 
         if (doStdio || metaGetters.logLevel(store.getState()) === log.LEVELS.DEBUG) {
             if ('string' === typeof response.stdout && response.stdout.length > 0) {
-                signals.emitters.stdout(response.stdout);
+                metaActions.writeToStdio('stdout', response.stdout);
             }
             if ('string' === typeof response.stderr && response.stderr.length > 0) {
                 // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
-                signals.emitters.stdout(response.stderr);
+                metaActions.writeToStdio('stdout', response.stderr);
             }
             if ('string' === typeof response.return && response.return.length > 0) {
                 log.info(ERROR_MESSAGES.fjnRetVal);

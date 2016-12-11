@@ -30,7 +30,6 @@ import lilypond from './stores/lilypond';
 import mercurial from './stores/mercurial';
 import reactor from './reactor';
 import revisions from './stores/revisions';
-import stdio from './stores/stdio';
 import verovio from './stores/verovio';
 
 
@@ -39,9 +38,6 @@ reactor.registerStores({
     revlog: mercurial.Revlog,
     sections: document.Sections,
     sectionCursor: document.Cursor,
-    stdin: stdio.Stdin,
-    stdout: stdio.Stdout,
-    stderr: stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView
     meiForVerovio: verovio.MeiForVerovio,
     revisions: revisions.Revisions,
     lilypond: lilypond.Sections,

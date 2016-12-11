@@ -47,10 +47,6 @@ const names = {
     // MEI Document Stuff
     SECTIONS_FROM_LYCHEE: 'SECTIONS_FROM_LYCHEE',
     MOVE_SECTION_CURSOR: 'MOVE_SECTION_CURSOR',
-    // Standard I/O
-    STDIN: 'STDIN',
-    STDOUT: 'STDOUT',
-    STDERR: 'STDERR',
     // Verovio
     ADD_NEW_VIDAVIEW: 'ADD_NEW_VIDAVIEW',
     DESTROY_VIDAVIEW: 'DESTROY_VIDAVIEW',
@@ -102,17 +98,6 @@ const emitters = {
      */
     documentFromLychee(scoreDef) {
         reactor.dispatch(names.SECTIONS_FROM_LYCHEE, scoreDef);
-    },
-
-    // Standard I/O
-    stdin(string) {
-        reactor.dispatch(names.STDIN, string);
-    },
-    stdout(string) {
-        reactor.dispatch(names.STDOUT, string);
-    },
-    stderr(string) {
-        reactor.dispatch(names.STDERR, string);
     },
 
     // Verovio

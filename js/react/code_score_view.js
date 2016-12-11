@@ -27,7 +27,7 @@ import React from 'react';
 
 import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
-import {TerminalView} from './terminal_view';
+import TerminalView from './terminal_view';
 
 import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
@@ -46,9 +46,6 @@ const CodeScoreView = React.createClass({
             meiForVerovio: getters.meiForVerovio,
             sections: getters.sections,
             sectionCursor: getters.sectionCursorFriendly,
-            stdin: getters.stdin,
-            stdout: getters.stdout,
-            stderr: getters.stderr,
         };
     },
     componentWillMount() {
@@ -136,22 +133,10 @@ const CodeScoreView = React.createClass({
                         defaultSize="50%"
                     >
                         <div className="pane-container">
-                            <TerminalView
-                                termOutput="in"
-                                title="Your Input"
-                                stdin={this.state.stdin}
-                                stdout={this.state.stdout}
-                                stderr={this.state.stderr}
-                            />
+                            <TerminalView termOutput="in" title="Your Input"/>
                         </div>
                         <div className="pane-container">
-                            <TerminalView
-                                termOutput="out"
-                                title="Python Output"
-                                stdin={this.state.stdin}
-                                stdout={this.state.stdout}
-                                stderr={this.state.stderr}
-                            />
+                            <TerminalView termOutput="out" title="Python Output"/>
                         </div>
                     </SplitPane>
                 </SplitPane>

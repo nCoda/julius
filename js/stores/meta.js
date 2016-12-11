@@ -31,6 +31,8 @@ import { store } from './index';
  * Root Store
  * ----------
  * @param {string} log_level - One of those defined just below
+ * @param {ImmutableMap} stdio - With three fields (stdin, stdout, stderr) representing the content
+ *     of those input/output streams.
  */
 
 export const LOG_LEVELS = {
@@ -43,6 +45,9 @@ export const LOG_LEVELS = {
 
 export const types = {
     SET_LOG_LEVEL: 'set the log level',
+    WRITE_STDIN: 'write to stdin',
+    WRITE_STDOUT: 'write to stdout',
+    WRITE_STDERR: 'write to stderr',
 };
 
 
@@ -55,12 +60,85 @@ export const actions = {
             store.dispatch({type: types.SET_LOG_LEVEL, payload: level});
         }
     },
+
+    /** writeToStdio() - Add content to a stdio stream.
+     *
+     * @param {str} stream - One of: stdin, stdout, stderr.
+     * @param {str} content - The string to add to the stream. Note that a newline character is
+     *     *always* appended after "content."
+     */
+    writeToStdio(stream, content) {
+        if (content && typeof content === 'string') {
+            content = `${content}\n`;
+            switch (stream) {
+                case 'stdin':
+                    store.dispatch({type: types.WRITE_STDIN, payload: content});
+                    break;
+                case 'stdout':
+                    store.dispatch({type: types.WRITE_STDOUT, payload: content});
+                    break;
+                case 'stderr':
+                    store.dispatch({type: types.WRITE_STDERR, payload: content});
+                    break;
+            }
+        }
+    },
 };
+
+
+/** tryToMakeSafe() - Try to make "thisString" safe to be used with dangerouslySetInnerHTML.
+ *
+ * @param {string} thisString - The stdio string to clean.
+ * @returns {string} thatString - The cleaned string.
+ *
+ * Currently this function does two things:
+ * 1.) Replace < and > with &lt; and &gt;, respectively.
+ * 2.) Replace newline characters with <br>.
+ */
+function tryToMakeSafe(thisString) {
+    let post = thisString;
+
+    // TODO: how to make this replace all occurrences?
+    // TODO: how to avoid other possible attacks?
+    while (post.includes('<')) {
+        post = post.replace('<', '&lt;');
+    }
+    while (post.includes('>')) {
+        post = post.replace('>', '&gt;');
+    }
+
+    // convert newlines to <br/>
+    while (post.includes('\n')) {
+        post = post.replace('\n', '<br>');
+    }
+
+    return post;
+}
 
 
 export const getters = {
     logLevel(state) {
         return state.meta.get('log_level');
+    },
+
+    stdin(state) {
+        return tryToMakeSafe(state.meta.getIn(['stdio', 'stdin']));
+    },
+    stdout(state) {
+        return tryToMakeSafe(state.meta.getIn(['stdio', 'stdout']));
+    },
+    stderr(state) {
+        return tryToMakeSafe(state.meta.getIn(['stdio', 'stderr']));
+    },
+
+    stdinUnsafe(state) {
+        return state.meta.getIn(['stdio', 'stdin']);
+    },
+    stdoutUnsafe(state) {
+        return state.meta.getIn(['stdio', 'stdout']);
+    },
+    stderrUnsafe(state) {
+        return state.meta.getIn(['stdio', 'stderr']);
     },
 };
 
@@ -68,6 +146,7 @@ export const getters = {
 export function makeInitialState() {
     return Immutable.Map({
         log_level: LOG_LEVELS.WARN,
+        stdio: Immutable.Map({stdin: '', stdout: '', stderr: ''}),
     });
 }
 
@@ -76,6 +155,24 @@ export function reducer(state = makeInitialState(), action) {
     switch (action.type) {
         case types.SET_LOG_LEVEL:
             return state.set('log_level', action.payload);
+
+        case types.WRITE_STDIN:
+            return state.setIn(
+                ['stdio', 'stdin'],
+                state.getIn(['stdio', 'stdin']) + action.payload,
+            );
+
+        case types.WRITE_STDOUT:
+            return state.setIn(
+                ['stdio', 'stdout'],
+                state.getIn(['stdio', 'stdout']) + action.payload,
+            );
+
+        case types.WRITE_STDERR:
+            return state.setIn(
+                ['stdio', 'stderr'],
+                state.getIn(['stdio', 'stderr']) + action.payload,
+            );
     }
 
     return state;

@@ -25,15 +25,6 @@
 import {Immutable} from 'nuclear-js';
 
 
-/** Concatenate a List of strings into a single string with newlines.
- * @param {ImmutableJS.List of str} output - The List of strings to concatenate.
- * @returns {str} The concatenated string.
- */
-function stdioConcatter(output) {
-    return output.join('\n');
-}
-
-
 /** vcsUsers() - Extract an ImmutableJS Map of user data from the revlog.
  *
  * @param {ImmutableJS.Map} revlog - Data from the mercurial.Revlog Store.
@@ -187,7 +178,7 @@ function headerFlattener(headers) {
  *    Output: ['123', 'sections', '996']
  *
  */
-function cursorFriendlyMaker(cursor) {
+export function cursorFriendlyMaker(cursor) {
     let post = cursor;
     if (post.count() > 1) {
         post = post.reduce((previous, current) => {
@@ -201,15 +192,12 @@ function cursorFriendlyMaker(cursor) {
 }
 
 
-const getters = {
+export const getters = {
     headers: ['headers'],
     headersFlat: [['headers'], headerFlattener],  // for human-readable names in a "flat" Object
     sections: ['sections'],
     sectionCursor: ['sectionCursor'],
     sectionCursorFriendly: [['sectionCursor'], cursorFriendlyMaker],
-    stdin: [['stdin'], stdioConcatter],
-    stdout: [['stdout'], stdioConcatter],
-    stderr: [['stderr'], stdioConcatter],
     meiForVerovio: ['meiForVerovio'],
     revisions: ['revisions'],
     sectionContextMenu: ['sectionContextMenu'],
@@ -219,5 +207,4 @@ const getters = {
     lilypond: ['lilypond'],
 };
 
-export {cursorFriendlyMaker, getters, stdioConcatter};
 export default getters;

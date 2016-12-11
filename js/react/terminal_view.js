@@ -6,7 +6,7 @@
 // Filename:               js/react/score_view.js
 // Purpose:                React components for TerminalView module of CodeScoreView.
 //
-// Copyright (C) 2016 Sienna M. Wood
+// Copyright (C) 2016 Sienna M. Wood, Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -23,103 +23,78 @@
 // ------------------------------------------------------------------------------------------------
 
 import React from 'react';
+import { connect } from 'react-redux';
 
 import Scroll from './scroll';
+import { getters as metaGetters } from '../stores/meta';
 
 
-export const TerminalView = React.createClass({
+const TerminalView = React.createClass({
     propTypes: {
-        title: React.PropTypes.string,              // title for <h2> in .pane-head
-        termOutput: React.PropTypes.string,         // in/stdin, out/stdout, err/stderr; defaults to 'in' if none declared
-        stdin: React.PropTypes.string.isRequired,   // connect to NuclearJS data sources
-        stdout: React.PropTypes.string.isRequired,
-        stderr: React.PropTypes.string.isRequired
+        stdin: React.PropTypes.string,
+        stderr: React.PropTypes.string,
+        stdout: React.PropTypes.string,
+        termOutput: React.PropTypes.oneOf(['stdin', 'in', 'stdout', 'out', 'stderr', 'err']),
+        title: React.PropTypes.string,
+
     },
+
     getDefaultProps() {
         return {
+            stdin: '',
+            stderr: '',
+            stdout: '',
+            termOutput: 'in',
             title: 'Terminal',
-            termOutput: 'in'
         };
     },
-    whichOutput() {
-        let termOutput = this.props.termOutput;
-        if(termOutput === 'out' || termOutput === 'stdout') {
-            return <TerminalWindow extraClass="nc-terminal-out" outputThis={this.props.stdout}/>
-        } else if(termOutput === 'err' || termOutput === 'stderr') {
-            return <TerminalWindow extraClass="nc-terminal-err" outputThis={this.props.stderr}/>
-        } else {
-            return <TerminalWindow extraClass="nc-terminal-in" outputThis={this.props.stdin}/>
-        }
-    },
-    whichTitle() { // Terminal-IN, -STDIN, -OUT, -STDOUT, -ERR, or -STDERR if no other title specified
-        let title = this.props.title;
-        if(title === 'Terminal'){
-            title = title + "-" + this.props.termOutput.toUpperCase();
-            return title;
-        } else {
-            return title;
-        }
-    },
+
     render() {
+        let className, outputThis;
+        switch (this.props.termOutput) {
+            case 'in':
+            case 'stdin':
+                className = 'ncoda-terminal-window nc-terminal-in';
+                outputThis = this.props.stdin;
+                break;
+
+            case 'out':
+            case 'stdout':
+                className = 'ncoda-terminal-window nc-terminal-out';
+                outputThis = this.props.stdout;
+                break;
+
+            case 'err':
+            case 'stderr':
+                className = 'ncoda-terminal-window nc-terminal-err';
+                outputThis = this.props.stderr;
+                break;
+        }
+
         return (
             <div className="nc-terminal-container">
                 <div className="pane-head">
-                    <h2>{this.whichTitle()}</h2>
+                    <h2>
+                        {this.props.title ? this.props.title : `Terminal (${this.props.termOutput})`}
+                    </h2>
                 </div>
                 <Scroll>
-                    {this.whichOutput()}
+                    <div className={className}>
+                        <pre dangerouslySetInnerHTML={{__html: outputThis}}></pre>
+                    </div>
                 </Scroll>
             </div>
         );
     },
 });
 
-const TerminalWindow = React.createClass({
-    propTypes: {
-        outputThis: React.PropTypes.string,
-        extraClass: React.PropTypes.string,
-    },
-    getDefaultProps() {
-        return {
-            outputThis: '',
-            extraClass: ''
-        };
-    },
-    formatString(x) {
-        // Formats a string properly so it can be outputted in the window as dangerouslySetInnerHTML.
-        //
-        let post = x;
 
-        // TODO: how to make this replace all occurrences?
-        // TODO: how to avoid other possible attacks?
-        while (post.includes('<')) {
-            post = post.replace('<', '&lt;');
-        }
-        while (post.includes('>')) {
-            post = post.replace('>', '&gt;');
-        }
+const TerminalViewWrapped = connect((state) => {
+    return {
+        stdin: metaGetters.stdin(state),
+        stdout: metaGetters.stdout(state),
+        stderr: metaGetters.stderr(state),
+    };
+})(TerminalView);
 
-        // convert newlines to <br/>
-        while (post.includes('\n')) {
-            post = post.replace('\n', '<br/>');
-        }
-
-        // finally append our thing
-        if (!post.endsWith('<br/>')) {
-            post += '<br/>';
-        }
-        // wrap the output in <pre> tag to preserve spaces and tabs.
-        post = `<pre>${post}</pre>`;
-        return post;
-    },
-    render() {
-        const innerHtml = {__html: this.formatString(this.props.outputThis)};
-        let className = 'ncoda-terminal-window ';
-        if (this.props.extraClass !== '') {
-            className += `${className} ${this.props.extraClass}`;
-        }
-        return (
-            <div className={className} dangerouslySetInnerHTML={innerHtml}></div>
-        );
-    },
-});
+export default TerminalViewWrapped;
