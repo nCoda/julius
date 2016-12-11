@@ -22,19 +22,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-// register the NuclearJS Stores (as early as possible)
-import {init} from './nuclear/init';
-
 // third-party libraries
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {hashHistory, Router, IndexRoute, Route} from 'react-router';  // TODO: move to submodule
+import { Provider } from 'react-redux';
+import { hashHistory, Router, IndexRoute, Route } from 'react-router';
+
+// Create the Redux structure (as early as possible)
+import { store } from './stores';
+import {init} from './nuclear/init';
 
 // log!
 import log from './util/log';
 
 // Julius React components
-// TODO: these won't be needed when the react-router stuff is in a submodule
 import NCoda from './react/ncoda';
 import {MainScreen, Colophon} from './react/ncoda';
 // import StructureView from './react/structure_view';
@@ -54,7 +55,6 @@ signals.emitters.registerOutboundFormat('vcs', 'ncoda-init', false);
 
 
 // Render the react-router components -----------------------------------------
-// TODO: move this to a submodule
 
 // NB: this is the route setup for RevisionsView
 //  <Route path="revisions" component={revisions.RevisionsView}>
@@ -69,11 +69,13 @@ signals.emitters.registerOutboundFormat('vcs', 'ncoda-init', false);
 
 
 ReactDOM.render((
-    <Router history={hashHistory}>
-        <Route path="/" component={NCoda}>
-            <IndexRoute component={MainScreen}/>
-            <Route path="codescore" component={CodeScoreView}/>
-            <Route path="colophon" component={Colophon}/>
-        </Route>
-    </Router>
+    <Provider store={store}>
+        <Router history={hashHistory}>
+            <Route path="/" component={NCoda}>
+                <IndexRoute component={MainScreen}/>
+                <Route path="codescore" component={CodeScoreView}/>
+                <Route path="colophon" component={Colophon}/>
+            </Route>
+        </Router>
+    </Provider>
 ), document.getElementById('julius-goes-here'));
