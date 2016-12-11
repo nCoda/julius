@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/react/generics.js
+// Filename:               js/react/generics/off_canvas.js
 // Purpose:                Generic React components for nCoda in general.
 //
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood
@@ -22,139 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-// NOTE: This module contains generic components, like "question box." Widely-used but specific
-// components, such as the global menu bar, are stored in "ncoda.js."
-
-
 import React from 'react';
-import {Modal, Icon} from 'amazeui-react';
-
-import {log} from '../util/log';
-import {getters} from '../nuclear/getters';
-import {reactor} from '../nuclear/reactor';
-import {emitters as signals} from '../nuclear/signals';
-
-/** DialgoueBox: Display alerts using amazeUI modal components
- *
- * No props - everything is passed in through NuclearJS
- *
- * Tests in tests/test_generics.js
- */
-
-const DialogueBox = React.createClass({
-    mixins: [reactor.ReactMixin],
-    getDataBindings() {
-        return {box: getters.DialogueBox};
-    },
-    componentDidMount: function() {
-        this._documentKeyupListener = window.addEventListener('keyup', this.handleKeyUp);
-    },
-    componentWillUnmount: function() {
-        this._documentKeyupListener.off();
-    },
-    handleInputChange: function (text) {
-        this.setState({inputValue: text});
-    },
-    handleKeyUp(e) {
-        if (!this.props.keyboard && e.keyCode === 13) { // keyCode 13 is enter
-            this.handleClick();
-        }
-    },
-    handleClick() {
-        if (this.state.box.get('callback')) {
-            if ('question' === this.state.box.get('type')) {
-                const answer = this.state.inputValue;
-                log.debug(`QuestionBox answered with "${answer}".`);
-                this.state.box.get('callback')(answer);
-            }
-            else {
-                this.state.box.get('callback')();
-            }
-        }
-        signals.dialogueBoxHide();
-    },
-    handleConfirm() {
-        this.handleClick();
-    },
-    handleCancel() {
-        this.handleClick();
-    },
-    render() {
-        if (!this.state.box.get('displayed')) {
-            return <div ref="dialogueBoxHidden" style={{display: 'none'}}/>;
-        }
-
-        let iconClass, type;
-        let modalType = 'alert';
-
-        switch (this.state.box.get('type')) {
-            case 'error':
-                iconClass = 'exclamation-triangle';
-                type = 'Error';
-                break;
-            case 'warn':
-                iconClass = 'exclamation-circle';
-                type = 'Warning';
-                break;
-            case 'debug':
-                iconClass = 'bug';
-                type = 'Developer Message';
-                break;
-            case 'question':
-                iconClass = 'question-circle';
-                type = 'Question';
-                modalType = 'prompt';
-                break;
-            case 'info':
-            default:
-                iconClass = 'info-circle';
-                type = 'Information';
-                break;
-        }
-
-        let answer;
-        if (type === 'Question') {
-            answer = <SimpleInput handleInputChange={this.handleInputChange}
-                                  ref="dialogueBoxInput"/>;
-        } else {
-            answer = <div ref="dialogueBoxHidden" style={{display: 'none'}}/>;
-        }
-
-        return (
-            <Modal ref="dialogueBoxModal"
-                   type={modalType}
-                   confirmText="OK"
-                   cancelText="Cancel"
-                   onConfirm={this.handleConfirm}
-                   onCancel={this.handleCancel}
-                   onRequestClose={this.handleClick}
-                   title={<Icon icon={iconClass} amSize="md" alt={type}/>}>
-                <h1>{this.state.box.get('message')}</h1>
-                <p>{this.state.box.get('detail')}</p>
-                {answer}
-            </Modal>
-        );
-    },
-});
-
-const SimpleInput = React.createClass({
-    propTypes: {
-        handleInputChange: React.PropTypes.func.isRequired,
-    },
-    handleChange(event) {
-        this.setState({value: event.target.value});
-        this.props.handleInputChange(event.target.value);
-    },
-    render() {
-        return (
-            <input
-                type="text"
-                value={this.state.value}
-                onChange={this.handleChange = this.handleChange.bind(this)}
-            />
-        );
-    }
-});
 
 
 /** OffCanvas: A thing that glides into view.
@@ -168,7 +36,7 @@ const SimpleInput = React.createClass({
  * @param {str} side - Either "left" or "right" depending on which side of the parent container
  *    should hide the element. Default is "left."
  */
-const OffCanvas = React.createClass({
+export const OffCanvas = React.createClass({
     //
     // This component is a little weird. Because of how the CSS works, you can only see the panel
     // slide onto the canvas if the backdrop *already* has the "am-active" class. In other words,
@@ -261,4 +129,4 @@ const OffCanvas = React.createClass({
 });
 
 
-export {DialogueBox, OffCanvas};
+export default OffCanvas;
