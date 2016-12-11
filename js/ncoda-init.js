@@ -43,6 +43,9 @@ import CodeScoreView from './react/code_score_view';
 // import revisions from './react/revisions_view';
 
 // Set the default log level and connect to Fujian.
+import { actions as metaActions, LOG_LEVELS } from './stores/meta';
+metaActions.setLogLevel(LOG_LEVELS.DEBUG);
+
 import signals from './nuclear/signals';
 signals.emitters.setLogLevel(log.LEVELS.DEBUG);
 signals.emitters.fujianStartWS();

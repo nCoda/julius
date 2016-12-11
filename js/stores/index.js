@@ -22,9 +22,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import { combineReducers, createStore } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
+import createLogger from 'redux-logger';
 
-import meta from './meta';
+import { getters as metaGetters, LOG_LEVELS, reducer as meta } from './meta';
 import ui from './ui';
 
 
@@ -33,7 +34,27 @@ const REDUCERS_OBJECT = {
     ui,
 };
 
+const logger = createLogger({
+    stateTransformer: (state) => {
+        const newState = {};
 
-export const store = createStore(combineReducers(REDUCERS_OBJECT));
+        for (const key of Object.keys(state)) {
+            newState[key] = state[key].toJS();
+        }
+
+        return newState;
+    },
+
+    predicate: (getState) => {
+        // Check the log level to decide whether to print messages.
+        return metaGetters.logLevel(getState()) === LOG_LEVELS.DEBUG;
+    },
+});
+
+
+export const store = createStore(
+    combineReducers(REDUCERS_OBJECT),
+    applyMiddleware(logger),
+);
 
 export default store;
