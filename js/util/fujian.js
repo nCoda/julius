@@ -83,10 +83,6 @@ const FUJIAN_SIGNALS = {
 
     // TODO: add tests
     'outbound.CONVERSION_FINISHED': (response) => {
-        // formats RevisionsView might want... it's super inefficient
-        if (response.dtype === 'lilypond' || response.dtype === 'mei') {
-            signals.emitters.revisionFromLychee(response);
-        }
         // everything else
         switch (response.dtype) {
         case 'document':

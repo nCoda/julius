@@ -28,7 +28,6 @@
 import document from './stores/document';
 import lilypond from './stores/lilypond';
 import reactor from './reactor';
-import revisions from './stores/revisions';
 import verovio from './stores/verovio';
 
 
@@ -37,7 +36,6 @@ reactor.registerStores({
     sections: document.Sections,
     sectionCursor: document.Cursor,
     meiForVerovio: verovio.MeiForVerovio,
-    revisions: revisions.Revisions,
     lilypond: lilypond.Sections,
 });
 

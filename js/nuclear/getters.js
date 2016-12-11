@@ -110,7 +110,6 @@ export const getters = {
     sectionCursor: ['sectionCursor'],
     sectionCursorFriendly: [['sectionCursor'], cursorFriendlyMaker],
     meiForVerovio: ['meiForVerovio'],
-    revisions: ['revisions'],
     sectionContextMenu: ['sectionContextMenu'],
     lilypond: ['lilypond'],
 };

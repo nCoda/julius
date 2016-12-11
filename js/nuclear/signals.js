@@ -55,8 +55,6 @@ const names = {
     FUJIAN_CLOSE_WS: 'FUJIAN_CLOSE_WS',
     // Logging
     SET_LOG_LEVEL: 'SET_LOG_LEVEL',
-    // RevisionsView
-    REVISION_FROM_LYCHEE: 'REVISION_FROM_LYCHEE',
     // LilyPond
     LILYPOND_FROM_LYCHEE: 'LILYPOND_FROM_LYCHEE',
 };
@@ -375,17 +373,6 @@ else:
             const code = `import lychee\nlychee.signals.document.MOVE_SECTION_TO.emit(xmlid='${sectionID}', position=${moveToIndex})`;
             fujian.sendWS(code);
         }
-    },
-
-    /** Give data to the "revisions" Store.
-     *
-     * Params:
-     * @param {object} revision - From Lychee's CONVERSION_FINISHED signal.
-     *
-     * NOTE that this data management strategy for RevisionsView is likely to be replaced.
-     */
-    revisionFromLychee(revision) {
-        reactor.dispatch(names.REVISION_FROM_LYCHEE, revision);
     },
 
     /** Give data to the "lilypond.Sections" Store.
