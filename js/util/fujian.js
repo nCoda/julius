@@ -39,6 +39,7 @@ import {signals} from '../nuclear/signals';
 
 import { store } from '../stores';
 import { getters as metaGetters } from '../stores/meta';
+import { actions as uiActions } from '../stores/ui';
 
 
 const FUJIAN_WS_URL = 'ws://localhost:1987/websocket/';
@@ -314,13 +315,14 @@ class Fujian {
         if ('string' === typeof response.traceback && response.traceback.length > 0) {
             doStdio = true;  /* eslint no-param-reassign: 0 */
             signals.emitters.stdout(response.traceback);
-            signals.emitters.dialogueBoxShow({
-                type: 'error',
-                message: 'Unhandled Exception in Python',
-                detail: 'There was an unhandled exception in the Python interpreter. This means ' +
-                        'there was an error but we could not fix it automatically. There is a ' +
-                        'traceback (error report) in the nCoda Python Console.',
-            });
+            uiActions.showModal(
+                'error',
+                'Unhandled Exception in Python',
+                ('There was an unhandled exception in the Python interpreter. This means ' +
+                 'there was an error but we could not fix it automatically. There is a ' +
+                 'traceback (error report) in the nCoda Python Console.'
+                ),
+            );
         }
 
         if (response.signal) {

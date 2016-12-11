@@ -25,10 +25,12 @@
 import { combineReducers, createStore } from 'redux';
 
 import meta from './meta';
+import ui from './ui';
 
 
 const REDUCERS_OBJECT = {
     meta,
+    ui,
 };
 
 

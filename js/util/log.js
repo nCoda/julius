@@ -24,10 +24,9 @@
 
 /* eslint no-console: 0 */
 
-import {emitters as signals} from '../nuclear/signals';
-
 import { store } from '../stores';
 import { getters as metaGetters, LOG_LEVELS as LEVELS } from '../stores/meta';
+import { actions as uiActions } from '../stores/ui';
 
 
 // Set the log level with Redux.
@@ -46,22 +45,14 @@ export const log = {
     error(msg) {
         if (console.error) {
             console.error(msg);
-            signals.dialogueBoxShow({
-                type: 'error',
-                message: 'Log Message',
-                detail: msg,
-            });
+            uiActions.shoModal('error', 'Log Message', msg);
         }
     },
 
     warn(msg) {
         if (console.warn && level >= LEVELS.WARN) {
             console.warn(msg);
-            signals.dialogueBoxShow({
-                type: 'warn',
-                message: 'Log Message',
-                detail: msg,
-            });
+            uiActions.showModal('warn', 'Log Message', msg);
         }
     },
 

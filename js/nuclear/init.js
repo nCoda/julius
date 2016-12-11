@@ -32,7 +32,6 @@ import reactor from './reactor';
 import revisions from './stores/revisions';
 import stdio from './stores/stdio';
 import verovio from './stores/verovio';
-import {generics} from './stores/generics';
 
 
 reactor.registerStores({
@@ -44,7 +43,6 @@ reactor.registerStores({
     stdout: stdio.Stdout,
     stderr: stdio.Stderr,  // NOTE: don't use stderr (for now?) because it isn't shown in CodeScoreView
     meiForVerovio: verovio.MeiForVerovio,
-    DialogueBox: generics.DialogueBox,
     revisions: revisions.Revisions,
     lilypond: lilypond.Sections,
 });

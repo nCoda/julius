@@ -61,9 +61,6 @@ const names = {
     FUJIAN_CLOSE_WS: 'FUJIAN_CLOSE_WS',
     // Logging
     SET_LOG_LEVEL: 'SET_LOG_LEVEL',
-    // DialogueBox
-    DIALOGUEBOX_SHOW: 'DIALOGUEBOX_SHOW',
-    DIALOGUEBOX_HIDE: 'DIALOGUEBOX_HIDE',
     // RevisionsView
     REVISION_FROM_LYCHEE: 'REVISION_FROM_LYCHEE',
     // LilyPond
@@ -275,31 +272,6 @@ if '_JULIUS_SESSION' not in globals():
      */
     unregisterOutboundFormat(dtype, who) {
         emitters._regOutboundFormat('UNREGISTER', dtype, who);
-    },
-
-    /** Show a DialogueBox.
-     *
-     * If the "type" is "question," the DialogueBox displays an <input type="text"> element, and
-     * the answer is provided as the single argument to the "callback" function.
-     *
-     * @param {object} props - A JavaScript object with four members described below.
-     * @param {string} props.type - Describing the type of dialogue box (one of "error", "warn",
-     *        "info", "debug", or "question").
-     * @param {string} props.message - A one sentence message for the user.
-     * @param {string} props.detail - An optional detailed description of the message.
-     * @param {function} props.callback - An optional function to call when the user dismisses (or
-     *        closes) the DialogueBox. If "props.type" is "question," this function is called with
-     *        "answer" as the only argument; otherwise there are no arguments.
-     * @returns {undefined}
-     */
-    dialogueBoxShow(props) {
-        reactor.dispatch(names.DIALOGUEBOX_SHOW, props);
-    },
-    /** Hide the DialogueBox React component.
-     * @returns {undefined}
-     */
-    dialogueBoxHide() {
-        reactor.dispatch(names.DIALOGUEBOX_HIDE);
     },
 
     /** Move the cursor marking the currently active <section>.

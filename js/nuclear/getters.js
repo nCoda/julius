@@ -213,7 +213,6 @@ const getters = {
     meiForVerovio: ['meiForVerovio'],
     revisions: ['revisions'],
     sectionContextMenu: ['sectionContextMenu'],
-    DialogueBox: ['DialogueBox'],
     vcsChangesets: [['revlog'], vcsChangesets],
     vcsRevlog: [['revlog'], ['sections'], vcsRevlog],
     vcsUsers: [['revlog'], vcsUsers],

@@ -27,6 +27,8 @@ import {Button, ButtonGroup, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topba
 import React from 'react';
 import {Link} from 'react-router';
 
+import { actions as uiActions } from '../stores/ui';
+
 import {log} from '../util/log';
 import signals from '../nuclear/signals';
 import {DialogueBox, OffCanvas} from './generics';
@@ -47,12 +49,12 @@ const MainScreen = React.createClass({
         }
         else {
             // this is a much worse solution than the native dialogue above
-            signals.emitters.dialogueBoxShow({
-                type: 'question',
-                message: 'Please enter the repository directory',
-                detail: 'This can break pretty easily, so be careful!',
-                callback: (answer) => signals.emitters.lySetRepoDir(answer),
-            });
+            uiActions.showModal(
+                'question',
+                'Please enter the repository directory',
+                'This can break pretty easily, so be careful!',
+                (answer) => signals.emitters.lySetRepoDir(answer),
+            );
         }
     },
     handleDefaultOpen() {
