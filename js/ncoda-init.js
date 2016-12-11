@@ -37,9 +37,9 @@ import log from './util/log';
 // TODO: these won't be needed when the react-router stuff is in a submodule
 import NCoda from './react/ncoda';
 import {MainScreen, Colophon} from './react/ncoda';
-import StructureView from './react/structure_view';
+// import StructureView from './react/structure_view';
 import CodeScoreView from './react/code_score_view';
-import revisions from './react/revisions_view';
+// import revisions from './react/revisions_view';
 
 // Set the default log level and connect to Fujian.
 import signals from './nuclear/signals';
