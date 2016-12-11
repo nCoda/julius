@@ -3,8 +3,8 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/nuclear/stores/julius.js
-// Purpose:                Julius-specific Stores, like for logging.
+// Filename:               js/stores/index.js
+// Purpose:                Initialize the Redux stores for Julius.
 //
 // Copyright (C) 2016 Christopher Antila
 //
@@ -22,37 +22,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
+import { combineReducers, createStore } from 'redux';
 
-import {Store} from 'nuclear-js';
-import {log, LEVELS} from '../../util/log';
-import {signals} from '../signals';
+import meta from './meta';
 
 
-const setters = {
-    setLogLevel(previous, next) {
-        if (LEVELS.ERROR === next ||
-            LEVELS.WARN === next ||
-            LEVELS.INFO === next ||
-            LEVELS.DEBUG === next) {
-            return next;
-        }
-
-        log.warn('setLogLevel() received an invalid log level');
-        return previous;
-    },
+const REDUCERS_OBJECT = {
+    meta,
 };
 
 
-const stores = {
-    LogLevel: Store({
-        getInitialState() {
-            return LEVELS.WARN;
-        },
-        initialize() {
-            this.on(signals.names.SET_LOG_LEVEL, setters.setLogLevel);
-        },
-    }),
-};
+export const store = createStore(combineReducers(REDUCERS_OBJECT));
 
-
-export {stores, setters};
+export default store;

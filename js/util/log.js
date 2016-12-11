@@ -24,59 +24,27 @@
 
 /* eslint no-console: 0 */
 
-
-import {getters} from '../nuclear/getters';
-import {reactor} from '../nuclear/reactor';
 import {emitters as signals} from '../nuclear/signals';
 
-
-const LEVELS = {
-    ERROR: 0,
-    WARN: 1,
-    INFO: 2,
-    DEBUG: 3,
-};
+import { store } from '../stores';
+import { getters as metaGetters, LOG_LEVELS as LEVELS } from '../stores/meta';
 
 
-// set the log level with NuclearJS
-// just in case Nuclear isn't working, we default to WARN
+// Set the log level with Redux.
 let level = LEVELS.WARN;
-/** Set the log level.
- * @param {int} newLevel - A member of "LEVELS" indicating the new log level.
- * @returns {undefined}
- */
-function levelSetter(newLevel) {
-    level = newLevel;
-}
-reactor.observe(getters.logLevel, levelSetter);
-
-
-// determine which Console functions are available
-let haveError = false;
-let haveWarn = false;
-let haveInfo = false;
-let haveLog = false;
-
-if (console) {
-    if (console.error) {
-        haveError = true;
-    }
-    if (console.warn) {
-        haveWarn = true;
-    }
-    if (console.info) {
-        haveInfo = true;
-    }
-    if (console.debug) {
-        haveLog = true;
+function levelSetter() {
+    const newLevel = metaGetters.logLevel(store.getState());
+    if (newLevel !== level) {
+        level = newLevel;
     }
 }
+store.subscribe(levelSetter);
 
 
 // actual logging functions
-const log = {
+export const log = {
     error(msg) {
-        if (haveError) {
+        if (console.error) {
             console.error(msg);
             signals.dialogueBoxShow({
                 type: 'error',
@@ -87,7 +55,7 @@ const log = {
     },
 
     warn(msg) {
-        if (haveWarn && level >= LEVELS.WARN) {
+        if (console.warn && level >= LEVELS.WARN) {
             console.warn(msg);
             signals.dialogueBoxShow({
                 type: 'warn',
@@ -98,13 +66,13 @@ const log = {
     },
 
     info(msg) {
-        if (haveInfo && level >= LEVELS.INFO) {
+        if (console.info && level >= LEVELS.INFO) {
             console.info(msg);
         }
     },
 
     debug(msg) {
-        if (haveLog && level >= LEVELS.DEBUG) {
+        if (console.log && level >= LEVELS.DEBUG) {
             console.log(msg);
         }
     },
@@ -113,5 +81,4 @@ const log = {
 };
 
 
-export {log, LEVELS};
 export default log;

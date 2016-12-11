@@ -34,10 +34,11 @@
 
 import {Immutable} from 'nuclear-js';
 
-import {getters} from '../nuclear/getters';
 import {log} from './log';
-import {reactor} from '../nuclear/reactor';
 import {signals} from '../nuclear/signals';
+
+import { store } from '../stores';
+import { getters as metaGetters } from '../stores/meta';
 
 
 const FUJIAN_WS_URL = 'ws://localhost:1987/websocket/';
@@ -328,7 +329,7 @@ class Fujian {
             }
         }
 
-        if (doStdio || log.LEVELS.DEBUG === reactor.evaluate(getters.logLevel)) {
+        if (doStdio || metaGetters.logLevel(store.getState()) === log.LEVELS.DEBUG) {
             if ('string' === typeof response.stdout && response.stdout.length > 0) {
                 signals.emitters.stdout(response.stdout);
             }
