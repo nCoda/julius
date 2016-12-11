@@ -27,7 +27,6 @@
 
 import document from './stores/document';
 import lilypond from './stores/lilypond';
-import mercurial from './stores/mercurial';
 import reactor from './reactor';
 import revisions from './stores/revisions';
 import verovio from './stores/verovio';
@@ -35,7 +34,6 @@ import verovio from './stores/verovio';
 
 reactor.registerStores({
     headers: document.Headers,
-    revlog: mercurial.Revlog,
     sections: document.Sections,
     sectionCursor: document.Cursor,
     meiForVerovio: verovio.MeiForVerovio,

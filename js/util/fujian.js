@@ -107,9 +107,6 @@ const FUJIAN_SIGNALS = {
         case 'lilypond':
             signals.emitters.lilypondFromLychee(response.placement, response.document);
             break;
-        case 'vcs':
-            signals.emitters.vcsNewRevlog(response.document);
-            break;
         case 'verovio':
             signals.emitters.renderToVerovio(response.document);
             break;

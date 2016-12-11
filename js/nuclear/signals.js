@@ -42,8 +42,6 @@ const names = {
     ADD_HEADER: 'ADD_HEADER',
     CHANGE_HEADER: 'CHANGE_HEADER',
     REMOVE_HEADER: 'REMOVE_HEADER',
-    // Mercurial stuff
-    VCS_NEW_REVLOG: 'VCS_NEW_REVLOG',
     // MEI Document Stuff
     SECTIONS_FROM_LYCHEE: 'SECTIONS_FROM_LYCHEE',
     MOVE_SECTION_CURSOR: 'MOVE_SECTION_CURSOR',
@@ -84,12 +82,6 @@ const emitters = {
     removeHeader(name) {
         // The name of an existing header.
         reactor.dispatch(names.REMOVE_HEADER, {name: name});
-    },
-
-    // Mercurial stuff
-    vcsNewRevlog(revlog) {
-        // A new, complete revlog from Mercurial.
-        reactor.dispatch(names.VCS_NEW_REVLOG, revlog);
     },
 
     // MEI Document Stuff
