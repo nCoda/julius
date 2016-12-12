@@ -33,6 +33,9 @@ import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
 import getters from '../nuclear/getters';
 
+import store from '../stores';
+import { getters as docGetters } from '../stores/document';
+
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';  // TODO: import properly
 
 
@@ -44,40 +47,19 @@ const CodeScoreView = React.createClass({
     getDataBindings() {
         return {
             meiForVerovio: getters.meiForVerovio,
-            sections: getters.sections,
-            sectionCursor: getters.sectionCursorFriendly,
         };
     },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('document', 'codescoreview', false);
         signals.emitters.registerOutboundFormat('lilypond', 'codescoreview', false);
     },
-    componentDidMount() {
-        // If the document cursor is not set, we need to choose a default.
-        this.checkForValidCursor(this.state.sections, this.state.sectionCursor);
-    },
-    componentWillUpdate(nextProps, nextState) {
-        // If the document cursor is not set, we need to choose a default.
-        if (nextState.sections !== this.state.sections
-            || nextState.sectionCursor !== this.state.sectionCursor) {
-            this.checkForValidCursor(nextState.sections, nextState.sectionCursor);
-        }
-    },
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('document', 'codescoreview');
         signals.emitters.unregisterOutboundFormat('lilypond', 'codescoreview');
     },
-    checkForValidCursor(sections, cursor) {
-        if (sections.size === 0) {
-            // the section data aren't loaded yet, so we'll just quit
-            return;
-        }
-        if (cursor.size === 0) {
-            signals.emitters.moveSectionCursor([sections.get('score_order').get(0)]);
-        }
-    },
     render() {
-        const sectId = this.state.sectionCursor.last();
+        // TODO: remove "sectId" when no longer needed by <ScoreView>
+        const sectId = docGetters.cursor(store.getState()).first();
 
         let scoreView;
         if (sectId) {

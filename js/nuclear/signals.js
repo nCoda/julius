@@ -34,17 +34,12 @@ import {log} from '../util/log';
 import reactor from './reactor';
 import {fujian} from '../util/fujian';
 
+import store from '../stores';
+import { getters as docGetters } from '../stores/document';
+
 
 // "names" is NuclearJS "actionTypes."
 const names = {
-    // HeaderBar
-    HEADERS_FROM_LYCHEE: 'HEADERS_FROM_LYCHEE',
-    ADD_HEADER: 'ADD_HEADER',
-    CHANGE_HEADER: 'CHANGE_HEADER',
-    REMOVE_HEADER: 'REMOVE_HEADER',
-    // MEI Document Stuff
-    SECTIONS_FROM_LYCHEE: 'SECTIONS_FROM_LYCHEE',
-    MOVE_SECTION_CURSOR: 'MOVE_SECTION_CURSOR',
     // Verovio
     ADD_NEW_VIDAVIEW: 'ADD_NEW_VIDAVIEW',
     DESTROY_VIDAVIEW: 'DESTROY_VIDAVIEW',
@@ -60,34 +55,6 @@ const names = {
 
 // "emitters" is NuclearJS "actions."
 const emitters = {
-    // MEI headers
-    /** Replace the current MEI headers with these new ones from Lychee.
-     * @param {Object} newHeaders - The "headers" object from Lychee's "document" converter.
-     */
-    headersFromLychee(newHeaders) {
-        reactor.dispatch(names.HEADERS_FROM_LYCHEE, newHeaders);
-    },
-    addHeader(name, value) {
-        // The name and value of the header to add.
-        reactor.dispatch(names.ADD_HEADER, {name: name, value: value});
-    },
-    changeHeader(name, value) {
-        // The name of an existing header and its new value.
-        reactor.dispatch(names.CHANGE_HEADER, {name: name, value: value});
-    },
-    removeHeader(name) {
-        // The name of an existing header.
-        reactor.dispatch(names.REMOVE_HEADER, {name: name});
-    },
-
-    // MEI Document Stuff
-    /** Replace the current <scoreDef> objects with these new ones from Lychee.
-     * @param {Object} scoreDef - The "sections" object from Lychee's "document" converter.
-     */
-    documentFromLychee(scoreDef) {
-        reactor.dispatch(names.SECTIONS_FROM_LYCHEE, scoreDef);
-    },
-
     // Verovio
     addNewVidaView(parentElement, sectID) {
         reactor.dispatch(names.ADD_NEW_VIDAVIEW, {parentElement, sectID});
@@ -166,7 +133,7 @@ if '_JULIUS_SESSION' not in globals():
             // early and allow executing arbitrary code.
             if (-1 === data.indexOf('"""')) {
                 // find the @xml:id
-                const xmlid = reactor.evaluate(getters.sectionCursor).last();
+                const xmlid = docGetters.cursor(store.getState()).last();
                 // make sure all the "\" chars are escaped
                 data = data.replace(/\\/g, '\\\\');
                 // put the Python command around it
@@ -242,58 +209,6 @@ if '_JULIUS_SESSION' not in globals():
         emitters._regOutboundFormat('UNREGISTER', dtype, who);
     },
 
-    /** Move the cursor marking the currently active <section>.
-     *
-     * @param {array of string} movement - Instructions to move the cursor to the <section> that
-     *    should become active.
-     *
-     * The cursor is moved similarly to how one moves through a filesystem in UNIX-like operating
-     * system shells. The argument to this function is understood as a "path" to the <section> that
-     * will become active. Thus, if an array element is:
-     *    - the string ".." it means to "go up a level";
-     *    - the string "/" it means refers to the document root; and
-     *    - a string with the @xml:id of a <section> it means to select that section, which must
-     *      be a subsection of the previously-selected section.
-     *
-     * Consider the following <section> hierarchy:
-     *
-     * <section xml:id="1"/>
-     *    <section xml:id="2"/>
-     *       <section xml:id="3"/>
-     *    <section xml:id="4"/>
-     *    <section xml:id="5"/>
-     * <section xml:id="6"/>
-     *    <section xml:id="7"/>
-     *    <section xml:id="8"/>
-     *
-     * If the cursor were ['1', '2', '3'] the only possible movements begin with '/' or '..' because
-     * section 3 does not have any subsections. If the cursor were an empty list (meaning the
-     * document root is selected) then '..' is not a valid movement because the root is not contained
-     * in another section. If the cursor were ['6'] indicating that section 6 is selected, the cursor
-     * could be moved to section 1 either with the path ['..', '1'] or ['/', '1'].
-     *
-     * Use ['/'] to indicate that no <section> should be selected.
-     */
-    moveSectionCursor(movement) {
-        // Basically we're going to make sure "movement" is an "absolute path" in the score.
-        // const sections = reactor.evaluate(getters.sections);
-        let cursor = reactor.evaluate(getters.sectionCursor);
-
-        for (const move of movement) {
-            if ('/' === move) {
-                cursor = Immutable.List();
-            }
-            else if ('..' === move) {
-                cursor = cursor.pop();
-            }
-            else {
-                cursor = cursor.push(move);
-            }
-        }
-
-        reactor.dispatch(names.MOVE_SECTION_CURSOR, cursor);
-    },
-
     /** Change the repository directory.
      *
      * @param {string} path - Pathname to use for the repository.
@@ -327,45 +242,6 @@ else:
     raise RuntimeError('you set repo dir before you made a _JULIUS_SESSION')
 `;
         fujian.sendWS(code);
-    },
-
-    /** Change the order of the active score by moving the <section> with a given @xml:id to have
-     * another index in the score_order list.
-     *
-     * Params:
-     * -------
-     * @param {string} sectionID - The @xml:id of the <section> to move.
-     * @param {int} moveToIndex - The requested new index of the <section> in the score_order.
-     *
-     * Note that the <section> may not end up with the requested index. For example, if the
-     * <section> is already in the score_order and "moveToIndex" is higher than its current index,
-     * the actual new index will probably be one less than "moveToIndex."
-     */
-    changeSectionOrder(sectionID, moveToIndex) {
-        const scoreOrder = reactor.evaluate(getters.sections).get('score_order');
-
-        // if the <section> is already in the requested place, don't do anything
-        if (scoreOrder.get(moveToIndex) === sectionID) {
-            log.debug(`section ${sectionID} is already at index ${moveToIndex}`);
-            return;
-        }
-
-        // if the <section> is being moved to the end, but is already at the end, don't do anything
-        if (moveToIndex >= scoreOrder.size && scoreOrder.last() === sectionID) {
-            log.debug(`section ${sectionID} is already at the end`);
-            return;
-        }
-
-        // otherwise ask Lychee to move the <section>
-        log.debug(`moving ${sectionID} to index ${moveToIndex}`);
-        // TODO: double-check there isn't a ' in "sectionID"
-        if (sectionID.indexOf("'") >= 0) {
-            log.error('Cannot move a section with an xmlid that contains the \' character.');
-        }
-        else {
-            const code = `import lychee\nlychee.signals.document.MOVE_SECTION_TO.emit(xmlid='${sectionID}', position=${moveToIndex})`;
-            fujian.sendWS(code);
-        }
     },
 
     /** Give data to the "lilypond.Sections" Store.

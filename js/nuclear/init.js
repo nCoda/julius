@@ -25,16 +25,12 @@
 // NOTE: You must import this module as early as possible during application startup!
 // NOTE: You must also import this module for any tests that use NuclearJS.
 
-import document from './stores/document';
 import lilypond from './stores/lilypond';
 import reactor from './reactor';
 import verovio from './stores/verovio';
 
 
 reactor.registerStores({
-    headers: document.Headers,
-    sections: document.Sections,
-    sectionCursor: document.Cursor,
     meiForVerovio: verovio.MeiForVerovio,
     lilypond: lilypond.Sections,
 });

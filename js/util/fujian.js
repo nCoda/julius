@@ -38,6 +38,7 @@ import {log} from './log';
 import {signals} from '../nuclear/signals';
 
 import { store } from '../stores';
+import { actions as docsActions } from '../stores/document';
 import { actions as metaActions, getters as metaGetters } from '../stores/meta';
 import { actions as uiActions } from '../stores/ui';
 
@@ -97,8 +98,7 @@ const FUJIAN_SIGNALS = {
                 }
                 throw err;
             }
-            signals.emitters.headersFromLychee(document.headers);
-            signals.emitters.documentFromLychee(document.sections);
+            docsActions.updateSections(document);
             break;
         case 'lilypond':
             signals.emitters.lilypondFromLychee(response.placement, response.document);
