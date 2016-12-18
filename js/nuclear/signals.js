@@ -53,8 +53,6 @@ const names = {
     FUJIAN_START_WS: 'FUJIAN_START_WS',
     FUJIAN_RESTAT_WS: 'FUJIAN_RESTAT_WS',
     FUJIAN_CLOSE_WS: 'FUJIAN_CLOSE_WS',
-    // Logging
-    SET_LOG_LEVEL: 'SET_LOG_LEVEL',
     // LilyPond
     LILYPOND_FROM_LYCHEE: 'LILYPOND_FROM_LYCHEE',
 };
@@ -193,11 +191,6 @@ if '_JULIUS_SESSION' not in globals():
         // For code being submitted by the human user.
         //
         fujian.sendAjax(code);
-    },
-
-    // Logging
-    setLogLevel(newLevel) {
-        reactor.dispatch(names.SET_LOG_LEVEL, newLevel);
     },
 
     // Registering outbound formats with Lychee

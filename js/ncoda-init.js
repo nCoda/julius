@@ -47,7 +47,6 @@ import { actions as metaActions, LOG_LEVELS } from './stores/meta';
 metaActions.setLogLevel(LOG_LEVELS.DEBUG);
 
 import signals from './nuclear/signals';
-signals.emitters.setLogLevel(log.LEVELS.DEBUG);
 signals.emitters.fujianStartWS();
 
 // Initialize a Lychee session object.
