@@ -24,6 +24,7 @@
 // ------------------------------------------------------------------------------------------------
 
 import React from 'react';
+import { connect } from 'react-redux';
 
 import {CodeView} from './code_view';
 import {ScoreView} from './score_view';
@@ -35,14 +36,25 @@ import getters from '../nuclear/getters';
 
 import store from '../stores';
 import { getters as docGetters } from '../stores/document';
+import { getters as lilyGetters } from '../stores/lilypond';
 
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';  // TODO: import properly
 
 
+/** CodeScoreView
+ *
+ * Props
+ * -----
+ * @param {string} lilyCurrent - "latest" LilyPond version of the active <section> (from Redux)
+ */
 const CodeScoreView = React.createClass({
+    propTypes: {
+        lilyCurrent: React.PropTypes.string,
+    },
+
     mixins: [reactor.ReactMixin],
     getDefaultProps() {
-        return {meiForVerovio: ''};
+        return {lilyCurrent: '', meiForVerovio: ''};
     },
     getDataBindings() {
         return {
@@ -98,6 +110,7 @@ const CodeScoreView = React.createClass({
                     >
                         <div className="ncoda-text-editor pane-container">
                             <CodeView
+                                initialValue={this.props.lilyCurrent}
                                 submitToPyPy={signals.emitters.submitToPyPy}
                                 submitToLychee={signals.emitters.submitToLychee}
                             />
@@ -128,4 +141,9 @@ const CodeScoreView = React.createClass({
 });
 
 
-export default CodeScoreView;
+const CodeScoreViewWrapper = connect((state) => {
+    return {
+        lilyCurrent: lilyGetters.current(state),
+    };
+})(CodeScoreView);
+export default CodeScoreViewWrapper;

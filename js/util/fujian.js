@@ -38,7 +38,7 @@ import {log} from './log';
 import {signals} from '../nuclear/signals';
 
 import { store } from '../stores';
-import { actions as docsActions } from '../stores/document';
+import { actions as docActions } from '../stores/document';
 import { actions as metaActions, getters as metaGetters } from '../stores/meta';
 import { actions as uiActions } from '../stores/ui';
 
@@ -98,10 +98,10 @@ const FUJIAN_SIGNALS = {
                 }
                 throw err;
             }
-            docsActions.updateSections(document);
+            docActions.updateSections(document);
             break;
         case 'lilypond':
-            signals.emitters.lilypondFromLychee(response.placement, response.document);
+            docActions.updateSectionData('lilypond', response.placement, response.document);
             break;
         case 'verovio':
             signals.emitters.renderToVerovio(response.document);

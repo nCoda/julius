@@ -26,12 +26,14 @@ import { applyMiddleware, combineReducers, createStore } from 'redux';
 import createLogger from 'redux-logger';
 
 import { reducer as documentStore } from './document';
+import lilypond from './lilypond';
 import { getters as metaGetters, LOG_LEVELS, reducer as meta } from './meta';
 import ui from './ui';
 
 
 const REDUCERS_OBJECT = {
     document: documentStore,
+    lilypond,
     meta,
     ui,
 };

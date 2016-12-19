@@ -27,7 +27,6 @@ import {Immutable} from 'nuclear-js';
 
 export const getters = {
     meiForVerovio: ['meiForVerovio'],
-    lilypond: ['lilypond'],
 };
 
 export default getters;

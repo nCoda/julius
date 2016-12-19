@@ -48,8 +48,6 @@ const names = {
     FUJIAN_START_WS: 'FUJIAN_START_WS',
     FUJIAN_RESTAT_WS: 'FUJIAN_RESTAT_WS',
     FUJIAN_CLOSE_WS: 'FUJIAN_CLOSE_WS',
-    // LilyPond
-    LILYPOND_FROM_LYCHEE: 'LILYPOND_FROM_LYCHEE',
 };
 
 
@@ -242,15 +240,6 @@ else:
     raise RuntimeError('you set repo dir before you made a _JULIUS_SESSION')
 `;
         fujian.sendWS(code);
-    },
-
-    /** Give data to the "lilypond.Sections" Store.
-     *
-     * @param {str} placement - From the CONVERSION_FINISHED signal.
-     * @param {str} document - From the CONVERSION_FINISHED signal.
-     */
-    lilypondFromLychee(placement, document) {
-        reactor.dispatch(names.LILYPOND_FROM_LYCHEE, {placement, document});
     },
 };
 
