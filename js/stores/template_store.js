@@ -29,7 +29,7 @@
 // "one store," each of which consists of several parts described below.
 //
 // Our recommended strategy for understanding how Redux works:
-// 1. Understand what data for which each store is responsible.
+// 1. Understand which store is responsible for what data.
 // 2. Understand what the parts of the store do (actions, action types, etc.).
 // 3. Assume that Redux takes care of connecting everything. I promise, it does!
 //
@@ -65,7 +65,7 @@
  * ----------
  * @param {number} nr_uncooked_weiners - The number of uncooked weiners available.
  * @param {number} nr_cooked_weiners - The number of cooked weiners available.
- * @param {bool} requested_more - Whether we sent an API request for more weinders.
+ * @param {bool} requested_more - Whether we sent an API request for more weiners.
  * @param {ImmutableMap} condiments - See below.
  * @param {string} error - If present, this is an error message to show the user.
  *
