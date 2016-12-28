@@ -8,6 +8,7 @@
 //
 // Copyright (C) 2015 Wei Gao
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Andrew Horwitz
+// Copyright (C) 2017 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -27,15 +28,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import {CodeView} from './code_view';
-import {ScoreView} from './score_view';
+import ScoreView from './score_view';
 import TerminalView from './terminal_view';
 
-import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
-import getters from '../nuclear/getters';
 
 import store from '../stores';
-import { getters as docGetters } from '../stores/document';
 import { getters as lilyGetters } from '../stores/lilypond';
 
 import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';  // TODO: import properly
@@ -52,52 +50,17 @@ const CodeScoreView = React.createClass({
         lilyCurrent: React.PropTypes.string,
     },
 
-    mixins: [reactor.ReactMixin],
-    getDefaultProps() {
-        return {lilyCurrent: '', meiForVerovio: ''};
-    },
-    getDataBindings() {
-        return {
-            meiForVerovio: getters.meiForVerovio,
-        };
-    },
     componentWillMount() {
         signals.emitters.registerOutboundFormat('document', 'codescoreview', false);
         signals.emitters.registerOutboundFormat('lilypond', 'codescoreview', false);
     },
+
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('document', 'codescoreview');
         signals.emitters.unregisterOutboundFormat('lilypond', 'codescoreview');
     },
+
     render() {
-        // TODO: remove "sectId" when no longer needed by <ScoreView>
-        const sectId = docGetters.cursor(store.getState()).first();
-
-        let scoreView;
-        if (sectId) {
-            scoreView = (
-                <ScoreView
-                    sectId={sectId}
-                    lyGetSectionById={signals.emitters.lyGetSectionById}
-                    meiForVerovio={this.state.meiForVerovio}
-                    registerOutboundFormat={signals.emitters.registerOutboundFormat}
-                    unregisterOutboundFormat={signals.emitters.unregisterOutboundFormat}
-                    addNewVidaView={signals.emitters.addNewVidaView}
-                    destroyVidaView={signals.emitters.destroyVidaView}
-                />
-            );
-        }
-        else {
-            scoreView = (
-                <div>
-                    <p>{`A score will show up when the section cursor is set.`}</p>
-                    <p>{`If the score doesn't show up in a moment, try running this code:`}</p>
-                    <pre>{`lychee.signals.ACTION_START.emit()`}</pre>
-                    <p>{`That only works if there are sections in the score to begin with.`}</p>
-                </div>
-            );
-        }
-
         return (
             <div id="nc-csv-frame">
                 <SplitPane split="horizontal" minSize="20" defaultSize="70%">
@@ -116,7 +79,7 @@ const CodeScoreView = React.createClass({
                             />
                         </div>
                         <div className="ncoda-verovio pane-container">
-                            {scoreView}
+                            <ScoreView/>
                         </div>
                     </SplitPane>
                     <SplitPane

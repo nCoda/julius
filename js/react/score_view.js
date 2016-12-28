@@ -7,6 +7,7 @@
 // Purpose:                React components for ScoreView module.
 //
 // Copyright (C) 2016 Andrew Horwitz, Sienna M. Wood
+// Copyright (C) 2017 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -22,65 +23,109 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
+import Immutable from 'immutable';
 import React from 'react';
+import { connect } from 'react-redux';
 
-import Scroll from './scroll';
+import { emitters as signals } from '../nuclear/signals';
+import { getters as docGetters } from '../stores/document';
+import { getters as vrvGetters } from '../stores/verovio';
+import { VidaView } from '../lib/vida';
 
-/** ScoreView: a React container for Vida6.
+
+const ICON_CLASSES = {
+    nextPage: 'am-icon-arrow-right',
+    prevPage: 'am-icon-arrow-left',
+    zoomIn: 'am-icon-plus-circle',
+    zoomOut: 'am-icon-minus-circle',
+};
+
+
+/** ScoreView: React container for Vida6.
  *
- * Props:
- * ------
- * @param {str} sectId: The @xml:id attribute of the <section> to display.
+ * Props
+ * -----
+ * @param {VidaController} controller - The VidaController for our VidaView.
+ * @param {ImmutableList} cursor - The document cursor.
+ * @param {string} section - The Verovio MEI <section> to render.
  *
- * NOTE: this component does not update in the usual React way because it is a React wrapper around
- *       Vida6. The data rendered by Vida6 is managed in js/nuclear/stores/verovio.js
+ * State
+ * -----
+ * @param {VidaView} view - The VidaView instance.
  */
-
 export const ScoreView = React.createClass({
     propTypes: {
-        sectId: React.PropTypes.string.isRequired,
-        meiForVerovio: React.PropTypes.object.isRequired,
-        lyGetSectionById: React.PropTypes.func.isRequired,
-        registerOutboundFormat: React.PropTypes.func.isRequired,
-        unregisterOutboundFormat: React.PropTypes.func.isRequired,
-        addNewVidaView: React.PropTypes.func.isRequired,
-        destroyVidaView: React.PropTypes.func.isRequired
+        controller: React.PropTypes.object.isRequired,
+        cursor: React.PropTypes.instanceOf(Immutable.List),
+        section: React.PropTypes.string.isRequired,
     },
-    getDataBindings() {
-        return {
-            sectId: this.props.sectId,
-            meiForVerovio: this.props.meiForVerovio
-        };
+
+    getDefaultProps() {
+        return {section: ''};
     },
+
+    getInitialState() {
+        return {view: null};
+    },
+
     componentWillMount() {
-        this.props.registerOutboundFormat('verovio', 'Verovio component');
-        this.props.lyGetSectionById(this.props.sectId);
+        signals.registerOutboundFormat('verovio', 'ScoreView');
+        if (!this.props.section) {
+            signals.lyGetSectionById(this.props.cursor.last());
+        }
     },
-    componentDidMount() { // Create the vidaView
-        this.props.addNewVidaView(this.refs.verovioFrame, this.props.sectId);
+
+    componentDidMount() {
+        if (this.props.controller && this.refs.verovioFrame) {
+            const newView = new VidaView({
+                parentElement: this.refs.verovioFrame,
+                controller: this.props.controller,
+                iconClasses: ICON_CLASSES,
+            });
+
+            // set the initial document, if we have one
+            if (this.props.section) {
+                newView.refreshVerovio(this.props.section);
+            }
+
+            this.setState({view: newView});
+        }
+        else {
+            console.error('ScoreView: missing VidaController or the <div>');
+        }
     },
+
     componentWillReceiveProps(nextProps) {
-        if (this.props.sectId !== nextProps.sectId) {
-            this.props.destroyVidaView(this.props.sectId);
+        if (this.props.section !== nextProps.section && this.state.view) {
+            this.state.view.refreshVerovio(nextProps.section);
         }
     },
-    shouldComponentUpdate(nextProps, nextState) {
-        // if the sectIds don't line up, we want to re-render
-        if (this.props.sectId !== nextProps.sectId) {
-            return true;
-        }
+
+    shouldComponentUpdate() {
+        // NOTE: the answer is always "no" because Vida manages the contents
         return false;
     },
-    componentDidUpdate() { // Create the vidaView
-        this.props.addNewVidaView(this.refs.verovioFrame, this.props.sectId);
-    },
+
     componentWillUnmount() {
-        this.props.unregisterOutboundFormat('verovio', 'Verovio component');
-        this.props.destroyVidaView(this.props.sectId);
+        signals.unregisterOutboundFormat('verovio', 'ScoreView');
+        if (this.state.view) {
+            this.state.view.destroy();
+            this.setState({view: null});
+        }
     },
+
     render() {
-        return (
-            <div className="ncoda-verovio" ref="verovioFrame"></div>
-        );
+        return <div className="ncoda-verovio" ref="verovioFrame"/> ;
     },
 });
+
+
+const ScoreViewWrapped = connect((state) => {
+    return {
+        controller: vrvGetters.vidaController(state),
+        cursor: docGetters.cursor(state),
+        section: vrvGetters.current(state),
+    };
+})(ScoreView);
+
+export default ScoreViewWrapped;
