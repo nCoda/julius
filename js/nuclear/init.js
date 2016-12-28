@@ -26,12 +26,6 @@
 // NOTE: You must also import this module for any tests that use NuclearJS.
 
 import reactor from './reactor';
-import verovio from './stores/verovio';
-
-
-reactor.registerStores({
-    meiForVerovio: verovio.MeiForVerovio,
-});
 
 
 const init = 'init';

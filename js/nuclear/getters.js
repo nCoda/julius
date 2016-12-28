@@ -22,11 +22,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import {Immutable} from 'nuclear-js';
-
 
 export const getters = {
-    meiForVerovio: ['meiForVerovio'],
 };
 
 export default getters;

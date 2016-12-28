@@ -6,7 +6,7 @@
 // Filename:               js/nuclear/signals.js
 // Purpose:                NuclearJS Actions and ActionTypes.
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2016, 2017 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -40,10 +40,6 @@ import { getters as docGetters } from '../stores/document';
 
 // "names" is NuclearJS "actionTypes."
 const names = {
-    // Verovio
-    ADD_NEW_VIDAVIEW: 'ADD_NEW_VIDAVIEW',
-    DESTROY_VIDAVIEW: 'DESTROY_VIDAVIEW',
-    RENDER_TO_VEROVIO: 'RENDER_TO_VEROVIO',
     // Fujian PyPy Server (currently doesn't affect NuclearJS)
     FUJIAN_START_WS: 'FUJIAN_START_WS',
     FUJIAN_RESTAT_WS: 'FUJIAN_RESTAT_WS',
@@ -53,17 +49,6 @@ const names = {
 
 // "emitters" is NuclearJS "actions."
 const emitters = {
-    // Verovio
-    addNewVidaView(parentElement, sectID) {
-        reactor.dispatch(names.ADD_NEW_VIDAVIEW, {parentElement, sectID});
-    },
-    destroyVidaView(sectID) {
-        reactor.dispatch(names.DESTROY_VIDAVIEW, {sectID});
-    },
-    renderToVerovio(mei) {
-        reactor.dispatch(names.RENDER_TO_VEROVIO, mei);
-    },
-
     // Fujian PyPy Server (currently doesn't affect NuclearJS)
     fujianStartWS() {
         fujian.startWS();
