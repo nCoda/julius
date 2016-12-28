@@ -96,23 +96,7 @@ export const actions = {
  * 2.) Replace newline characters with <br>.
  */
 function tryToMakeSafe(thisString) {
-    let post = thisString;
-
-    // TODO: how to make this replace all occurrences?
-    // TODO: how to avoid other possible attacks?
-    while (post.includes('<')) {
-        post = post.replace('<', '&lt;');
-    }
-    while (post.includes('>')) {
-        post = post.replace('>', '&gt;');
-    }
-
-    // convert newlines to <br/>
-    while (post.includes('\n')) {
-        post = post.replace('\n', '<br>');
-    }
-
-    return post;
+    return thisString.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
 }
 
 
