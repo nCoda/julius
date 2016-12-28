@@ -106,10 +106,13 @@ if '_JULIUS_SESSION' not in globals():
                 `lychee.signals.ACTION_START.emit(views_info="${sectId}", revision="${revision}")\n`
             );
         }
-        else {
+        else if (sectId) {
             fujian.sendWS(
                 `lychee.signals.ACTION_START.emit(views_info="${sectId}")\n`
             );
+        }
+        else {
+            log.error('lyGetSectionById() is missing required "sectId" argument');
         }
     },
     submitToLychee(data, format) {
