@@ -6,7 +6,7 @@
 // Filename:               js/stores/template_store.js
 // Purpose:                A template to use when writing new Redux stores for Julius.
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2017 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as

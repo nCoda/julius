@@ -6,7 +6,7 @@
 // Filename:               js/stores/meta.js
 // Purpose:                A meta store for assorted things that don't fit in other stores.
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2017 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
