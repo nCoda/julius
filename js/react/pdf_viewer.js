@@ -36,7 +36,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PDFJS from 'pdfjs-dist/build/pdf.combined';
+import PDFJS from 'pdfjs-dist';
 import {ButtonGroup, Button} from 'amazeui-react';
 
 
@@ -52,16 +52,16 @@ export default class PDFViewer extends React.Component {
 
     downloadPDF() {
         let uri = '';
-        if(this.props.file.startsWith('http')) { // if an absolute URL, no changes needed
+        if (this.props.file.startsWith('http')) { // if an absolute URL, no changes needed
             uri = this.props.file;
         } else { // prefix with base uri if needed
             uri = document.baseURI;
             uri = uri.slice(0, uri.lastIndexOf('.')); // slice off '.html#/...'
             uri = uri.slice(0, uri.lastIndexOf('/') + 1); // slice off anything after final /
-            uri = uri + this.props.file
+            uri = `${uri}${this.props.file}`;
         }
 
-        let tempLink = document.createElement('a');
+        const tempLink = document.createElement('a');
         tempLink.href = uri;
         tempLink.setAttribute('download', 'ncoda-pdf.pdf');
         tempLink.click();
@@ -69,7 +69,7 @@ export default class PDFViewer extends React.Component {
 
     refresh() {
         this.forceUpdate();
-        console.log("PDF display reloaded.")
+        // console.log("PDF display reloaded.");
     }
 
     loadPDF() {
@@ -78,28 +78,25 @@ export default class PDFViewer extends React.Component {
 
         PDFJS.getDocument(this.props.file)
             .then((pdf) => {
-
                 node.innerHTML = "";
                 let id = 1;
 
-                for (let i = 1; i <= pdf.numPages; i++) {
-
+                for (let i = 1; i <= pdf.numPages; i += 1) {
                     pdf.getPage(i).then((page) => {
-
-                        let canvas = document.createElement('canvas');
-                        canvas.id = "page-" + id;
-                        id++;
+                        const canvas = document.createElement('canvas');
+                        canvas.id = `page-${id}`;
+                        id += 1;
 
                         // scale = 1, actual display dimensions controlled by styles
-                        let viewport = page.getViewport(1);
+                        const viewport = page.getViewport(1);
                         canvas.width = viewport.width;
                         canvas.height = viewport.height;
 
                         node.appendChild(canvas);
 
-                        let renderContext = {
+                        const renderContext = {
                             canvasContext: canvas.getContext('2d'),
-                            viewport: viewport
+                            viewport: viewport,
                         };
                         page.render(renderContext);
                     });
@@ -113,23 +110,25 @@ export default class PDFViewer extends React.Component {
 
     render() {
         let classes = this.props.pdfContainerClass;
-        if(classes != "nc-pdf"){
-            classes = classes + " nc-pdf";
+        if (classes !== "nc-pdf") {
+            classes = `${classes} nc-pdf`;
         }
         return (
             <div className="nc-pdfviewer">
                 <ButtonGroup className="nc-pdfviewer-btns">
                     <Button amSize="sm"
-                            title="Download PDF"
-                            className="nc-pdf-download-btn"
-                            onClick={() => this.downloadPDF()}>
-                        <i className="am-icon-download"></i>
+                        title="Download PDF"
+                        className="nc-pdf-download-btn"
+                        onClick={() => this.downloadPDF()}
+                    >
+                        <i className="am-icon-download" />
                     </Button>
                     <Button amSize="sm"
-                            title="Refresh PDF"
-                            className="nc-pdf-refresh-btn"
-                            onClick={() => this.refresh()}>
-                        <i className="am-icon-refresh"></i>
+                        title="Refresh PDF"
+                        className="nc-pdf-refresh-btn"
+                        onClick={() => this.refresh()}
+                    >
+                        <i className="am-icon-refresh" />
                     </Button>
                 </ButtonGroup>
                 <div className={classes}></div>
@@ -137,12 +136,16 @@ export default class PDFViewer extends React.Component {
         );
     }
 
+    componentWillMount() {
+        window.PDFJS.workerSrc = this.props.workerSrc;
+    }
+
     componentDidMount() {
         this.loadPDF();
     }
 
     shouldComponentUpdate(nextProps) {
-        return this.props.file != nextProps.file
+        return this.props.file !== nextProps.file;
     }
 
     componentDidUpdate() {
@@ -152,9 +155,11 @@ export default class PDFViewer extends React.Component {
 
 PDFViewer.propTypes = {
     file: React.PropTypes.string.isRequired,
-    pdfContainerClass: React.PropTypes.string
+    pdfContainerClass: React.PropTypes.string,
+    workerSrc: React.PropTypes.string.isRequired,
 };
 
 PDFViewer.defaultProps = {
-    pdfContainerClass: "nc-pdf"
+    pdfContainerClass: "nc-pdf",
+    workerSrc: "./js/lib/pdf.worker.js",
 };
