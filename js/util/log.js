@@ -45,7 +45,7 @@ export const log = {
     error(msg) {
         if (console.error) {
             console.error(msg);
-            uiActions.shoModal('error', 'Log Message', msg);
+            uiActions.showModal('error', 'Log Message', msg);
         }
     },
 
