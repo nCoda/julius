@@ -30,7 +30,6 @@ import { hashHistory, Router, IndexRoute, Route } from 'react-router';
 
 // Create the Redux structure (as early as possible)
 import { store } from './stores';
-import {init} from './nuclear/init';
 
 // log!
 import log from './util/log';

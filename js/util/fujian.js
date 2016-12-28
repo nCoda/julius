@@ -32,7 +32,7 @@
 // - Fujian.sendWS()
 // - Fujian.sendAjax()
 
-import {Immutable} from 'nuclear-js';
+import Immutable from 'immutable';
 
 import {log} from './log';
 import {signals} from '../nuclear/signals';

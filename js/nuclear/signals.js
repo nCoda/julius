@@ -27,24 +27,13 @@
 //       the names of signals, and "actions" are effectively the signals' "emit" functions.
 //
 
-import {Immutable} from 'nuclear-js';
+import Immutable from 'immutable';
 
-import {getters} from './getters';
 import {log} from '../util/log';
-import reactor from './reactor';
 import {fujian} from '../util/fujian';
 
 import store from '../stores';
 import { getters as docGetters } from '../stores/document';
-
-
-// "names" is NuclearJS "actionTypes."
-const names = {
-    // Fujian PyPy Server (currently doesn't affect NuclearJS)
-    FUJIAN_START_WS: 'FUJIAN_START_WS',
-    FUJIAN_RESTAT_WS: 'FUJIAN_RESTAT_WS',
-    FUJIAN_CLOSE_WS: 'FUJIAN_CLOSE_WS',
-};
 
 
 // "emitters" is NuclearJS "actions."
@@ -232,6 +221,6 @@ else:
 };
 
 
-const signals = {names: names, emitters: emitters};
-export {signals, names, emitters};
+const signals = {emitters};
+export {signals, emitters};
 export default signals;
