@@ -86,28 +86,28 @@ const FUJIAN_SIGNALS = {
     'outbound.CONVERSION_FINISHED': (response) => {
         // everything else
         switch (response.dtype) {
-        case 'document':
-            let document;
-            try {
-                document = JSON.parse(response.document);
-            }
-            catch (err) {
-                if ('SyntaxError' === err.name) {
-                    log.error(ERROR_MESSAGES.fjnBadJson);
-                    return;
+            case 'lilypond':
+            case 'verovio':
+                docActions.updateSectionData(response.dtype, response.placement, response.document);
+                break;
+
+            case 'document':
+                let document;
+                try {
+                    document = JSON.parse(response.document);
                 }
-                throw err;
-            }
-            docActions.updateSections(document);
-            break;
-        case 'lilypond':
-            docActions.updateSectionData('lilypond', response.placement, response.document);
-            break;
-        case 'verovio':
-            signals.emitters.renderToVerovio(response.document);
-            break;
-        default:
-            return;
+                catch (err) {
+                    if ('SyntaxError' === err.name) {
+                        log.error(ERROR_MESSAGES.fjnBadJson);
+                        return;
+                    }
+                    throw err;
+                }
+                docActions.updateSections(document);
+                break;
+
+            default:
+                return;
         }
     },
 
