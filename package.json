@@ -67,7 +67,7 @@
             "<rootDir>/js/nuclear",
             "<rootDir>/js/nuclear/stores"
         ],
-        "testRegex": "/tests/(.*)\\.js$"
+        "testRegex": "js/(.*)/tests/(.*)\\.js$"
     },
     "babel": {
         "presets": [
