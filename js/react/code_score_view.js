@@ -36,7 +36,7 @@ import signals from '../nuclear/signals';
 import store from '../stores';
 import { getters as lilyGetters } from '../stores/lilypond';
 
-import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';  // TODO: import properly
+import SplitPane from 'react-split-pane';
 
 
 /** CodeScoreView

@@ -32,7 +32,7 @@ import { store } from './index';
  * Root Store
  * ----------
  * @param {ImmutableList} cursor - The "document cursor," which points to an LMEI section that
- *     should be considered the position of active editing. The List contains a series of straings
+ *     should be considered the position of active editing. The List contains a series of strings
  *     that are the @xml:id of <section> elements, starting with a top-level <section> and
  *     descending through the hierarchy.
  *     NOTE: for the MVP there is only one section, and the "cursor" is created on demand, so this field is not used
@@ -82,15 +82,17 @@ export const actions = {
      * This function dispatches both the WILL_UPDATE_SECTIONS action type (to update the "document"
      * store) and UPDATED_SECTIONS (to notify other stores to update).
      *
-     * @param {object} sections - Data from Lychee's "document" outbound converter.
+     * @param {object} doc - Data from Lychee's "document" outbound converter. This is the whole
+     *     "document" argument emitted by the CONVERSION_FINISHED signal; for more information:
+     *     https://lychee.ncodamusic.org/converters-document_out.html
      *
      * This function only dispatches the UPDATED_SECTIONS action type if the sections have changed,
      * but WILL_UPDATE_SECTIONS is always dispatched.
      */
-    updateSections(sections) {
-        if (sections && typeof sections === 'object' && sections.sections && typeof sections.sections === 'object') {
+    updateSections(doc) {
+        if (doc && typeof doc === 'object' && doc.sections && typeof doc.sections === 'object') {
             const current = store.getState().document.get('sections');
-            store.dispatch({type: types.WILL_UPDATE_SECTIONS, payload: sections.sections});
+            store.dispatch({type: types.WILL_UPDATE_SECTIONS, payload: doc.sections});
             if (!current.equals(store.getState().document.get('sections'))) {
                 store.dispatch({type: types.UPDATED_SECTIONS});
             }
