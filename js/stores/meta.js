@@ -157,6 +157,9 @@ export function reducer(state = makeInitialState(), action) {
                 ['stdio', 'stderr'],
                 state.getIn(['stdio', 'stderr']) + action.payload,
             );
+
+        case 'RESET':
+            return makeInitialState();
     }
 
     return state;

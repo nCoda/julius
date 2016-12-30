@@ -142,6 +142,9 @@ export default function reducer(state = makeInitialState(), action) {
 
         case types.HIDE_MODAL:
             return state.set('modal', makeEmptyModal());
+
+        case 'RESET':
+            return makeInitialState();
     }
 
     return state;

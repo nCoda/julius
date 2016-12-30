@@ -364,6 +364,11 @@ export default function reducer(state = makeInitialState(), action) {
                 state = state.set('nr_uncooked_weiners', state.get('nr_uncooked_weiners') + 8);
             }
             break;
+
+        case 'RESET':
+            // NOTE: that *every* store must implement the "RESET" action type, and must return the
+            //       initial condition of the store.
+            return makeInitialState();
     }
 
     // this one is important!

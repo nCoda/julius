@@ -156,6 +156,9 @@ export default function reducer(state = makeInitialState(), action) {
                 return state.setIn(['data', cursor.last(), 'working']);
             }
             break;
+
+        case 'RESET':
+            return makeInitialState();
     }
 
     return state;

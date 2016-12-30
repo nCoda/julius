@@ -271,6 +271,9 @@ export function reducer(state = makeInitialState(), action) {
             if (action.error !== true) {
                 return state.set('sections', verifiers.sections(action.payload));
             }
+
+        case 'RESET':
+            return makeInitialState();
     }
 
     return state;
