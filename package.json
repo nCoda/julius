@@ -25,7 +25,7 @@
         "history": "3.0.x",
         "immutable": "3.8.x",
         "jasmine-reporters": "2.2.x",
-        "jest-cli": "15.1.x",
+        "jest-cli": "18.1.x",
         "less": "2.7.1",
         "less-plugin-clean-css": "1.5.1",
         "moment": "2.14.x",
@@ -49,8 +49,7 @@
         "test": "jest"
     },
     "jest": {
-        "automock": true,
-        "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+        "transform": {".*": "<rootDir>/node_modules/babel-jest"},
         "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine-env.js",
         "moduleFileExtensions": [
             "js",
