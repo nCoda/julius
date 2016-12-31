@@ -22,10 +22,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-// Note: This module is called "signals" so that nCoda has a consistent relationship between its
-//       Python and JavaScript worlds. In JavaScript, our NuclearJS "actionTypes" are effectively
-//       the names of signals, and "actions" are effectively the signals' "emit" functions.
-//
+/*
+NOTE: This file is deprecated so please do not add anything to it.
+
+This file is the last remaining program code from when Julius used NuclearJS instead of Redux.
+These "signal" functions will be gradually migrated to Redux "action" functions, but they remain
+here for two reasons:
+
+   1.) These functions are designed for, but do not use, NuclearJS itself. Therefore these functions
+       are self-contained and do not force us to retain any other legacy baggage.
+   2.) These functions are part of the interaction between Julius and Fujian, which we intend to
+       change significantly in the near future. Keeping these functions separate from the rest of
+       our Redux "action" functions helps to signify the impermanent nature of this module.
+*/
 
 import Immutable from 'immutable';
 
