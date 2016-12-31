@@ -7,6 +7,7 @@
 // Purpose:                React components for nCoda in general.
 //
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Wei Gao
+// Copyright (C) 2017 Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -23,14 +24,15 @@
 // ------------------------------------------------------------------------------------------------
 
 
-import {Button, ButtonGroup, CollapsibleNav, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
+import {Button, ButtonGroup, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
 import React from 'react';
 import {Link} from 'react-router';
 
 import {log} from '../util/log';
 import signals from '../nuclear/signals';
 import {DialogueBox, OffCanvas} from './generics';
-import {NCIcon, NCLogo} from './svg_icons';
+import {Icon as NCIcon} from './svg_icons';
+import {Logo} from './svg_icons';
 
 
 const MainScreen = React.createClass({
@@ -65,13 +67,15 @@ const MainScreen = React.createClass({
         return (
             <div id="ncoda-loading">
                 <div className="am-container am-text-center">
-                    <p>{`Click on the coda symbol above to access the menu and navigate the program. (These buttons are here because I'm not sure where they ought to be instead).`}</p>
+                    <p>{"Click on the coda symbol above to access the menu and navigate the program."}</p>
                     <div>
-                        <p>{`Use this button to open a repository directory.`}</p>
+                        <p>{"Use one of these buttons to open a repository."}</p>
                         <ButtonGroup>
-                            <Button onClick={this.handleOpen}>Open</Button>
-                            <Button onClick={this.handleDefaultOpen}>(Try to) Load Default Repository</Button>
-                            <Button onClick={this.handleTempOpen}>Load an empty, temporary repository.</Button>
+                            <Button onClick={this.handleOpen}>{"Open..."}</Button>
+                            <Button onClick={this.handleDefaultOpen}>{"Load Default Repository"}</Button>
+                            <Button onClick={this.handleTempOpen}>
+                                {"Load Empty (Temporary) Repository"}
+                            </Button>
                         </ButtonGroup>
                     </div>
                 </div>
@@ -98,7 +102,7 @@ const MainScreenQuote = React.createClass({
                         <i className="fa fa-quote-left"/>
                         <p>{this.state.quote}</p>
                         <i className="fa fa-quote-right"/>
-                        <small>{`\u2014 ${this.state.attribution}`}</small>
+                        <small>{"\u2014 ${this.state.attribution}"}</small>
                     </blockquote>
                 </div>
             </div>
@@ -112,13 +116,16 @@ const Colophon = React.createClass({
         return (
             <div id="ncoda-colophon">
                 <div className="am-container am-text-center">
-                    <NCLogo className="am-img-responsive am-center" />
+                    <Logo className="am-img-responsive am-center" />
                     <div>
                         <h2>{`About nCoda`}</h2>
                         <p><i>{`nCoda`}</i>{` is the software you're using now, and the community
                             of people who make that software. If you're interested in joining our
                             contributor community, please visit `}
-                            <a href="https://spivak.ncodamusic.org/t/getting-started-with-ncoda/154" target="_blank">
+                            <a
+                                href="https://spivak.ncodamusic.org/t/getting-started-with-ncoda/154"
+                                target="_blank"
+                            >
                             {`this thread`}</a>
                             {` on our discussion board for more information.`}
                         </p>
@@ -144,7 +151,11 @@ const Colophon = React.createClass({
                         <p>
                             {`We're still working on our documentation for end users. In the meantime,
                             you may wish to consult the user documentation for `}
-                            <a href="http://lilypond.org/doc/v2.18/Documentation/notation/index" target="_blank" rel="noopener">
+                            <a
+                                href="http://lilypond.org/doc/v2.18/Documentation/notation/index"
+                                target="_blank"
+                                rel="noopener"
+                            >
                             {`LilyPond`}</a>{` and `}
                             <a href="http://abjad.mbrsi.org/" target="_blank" rel="noopener">
                             {`Abjad`}</a>{`.`}
@@ -159,22 +170,26 @@ const Colophon = React.createClass({
 
 const GlobalMenu = React.createClass({
     propTypes: {
-        showMenu: React.PropTypes.bool.isRequired,
         handleHide: React.PropTypes.func.isRequired,
+        showMenu: React.PropTypes.bool.isRequired,
     },
     render() {
         return (
             <nav data-am-widget="menu" className="am-menu am-menu-offcanvas1" data-am-menu-offcanvas>
-                <OffCanvas padding={false} showContents={this.props.showMenu} handleHide={this.props.handleHide}>
+                <OffCanvas
+                    padding={false}
+                    showContents={this.props.showMenu}
+                    handleHide={this.props.handleHide}
+                >
                     <Nav className="am-menu-nav">
                         <NavItem linkComponent={Link} linkProps={{to: "/"}}>
-                            {`nCoda Home`}
+                            {"nCoda Home"}
                         </NavItem>
                         <NavItem linkComponent={Link} linkProps={{to: "/colophon"}}>
-                            {`About`}
+                            {"About"}
                         </NavItem>
                         <NavItem linkComponent={Link} linkProps={{to: "/codescore"}}>
-                            {`CodeScoreView`}
+                            {"CodeScoreView"}
                         </NavItem>
                     </Nav>
                 </OffCanvas>
@@ -198,7 +213,7 @@ const GlobalHeader = React.createClass({
     render() {
         const brand = (
             <Button amStyle="link" onClick={this.props.handleShowMenu} title="Click for Menu">
-                <NCIcon icontype="coda" size="100%" iconfill="#50C878" />
+                <NCIcon type="coda" fill="#50C878" />
             </Button>
         );
 
@@ -241,9 +256,6 @@ const MenuItem = React.createClass({
 
 
 const DeveloperMenu = React.createClass({
-    /** Handle a click on one of the menu items.
-     * @param {ClickEvent} event - The click event.
-     */
     handleClick(event) {
         switch (event.target.id) {
         case 'devel-0':
@@ -274,42 +286,42 @@ const DeveloperMenu = React.createClass({
     render() {
         return (
             <Dropdown title={<Icon icon="wrench" amSize="md"/>} btnStyle="link">
-                <Dropdown.Item header>{`Fujian WebSocket Connection`}</Dropdown.Item>
+                <Dropdown.Item header>{"Fujian WebSocket Connection"}</Dropdown.Item>
                 <Dropdown.Item closeOnClick>
                     <Button id="devel-0" amStyle="link" onClick={this.handleClick}>
-                        {`Start`}
+                        {"Start"}
                     </Button>
                 </Dropdown.Item>
                 <Dropdown.Item closeOnClick>
                     <Button id="devel-1" amStyle="link" onClick={this.handleClick}>
-                        {`Restart`}
+                        {"Restart"}
                     </Button>
                 </Dropdown.Item>
                 <Dropdown.Item closeOnClick>
                     <Button id="devel-2" amStyle="link" onClick={this.handleClick}>
-                        {`Stop`}
+                        {"Stop"}
                     </Button>
                 </Dropdown.Item>
                 <Dropdown.Item divider/>
-                <Dropdown.Item header>{`Log Level`}</Dropdown.Item>
+                <Dropdown.Item header>{"Log Level"}</Dropdown.Item>
                 <Dropdown.Item closeOnClick>
                     <Button id="devel-3" amStyle="link" onClick={this.handleClick}>
-                        {`Set to DEBUG`}
+                        {"Set to DEBUG"}
                     </Button>
                 </Dropdown.Item>
                 <Dropdown.Item closeOnClick>
                     <Button id="devel-4" amStyle="link" onClick={this.handleClick}>
-                        {`Set to INFO`}
+                        {"Set to INFO"}
                     </Button>
                 </Dropdown.Item>
                 <Dropdown.Item closeOnClick>
                     <Button id="devel-5" amStyle="link" onClick={this.handleClick}>
-                        {`Set to WARN`}
+                        {"Set to WARN"}
                     </Button>
                 </Dropdown.Item>
                 <Dropdown.Item closeOnClick>
                     <Button id="devel-6" amStyle="link" onClick={this.handleClick}>
-                        {`Set to ERROR`}
+                        {"Set to ERROR"}
                     </Button>
                 </Dropdown.Item>
             </Dropdown>
@@ -347,7 +359,10 @@ const NCoda = React.createClass({
     render() {
         return (
             <div id="ncoda">
-                <GlobalHeader handleShowMenu={this.showOrHideGlobalMenu} handleShowDevelMenu={this.showOrHideDevelMenu}/>
+                <GlobalHeader
+                    handleShowMenu={this.showOrHideGlobalMenu}
+                    handleShowDevelMenu={this.showOrHideDevelMenu}
+                />
                 <DialogueBox/>
                 <GlobalMenu showMenu={this.state.menuShown} handleHide={this.showOrHideGlobalMenu}/>
                 {this.props.children}

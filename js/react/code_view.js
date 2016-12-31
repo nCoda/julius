@@ -6,7 +6,7 @@
 // Filename:               js/react/code_view.js
 // Purpose:                React components for CodeView module of CodeScoreView.
 //
-// Copyright (C) 2016 Sienna M. Wood
+// Copyright (C) 2016, 2017 Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -30,75 +30,43 @@ import reactor from '../nuclear/reactor';  // TODO: temporary for T50?
 import CodeMirror from './codemirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import Scroll from './scroll';
-import {NCIcon} from './svg_icons';
+import {Icon} from './svg_icons';
 
 
 const SubmitCodeButton = React.createClass({
     propTypes: {
-        onClick: React.PropTypes.func.isRequired,
-        codeLanguage: React.PropTypes.string.isRequired,
+        amSize: React.PropTypes.oneOf(['xl', 'lg', 'default', 'sm', 'xs']),
+        amStyle: React.PropTypes.oneOf([
+            'default', 'primary', 'secondary', 'success', 'warning', 'danger', 'link',
+        ]),
+        codeLanguage: React.PropTypes.oneOf(['python', 'lilypond']).isRequired,
         displayText: React.PropTypes.string,
         hoverText: React.PropTypes.string,
         logo: React.PropTypes.bool,
-        amSize: React.PropTypes.oneOf(['xl', 'lg', 'default', 'sm', 'xs']),
-        amStyle: React.PropTypes.oneOf([
-            'default', 'primary', 'secondary', 'success', 'warning', 'danger', 'link'
-        ]),
+        onClick: React.PropTypes.func.isRequired,
     },
     getDefaultProps() {
         return {
+            amSize: 'xs',
+            amStyle: 'default',
             displayText: '',
             hoverText: '',
             logo: false,
-            amSize: 'xs',
-            amStyle: 'default'
         };
     },
-    whichLogo() {
-        let logo = this.props.logo;
-        let codeLanguage = this.props.codeLanguage.toLowerCase();
-        if (logo === true) {
-            if (codeLanguage === "python" || codeLanguage === "abjad" || codeLanguage === "python/abjad") {
-                return <NCIcon icontype="python" />;
-            } else if (codeLanguage === "lilypond") {
-                return <NCIcon icontype="lilypond" />;
-            } else {
-                return <NCIcon icontype="coda" />; // backup logo is coda symbol
-            }
-        }
-    },
-    whichTitle() {
-        let hoverText = this.props.hoverText;
-        if (hoverText !== '') {
-            return hoverText;
-        } else { // if hoverText is not defined, generate default text
-            hoverText = "Submit " + this.props.codeLanguage.toUpperCase();
-            return hoverText;
-        }
-    },
-    whichText() {
-        let logo = this.props.logo;
-        let displayText = this.props.displayText;
-        let hoverText = this.props.hoverText;
-        if (logo === true) {
-            return displayText;         // can be an empty string if logo is present
-        } else {                        // if no logo, make sure displayText is not an empty string
-            if (displayText !== '') {   // use displayText if defined
-                return displayText;
-            } else {                    // if displayText not defined, use hoverText if defined
-                if (hoverText !== ''){
-                    return hoverText;
-                } else {                // if hoverText not defined, generate default text
-                    displayText = "Submit " + this.props.codeLanguage.toUpperCase();
-                    return displayText;
-                }
-            }
-        }
-    },
     render() {
+        let logo = null;
+        if (this.props.logo) {
+            logo = <Icon type={this.props.codeLanguage} />;
+        }
         return (
-            <Button title={this.whichTitle()} amSize={this.props.amSize} amStyle={this.props.amStyle} onClick={this.props.onClick}>
-                {this.whichLogo()}{this.whichText()}
+            <Button
+                title={this.props.hoverText}
+                amSize={this.props.amSize}
+                amStyle={this.props.amStyle}
+                onClick={this.props.onClick}
+            >
+                {logo}{this.props.displayText}
             </Button>
         );
     },
@@ -108,11 +76,11 @@ export const CodeView = React.createClass({
     propTypes: {
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
-        title: React.PropTypes.string
+        title: React.PropTypes.string,
     },
     getDefaultProps() {
         return {
-            title: 'Code Editor'
+            title: 'Code Editor',
         };
     },
     getInitialState() {
@@ -157,14 +125,18 @@ export const CodeView = React.createClass({
                     <h2>{this.props.title}</h2>
                     <div className="ncoda-text-editor-controls">
                         <ButtonGroup>
-                            <SubmitCodeButton codeLanguage="python"
-                                              onClick={this.handleSubmitPython}
-                                              logo={true}
-                                              hoverText="Run as Python" />
-                            <SubmitCodeButton codeLanguage="lilypond"
-                                              onClick={this.handleSubmitLilyPond}
-                                              logo={true}
-                                              hoverText="Submit as Lilypond" />
+                            <SubmitCodeButton
+                                codeLanguage={"python"}
+                                onClick={this.handleSubmitPython}
+                                logo
+                                hoverText={"Run as Python"}
+                            />
+                            <SubmitCodeButton
+                                codeLanguage={"lilypond"}
+                                onClick={this.handleSubmitLilyPond}
+                                logo
+                                hoverText={"Submit as Lilypond"}
+                            />
                         </ButtonGroup>
                     </div>
                 </div>
