@@ -6,7 +6,7 @@
 // Filename:               js/react/pdf_viewer.js
 // Purpose:                React wrapper for PDF display with PDF.js.
 //
-// Copyright (C) 2016 Sienna M. Wood
+// Copyright (C) 2016, 2017 Sienna M. Wood
 //
 // The MIT License (MIT)
 //
@@ -35,9 +35,8 @@
 
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PDFJS from 'pdfjs-dist';
-import {ButtonGroup, Button} from 'amazeui-react';
+import { ButtonGroup, Button } from 'amazeui-react';
 
 
 export default class PDFViewer extends React.Component {
@@ -48,6 +47,22 @@ export default class PDFViewer extends React.Component {
         this.downloadPDF = this.downloadPDF.bind(this);
         this.refresh = this.refresh.bind(this);
         this.loadPDF = this.loadPDF.bind(this);
+    }
+
+    componentWillMount() {
+        window.PDFJS.workerSrc = this.props.workerSrc;
+    }
+
+    componentDidMount() {
+        this.loadPDF();
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return this.props.file !== nextProps.file;
+    }
+
+    componentDidUpdate() {
+        this.loadPDF();
     }
 
     downloadPDF() {
@@ -73,12 +88,12 @@ export default class PDFViewer extends React.Component {
     }
 
     loadPDF() {
-        const node = ReactDOM.findDOMNode(this).getElementsByClassName(this.props.pdfContainerClass)[0];
-        node.innerHTML = "PDF loading...";
+        const node = this.node.getElementsByClassName(this.props.pdfContainerClass)[0];
+        node.innerHTML = 'PDF loading...';
 
         PDFJS.getDocument(this.props.file)
             .then((pdf) => {
-                node.innerHTML = "";
+                node.innerHTML = '';
                 let id = 1;
 
                 for (let i = 1; i <= pdf.numPages; i += 1) {
@@ -94,62 +109,53 @@ export default class PDFViewer extends React.Component {
 
                         node.appendChild(canvas);
 
-                        const renderContext = {
-                            canvasContext: canvas.getContext('2d'),
-                            viewport: viewport,
-                        };
+                        const canvasContext = canvas.getContext('2d');
+
+                        const renderContext = { canvasContext, viewport };
                         page.render(renderContext);
                     });
                 }
             })
             .catch((error) => {
-                console.error('PDF could not be displayed.', error);
-                node.innerHTML = "Sorry, there was an error and the PDF could not be displayed.";
+                // console.error('PDF could not be displayed.', error);
+                node.innerHTML = 'Sorry, there was an error and the PDF could not be displayed.';
             });
     }
 
     render() {
         let classes = this.props.pdfContainerClass;
-        if (classes !== "nc-pdf") {
+        if (classes !== 'nc-pdf') {
             classes = `${classes} nc-pdf`;
         }
         return (
-            <div className="nc-pdfviewer">
-                <ButtonGroup className="nc-pdfviewer-btns">
-                    <Button amSize="sm"
-                        title="Download PDF"
-                        className="nc-pdf-download-btn"
-                        onClick={() => this.downloadPDF()}
-                    >
-                        <i className="am-icon-download" />
-                    </Button>
-                    <Button amSize="sm"
-                        title="Refresh PDF"
-                        className="nc-pdf-refresh-btn"
-                        onClick={() => this.refresh()}
-                    >
-                        <i className="am-icon-refresh" />
-                    </Button>
-                </ButtonGroup>
-                <div className={classes}></div>
+            <div className="nc-pdfviewer" ref={node => this.node = node}>
+                <div className="nc-pdfviewer-toolbar nc-toolbar">
+                    <ButtonGroup className="nc-pdfviewer-btns">
+                        <Button
+                            amSize="sm"
+                            amStyle="link"
+                            title="Download PDF"
+                            className="nc-pdf-download-btn"
+                            onClick={() => this.downloadPDF()}
+                        >
+                            <i className="am-icon-download" /> Download PDF
+                        </Button>
+                        <Button
+                            amSize="sm"
+                            amStyle="link"
+                            title="Refresh PDF"
+                            className="nc-pdf-refresh-btn"
+                            onClick={() => this.refresh()}
+                        >
+                            <i className="am-icon-refresh" /> Refresh PDF
+                        </Button>
+                    </ButtonGroup>
+                </div>
+                <div className="nc-content-wrap">
+                    <div className={classes} />
+                </div>
             </div>
         );
-    }
-
-    componentWillMount() {
-        window.PDFJS.workerSrc = this.props.workerSrc;
-    }
-
-    componentDidMount() {
-        this.loadPDF();
-    }
-
-    shouldComponentUpdate(nextProps) {
-        return this.props.file !== nextProps.file;
-    }
-
-    componentDidUpdate() {
-        this.loadPDF();
     }
 }
 
@@ -160,6 +166,6 @@ PDFViewer.propTypes = {
 };
 
 PDFViewer.defaultProps = {
-    pdfContainerClass: "nc-pdf",
-    workerSrc: "./js/lib/pdf.worker.js",
+    pdfContainerClass: 'nc-pdf',
+    workerSrc: './js/lib/pdf.worker.js',
 };

@@ -7,6 +7,7 @@
 // Purpose:                LESS file for CodeScoreView.
 //
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood
+// Copyright (C) 2017 Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -76,7 +77,82 @@
 }
 
 /* ********************************************************************************************* */
-/* Tabs for mode switching */
+/* TerminalView pane(s) */
+
+.ncoda-terminal-window {
+    margin: 0;
+    padding: 0;
+
+    pre {
+        margin: 0;
+        padding: @global-padding;
+    }
+}
+
+/* ********************************************************************************************* */
+/* ScoreView pane */
+
+.ncoda-scoreview {
+
+    .nc-pdfviewer, .ncoda-verovio {
+        position: absolute; //needed to fill flexbox parent
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: @view-bg;
+
+        .nc-pdf {
+            padding: 1rem 0 3rem 0;
+            text-align: center;
+
+            canvas {
+                width: 100% - 5rem;
+                margin: 1rem;
+                .global-box-shadow();
+            }
+
+        }
+
+        .verovio-waiting {
+            height: 100%;
+            color: @base-text-color;
+
+            i {
+                color: @global-primary;
+                filter: drop-shadow(0px 0px 5px @global-primary);
+            }
+        }
+
+        // Vida style tweaks for Julius
+        .vida-wrapper {
+            .vida-toolbar { // shared toolbar styles below
+                .vida-orientation-toggle {
+                    font-weight: normal;
+                    font-size: @font-size-sm;
+                }
+
+                .vida-toolbar-block, .vida-button {
+                    color: @link-color;
+                    text-align: center;
+                }
+
+                .vida-button:hover {
+                    color: @link-hover-color;
+                    background-color: transparent;
+                }
+            }
+
+            .vida-svg-wrapper {
+                background-color: #ffffff;
+            }
+        }
+
+    }
+}
+
+/* ********************************************************************************************* */
+/* Tabs, Toolbars, Content Wrap Areas (siblings of toolbars) */
+/* (amazeUI buttons in toolbars should be amStyle="link") */
 
 @mode-tab-height: 4rem;
 
@@ -103,59 +179,30 @@
             background-color: @icon-btn-hover-background;
         }
     }
-}
 
-/* ********************************************************************************************* */
-/* TerminalView pane(s) */
+    /* Toolbars */
+    .nc-toolbar, .vida-wrapper .vida-toolbar {
+        position: absolute;
+        width: 100%;
+        height: 4rem;
+        text-align: center;
+        padding: .5rem;
+        background-color: darken(@white, 0%);
+        border-bottom: solid 1px @gray-lighter;
+        z-index: 2;
+        .global-box-shadow();
 
-.ncoda-terminal-window {
-    margin: 0;
-    padding: 0;
-
-    pre {
-        margin: 0;
-        padding: @global-padding;
-    }
-}
-
-/* ********************************************************************************************* */
-/* ScoreView pane */
-
-.ncoda-scoreview {
-    .nc-pdfviewer {
-        .nc-pdfviewer-btns {
-            position: fixed;
-            bottom: 1rem;
-            right: 1.5rem;
+        button:hover, a:hover {
+            text-decoration: none;
         }
 
-        .nc-pdf {
+        // siblings of toolbars - content areas
+        & ~ .nc-content-wrap, & ~ .vida-svg-wrapper, & ~ .vida-svg-overlay {
+            position: absolute;
             width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 1rem 0 5rem 0;
-            text-align: center;
-
-            canvas {
-                width: 100% - 5rem;
-                margin: 1rem;
-                .global-box-shadow();
-            }
-
-        }
-    }
-
-    .ncoda-verovio {
-        height: 100%;
-        background: @view-bg;
-        overflow: hidden;
-        .verovio-waiting {
-            height: 100%;
-            color: @base-text-color;
-            i {
-                color: @global-primary;
-                filter: drop-shadow(0px 0px 5px @global-primary);
-            }
+            height: 100% - 4rem; // 100% - height of .nc-toolbar
+            margin: 4rem 0 0 0;
+            overflow: scroll;
         }
     }
 }

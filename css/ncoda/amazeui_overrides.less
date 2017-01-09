@@ -7,6 +7,7 @@
 // Purpose:                LESS variable overrides for the nCoda amazeUI theme.
 //
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood
+// Copyright (C) 2017 Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -132,16 +133,11 @@ body {
 
 .am-btn, .am-btn-link {
     border-radius: @radius-normal;
-    cursor: default;
     &:focus, &:active:focus {
         outline: none;
     }
 }
-a {
-    cursor: default;
-}
 button {
-    cursor: default;
     &:focus, &:active:focus {
         outline: none;
     }
@@ -291,8 +287,7 @@ button {
 @pane-head-font-size: @btn-xs-font-size + .5em;
 @pane-head-line-height: @btn-line-height;
 @pane-head-font-padding: .25em;
-@pane-head-height: @pane-head-font-size + @pane-head-line-height + (@global-padding);
-    // only half of @global-padding used on top and bottom of panes
+@pane-head-height: @pane-head-font-size + @pane-head-line-height + @global-padding;
 @pane-resizer-thickness: 3px;
 @pane-resizer-hover-thickness: 5px;
 
