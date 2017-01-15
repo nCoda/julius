@@ -86,7 +86,7 @@ const ICON_CLASSES = {
 };
 
 
-/** VerovioView: React container for Vida6.
+/** VerovioViewUnwrapped: React container for Vida6.
  *
  * Props
  * -----
@@ -98,7 +98,9 @@ const ICON_CLASSES = {
  * -----
  * @param {VidaView} view - The VidaView instance.
  */
-export const VerovioView = React.createClass({
+export const VerovioViewUnwrapped = React.createClass({
+    displayName: 'VerovioView',
+
     propTypes: {
         controller: React.PropTypes.object.isRequired,
         cursor: React.PropTypes.instanceOf(Immutable.List),
@@ -165,12 +167,12 @@ export const VerovioView = React.createClass({
 });
 
 
-const VerovioViewWrapped = connect((state) => {
+const VerovioView = connect((state) => {
     return {
         controller: vrvGetters.vidaController(state),
         cursor: docGetters.cursor(state),
         section: vrvGetters.current(state),
     };
-})(VerovioView);
+})(VerovioViewUnwrapped);
 
 export default ScoreView;
