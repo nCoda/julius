@@ -7,7 +7,7 @@
 // Purpose:                React components for nCoda in general.
 //
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Wei Gao
-// Copyright (C) 2017 Sienna M. Wood
+// Copyright (C) 2017 Sienna M. Wood, Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -38,7 +38,7 @@ import {Icon as NCIcon} from './svg_icons';
 import {Logo} from './svg_icons';
 
 
-const MainScreen = React.createClass({
+export const MainScreen = React.createClass({
     handleOpen() {
         if (require) {
             const remote = require('electron').remote;
@@ -114,7 +114,7 @@ const MainScreenQuote = React.createClass({
 });
 
 
-const Colophon = React.createClass({
+export const Colophon = React.createClass({
     render() {
         return (
             <div id="ncoda-colophon">
@@ -233,31 +233,6 @@ const GlobalHeader = React.createClass({
 });
 
 
-// TODO: abandon this in favour of amazeui menus
-// TODO: it's used in other modules (probably just StructureView?)
-const MenuItem = React.createClass({
-    propTypes: {
-        // A function that closes the menu once a menu item has been chosen.
-        handleCloseMenu: React.PropTypes.func,
-        // The @id attribute to set on the <menuitem>
-        id: React.PropTypes.string,
-        // The @label and text of the <menuitem>
-        label: React.PropTypes.string,
-        // The URL to redirect to when this <menuitem> is selected.
-        linkTo: React.PropTypes.string,
-    },
-    render() {
-        return (
-            <li id={this.props.id} onClick={this.props.handleCloseMenu}>
-                <Link to={this.props.linkTo}>
-                    {this.props.label}
-                </Link>
-            </li>
-        );
-    },
-});
-
-
 const DeveloperMenu = React.createClass({
     handleClick(event) {
         switch (event.target.id) {
@@ -333,7 +308,7 @@ const DeveloperMenu = React.createClass({
 });
 
 
-const NCoda = React.createClass({
+export const NCoda = React.createClass({
     //
     // State:
     // - menuShown (boolean): Whether the menu is shown. Obviously.
@@ -376,8 +351,3 @@ const NCoda = React.createClass({
 
 
 export default NCoda;
-export {
-    Colophon,
-    MainScreen,
-    MenuItem,
-};
