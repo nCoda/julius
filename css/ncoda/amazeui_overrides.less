@@ -284,6 +284,7 @@ button {
 // =============================================================================
 // Split Panes and Custom Scrollbars
 // =============================================================================
+
 @pane-head-font-size: @btn-xs-font-size + .5em;
 @pane-head-line-height: @btn-line-height;
 @pane-head-font-padding: .25em;
@@ -292,6 +293,43 @@ button {
 @pane-resizer-hover-thickness: 5px;
 
 
+// =============================================================================
+// Tabs
+// used for mode-switching in CodeScoreView
+// =============================================================================
+
+@tab-height: 4rem;
+
+.am-tabs {
+    height: 100%;
+
+    .am-tabs-nav {
+        height: @tab-height;
+
+        a:hover {
+            color: @icon-btn-hover-color;
+            background-color: @icon-btn-hover-background;
+        }
+    }
+
+    .am-tabs-bd {
+        height: 100% - (@tab-height * 1.75);
+    }
+
+    .am-tab-panel {
+        height: 100%;
+        padding: 0;
+        background-color: @white;
+
+        > div { // content wrapper
+            position: absolute; //needed to fill flexbox parent
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: @view-bg;
+        }
+    }
+}
 
 
 // =============================================================================
