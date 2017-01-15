@@ -26,8 +26,9 @@
         "eslint-plugin-jsx-a11y": "^2.2.3",
         "eslint-plugin-react": "^6.8.0",
         "history": "3.0.x",
+        "immutable": "3.8.x",
         "jasmine-reporters": "2.2.x",
-        "jest-cli": "15.1.x",
+        "jest-cli": "18.1.x",
         "less": "2.7.1",
         "less-plugin-clean-css": "1.5.1",
         "moment": "2.14.x",
@@ -36,8 +37,11 @@
         "react": "15.3.1",
         "react-addons-test-utils": "15.3.1",
         "react-dom": "15.3.1",
+        "react-redux": "4.4.x",
         "react-router": "2.7.x",
         "react-split-pane": "0.1.44",
+        "redux": "3.6.x",
+        "redux-logger": "2.7.x",
         "watchify": "3.7.0"
     },
     "browserify": {
@@ -50,8 +54,7 @@
         "test": "jest"
     },
     "jest": {
-        "automock": true,
-        "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+        "transform": {".*": "<rootDir>/node_modules/babel-jest"},
         "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine-env.js",
         "moduleFileExtensions": [
             "js",
@@ -68,7 +71,7 @@
             "<rootDir>/js/nuclear",
             "<rootDir>/js/nuclear/stores"
         ],
-        "testRegex": "/tests/(.*)\\.js$"
+        "testRegex": "js/(.*)/tests/(.*)\\.js$"
     },
     "babel": {
         "presets": [

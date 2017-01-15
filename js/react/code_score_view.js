@@ -8,6 +8,7 @@
 //
 // Copyright (C) 2015 Wei Gao
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood, Andrew Horwitz
+// Copyright (C) 2017 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -24,89 +25,42 @@
 // ------------------------------------------------------------------------------------------------
 
 import React from 'react';
+import { connect } from 'react-redux';
 
 import {CodeView} from './code_view';
-import {ScoreView} from './score_view';
-import {TerminalView} from './terminal_view';
+import ScoreView from './score_view';
+import TerminalView from './terminal_view';
 
-import reactor from '../nuclear/reactor';
 import signals from '../nuclear/signals';
-import getters from '../nuclear/getters';
 
-import SplitPane from '../../node_modules/react-split-pane/lib/SplitPane';  // TODO: import properly
+import store from '../stores';
+import { getters as lilyGetters } from '../stores/lilypond';
+
+import SplitPane from 'react-split-pane';
 
 
+/** CodeScoreView
+ *
+ * Props
+ * -----
+ * @param {string} lilyCurrent - "latest" LilyPond version of the active <section> (from Redux)
+ */
 const CodeScoreView = React.createClass({
-    mixins: [reactor.ReactMixin],
-    getDefaultProps() {
-        return {meiForVerovio: ''};
+    propTypes: {
+        lilyCurrent: React.PropTypes.string,
     },
-    getDataBindings() {
-        return {
-            meiForVerovio: getters.meiForVerovio,
-            sections: getters.sections,
-            sectionCursor: getters.sectionCursorFriendly,
-            stdin: getters.stdin,
-            stdout: getters.stdout,
-            stderr: getters.stderr,
-        };
-    },
+
     componentWillMount() {
         signals.emitters.registerOutboundFormat('document', 'codescoreview', false);
         signals.emitters.registerOutboundFormat('lilypond', 'codescoreview', false);
     },
-    componentDidMount() {
-        // If the document cursor is not set, we need to choose a default.
-        this.checkForValidCursor(this.state.sections, this.state.sectionCursor);
-    },
-    componentWillUpdate(nextProps, nextState) {
-        // If the document cursor is not set, we need to choose a default.
-        if (nextState.sections !== this.state.sections
-            || nextState.sectionCursor !== this.state.sectionCursor) {
-            this.checkForValidCursor(nextState.sections, nextState.sectionCursor);
-        }
-    },
+
     componentWillUnmount() {
         signals.emitters.unregisterOutboundFormat('document', 'codescoreview');
         signals.emitters.unregisterOutboundFormat('lilypond', 'codescoreview');
     },
-    checkForValidCursor(sections, cursor) {
-        if (sections.size === 0) {
-            // the section data aren't loaded yet, so we'll just quit
-            return;
-        }
-        if (cursor.size === 0) {
-            signals.emitters.moveSectionCursor([sections.get('score_order').get(0)]);
-        }
-    },
+
     render() {
-        const sectId = this.state.sectionCursor.last();
-
-        let scoreView;
-        if (sectId) {
-            scoreView = (
-                <ScoreView
-                    sectId={sectId}
-                    lyGetSectionById={signals.emitters.lyGetSectionById}
-                    meiForVerovio={this.state.meiForVerovio}
-                    registerOutboundFormat={signals.emitters.registerOutboundFormat}
-                    unregisterOutboundFormat={signals.emitters.unregisterOutboundFormat}
-                    addNewVidaView={signals.emitters.addNewVidaView}
-                    destroyVidaView={signals.emitters.destroyVidaView}
-                />
-            );
-        }
-        else {
-            scoreView = (
-                <div>
-                    <p>{`A score will show up when the section cursor is set.`}</p>
-                    <p>{`If the score doesn't show up in a moment, try running this code:`}</p>
-                    <pre>{`lychee.signals.ACTION_START.emit()`}</pre>
-                    <p>{`That only works if there are sections in the score to begin with.`}</p>
-                </div>
-            );
-        }
-
         return (
             <div id="nc-csv-frame">
                 <SplitPane split="horizontal" minSize="20" defaultSize="70%">
@@ -119,12 +73,13 @@ const CodeScoreView = React.createClass({
                     >
                         <div className="ncoda-text-editor pane-container">
                             <CodeView
+                                initialValue={this.props.lilyCurrent}
                                 submitToPyPy={signals.emitters.submitToPyPy}
                                 submitToLychee={signals.emitters.submitToLychee}
                             />
                         </div>
                         <div className="ncoda-scoreview pane-container">
-                            {scoreView}
+                            <ScoreView/>
                         </div>
                     </SplitPane>
                     <SplitPane
@@ -136,22 +91,10 @@ const CodeScoreView = React.createClass({
                         defaultSize="50%"
                     >
                         <div className="pane-container">
-                            <TerminalView
-                                termOutput="in"
-                                title="Your Input"
-                                stdin={this.state.stdin}
-                                stdout={this.state.stdout}
-                                stderr={this.state.stderr}
-                            />
+                            <TerminalView termOutput="in" title="Your Input"/>
                         </div>
                         <div className="pane-container">
-                            <TerminalView
-                                termOutput="out"
-                                title="Python Output"
-                                stdin={this.state.stdin}
-                                stdout={this.state.stdout}
-                                stderr={this.state.stderr}
-                            />
+                            <TerminalView termOutput="out" title="Python Output"/>
                         </div>
                     </SplitPane>
                 </SplitPane>
@@ -161,4 +104,9 @@ const CodeScoreView = React.createClass({
 });
 
 
-export default CodeScoreView;
+const CodeScoreViewWrapper = connect((state) => {
+    return {
+        lilyCurrent: lilyGetters.current(state),
+    };
+})(CodeScoreView);
+export default CodeScoreViewWrapper;

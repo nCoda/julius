@@ -6,7 +6,7 @@
 // Filename:               js/util/tests/test_fujian.js
 // Purpose:                Tests for js/util/fujian.js
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2016, 2017 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -22,16 +22,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-// mocked imports
-import {log} from '../log';
 
-// non-mocked imports
-import {Immutable} from 'nuclear-js';
-import {init} from '../../nuclear/init';  /* eslint no-unused-vars: 0 */
-import getters from '../../nuclear/getters';
-import reactor from '../../nuclear/reactor';
-import signals from '../../nuclear/signals';
-jest.dontMock('../fujian.js');
+import Immutable from 'immutable';
+
+jest.mock('../log');
+
+import { store } from '../../stores';
+import { actions as metaActions, getters as metaGetters, LOG_LEVELS } from '../../stores/meta';
+import { getters as uiGetters } from '../../stores/ui';
+
+import log from '../log';
 const fujian = require('../fujian.js');
 
 const WS_CLOSE_CODE = 1000;
@@ -52,7 +52,7 @@ describe("Fujian class' instance methods", () => {
         };
         window.XMLHttpRequest = () => window.xhrMock;
         //
-        reactor.reset();
+        store.dispatch({type: 'RESET'});
     });
 
     describe('constructor()', () => {
@@ -156,7 +156,8 @@ describe("Fujian class' instance methods", () => {
             expect(xhr.addEventListener).toBeCalledWith('load', fujian.Fujian._loadAjax);
             expect(xhr.open).toBeCalledWith('POST', fujian.FUJIAN_AJAX_URL);
             expect(xhr.send).toBeCalledWith(code);
-            expect(reactor.evaluate(getters.stdin)).toBe(code);
+            const theStore = store.getState();
+            expect(metaGetters.stdin(theStore)).toBe(`${code}<br>`);
         });
     });
 
@@ -259,7 +260,7 @@ describe('The response loading callbacks', () => {
         log.info.mockClear();
         log.debug.mockClear();
         //
-        reactor.reset();
+        store.dispatch({type: 'RESET'});
     });
 
     it('Fujian._receiveWS() calls _commonReceiver() correctly', () => {
@@ -299,16 +300,16 @@ describe('The response loading callbacks', () => {
             const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: 'back',
                 signal: 'outbound.CONVERSION_ERROR'};
             const data = JSON.stringify(dataObj);
-            const expectedStdout = `${dataObj.traceback}\n${fujian.ERROR_MESSAGES.outboundConv}\n${dataObj.stdout}\n${dataObj.stderr}`;
+            const expectedStdout = `${dataObj.traceback}<br>${fujian.ERROR_MESSAGES.outboundConv}<br>${dataObj.stdout}<br>${dataObj.stderr}<br>`;
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
             expect(log.info).toBeCalledWith(fujian.ERROR_MESSAGES.fjnRetVal);
             expect(log.info).toBeCalledWith(dataObj.return);
-            expect(reactor.evaluate(getters.stdout)).toBe(expectedStdout);
-            const box = reactor.evaluate(getters.DialogueBox);
-            expect(box.get('type')).toBe('error');
-            expect(box.get('message')).toBe('Unhandled Exception in Python');
+            const theStore = store.getState();
+            expect(metaGetters.stdout(theStore)).toBe(expectedStdout);
+            expect(uiGetters.modalType(theStore)).toBe('error');
+            expect(uiGetters.modalMessage(theStore)).toBe('Unhandled Exception in Python');
         });
 
         it('ignores a signal that does not exist in Julius', () => {
@@ -322,7 +323,8 @@ describe('The response loading callbacks', () => {
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(reactor.evaluate(getters.stdout)).toBe(dataObj.stdout);
+            const theStore = store.getState();
+            expect(metaGetters.stdout(theStore)).toBe(`${dataObj.stdout}<br>`);
         });
 
         it('does not call stdout() signal if doStdio=true but there are no values to output', () => {
@@ -334,7 +336,8 @@ describe('The response loading callbacks', () => {
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(reactor.evaluate(getters.stdout)).toBe('');
+            const theStore = store.getState();
+            expect(metaGetters.stdout(theStore)).toBe('');
         });
 
         it('does not call stdout() signal if doStdio=true and Fujian returns 0-length strings', () => {
@@ -346,7 +349,8 @@ describe('The response loading callbacks', () => {
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(reactor.evaluate(getters.stdout)).toBe('');
+            const theStore = store.getState();
+            expect(metaGetters.stdout(theStore)).toBe('');
         });
 
         it('does not call stdout() signal if doStdio=false, even if there is stuff to print out', () => {
@@ -359,7 +363,8 @@ describe('The response loading callbacks', () => {
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(reactor.evaluate(getters.stdout)).toBe('');
+            const theStore = store.getState();
+            expect(metaGetters.stdout(theStore)).toBe('');
         });
 
         it('does call stdout() if doStdio=false but LOG_LEVEL===DEBUG', () => {
@@ -371,12 +376,13 @@ describe('The response loading callbacks', () => {
             const doStdio = false;
             const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: ''};
             const data = JSON.stringify(dataObj);
-            signals.emitters.setLogLevel(log.LEVELS.DEBUG);
-            const expStdout = `${dataObj.stdout}\n${dataObj.stderr}`;
+            metaActions.setLogLevel(LOG_LEVELS.DEBUG);
+            const expStdout = `${dataObj.stdout}<br>${dataObj.stderr}<br>`;
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
-            expect(reactor.evaluate(getters.stdout)).toBe(expStdout);
+            const theStore = store.getState();
+            expect(metaGetters.stdout(theStore)).toBe(expStdout);
         });
 
         it('calls log.error() when "data" contains invalid JSON', () => {

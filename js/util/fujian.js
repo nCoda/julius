@@ -6,7 +6,7 @@
 // Filename:               js/util/fujian.js
 // Purpose:                Code for connecting between Julius and Fujian.
 //
-// Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2016, 2017 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -32,12 +32,15 @@
 // - Fujian.sendWS()
 // - Fujian.sendAjax()
 
-import {Immutable} from 'nuclear-js';
+import Immutable from 'immutable';
 
-import {getters} from '../nuclear/getters';
 import {log} from './log';
-import {reactor} from '../nuclear/reactor';
 import {signals} from '../nuclear/signals';
+
+import { store } from '../stores';
+import { actions as docActions } from '../stores/document';
+import { actions as metaActions, getters as metaGetters } from '../stores/meta';
+import { actions as uiActions } from '../stores/ui';
 
 
 const FUJIAN_WS_URL = 'ws://localhost:1987/websocket/';
@@ -75,44 +78,36 @@ const FUJIAN_SIGNALS = {
         else {
             message = ERROR_MESSAGES.outboundConv;
         }
-        signals.emitters.stdout(message);
+        metaActions.writeToStdio('stdout', message);
         log.error(message);
     },
 
     // TODO: add tests
     'outbound.CONVERSION_FINISHED': (response) => {
-        // formats RevisionsView might want... it's super inefficient
-        if (response.dtype === 'lilypond' || response.dtype === 'mei') {
-            signals.emitters.revisionFromLychee(response);
-        }
         // everything else
         switch (response.dtype) {
-        case 'document':
-            let document;
-            try {
-                document = JSON.parse(response.document);
-            }
-            catch (err) {
-                if ('SyntaxError' === err.name) {
-                    log.error(ERROR_MESSAGES.fjnBadJson);
-                    return;
+            case 'lilypond':
+            case 'verovio':
+                docActions.updateSectionData(response.dtype, response.placement, response.document);
+                break;
+
+            case 'document':
+                let document;
+                try {
+                    document = JSON.parse(response.document);
                 }
-                throw err;
-            }
-            signals.emitters.headersFromLychee(document.headers);
-            signals.emitters.documentFromLychee(document.sections);
-            break;
-        case 'lilypond':
-            signals.emitters.lilypondFromLychee(response.placement, response.document);
-            break;
-        case 'vcs':
-            signals.emitters.vcsNewRevlog(response.document);
-            break;
-        case 'verovio':
-            signals.emitters.renderToVerovio(response.document);
-            break;
-        default:
-            return;
+                catch (err) {
+                    if ('SyntaxError' === err.name) {
+                        log.error(ERROR_MESSAGES.fjnBadJson);
+                        return;
+                    }
+                    throw err;
+                }
+                docActions.updateSections(document);
+                break;
+
+            default:
+                return;
         }
     },
 
@@ -225,7 +220,7 @@ class Fujian {
         request.open('POST', FUJIAN_AJAX_URL);
         request.send(code);
 
-        signals.emitters.stdin(code);
+        metaActions.writeToStdio('stdin', code);
     }
 
     /** A callback for the "onopen" WebSocket event that sends queued messages.
@@ -312,14 +307,16 @@ class Fujian {
 
         if ('string' === typeof response.traceback && response.traceback.length > 0) {
             doStdio = true;  /* eslint no-param-reassign: 0 */
-            signals.emitters.stdout(response.traceback);
-            signals.emitters.dialogueBoxShow({
-                type: 'error',
-                message: 'Unhandled Exception in Python',
-                detail: 'There was an unhandled exception in the Python interpreter. This means ' +
-                        'there was an error but we could not fix it automatically. There is a ' +
-                        'traceback (error report) in the nCoda Python Console.',
-            });
+            // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
+            metaActions.writeToStdio('stdout', response.traceback);
+            uiActions.showModal(
+                'error',
+                'Unhandled Exception in Python',
+                ('There was an unhandled exception in the Python interpreter. This means ' +
+                 'there was an error but we could not fix it automatically. There is a ' +
+                 'traceback (error report) in the nCoda Python Console.'
+                ),
+            );
         }
 
         if (response.signal) {
@@ -328,13 +325,13 @@ class Fujian {
             }
         }
 
-        if (doStdio || log.LEVELS.DEBUG === reactor.evaluate(getters.logLevel)) {
+        if (doStdio || metaGetters.logLevel(store.getState()) === log.LEVELS.DEBUG) {
             if ('string' === typeof response.stdout && response.stdout.length > 0) {
-                signals.emitters.stdout(response.stdout);
+                metaActions.writeToStdio('stdout', response.stdout);
             }
             if ('string' === typeof response.stderr && response.stderr.length > 0) {
                 // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
-                signals.emitters.stdout(response.stderr);
+                metaActions.writeToStdio('stdout', response.stderr);
             }
             if ('string' === typeof response.return && response.return.length > 0) {
                 log.info(ERROR_MESSAGES.fjnRetVal);

@@ -24,13 +24,13 @@
 
 import React from 'react';
 
-import getters from '../nuclear/getters';  // TODO: temporary for T50?
-import reactor from '../nuclear/reactor';  // TODO: temporary for T50?
-
 import CodeMirror from './codemirror';
 import {Button, ButtonGroup} from 'amazeui-react';
 import Scroll from './scroll';
 import {Icon} from './svg_icons';
+
+import store from '../stores';
+import { getters as lilyGetters } from '../stores/lilypond';
 
 
 const SubmitCodeButton = React.createClass({
@@ -74,19 +74,20 @@ const SubmitCodeButton = React.createClass({
 
 export const CodeView = React.createClass({
     propTypes: {
+        initialValue: React.PropTypes.string,  // initial value for the editor
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
         title: React.PropTypes.string,
     },
     getDefaultProps() {
         return {
+            initialValue: '',
             title: 'Code Editor',
         };
     },
     getInitialState() {
         return {
-            editorValue: '',
-            timesTheStupidHackFunctionRan: 0,  // TODO: temporary for T50?
+            editorValue: this.props.initialValue || '',
         };
     },
     handleEditorChange(withThis) {
@@ -98,25 +99,18 @@ export const CodeView = React.createClass({
     handleSubmitLilyPond() {
         this.props.submitToLychee(this.state.editorValue, 'lilypond');
     },
-    shouldComponentUpdate(nextProps, nextState) {
-        return nextState.editorValue !== this.state.editorValue;
+    componentWillReceiveProps(nextProps) {
+        if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
+            this.setState({editorValue: nextProps.initialValue});
+        }
     },
-    stupidHackFunction() {
-        // TODO: temporary for T50?
-        const cursor = reactor.evaluate(getters.sectionCursor);
-        const lilySections = reactor.evaluate(getters.lilypond);
-        if (lilySections.has(cursor.last())) {
-            this.setState({editorValue: lilySections.get(cursor.last())});
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
+            return true;
         }
         else {
-            this.setState({timesTheStupidHackFunctionRan: this.state.timesTheStupidHackFunctionRan + 1});
-            if (this.state.timesTheStupidHackFunctionRan < 10) {
-                window.setTimeout(this.stupidHackFunction, 500);
-            }
+            return nextState.editorValue !== this.state.editorValue;
         }
-    },
-    componentDidMount() {
-        this.stupidHackFunction();
     },
     render() {
         return (

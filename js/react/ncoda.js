@@ -28,6 +28,9 @@ import {Button, ButtonGroup, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui
 import React from 'react';
 import {Link} from 'react-router';
 
+import { actions as uiActions } from '../stores/ui';
+import { actions as metaActions, LOG_LEVELS } from '../stores/meta';
+
 import {log} from '../util/log';
 import signals from '../nuclear/signals';
 import {DialogueBox, OffCanvas} from './generics';
@@ -49,12 +52,12 @@ const MainScreen = React.createClass({
         }
         else {
             // this is a much worse solution than the native dialogue above
-            signals.emitters.dialogueBoxShow({
-                type: 'question',
-                message: 'Please enter the repository directory',
-                detail: 'This can break pretty easily, so be careful!',
-                callback: (answer) => signals.emitters.lySetRepoDir(answer),
-            });
+            uiActions.showModal(
+                'question',
+                'Please enter the repository directory',
+                'This can break pretty easily, so be careful!',
+                (answer) => signals.emitters.lySetRepoDir(answer),
+            );
         }
     },
     handleDefaultOpen() {
@@ -268,16 +271,16 @@ const DeveloperMenu = React.createClass({
             signals.emitters.fujianStopWS();
             break;
         case 'devel-3':
-            signals.emitters.setLogLevel(log.LEVELS.DEBUG);
+            metaActions.setLogLevel(LOG_LEVELS.DEBUG);
             break;
         case 'devel-4':
-            signals.emitters.setLogLevel(log.LEVELS.INFO);
+            metaActions.setLogLevel(LOG_LEVELS.INFO);
             break;
         case 'devel-5':
-            signals.emitters.setLogLevel(log.LEVELS.WARN);
+            metaActions.setLogLevel(LOG_LEVELS.WARN);
             break;
         case 'devel-6':
-            signals.emitters.setLogLevel(log.LEVELS.ERROR);
+            metaActions.setLogLevel(LOG_LEVELS.ERROR);
             break;
         default:
             log.warn('The DeveloperMenu component is misconfigured, so nothing will happen.');
