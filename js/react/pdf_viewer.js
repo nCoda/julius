@@ -102,8 +102,8 @@ export default class PDFViewer extends React.Component {
                         canvas.id = `page-${id}`;
                         id += 1;
 
-                        // scale = 1, actual display dimensions controlled by styles
-                        const viewport = page.getViewport(1);
+                        const scale = 3; // for greater resolution, actual display size controlled by styles
+                        const viewport = page.getViewport(scale);
                         canvas.width = viewport.width;
                         canvas.height = viewport.height;
 
