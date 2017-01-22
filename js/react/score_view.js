@@ -7,7 +7,7 @@
 // Purpose:                React components for ScoreView module.
 //
 // Copyright (C) 2016 Andrew Horwitz, Sienna M. Wood
-// Copyright (C) 2017 Christopher Antila
+// Copyright (C) 2017 Christopher Antila, Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import { Tabs } from 'amazeui-react';
 import Immutable from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -34,8 +33,7 @@ import { getters as vrvGetters } from '../stores/verovio';
 import { VidaView } from '../lib/vida';
 
 import PDFViewer from './pdf_viewer';
-import Scroll from './scroll';
-
+import { Tabs } from 'amazeui-react';
 
 export const ScoreView = React.createClass({
     getInitialState() {
@@ -43,38 +41,25 @@ export const ScoreView = React.createClass({
             key: '1',
         };
     },
-    handleSelect: function (key) {
-        //console.log('mode change: ', key);
+    handleSelect(key) {
+        // console.log('mode change: ', key);
 
-        this.setState({
-            key: key
-        });
+        this.setState({ key });
     },
     render() {
+        const pdf = 'js/react/tests/dummy_multi.pdf';
+
         return (
             <Tabs defaultActiveKey={this.state.key} onSelect={this.handleSelect} justify>
                 <Tabs.Item eventKey="1" title="Verovio">
                     <VerovioView/>
                 </Tabs.Item>
                 <Tabs.Item eventKey="2" title="PDF">
-                    <LilypondPDFView/>
+                    <PDFViewer file={pdf} />
                 </Tabs.Item>
             </Tabs>
         );
     },
-
-});
-
-
-export const LilypondPDFView = React.createClass({
-    render() {
-        const pdf = 'js/react/tests/dummy_multi.pdf';
-        return (
-            <Scroll>
-                <PDFViewer file={pdf} />
-            </Scroll>
-        );
-    }
 });
 
 

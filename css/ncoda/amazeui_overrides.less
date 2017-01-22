@@ -7,6 +7,7 @@
 // Purpose:                LESS variable overrides for the nCoda amazeUI theme.
 //
 // Copyright (C) 2016 Christopher Antila, Sienna M. Wood
+// Copyright (C) 2017 Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -25,6 +26,11 @@
 // This file is imported *after* amazeUI but *before* the components are finished styling.
 // Therefore in this file we can override anything in the amazeUI "variables" file, but we do not
 // need to duplicate anything that we are not changing.
+//
+// Hooks are mixins defined in amazeUI that essentially allow us to inject custom styles into the
+// amazeUI source code.  These should be preferred to simple class/id selectors.  The hooks are
+// defined at the end of amazeUI LESS source files, which can be viewed on GitHub here:
+// https://github.com/amazeui/amazeui/tree/master/less.
 
 
 // =============================================================================
@@ -130,18 +136,15 @@ body {
 @btn-warning-color:              @white;
 @btn-danger-color:               @white;
 
-.am-btn, .am-btn-link {
+.hook-btn() {
     border-radius: @radius-normal;
-    cursor: default;
+
     &:focus, &:active:focus {
         outline: none;
     }
 }
-a {
-    cursor: default;
-}
+
 button {
-    cursor: default;
     &:focus, &:active:focus {
         outline: none;
     }
@@ -195,10 +198,13 @@ button {
 // @topbar-brand-hover-bg
 
 // we must set the :hover colours manually
-.am-topbar li > a:hover {
-    color: @global-primary;
-    &:after {
-        border-bottom-color: @global-primary;
+.hook-topbar() {
+    li > a:hover {
+        color: @global-primary;
+
+        &:after {
+            border-bottom-color: @global-primary;
+        }
     }
 }
 
@@ -231,17 +237,20 @@ button {
 @offcanvas-bar-background:    @comp-l1-bg;
 @offcanvas-bar-border-color:  @comp-l1-border;
 
-.am-offcanvas-bar {
-    box-shadow: 0 0 2rem 0 @comp-l1-border;
+.hook-offcanvas() {
+    .am-offcanvas-content {
+        padding: @global-padding;
+        background: inherit;
+        color: @base-text-color;
+
+        a {
+            color: @global-primary;
+        }
+    }
 }
 
-.am-offcanvas-content {
-    padding: @global-padding;
-    background: inherit;
-    color: @base-text-color;
-    a {
-        color: @global-primary;
-    }
+.hook-offcanvas-bar() {
+    box-shadow: 0 0 2rem 0 @comp-l1-border;
 }
 
 
@@ -249,7 +258,7 @@ button {
 // Modal
 // =============================================================================
 
-.am-modal {
+.hook-modal() {
     top: 30%;
 }
 
@@ -288,16 +297,52 @@ button {
 // =============================================================================
 // Split Panes and Custom Scrollbars
 // =============================================================================
+
 @pane-head-font-size: @btn-xs-font-size + .5em;
 @pane-head-line-height: @btn-line-height;
 @pane-head-font-padding: .25em;
-@pane-head-height: @pane-head-font-size + @pane-head-line-height + (@global-padding);
-    // only half of @global-padding used on top and bottom of panes
+@pane-head-height: @pane-head-font-size + @pane-head-line-height + @global-padding;
 @pane-resizer-thickness: 3px;
 @pane-resizer-hover-thickness: 5px;
 
 
+// =============================================================================
+// Tabs
+// used for mode-switching in CodeScoreView
+// =============================================================================
 
+@tab-height: 4rem;
+
+.hook-tabs() {
+    height: 100%;
+}
+
+.hook-nav-tabs() {
+    height: @tab-height;
+
+    > li > a:hover {
+        color: @icon-btn-hover-color;
+        background-color: @icon-btn-hover-background;
+    }
+}
+
+.hook-tabs-bd() {
+    height: 100% - (@tab-height * 1.75);
+}
+
+.hook-tab-panel() {
+    height: 100%;
+    padding: 0;
+    background-color: @white;
+
+    > div { // content wrapper
+        position: absolute; //needed to fill flexbox parent
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: @view-bg;
+    }
+}
 
 // =============================================================================
 // Mixins
