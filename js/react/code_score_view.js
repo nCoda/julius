@@ -27,13 +27,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import {CodeView} from './code_view';
-import ScoreView from './score_view';
+import CodeView from './code_view';
+import { ScoreView } from './score_view';
 import TerminalView from './terminal_view';
 
-import signals from '../nuclear/signals';
+import { signals } from '../nuclear/signals';
 
-import store from '../stores';
+import { store } from '../stores';
 import { getters as lilyGetters } from '../stores/lilypond';
 
 import SplitPane from 'react-split-pane';
@@ -60,6 +60,11 @@ const CodeScoreView = React.createClass({
         signals.emitters.unregisterOutboundFormat('lilypond', 'codescoreview');
     },
 
+    submitToMEI() {
+      // placeholder
+        console.log('submitToMEI placeholder function triggered');
+    },
+
     render() {
         return (
             <div id="nc-csv-frame">
@@ -73,13 +78,14 @@ const CodeScoreView = React.createClass({
                     >
                         <div className="ncoda-text-editor pane-container">
                             <CodeView
-                                initialValue={this.props.lilyCurrent}
-                                submitToPyPy={signals.emitters.submitToPyPy}
+                                lilyCurrent={this.props.lilyCurrent}
                                 submitToLychee={signals.emitters.submitToLychee}
+                                submitToPyPy={signals.emitters.submitToPyPy}
+                                submitToMEI={this.submitToMEI}
                             />
                         </div>
                         <div className="ncoda-scoreview pane-container">
-                            <ScoreView/>
+                            <ScoreView />
                         </div>
                     </SplitPane>
                     <SplitPane
@@ -91,10 +97,10 @@ const CodeScoreView = React.createClass({
                         defaultSize="50%"
                     >
                         <div className="pane-container">
-                            <TerminalView termOutput="in" title="Your Input"/>
+                            <TerminalView termOutput="in" title="Your Input" />
                         </div>
                         <div className="pane-container">
-                            <TerminalView termOutput="out" title="Python Output"/>
+                            <TerminalView termOutput="out" title="Python Output" />
                         </div>
                     </SplitPane>
                 </SplitPane>
