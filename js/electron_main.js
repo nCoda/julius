@@ -7,6 +7,7 @@
 // Purpose:                Code to start nCoda Julius in Electron.
 //
 // Copyright (C) 2016 Christopher Antila
+// Copyright (C) 2017 Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -28,6 +29,8 @@ const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 const Menu = electron.Menu;
 const app = electron.app;
+
+const installExtension = require('electron-devtools-installer').default;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -261,4 +264,12 @@ if (process.platform === 'win32') {
 app.on('ready', function () {
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
+
+    installExtension(installExtension.REACT_DEVELOPER_TOOLS)
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log('An error occurred: ', err));
+
+    installExtension(installExtension.REDUX_DEVTOOLS)
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log('An error occurred: ', err));
 })
