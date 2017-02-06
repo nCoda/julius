@@ -315,10 +315,16 @@ button {
 
 .hook-tabs() {
     height: 100%;
+    position: relative;
 }
 
 .hook-nav-tabs() {
     height: @tab-height;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: @white;
 
     > li > a:hover {
         color: @icon-btn-hover-color;
@@ -327,7 +333,13 @@ button {
 }
 
 .hook-tabs-bd() {
-    height: 100% - (@tab-height * 1.75);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    padding-top: @tab-height;
+    z-index: 0;
 }
 
 .hook-tab-panel() {
@@ -336,11 +348,11 @@ button {
     background-color: @white;
 
     > div { // content wrapper
-        position: absolute; //needed to fill flexbox parent
         width: 100%;
         height: 100%;
         overflow: hidden;
         background: @view-bg;
+        padding-top: @tab-height;
     }
 }
 

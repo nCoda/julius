@@ -29,11 +29,13 @@
 
 .nc-toolbar, .ncoda-verovio .vida-wrapper .vida-toolbar {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: @nc-toolbar-height;
     text-align: center;
     padding: .5rem;
-    background-color: darken(@white, 0%);
+    background-color: @white;
     border-bottom: solid 1px @gray-lighter;
     z-index: 2;
     .global-box-shadow();
@@ -44,10 +46,7 @@
 
     // siblings of toolbars - content areas
     & ~ .nc-content-wrap, & ~ .vida-svg-wrapper, & ~ .vida-svg-overlay {
-        position: absolute;
-        width: 100%;
-        height: 100% - (@nc-toolbar-height * 1.9);
-        margin: @nc-toolbar-height 0 0 0;
+        height: 100%;
         overflow: scroll;
     }
 }
