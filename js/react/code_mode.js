@@ -42,7 +42,16 @@ const CodeMode = React.createClass({
     getInitialState() {
         return {
             editorValue: this.props.initialValue || '',
+            focused: false,
         };
+    },
+    componentDidMount() {
+        window.addEventListener('keyup', this.handleKeyUp, true);
+        window.addEventListener('keydown', this.handleKeyDown, true);
+    },
+    componentWillUnmount() {
+        window.removeEventListener('keyup', this.handleKeyUp, true);
+        window.addEventListener('keydown', this.handleKeyDown, true);
     },
     componentWillReceiveProps(nextProps) {
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
@@ -54,6 +63,23 @@ const CodeMode = React.createClass({
             return true;
         }
         return nextState.editorValue !== this.state.editorValue;
+    },
+    onBlur() {
+        this.setState({ focused: false });
+    },
+    onFocus() {
+        this.setState({ focused: true });
+    },
+    handleKeyUp(e) {
+        if (this.state.focused && e.code === 'Enter' && e.shiftKey) {
+            e.preventDefault();
+            this.handleSubmit();
+        }
+    },
+    handleKeyDown(e) { // prevent default behavior on keydown for shift-enter, to allow keyup submit
+        if (this.state.focused && e.code === 'Enter' && e.shiftKey) {
+            e.preventDefault();
+        }
     },
     handleEditorChange(withThis) {
         this.setState({ editorValue: withThis });
@@ -67,7 +93,7 @@ const CodeMode = React.createClass({
     },
     render() {
         return (
-            <div className="codemode-wrapper">
+            <div className="codemode-wrapper" onFocus={this.onFocus} onBlur={this.onBlur}>
                 <div className="nc-codemode-toolbar nc-toolbar">
                     <SubmitCodeButton
                         hoverText={`Submit  ${this.props.codeLanguage}`}
