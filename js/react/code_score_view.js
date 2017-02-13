@@ -63,13 +63,19 @@ const CodeScoreView = React.createClass({
     render() {
         return (
             <div id="nc-csv-frame">
-                <SplitPane split="horizontal" minSize="20" defaultSize="70%">
+                <SplitPane
+                    split="horizontal"
+                    minSize={20} // sizes apply to top half (Code and Score panes)
+                    maxSize={-20}
+                    defaultSize="70%"
+                >
                     <SplitPane
                         split="vertical"
                         className="ncoda-work-table"
-                        primary="second"
-                        minSize="20"
+                        minSize={20} // sizes apply to ScoreView pane
+                        maxSize={-20}
                         defaultSize="60%"
+                        primary="second"
                     >
                         <div className="ncoda-text-editor pane-container">
                             <CodeView
@@ -86,8 +92,8 @@ const CodeScoreView = React.createClass({
                         split="vertical"
                         id="ncoda-terminal-output"
                         className="ncoda-terminal-output"
-                        primary="second"
-                        minSize="20"
+                        minSize={20} // sizes apply to TerminalView Input pane
+                        maxSize={-20}
                         defaultSize="50%"
                     >
                         <div className="pane-container">
