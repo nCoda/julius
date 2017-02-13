@@ -37,6 +37,7 @@
     padding: .5rem;
     background-color: @white;
     border-bottom: solid 1px @gray-lighter;
+    overflow: hidden;
     z-index: 2;
     .global-box-shadow();
 
@@ -48,5 +49,6 @@
     & ~ .nc-content-wrap, & ~ .vida-svg-wrapper, & ~ .vida-svg-overlay {
         height: 100%;
         overflow: scroll;
+        position: relative; // so that children can be absolutely positioned in relation to this
     }
 }
