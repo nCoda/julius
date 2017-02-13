@@ -7,6 +7,7 @@
 // Purpose:                React components for TerminalView module of CodeScoreView.
 //
 // Copyright (C) 2016 Sienna M. Wood, Christopher Antila
+// Copyright (C) 2017 Sienna M. Wood
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -38,7 +39,6 @@ const TerminalView = React.createClass({
         title: React.PropTypes.string,
 
     },
-
     getDefaultProps() {
         return {
             stdin: '',
@@ -48,7 +48,15 @@ const TerminalView = React.createClass({
             title: 'Terminal',
         };
     },
-
+    componentDidMount() {
+        this.scrollToBottom();
+    },
+    componentDidUpdate() {
+        this.scrollToBottom();
+    },
+    scrollToBottom() {
+        this.outputEnd.scrollIntoView(); // empty div at end of output to allow automatic scrolling
+    },
     render() {
         let className, outputThis;
         switch (this.props.termOutput) {
@@ -80,8 +88,9 @@ const TerminalView = React.createClass({
                 </div>
                 <Scroll>
                     <div className={className}>
-                        <pre dangerouslySetInnerHTML={{__html: outputThis}}></pre>
+                        <pre dangerouslySetInnerHTML={{ __html: outputThis }} />
                     </div>
+                    <div ref={(el) => { this.outputEnd = el; }} />
                 </Scroll>
             </div>
         );
