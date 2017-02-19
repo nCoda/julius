@@ -22,7 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import { applyMiddleware, combineReducers, createStore } from 'redux';
+import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import createLogger from 'redux-logger';
 
 import { reducer as documentStore } from './document';
@@ -57,10 +57,13 @@ const logger = createLogger({
     },
 });
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(
     combineReducers(REDUCERS_OBJECT),
-    applyMiddleware(logger),
+    composeEnhancers(
+        applyMiddleware(logger),
+    ),
 );
 
 export default store;
