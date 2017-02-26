@@ -35,6 +35,8 @@ import '../../node_modules/codemirror/mode/python/python.js';
 import '../../node_modules/codemirror/addon/merge/merge.js';
 
 
+// IMPORTANT: This component is not being used for CodeScoreView, but is still being used for RevisionsView
+
 /** CodeMirrorReactWrapper: React wrapper for the CodeMirror text editor widget.
  *
  * React Props:

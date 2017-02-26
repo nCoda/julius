@@ -37,6 +37,7 @@
         "pdfjs-dist": "^1.6.230",
         "react": "15.3.1",
         "react-addons-test-utils": "15.3.1",
+        "react-codemirror": "^0.3.0",
         "react-dom": "15.3.1",
         "react-redux": "4.4.x",
         "react-router": "2.7.x",

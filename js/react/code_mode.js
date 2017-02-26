@@ -24,7 +24,12 @@
 
 import React from 'react';
 
-import { CodeMirror } from './codemirror';
+import CodeMirror from 'react-codemirror';
+
+require('codemirror/mode/python/python');
+require('codemirror/mode/xml/xml');
+// require('../lib/lilypond_codemirror'); custom syntax highlighting currently in development
+
 import { Button } from 'amazeui-react';
 import { Icon } from './svg_icons';
 
@@ -33,6 +38,7 @@ const CodeMode = React.createClass({
         codeLanguage: React.PropTypes.oneOf(['Python', 'Lilypond', 'MEI']).isRequired,
         initialValue: React.PropTypes.string,  // initial value for the editor
         submitFunction: React.PropTypes.func.isRequired,
+        active: React.PropTypes.bool, // parent tab active?
     },
     getDefaultProps() {
         return {
@@ -48,10 +54,7 @@ const CodeMode = React.createClass({
     componentDidMount() {
         window.addEventListener('keyup', this.handleKeyUp, true);
         window.addEventListener('keydown', this.handleKeyDown, true);
-    },
-    componentWillUnmount() {
-        window.removeEventListener('keyup', this.handleKeyUp, true);
-        window.addEventListener('keydown', this.handleKeyDown, true);
+        this.pullFocus();
     },
     componentWillReceiveProps(nextProps) {
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
@@ -62,13 +65,29 @@ const CodeMode = React.createClass({
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
             return true;
         }
+        if (this.props.active !== nextProps.active) {
+            return true;
+        }
         return nextState.editorValue !== this.state.editorValue;
+    },
+    componentDidUpdate() {
+        this.pullFocus();
+    },
+    componentWillUnmount() {
+        window.removeEventListener('keyup', this.handleKeyUp, true);
+        window.removeEventListener('keydown', this.handleKeyDown, true);
     },
     onBlur() {
         this.setState({ focused: false });
     },
     onFocus() {
         this.setState({ focused: true });
+    },
+    pullFocus() {
+        if (this.props.active) {
+            this.textInput.getCodeMirror().focus();
+            this.onFocus();
+        }
     },
     handleKeyUp(e) {
         if (this.state.focused && e.code === 'Enter' && e.shiftKey) {
@@ -92,20 +111,48 @@ const CodeMode = React.createClass({
         }
     },
     render() {
+        let mode;
+        let displayText;
+
+        switch (this.props.codeLanguage) {
+        case 'Lilypond':
+            mode = 'lilypond'; // custom syntax highlighting currently in development
+            displayText = 'Submit Lilypond';
+            break;
+        case 'MEI':
+            mode = 'xml';
+            displayText = 'Submit MEI';
+            break;
+        default:
+            mode = 'python';
+            displayText = 'Run Python';
+        }
         return (
             <div className="codemode-wrapper" onFocus={this.onFocus} onBlur={this.onBlur}>
                 <div className="nc-codemode-toolbar nc-toolbar">
                     <SubmitCodeButton
-                        hoverText={`Submit  ${this.props.codeLanguage}`}
+                        hoverText={displayText}
                         codeLanguage={this.props.codeLanguage.toLowerCase()}
                         onClick={() => this.handleSubmit()}
-                        displayText={`Submit  ${this.props.codeLanguage}`}
+                        displayText={displayText}
                     />
                 </div>
                 <div className="nc-content-wrap nc-codemode-editor">
                     <CodeMirror
+                        ref={input => this.textInput = input}
                         onChange={this.handleEditorChange}
-                        text={this.state.editorValue}
+                        value={this.state.editorValue}
+                        options={{
+                            mode,
+                            lineNumbers: true,
+                            autofocus: false,
+                            electricChars: true,
+                            indentUnit: 4,
+                            indentWithTabs: false,
+                            lineWrapping: false,
+                            smartIndent: true,
+                            theme: 'codemirror-ncoda light',
+                        }}
                     />
                 </div>
             </div>
