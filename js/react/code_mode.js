@@ -28,79 +28,92 @@ import { CodeMirror } from './codemirror';
 import { Button } from 'amazeui-react';
 import { Icon } from './svg_icons';
 
-const CodeMode = React.createClass({
-    propTypes: {
-        codeLanguage: React.PropTypes.oneOf(['Python', 'Lilypond', 'MEI']).isRequired,
-        initialValue: React.PropTypes.string,  // initial value for the editor
-        submitFunction: React.PropTypes.func.isRequired,
-    },
-    getDefaultProps() {
-        return {
-            initialValue: '',
-        };
-    },
-    getInitialState() {
-        return {
+class CodeMode extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onBlur = this.onBlur.bind(this);
+        this.onFocus = this.onFocus.bind(this);
+        this.handleKeyUp = this.handleKeyUp.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleEditorChange = this.handleEditorChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.state = {
             editorValue: this.props.initialValue || '',
             focused: false,
         };
-    },
+    }
     componentDidMount() {
         window.addEventListener('keyup', this.handleKeyUp, true);
         window.addEventListener('keydown', this.handleKeyDown, true);
-    },
+    }
     componentWillUnmount() {
         window.removeEventListener('keyup', this.handleKeyUp, true);
         window.addEventListener('keydown', this.handleKeyDown, true);
-    },
+    }
     componentWillReceiveProps(nextProps) {
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
             this.setState({ editorValue: nextProps.initialValue });
         }
-    },
+    }
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
             return true;
         }
         return nextState.editorValue !== this.state.editorValue;
-    },
+    }
     onBlur() {
         this.setState({ focused: false });
-    },
+    }
     onFocus() {
         this.setState({ focused: true });
-    },
+    }
     handleKeyUp(e) {
         if (this.state.focused && e.code === 'Enter' && e.shiftKey) {
             e.preventDefault();
             this.handleSubmit();
         }
-    },
+    }
     handleKeyDown(e) { // prevent default behavior on keydown for shift-enter, to allow keyup submit
         if (this.state.focused && e.code === 'Enter' && e.shiftKey) {
             e.preventDefault();
         }
-    },
+    }
     handleEditorChange(withThis) {
         this.setState({ editorValue: withThis });
-    },
+    }
     handleSubmit() {
         if (this.props.codeLanguage === 'Lilypond') {
             this.props.submitFunction(this.state.editorValue, 'lilypond');
         } else {
             this.props.submitFunction(this.state.editorValue);
         }
-    },
+    }
     render() {
+        let title;
+        switch (this.props.codeLanguage) {
+        case 'lilypond':
+            title = 'Submit LilyPond';
+            break;
+        case 'python':
+            title = 'Run Python';
+            break;
+        case 'mei':
+            title = 'Submit MEI';
+            break;
+        default:
+            title = 'Submit';
+        }
+
         return (
             <div className="codemode-wrapper" onFocus={this.onFocus} onBlur={this.onBlur}>
                 <div className="nc-codemode-toolbar nc-toolbar">
                     <SubmitCodeButton
-                        hoverText={`Submit  ${this.props.codeLanguage}`}
-                        codeLanguage={this.props.codeLanguage.toLowerCase()}
+                        hoverText={title}
+                        codeLanguage={this.props.codeLanguage}
                         onClick={() => this.handleSubmit()}
-                        displayText={`Submit  ${this.props.codeLanguage}`}
-                    />
+                    >
+                        {title}
+                    </SubmitCodeButton>
                 </div>
                 <div className="nc-content-wrap nc-codemode-editor">
                     <CodeMirror
@@ -110,31 +123,21 @@ const CodeMode = React.createClass({
                 </div>
             </div>
         );
-    },
-});
+    }
+}
+CodeMode.propTypes = {
+    codeLanguage: React.PropTypes.oneOf(['python', 'lilypond', 'mei']).isRequired,
+    initialValue: React.PropTypes.string,  // initial value for the editor
+    submitFunction: React.PropTypes.func.isRequired,
+};
+CodeMode.defaultProps = {
+    initialValue: '',
+};
 
-
-const SubmitCodeButton = React.createClass({
-    propTypes: {
-        amSize: React.PropTypes.oneOf(['xl', 'lg', 'default', 'sm', 'xs']),
-        amStyle: React.PropTypes.oneOf([
-            'default', 'primary', 'secondary', 'success', 'warning', 'danger', 'link',
-        ]),
-        codeLanguage: React.PropTypes.oneOf(['python', 'lilypond', 'mei']).isRequired,
-        displayText: React.PropTypes.string,
-        hoverText: React.PropTypes.string,
-        logo: React.PropTypes.bool,
-        onClick: React.PropTypes.func.isRequired,
-    },
-    getDefaultProps() {
-        return {
-            amSize: 'sm',
-            amStyle: 'link',
-            displayText: '',
-            hoverText: '',
-            logo: true,
-        };
-    },
+class SubmitCodeButton extends React.Component {
+    constructor(props) {
+        super(props);
+    }
     render() {
         let logo = null;
         if (this.props.logo) {
@@ -148,10 +151,29 @@ const SubmitCodeButton = React.createClass({
                 amStyle={this.props.amStyle}
                 onClick={this.props.onClick}
             >
-                {logo}{this.props.displayText}
+                {logo}{this.props.children}
             </Button>
         );
-    },
-});
+    }
+}
+SubmitCodeButton.PropTypes = {
+    amSize: React.PropTypes.oneOf(['xl', 'lg', 'default', 'sm', 'xs']),
+    amStyle: React.PropTypes.oneOf([
+        'default', 'primary', 'secondary', 'success', 'warning', 'danger', 'link',
+    ]),
+    children: React.PropTypes.string.isRequired,
+    codeLanguage: React.PropTypes.oneOf(['python', 'lilypond', 'mei']).isRequired,
+    hoverText: React.PropTypes.string,
+    logo: React.PropTypes.bool,
+    onClick: React.PropTypes.func.isRequired,
+};
+SubmitCodeButton.defaultProps = {
+    amSize: 'sm',
+    amStyle: 'link',
+    displayText: '',
+    hoverText: '',
+    logo: true,
+};
+
 
 export default CodeMode;

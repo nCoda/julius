@@ -42,8 +42,6 @@ export const ScoreView = React.createClass({
         };
     },
     handleSelect(key) {
-        // console.log('mode change: ', key);
-
         this.setState({ key });
     },
     render() {
@@ -52,7 +50,7 @@ export const ScoreView = React.createClass({
         return (
             <Tabs defaultActiveKey={this.state.key} onSelect={this.handleSelect} justify>
                 <Tabs.Item eventKey="1" title="Verovio">
-                    <VerovioView/>
+                    <VerovioView />
                 </Tabs.Item>
                 <Tabs.Item eventKey="2" title="PDF">
                     <PDFViewer file={pdf} />

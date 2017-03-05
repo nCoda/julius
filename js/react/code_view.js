@@ -35,6 +35,11 @@ const CodeView = React.createClass({
         submitToMEI: React.PropTypes.func.isRequired,
         lilyCurrent: React.PropTypes.string,
     },
+    getDefaultProps() {
+        return {
+            lilyCurrent: '',
+        };
+    },
     getInitialState() {
         return {
             currentTab: '2',
@@ -46,26 +51,26 @@ const CodeView = React.createClass({
         });
     },
     render() {
-        const ly = 'Lilypond';
-        const py = 'Python';
-        const mei = 'MEI';
+        const ly = 'lilypond';
+        const py = 'python';
+        const mei = 'mei';
 
         return (
             <Tabs defaultActiveKey={this.state.currentTab} onSelect={this.handleSelect} justify>
-                <Tabs.Item eventKey="1" title={py} className={py.toLowerCase()}>
+                <Tabs.Item eventKey="1" title={"Python"} className={py}>
                     <CodeMode
                         codeLanguage={py}
                         submitFunction={this.props.submitToPyPy}
                     />
                 </Tabs.Item>
-                <Tabs.Item eventKey="2" title={ly} className={ly.toLowerCase()}>
+                <Tabs.Item eventKey="2" title={"LilyPond"} className={ly}>
                     <CodeMode
                         codeLanguage={ly}
                         submitFunction={this.props.submitToLychee}
                         initialValue={this.props.lilyCurrent}
                     />
                 </Tabs.Item>
-                <Tabs.Item eventKey="3" title={mei} className={mei.toLowerCase()}>
+                <Tabs.Item eventKey="3" title={"MEI"} className={mei}>
                     <CodeMode
                         codeLanguage={mei}
                         submitFunction={this.props.submitToMEI}

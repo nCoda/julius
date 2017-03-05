@@ -78,7 +78,7 @@ const CodeScoreView = React.createClass({
                     >
                         <div className="ncoda-text-editor pane-container">
                             <CodeView
-                                lilyCurrent={this.props.lilyCurrent}
+                                lilyCurrent={this.props.lilyCurrent || ''}
                                 submitToLychee={signals.emitters.submitToLychee}
                                 submitToPyPy={signals.emitters.submitToPyPy}
                                 submitToMEI={this.submitToMEI}
