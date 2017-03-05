@@ -24,123 +24,61 @@
 
 import React from 'react';
 
-import CodeMirror from './codemirror';
-import {Button, ButtonGroup} from 'amazeui-react';
-import Scroll from './scroll';
-import {Icon} from './svg_icons';
-
-import store from '../stores';
-import { getters as lilyGetters } from '../stores/lilypond';
+import { Tabs } from 'amazeui-react';
+import CodeMode from './code_mode';
 
 
-const SubmitCodeButton = React.createClass({
+const CodeView = React.createClass({
     propTypes: {
-        amSize: React.PropTypes.oneOf(['xl', 'lg', 'default', 'sm', 'xs']),
-        amStyle: React.PropTypes.oneOf([
-            'default', 'primary', 'secondary', 'success', 'warning', 'danger', 'link',
-        ]),
-        codeLanguage: React.PropTypes.oneOf(['python', 'lilypond']).isRequired,
-        displayText: React.PropTypes.string,
-        hoverText: React.PropTypes.string,
-        logo: React.PropTypes.bool,
-        onClick: React.PropTypes.func.isRequired,
-    },
-    getDefaultProps() {
-        return {
-            amSize: 'xs',
-            amStyle: 'default',
-            displayText: '',
-            hoverText: '',
-            logo: false,
-        };
-    },
-    render() {
-        let logo = null;
-        if (this.props.logo) {
-            logo = <Icon type={this.props.codeLanguage} />;
-        }
-        return (
-            <Button
-                title={this.props.hoverText}
-                amSize={this.props.amSize}
-                amStyle={this.props.amStyle}
-                onClick={this.props.onClick}
-            >
-                {logo}{this.props.displayText}
-            </Button>
-        );
-    },
-});
-
-export const CodeView = React.createClass({
-    propTypes: {
-        initialValue: React.PropTypes.string,  // initial value for the editor
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
-        title: React.PropTypes.string,
+        submitToMEI: React.PropTypes.func.isRequired,
+        lilyCurrent: React.PropTypes.string,
     },
     getDefaultProps() {
         return {
-            initialValue: '',
-            title: 'Code Editor',
+            lilyCurrent: '',
         };
     },
     getInitialState() {
         return {
-            editorValue: this.props.initialValue || '',
+            currentTab: '2',
         };
     },
-    handleEditorChange(withThis) {
-        this.setState({editorValue: withThis});
-    },
-    handleSubmitPython() {
-        this.props.submitToPyPy(this.state.editorValue);
-    },
-    handleSubmitLilyPond() {
-        this.props.submitToLychee(this.state.editorValue, 'lilypond');
-    },
-    componentWillReceiveProps(nextProps) {
-        if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
-            this.setState({editorValue: nextProps.initialValue});
-        }
-    },
-    shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
-            return true;
-        }
-        else {
-            return nextState.editorValue !== this.state.editorValue;
-        }
+    handleSelect(key) {
+        this.setState({
+            currentTab: key,
+        });
     },
     render() {
+        const ly = 'lilypond';
+        const py = 'python';
+        const mei = 'mei';
+
         return (
-            <div>
-                <div className="pane-head">
-                    <h2>{this.props.title}</h2>
-                    <div className="ncoda-text-editor-controls">
-                        <ButtonGroup>
-                            <SubmitCodeButton
-                                codeLanguage={"python"}
-                                onClick={this.handleSubmitPython}
-                                logo
-                                hoverText={"Run as Python"}
-                            />
-                            <SubmitCodeButton
-                                codeLanguage={"lilypond"}
-                                onClick={this.handleSubmitLilyPond}
-                                logo
-                                hoverText={"Submit as Lilypond"}
-                            />
-                        </ButtonGroup>
-                    </div>
-                </div>
-                <Scroll>
-                    <CodeMirror
-                        onChange={this.handleEditorChange}
-                        text={this.state.editorValue}
+            <Tabs defaultActiveKey={this.state.currentTab} onSelect={this.handleSelect} justify>
+                <Tabs.Item eventKey="1" title={"Python"} className={py}>
+                    <CodeMode
+                        codeLanguage={py}
+                        submitFunction={this.props.submitToPyPy}
                     />
-                </Scroll>
-            </div>
+                </Tabs.Item>
+                <Tabs.Item eventKey="2" title={"LilyPond"} className={ly}>
+                    <CodeMode
+                        codeLanguage={ly}
+                        submitFunction={this.props.submitToLychee}
+                        initialValue={this.props.lilyCurrent}
+                    />
+                </Tabs.Item>
+                <Tabs.Item eventKey="3" title={"MEI"} className={mei}>
+                    <CodeMode
+                        codeLanguage={mei}
+                        submitFunction={this.props.submitToMEI}
+                    />
+                </Tabs.Item>
+            </Tabs>
         );
     },
 });
+
+export default CodeView;
