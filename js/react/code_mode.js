@@ -127,6 +127,19 @@ const CodeMode = React.createClass({
             mode = 'python';
             displayText = 'Run Python';
         }
+
+        const options = {
+            mode,
+            lineNumbers: true,
+            autofocus: false,
+            electricChars: true,
+            indentUnit: 4,
+            indentWithTabs: false,
+            lineWrapping: false,
+            smartIndent: true,
+            theme: 'codemirror-ncoda light',
+        };
+
         return (
             <div className="codemode-wrapper" onFocus={this.onFocus} onBlur={this.onBlur}>
                 <div className="nc-codemode-toolbar nc-toolbar">
@@ -142,17 +155,7 @@ const CodeMode = React.createClass({
                         ref={input => this.textInput = input}
                         onChange={this.handleEditorChange}
                         value={this.state.editorValue}
-                        options={{
-                            mode,
-                            lineNumbers: true,
-                            autofocus: false,
-                            electricChars: true,
-                            indentUnit: 4,
-                            indentWithTabs: false,
-                            lineWrapping: false,
-                            smartIndent: true,
-                            theme: 'codemirror-ncoda light',
-                        }}
+                        options={options}
                     />
                 </div>
             </div>
