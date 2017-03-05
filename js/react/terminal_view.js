@@ -54,29 +54,37 @@ const TerminalView = React.createClass({
     componentDidUpdate() {
         this.scrollToBottom();
     },
+    componentWillUnmount() {
+        this.divAtTheBottom = undefined;
+    },
     scrollToBottom() {
-        this.outputEnd.scrollIntoView(); // empty div at end of output to allow automatic scrolling
+        // empty div at end of output to allow automatic scrolling
+        if (this.divAtTheBottom && this.divAtTheBottom.scrollIntoView && this.divAtTheBottom.scrollIntoView()) {
+            this.divAtTheBottom.scrollIntoView();
+        }
     },
     render() {
-        let className, outputThis;
+        let className;
+        let outputThis;
         switch (this.props.termOutput) {
-            case 'in':
-            case 'stdin':
-                className = 'ncoda-terminal-window nc-terminal-in';
-                outputThis = this.props.stdin;
-                break;
+        default:
+        case 'in':
+        case 'stdin':
+            className = 'ncoda-terminal-window nc-terminal-in';
+            outputThis = this.props.stdin;
+            break;
 
-            case 'out':
-            case 'stdout':
-                className = 'ncoda-terminal-window nc-terminal-out';
-                outputThis = this.props.stdout;
-                break;
+        case 'out':
+        case 'stdout':
+            className = 'ncoda-terminal-window nc-terminal-out';
+            outputThis = this.props.stdout;
+            break;
 
-            case 'err':
-            case 'stderr':
-                className = 'ncoda-terminal-window nc-terminal-err';
-                outputThis = this.props.stderr;
-                break;
+        case 'err':
+        case 'stderr':
+            className = 'ncoda-terminal-window nc-terminal-err';
+            outputThis = this.props.stderr;
+            break;
         }
 
         return (
@@ -90,7 +98,7 @@ const TerminalView = React.createClass({
                     <div className={className}>
                         <pre dangerouslySetInnerHTML={{ __html: outputThis }} />
                     </div>
-                    <div ref={(el) => { this.outputEnd = el; }} />
+                    <div ref={(el) => { this.divAtTheBottom = el; }} />
                 </Scroll>
             </div>
         );
