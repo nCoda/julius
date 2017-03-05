@@ -42,7 +42,7 @@ const CodeView = React.createClass({
     },
     getInitialState() {
         return {
-            currentTab: '2',
+            currentTab: '2', // Lilypond tab
         };
     },
     handleSelect(key) {
@@ -61,18 +61,21 @@ const CodeView = React.createClass({
                     <CodeMode
                         codeLanguage={py}
                         submitFunction={this.props.submitToPyPy}
+                        active={this.state.currentTab === '1'}
                     />
                 </Tabs.Item>
                 <Tabs.Item eventKey="2" title={"LilyPond"} className={ly}>
                     <CodeMode
                         codeLanguage={ly}
                         submitFunction={this.props.submitToLychee}
+                        active={this.state.currentTab === '2'}
                         initialValue={this.props.lilyCurrent}
                     />
                 </Tabs.Item>
                 <Tabs.Item eventKey="3" title={"MEI"} className={mei}>
                     <CodeMode
                         codeLanguage={mei}
+                        active={this.state.currentTab === '3'}
                         submitFunction={this.props.submitToMEI}
                     />
                 </Tabs.Item>

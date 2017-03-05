@@ -24,7 +24,12 @@
 
 import React from 'react';
 
-import { CodeMirror } from './codemirror';
+import CodeMirror from 'react-codemirror';
+
+require('codemirror/mode/python/python');
+require('codemirror/mode/xml/xml');
+// require('../lib/lilypond_codemirror'); custom syntax highlighting currently in development
+
 import { Button } from 'amazeui-react';
 import { Icon } from './svg_icons';
 
@@ -45,10 +50,7 @@ class CodeMode extends React.Component {
     componentDidMount() {
         window.addEventListener('keyup', this.handleKeyUp, true);
         window.addEventListener('keydown', this.handleKeyDown, true);
-    }
-    componentWillUnmount() {
-        window.removeEventListener('keyup', this.handleKeyUp, true);
-        window.addEventListener('keydown', this.handleKeyDown, true);
+        this.pullFocus();
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
@@ -59,13 +61,29 @@ class CodeMode extends React.Component {
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
             return true;
         }
+        if (this.props.active !== nextProps.active) {
+            return true;
+        }
         return nextState.editorValue !== this.state.editorValue;
+    }
+    componentDidUpdate() {
+        this.pullFocus();
+    }
+    componentWillUnmount() {
+        window.removeEventListener('keyup', this.handleKeyUp, true);
+        window.removeEventListener('keydown', this.handleKeyDown, true);
     }
     onBlur() {
         this.setState({ focused: false });
     }
     onFocus() {
         this.setState({ focused: true });
+    }
+    pullFocus() {
+        if (this.props.active) {
+            this.textInput.getCodeMirror().focus();
+            this.onFocus();
+        }
     }
     handleKeyUp(e) {
         if (this.state.focused && e.code === 'Enter' && e.shiftKey) {
@@ -90,26 +108,44 @@ class CodeMode extends React.Component {
     }
     render() {
         let title;
+        let mode;
+
         switch (this.props.codeLanguage) {
         case 'lilypond':
             title = 'Submit LilyPond';
+            mode = 'lilypond';
             break;
         case 'python':
             title = 'Run Python';
+            mode = 'python';
             break;
         case 'mei':
             title = 'Submit MEI';
+            mode = 'xml';
             break;
         default:
             title = 'Submit';
+            mode = 'python';
         }
+
+        const options = {
+            mode,
+            lineNumbers: true,
+            autofocus: false,
+            electricChars: true,
+            indentUnit: 4,
+            indentWithTabs: false,
+            lineWrapping: false,
+            smartIndent: true,
+            theme: 'codemirror-ncoda light',
+        };
 
         return (
             <div className="codemode-wrapper" onFocus={this.onFocus} onBlur={this.onBlur}>
                 <div className="nc-codemode-toolbar nc-toolbar">
                     <SubmitCodeButton
                         hoverText={title}
-                        codeLanguage={this.props.codeLanguage}
+                        codeLanguage={this.props.codeLanguage.toLowerCase()}
                         onClick={() => this.handleSubmit()}
                     >
                         {title}
@@ -117,8 +153,10 @@ class CodeMode extends React.Component {
                 </div>
                 <div className="nc-content-wrap nc-codemode-editor">
                     <CodeMirror
+                        ref={input => this.textInput = input}
                         onChange={this.handleEditorChange}
-                        text={this.state.editorValue}
+                        value={this.state.editorValue}
+                        options={options}
                     />
                 </div>
             </div>
@@ -129,6 +167,7 @@ CodeMode.propTypes = {
     codeLanguage: React.PropTypes.oneOf(['python', 'lilypond', 'mei']).isRequired,
     initialValue: React.PropTypes.string,  // initial value for the editor
     submitFunction: React.PropTypes.func.isRequired,
+    active: React.PropTypes.bool.isRequired, // is parent tab active?
 };
 CodeMode.defaultProps = {
     initialValue: '',
