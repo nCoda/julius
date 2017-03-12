@@ -27,8 +27,10 @@ import React from 'react';
 import CodeMirror from 'react-codemirror';
 
 require('codemirror/mode/python/python');
-require('codemirror/mode/xml/xml');
-// require('../lib/lilypond_codemirror'); custom syntax highlighting currently in development
+require('codemirror/mode/xml/xml'); // for MEI
+require('codemirror/mode/stex/stex'); // for LilyPond
+require('codemirror/addon/edit/matchbrackets');
+require('codemirror/addon/edit/closetag');
 
 import { Button } from 'amazeui-react';
 import { Icon } from './svg_icons';
@@ -113,7 +115,7 @@ class CodeMode extends React.Component {
         switch (this.props.codeLanguage) {
         case 'lilypond':
             title = 'Submit LilyPond';
-            mode = 'lilypond';
+            mode = 'stex';
             break;
         case 'python':
             title = 'Run Python';
@@ -138,6 +140,8 @@ class CodeMode extends React.Component {
             lineWrapping: false,
             smartIndent: true,
             theme: 'codemirror-ncoda light',
+            matchBrackets: true,
+            autoCloseTags: true,
         };
 
         return (
