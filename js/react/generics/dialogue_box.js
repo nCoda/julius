@@ -72,7 +72,9 @@ export const DialogueBoxUnwrapped = React.createClass({
         this.setState({answer: text});
     },
     handleKeyUp(e) {
-        if (!this.props.keyboard && e.keyCode === 13) { // keyCode 13 is enter
+        // 'enter' (keyCode 13) will close window, but not if 'shift' is also pressed
+        // ('shift-enter' is used for submitting code in the CodeMode component and must be blocked here)
+        if (e.keyCode === 13 && !e.shiftKey) {
             this.handleClick();
         }
     },

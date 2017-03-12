@@ -38,8 +38,6 @@ class CodeMode extends React.Component {
         super(props);
         this.onBlur = this.onBlur.bind(this);
         this.onFocus = this.onFocus.bind(this);
-        this.handleKeyUp = this.handleKeyUp.bind(this);
-        this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleEditorChange = this.handleEditorChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
@@ -48,8 +46,6 @@ class CodeMode extends React.Component {
         };
     }
     componentDidMount() {
-        window.addEventListener('keyup', this.handleKeyUp, true);
-        window.addEventListener('keydown', this.handleKeyDown, true);
         this.pullFocus();
     }
     componentWillReceiveProps(nextProps) {
@@ -69,10 +65,6 @@ class CodeMode extends React.Component {
     componentDidUpdate() {
         this.pullFocus();
     }
-    componentWillUnmount() {
-        window.removeEventListener('keyup', this.handleKeyUp, true);
-        window.removeEventListener('keydown', this.handleKeyDown, true);
-    }
     onBlur() {
         this.setState({ focused: false });
     }
@@ -85,15 +77,9 @@ class CodeMode extends React.Component {
             this.onFocus();
         }
     }
-    handleKeyUp(e) {
-        if (this.state.focused && e.code === 'Enter' && e.shiftKey) {
-            e.preventDefault();
+    handleExtraKey() {
+        if (this.state.focused) {
             this.handleSubmit();
-        }
-    }
-    handleKeyDown(e) { // prevent default behavior on keydown for shift-enter, to allow keyup submit
-        if (this.state.focused && e.code === 'Enter' && e.shiftKey) {
-            e.preventDefault();
         }
     }
     handleEditorChange(withThis) {
@@ -138,6 +124,9 @@ class CodeMode extends React.Component {
             lineWrapping: false,
             smartIndent: true,
             theme: 'codemirror-ncoda light',
+            extraKeys: {
+                'Shift-Enter': this.handleExtraKey.bind(this),
+            },
         };
 
         return (
