@@ -23,23 +23,46 @@
 //-------------------------------------------------------------------------------------------------
 
 // Toolbars and Content Areas (siblings of toolbars)
-// (amazeUI buttons in toolbars should be amStyle="link")
+// (amazeUI buttons in these toolbars should be amStyle="link" and amSize="sm")
 
-@nc-toolbar-height: 4rem;
+@nc-toolbar-height: @nc-tab-height;
+@nc-toolbar-font-size: @font-size-sm;
+@nc-toolbar-vpadding: (@nc-toolbar-height - @nc-toolbar-font-size) / 2;
 
-.nc-toolbar, .ncoda-verovio .vida-wrapper .vida-toolbar {
+.nc-toolbar-styles(){ // styles also used for split pane headings
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: @nc-toolbar-height;
-    text-align: center;
-    padding: .5rem;
-    background-color: @white;
-    border-bottom: solid 1px @gray-lighter;
+    background-color: @comp-l1-bg;
+    border: 1px solid @comp-l1-bg;
+    font-size: @nc-tab-pane-head-font-size;
+    font-weight: 300;
+    color: @base-text-color;
     overflow: hidden;
     z-index: 2;
+
+    h1, h2, h3, h4, h5, h6 {
+        font-size: inherit;
+        font-weight: inherit;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+.nc-toolbar, .ncoda-verovio .vida-wrapper .vida-toolbar {
+    .nc-toolbar-styles();
+    padding: @nc-toolbar-vpadding @global-padding;
+    text-align: center;
+    border-bottom-color: @comp-l1-line;
+    font-size: @nc-toolbar-font-size;
+    line-height: @nc-toolbar-font-size;
     .global-box-shadow();
+
+    button, a {
+        padding: 0 @global-padding-sm;
+    }
 
     button:hover, a:hover {
         text-decoration: none;

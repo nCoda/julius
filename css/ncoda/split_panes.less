@@ -22,6 +22,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
+@pane-resizer-thickness: 3px;
+@pane-resizer-hover-thickness: 5px;
+
+@pane-head-font-size: @nc-tab-pane-head-font-size;
+@pane-head-height: @nc-tab-height;
+@pane-head-vpadding: (@pane-head-height - @pane-head-font-size) / 2; // pad to fill @pane-head-height
+
+
 .Resizer {
     background: @comp-l1-border;
     z-index: 1;
@@ -68,28 +76,13 @@
     color: @code-color;
 
     .pane-head {
-        display: block;
-        position: absolute;
-        height: @pane-head-height;
-        width: 100%;
-        min-width: 35rem;
-        padding: @global-padding/2 @global-padding;
-        background-color: @comp-l1-bg;
-        border-bottom: solid 1px @comp-l1-border;
-        color: @base-text-color;
-        top: 0;
-        left: 0;
-        z-index: 99;
+        .nc-toolbar-styles();
+        text-align: left;
+        padding: @pane-head-vpadding @global-padding;
+        border-bottom-color: @comp-l1-line;
+        font-size: @pane-head-font-size;
+        line-height: 1;
         .global-box-shadow();
-
-        h2 {
-            font-size: @pane-head-font-size;
-            line-height: @pane-head-line-height;
-            padding: @pane-head-font-padding 0;
-            margin: 0;
-            display: inline-block;
-            float: left;
-        }
     }
 }
 

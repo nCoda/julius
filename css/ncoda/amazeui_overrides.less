@@ -86,6 +86,7 @@
 @component-active-color: @base-text-color;
 
 @base-blockquote-small-color: @gray;
+
 blockquote {
     font-family: inherit;
     small {
@@ -107,9 +108,11 @@ body {
     cursor: default;
 }
 
-// NOTE: these aren't in amazeUI, but we'll use them there anyway
-@global-padding: 1.5rem;
-
+@global-padding:     @global-spacing;
+@global-padding-xs:  @global-spacing-xs;
+@global-padding-sm:  @global-spacing-sm;
+@global-padding-lg:  @global-spacing-lg;
+@global-padding-xl:  @global-spacing-xl;
 
 // =============================================================================
 // Fonts
@@ -155,19 +158,24 @@ button {
 // UI Component Colours
 // =============================================================================
 
-@view-bg:        @global-background;
+@view-bg:             @global-background;
 
-@comp-l1-bg:     @gray-lighter;
-@comp-l1-border: @gray-light;
-@comp-l1-line:   @gray-light;
+@comp-l1-bg:          @gray-lighter;
+@comp-l1-border:      @gray-light;
+@comp-l1-line:        darken(@comp-l1-bg, 7%);
+@comp-l1-text:        @base-text-color;
 
-@comp-l2-bg:     @gray-light;
-@comp-l2-border: @gray;
-@comp-l2-line:   @gray;
+@comp-l2-bg:          @gray-light;
+@comp-l2-border:      @gray;
+@comp-l2-line:        darken(@comp-l2-bg, 7%);
+@comp-l2-text:        @base-text-color;
+@comp-l2-text-fade:   @gray;
 
-@comp-l3-bg:     @gray;
-@comp-l3-border: @gray-dark;
-@comp-l3-line:   @gray-dark;
+@comp-l3-bg:          @gray;
+@comp-l3-border:      @gray-dark;
+@comp-l3-line:        darken(@comp-l3-bg, 7%);
+@comp-l3-text:        @base-text-color;
+@comp-l3-text-fade:   @gray-dark;
 
 
 // =============================================================================
@@ -262,6 +270,7 @@ button {
     top: 30%;
 }
 
+
 // =============================================================================
 // List and ListItem
 // =============================================================================
@@ -295,23 +304,12 @@ button {
 
 
 // =============================================================================
-// Split Panes and Custom Scrollbars
-// =============================================================================
-
-@pane-head-font-size: @btn-xs-font-size + .5em;
-@pane-head-line-height: @btn-line-height;
-@pane-head-font-padding: .25em;
-@pane-head-height: @pane-head-font-size + @pane-head-line-height + @global-padding;
-@pane-resizer-thickness: 3px;
-@pane-resizer-hover-thickness: 5px;
-
-
-// =============================================================================
 // Tabs
-// used for mode-switching in CodeScoreView
+// (for mode-switching in CodeScoreView)
 // =============================================================================
 
-@tab-height: 4rem;
+@nc-tab-pane-head-font-size: @font-size-base;
+@nc-tab-height: @nc-tab-pane-head-font-size * 2 + .8rem;
 
 .hook-tabs() {
     height: 100%;
@@ -319,16 +317,51 @@ button {
 }
 
 .hook-nav-tabs() {
-    height: @tab-height;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    background-color: @white;
+    &.am-nav-justify {
+        height: @nc-tab-height;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        color: @comp-l2-text-fade;
+        background-color: @comp-l2-bg;
 
-    > li > a:hover {
-        color: @icon-btn-hover-color;
-        background-color: @icon-btn-hover-background;
+        > li {
+            > a {
+                color: inherit;
+                border-color: @comp-l2-bg;
+                border-bottom-color: @comp-l2-line;
+                border-left-color: @comp-l2-line;
+
+                &:hover, &:focus {
+                    color: @base-text-color;
+                    background-color: @comp-l2-bg;
+                    border-color: @comp-l2-bg;
+                    border-bottom-color: @comp-l2-line;
+                    border-left-color: @comp-l2-line;
+                    box-shadow: none;
+                }
+            }
+
+            &:first-child > a {
+                border-left-color: @comp-l2-bg;
+            }
+
+            &.am-active {
+                > a, > a:hover, > a:focus {
+                    color: @base-text-color;
+                    background-color: @comp-l1-bg;
+                    border-color: @comp-l1-bg;
+                    border-left-color: @comp-l2-line;
+                    box-shadow: none;
+                    font-weight: 300;
+
+                }
+                &:first-child > a, &:first-child > a:hover, &:first-child > a:focus {
+                    border-left-color: @comp-l1-bg;
+                }
+            }
+        }
     }
 }
 
@@ -338,21 +371,29 @@ button {
     height: 100%;
     top: 0;
     left: 0;
-    padding-top: @tab-height;
+    padding-top: @nc-tab-height;
     z-index: 0;
 }
 
 .hook-tab-panel() {
     height: 100%;
     padding: 0;
-    background-color: @white;
+    background-color: @global-background;
 
     > div { // content wrapper
         width: 100%;
         height: 100%;
         overflow: hidden;
         background: @view-bg;
-        padding-top: @tab-height;
+        padding-top: @nc-tab-height;
+    }
+}
+
+.am-tabs-fade {
+    transition: none;
+
+    .am-tab-panel {
+        transition: none;
     }
 }
 
@@ -361,5 +402,5 @@ button {
 // =============================================================================
 
 .global-box-shadow() {
-    box-shadow: 0 0 @global-padding 0 @comp-l1-border;
+    box-shadow: 0 0 @global-padding 0 rgba(red(@comp-l1-border), green(@comp-l1-border), blue(@comp-l1-border), .75);
 }

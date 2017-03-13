@@ -34,34 +34,7 @@
 /* ********************************************************************************************* */
 /* CodeView - CodeMirror text editor pane */
 
-// TODO: Should these be moved into codemirror_ncoda.less?
-
 .ncoda-text-editor {
-
-    .ncoda-text-editor-controls { // container for buttons ("Run as Python" and "Submit as Lilypond")
-        float: right;
-        border-radius: @global-radius;
-
-        button {
-            padding-top: @pane-head-font-padding;
-            padding-bottom: @pane-head-font-padding;
-
-            svg {
-                height: @pane-head-font-size;
-                width: auto;
-
-                path {
-                    fill: @btn-default-color;
-                }
-            }
-
-            &:hover svg path {
-                fill: @black;
-            }
-
-        }
-    }
-
     .CodeMirror { // see codemirror_ncoda.less for colors
         position: absolute; //needed to fill flexbox parent
         width: 100%;
@@ -136,9 +109,13 @@
                     text-align: center;
                 }
 
-                .vida-button:hover {
-                    color: @link-hover-color;
-                    background-color: transparent;
+                .vida-button {
+                    padding: 0 @global-padding-sm;
+
+                    &:hover {
+                        color: @link-hover-color;
+                        background-color: transparent;
+                    }
                 }
             }
 
