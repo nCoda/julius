@@ -32,6 +32,8 @@ require('codemirror/mode/stex/stex'); // for LilyPond
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closetag');
 
+import { emitters as signals } from '../nuclear/signals';
+
 import { Button } from 'amazeui-react';
 import { Icon } from './svg_icons';
 
@@ -42,6 +44,7 @@ class CodeMode extends React.Component {
         this.onFocus = this.onFocus.bind(this);
         this.handleEditorChange = this.handleEditorChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSubmitPDF = this.handleSubmitPDF.bind(this);
         this.state = {
             editorValue: this.props.initialValue || '',
             focused: false,
@@ -94,6 +97,10 @@ class CodeMode extends React.Component {
             this.props.submitFunction(this.state.editorValue);
         }
     }
+    handleSubmitPDF() {
+        signals.submitToLychee(this.state.editorValue, 'lilypond', true);
+        signals.doLilyPondPDF();
+    }
     render() {
         let title;
         let mode;
@@ -133,6 +140,19 @@ class CodeMode extends React.Component {
             },
         };
 
+        const pdfButton = this.props.codeLanguage === 'lilypond'
+            ? (
+                <SubmitCodeButton
+                    hoverText="Render LilyPond document to the PDF tab."
+                    codeLanguage="lilypond"
+                    onClick={this.handleSubmitPDF}
+                >
+                    {'Render to PDF'}
+                </SubmitCodeButton>
+            ) :
+                null
+            ;
+
         return (
             <div className="codemode-wrapper" onFocus={this.onFocus} onBlur={this.onBlur}>
                 <div className="nc-codemode-toolbar nc-toolbar">
@@ -143,6 +163,7 @@ class CodeMode extends React.Component {
                     >
                         {title}
                     </SubmitCodeButton>
+                    {pdfButton}
                 </div>
                 <div className="nc-content-wrap nc-codemode-editor">
                     <CodeMirror

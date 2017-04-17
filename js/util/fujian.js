@@ -39,6 +39,7 @@ import {signals} from '../nuclear/signals';
 
 import { store } from '../stores';
 import { actions as docActions } from '../stores/document';
+import { actions as lilyActions } from '../stores/lilypond';
 import { actions as metaActions, getters as metaGetters } from '../stores/meta';
 import { actions as uiActions } from '../stores/ui';
 
@@ -124,6 +125,10 @@ const FUJIAN_SIGNALS = {
                 log.warn(response.message);
             }
         }
+    },
+
+    'lilypond_pdf': (response) => {
+        lilyActions.updatePDF(response.meta, response.payload);
     },
 };
 
@@ -322,6 +327,10 @@ class Fujian {
         if (response.signal) {
             if (FUJIAN_SIGNALS[response.signal]) {
                 FUJIAN_SIGNALS[response.signal](response);
+            }
+        } else if (response.type) {
+            if (FUJIAN_SIGNALS[response.type]) {
+                FUJIAN_SIGNALS[response.type](response);
             }
         }
 

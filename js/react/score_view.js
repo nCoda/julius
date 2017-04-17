@@ -29,23 +29,36 @@ import { connect } from 'react-redux';
 
 import { emitters as signals } from '../nuclear/signals';
 import { getters as docGetters } from '../stores/document';
+import { getters as lilyGetters } from '../stores/lilypond';
 import { getters as vrvGetters } from '../stores/verovio';
 import { VidaView } from '../lib/vida';
 
 import PDFViewer from './pdf_viewer';
 import { Tabs } from 'amazeui-react';
 
-export const ScoreView = React.createClass({
+export const ScoreViewUnwrapped = React.createClass({
+    displayName: 'ScoreView',
+
+    propTypes: {
+        pdfPath: React.PropTypes.string,
+    },
+
+    getDefaultProps() {
+        return { pdfPath: '' };
+    },
+
     getInitialState() {
         return {
             key: '1',
         };
     },
+
     handleSelect(key) {
         this.setState({ key });
     },
+
     render() {
-        const pdf = 'js/react/tests/dummy_multi.pdf';
+        const pdf = this.props.pdfPath || 'js/react/tests/dummy_multi.pdf';
 
         return (
             <Tabs defaultActiveKey={this.state.key} onSelect={this.handleSelect} justify>
@@ -59,6 +72,11 @@ export const ScoreView = React.createClass({
         );
     },
 });
+export const ScoreView = connect((state) => {
+    return {
+        pdfPath: lilyGetters.pdfPath(state),
+    };
+})(ScoreViewUnwrapped);
 
 
 const ICON_CLASSES = {

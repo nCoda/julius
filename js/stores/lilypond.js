@@ -47,7 +47,8 @@ import { getters as docGetters, types as docTypes } from './document';
  * Values of the "Data Map" described above.
  *
  * @param {string} latest - The most recent representation of the section provided by Lychee.
- * @param {string} working - The section as it is currently (or was most recently) shown in CodeView.
+ * @param {string} working - The section as currently (or most recently) shown in CodeView.
+ * @param {string} pdf_path - Absolute pathname to a LilyPond-produced PDF file of the section.
  *
  * I predict we'll need to keep multiple revisions in each Section Map. For now, the "latest" will
  * represent a "known good" condition of the document that we obtained from Lychee. The "working"
@@ -61,11 +62,25 @@ import { getters as docGetters, types as docTypes } from './document';
 
 export const types = {
     // TODO: implement this for submitting to Lychee
+    UPDATE_PDF: 'update path to LilyPond PDF of a section',
     UPDATE_WORKING: 'update working copy of LilyPond of a section',
 };
 
 
 export const actions = {
+    /** updatePDF() - Update the pathname to a section's PDF file.
+     *
+     * @param {string} xmlid
+     * @param {string} pathname
+     */
+    updatePDF(xmlid, pathname) {
+        store.dispatch({
+            type: types.UPDATE_PDF,
+            payload: pathname,
+            meta: xmlid,
+        });
+    },
+
     /** updateWorking()
      *
      * @param {string} xmlid
@@ -102,6 +117,12 @@ export const getters = {
         return state.lilypond.getIn(['data', docGetters.cursor(state).first(), 'latest'], '');
     },
 
+    /** pdfPath() - Absolute pathname of the currently active section.
+     */
+    pdfPath(state) {
+        return state.lilypond.getIn(['data', docGetters.cursor(state).first(), 'pdf_path'], '');
+    },
+
     /** working() - LilyPond of the currently active section; prefer the "working" version, but
      *              give the authoritative Lychee copy if the "working" version is not present.
      */
@@ -118,7 +139,7 @@ export function makeInitialState() {
 
 
 export function makeEmptySection() {
-    return Immutable.Map({latest: '', working: ''});
+    return Immutable.Map({latest: '', pdf_path: '', working: ''});
 }
 
 
@@ -161,6 +182,9 @@ export default function reducer(state = makeInitialState(), action) {
                 }
             }
             break;
+
+        case types.UPDATE_PDF:
+            return state.setIn(['data', action.meta, 'pdf_path'], action.payload);
 
         case types.UPDATE_WORKING:
             if (action.error !== true) {

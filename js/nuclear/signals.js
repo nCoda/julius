@@ -199,6 +199,12 @@ const emitters = {
     lyLoadDefaultRepo() {
         emitters.lySetRepoDir('"programs/hgdemo"');
     },
+
+    doLilyPondPDF() {
+        const sectID = docGetters.cursor(store.getState()).last();
+        const code = `{"type":"lilypond_pdf","payload":"${sectID}"}`;
+        fujian.sendWS(code);
+    },
 };
 
 

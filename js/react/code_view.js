@@ -72,13 +72,13 @@ const CodeView = React.createClass({
                         initialValue={this.props.lilyCurrent}
                     />
                 </Tabs.Item>
-                <Tabs.Item eventKey="3" title={"MEI"} className={mei}>
+                {/*<Tabs.Item eventKey="3" title={"MEI"} className={mei}>
                     <CodeMode
                         codeLanguage={mei}
                         active={this.state.currentTab === '3'}
                         submitFunction={this.props.submitToMEI}
                     />
-                </Tabs.Item>
+                </Tabs.Item>*/}
             </Tabs>
         );
     },
