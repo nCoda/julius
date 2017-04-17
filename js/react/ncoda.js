@@ -24,33 +24,30 @@
 // ------------------------------------------------------------------------------------------------
 
 
-import {Button, ButtonGroup, Dropdown, Icon, Nav, NavItem, Topbar} from 'amazeui-react';
+import { Button, ButtonCheck, Dropdown, Icon, Nav, NavItem, Topbar } from 'amazeui-react';
 import React from 'react';
-import {Link} from 'react-router';
+import { Link } from 'react-router';
 
 import { actions as uiActions } from '../stores/ui';
 import { actions as metaActions, LOG_LEVELS } from '../stores/meta';
 
-import {log} from '../util/log';
+import { log } from '../util/log';
 import signals from '../nuclear/signals';
-import {DialogueBox, OffCanvas} from './generics';
-import {Icon as NCIcon} from './svg_icons';
-import {Logo} from './svg_icons';
+import { DialogueBox, OffCanvas } from './generics';
+import { Icon as NCIcon } from './svg_icons';
+import { Logo } from './svg_icons';
 
 
 export const MainScreen = React.createClass({
     handleOpen() {
         if (require) {
-            const remote = require('electron').remote;
-            const dir = remote.dialog.showOpenDialog(
-                {
-                    title: 'title',
-                    properties: ['openDirectory', 'createDirectory'],
-                }
-            );
+            const remote = window.require('electron').remote;
+            const dir = remote.dialog.showOpenDialog({
+                title: 'Select an existing project folder or create a new one',
+                properties: ['openDirectory', 'createDirectory'],
+            });
             signals.emitters.lySetRepoDir(dir);
-        }
-        else {
+        } else {
             // this is a much worse solution than the native dialogue above
             uiActions.showModal(
                 'question',
@@ -69,17 +66,45 @@ export const MainScreen = React.createClass({
     render() {
         return (
             <div id="ncoda-loading">
-                <div className="am-container am-text-center">
-                    <p>{"Click on the coda symbol above to access the menu and navigate the program."}</p>
-                    <div>
-                        <p>{"Use one of these buttons to open a repository."}</p>
-                        <ButtonGroup>
-                            <Button onClick={this.handleOpen}>{"Open..."}</Button>
-                            <Button onClick={this.handleDefaultOpen}>{"Load Default Repository"}</Button>
-                            <Button onClick={this.handleTempOpen}>
-                                {"Load Empty (Temporary) Repository"}
-                            </Button>
-                        </ButtonGroup>
+                <div className="am-container">
+                    <div className="getting-started am-u-sm-10 am-u-sm-offset-1 am-u-md-8 am-u-md-offset-2 am-u-lg-6 am-u-lg-offset-3 am-u-end">
+                        <h1 className="am-text-center">{"Getting started with "}<i>{`nCoda`}</i></h1>
+                        <ol>
+                            <li>
+                                <div>
+                                    <p>{"Select a project:"}</p>
+                                    <ButtonCheck stacked>
+                                        <Button onClick={this.handleOpen}>
+                                            <input type="checkbox" name="project-source" value="existing"/>
+                                            {"Open an "}<strong>{"existing"}</strong>{" project folder..."}
+                                        </Button>
+                                        <Button onClick={this.handleOpen}>
+                                            <input type="checkbox" name="project-source" value="new"/>
+                                            {"Create a "}<strong>{"new"}</strong>{" project folder..."}
+                                        </Button>
+                                        <Button onClick={this.handleDefaultOpen}>
+                                            <input type="checkbox" name="project-source" value="demo"/>
+                                            {"Open the "}<strong>{"demo"}</strong>{" project"}
+                                        </Button>
+                                        <Button onClick={this.handleTempOpen}>
+                                            <input type="checkbox" name="project-source" value="sandbox"/>
+                                            {"Open a new "}<strong>{"sandbox"}</strong>{" project (save disabled)"}
+                                        </Button>
+                                    </ButtonCheck>
+                                </div>
+                            </li>
+                            <li>
+                                <p>
+                                    {"Click on the "}
+                                    <strong>
+                                        <span className="ncoda-color">{"green"}</span>
+                                        {" coda symbol"}
+                                    </strong>
+                                    {" to access the menu and select "}
+                                    <strong>{"CodeScoreView"}</strong>
+                                </p>
+                            </li>
+                        </ol>
                     </div>
                 </div>
                 <MainScreenQuote/>
@@ -100,12 +125,12 @@ const MainScreenQuote = React.createClass({
     render() {
         return (
             <div className="am-g">
-                <div className="am-u-sm-6 am-u-sm-offset-3 am-u-md-6 am-u-md-offset-3 am-u-lg-6 am-u-lg-offset-3 am-u-end">
+                <div className="am-u-sm-10 am-u-sm-offset-1 am-u-md-8 am-u-md-offset-3 am-u-lg-6 am-u-lg-offset-3 am-u-end">
                     <blockquote cite={this.state.cite} className="nc-quote">
                         <i className="fa fa-quote-left"/>
                         <p>{this.state.quote}</p>
                         <i className="fa fa-quote-right"/>
-                        <small>{"\u2014 ${this.state.attribution}"}</small>
+                        <small>{`\u2014 ${this.state.attribution}`}</small>
                     </blockquote>
                 </div>
             </div>
@@ -118,18 +143,18 @@ export const Colophon = React.createClass({
     render() {
         return (
             <div id="ncoda-colophon">
-                <div className="am-container am-text-center">
-                    <Logo className="am-img-responsive am-center" />
-                    <div>
-                        <h2>{`About nCoda`}</h2>
+                <div className="am-g">
+                    <div className="am-text-justify am-u-sm-10 am-u-sm-offset-1 am-u-md-8 am-u-md-offset-2 am-u-lg-8 am-u-lg-offset-2 am-u-end">
+                        <div className="am-text-center"><Logo /></div>
+                        <h2 className="am-text-center">{`About nCoda`}</h2>
                         <p><i>{`nCoda`}</i>{` is the software you're using now, and the community
                             of people who make that software. If you're interested in joining our
-                            contributor community, please visit `}
+                            community of musician-developers, please visit `}
                             <a
                                 href="https://spivak.ncodamusic.org/t/getting-started-with-ncoda/154"
                                 target="_blank"
                             >
-                            {`this thread`}</a>
+                                {`this thread`}</a>
                             {` on our discussion board for more information.`}
                         </p>
                         <p>
@@ -137,20 +162,21 @@ export const Colophon = React.createClass({
                             terms of the GNU General Public Licence (GPL), version 3 or any later
                             version. You can learn about your rights and responsibilities from `}
                             <a href="https://www.gnu.org/licenses/quick-guide-gplv3" target="_blank">
-                            {`this quick guide`}</a>{` or by reading `}
+                                {`this quick guide`}</a>{` or by reading `}
                             <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">
-                            {`the full license.`}</a>
+                                {`the full license.`}</a>
                         </p>
                         <p>
-                            {`In accordance with the GPL, the source code of `}
-                            <i>{`nCoda`}</i>{` is available for download at no direct cost. Our
+                            {`In accordance with the GPL, the `}
+                            <i>{`nCoda`}</i>
+                            {` source code is available for download at no direct cost. Our
                             repositories are hosted on `}
                             <a href="https://goldman.ncodamusic.org/diffusion/" target="_blank">
-                            {`Phabricator`}
+                                {`Phabricator`}
                             </a>{` in addition to a mirror on `}
                             <a href="https://github.com/ncoda" target="_blank">{`GitHub`}</a>{`.`}
                         </p>
-                        <h2>{`Need Help?`}</h2>
+                        <h2 className="am-text-center">{`Need Help?`}</h2>
                         <p>
                             {`We're still working on our documentation for end users. In the meantime,
                             you may wish to consult the user documentation for `}
@@ -159,9 +185,9 @@ export const Colophon = React.createClass({
                                 target="_blank"
                                 rel="noopener"
                             >
-                            {`LilyPond`}</a>{` and `}
+                                {`LilyPond`}</a>{` and `}
                             <a href="http://abjad.mbrsi.org/" target="_blank" rel="noopener">
-                            {`Abjad`}</a>{`.`}
+                                {`Abjad`}</a>{`.`}
                         </p>
                     </div>
                 </div>

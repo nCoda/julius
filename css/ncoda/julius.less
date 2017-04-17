@@ -23,7 +23,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-------------------------------------------------------------------------------------------------
 
-
 /* ********************************************************************************************* */
 /* Boring things */
 
@@ -35,6 +34,9 @@
     height: 100%;
 }
 
+.ncoda-color {
+    color: @global-primary;
+}
 
 /* ********************************************************************************************* */
 /* Topbar for navigation */
@@ -45,9 +47,8 @@
     }
 }
 
-
 /* ********************************************************************************************* */
-/* The loading screen, shown before PyPy.js and Verovio are compiled. */
+/* The home/loading screen */
 
 #ncoda-loading {
     height: 100%;
@@ -56,6 +57,13 @@
     flex-flow: column;
     justify-content: space-around;
     align-items: center;
+    overflow: auto;
+
+    .getting-started {
+        ol li {
+            margin-bottom: @global-spacing-lg;
+        }
+    }
 }
 
 blockquote.nc-quote {
@@ -67,7 +75,6 @@ blockquote.nc-quote {
     }
 }
 
-
 /* ********************************************************************************************* */
 /* The colophon, "about nCoda." */
 
@@ -78,6 +85,7 @@ blockquote.nc-quote {
     flex-flow: column;
     justify-content: space-around;
     align-items: center;
+    overflow: auto;
 
     > * {
         max-height: 100%;
@@ -88,9 +96,10 @@ blockquote.nc-quote {
     }
     svg {
         max-width: 75%;
+        height: @base-font-size * 10;
+        margin-bottom: @global-spacing-xl;
     }
 }
-
 
 /* ********************************************************************************************* */
 /* Icons and Code Buttons */
@@ -110,12 +119,8 @@ button:hover > svg.nc-svg-icon * {
     height: inherit;
 }
 
-.nc-code-btn {
-}
-
-// =============================================================================
-// Off-screen main menu
-// =============================================================================
+/* ********************************************************************************************* */
+/* Off-screen main menu */
 
 .am-menu-offcanvas1 {
     .am-offcanvas-bar {
