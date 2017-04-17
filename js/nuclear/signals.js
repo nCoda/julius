@@ -71,14 +71,12 @@ const emitters = {
             fujian.sendWS(
                 `session.run_outbound(views_info="${sectId}", revision="${revision}")\n`
             );
-        }
-        else if (sectId) {
+        } else if (sectId) {
             fujian.sendWS(
                 `session.run_outbound(views_info="${sectId}")\n`
             );
-        }
-        else {
-            log.error('lyGetSectionById() is missing required "sectId" argument');
+        } else {
+            log.info('lyGetSectionById() is missing "sectId" argument; nothing will happen');
         }
     },
     submitToLychee(data, format, inboundOnly = false) {
@@ -90,36 +88,40 @@ const emitters = {
         // - format (string) The string "lilypond".
         //
 
-        if ('string' !== typeof data) {
+        if (typeof data !== 'string') {
             log.error('submitToLychee() received a "data" argument that is not a string.');
             return;
         }
 
-        if ('lilypond' === format) {
+        const lowercaseFormat = format && format.toLowerCase();
+
+        if (lowercaseFormat === 'lilypond') {
             // First check there is no """ in the string, which would cause the string to terminate
             // early and allow executing arbitrary code.
-            if (-1 === data.indexOf('"""')) {
+            if (data.indexOf('"""') >= 0) {
+                log.error('Invalid LilyPond code. Please do not use """ in your LilyPond code.');
+            } else {
                 // find the @xml:id
-                const xmlid = docGetters.cursor(store.getState()).last();
+                let xmlid = docGetters.cursor(store.getState()).last();
+                if (xmlid) {
+                    xmlid = `"${xmlid}"`;
+                } else {
+                    xmlid = 'None';
+                }
                 // make sure all the "\" chars are escaped
-                data = data.replace(/\\/g, '\\\\');
+                const cleanedData = data.replace(/\\/g, '\\\\');
                 // put the Python command around it
                 let code;
                 if (inboundOnly) {
-                    code = `session.run_inbound(dtype='LilyPond', doc="""${data}""", sect_id="${xmlid}")`;
+                    code = `session.run_inbound(dtype='LilyPond', doc="""${cleanedData}""", sect_id=${xmlid})`;
                 } else {
-                    code = `session.run_workflow(dtype='LilyPond', doc="""${data}""", views_info="${xmlid}")`;
+                    code = `session.run_workflow(dtype='LilyPond', doc="""${cleanedData}""", sect_id=${xmlid})`;
                 }
                 fujian.sendWS(code);
             }
-            else {
-                log.error('Invalid LilyPond code. Please do not use """ in your LilyPond code.');
-            }
-        }
-        else if ('mei' === format) {
-            log.info(`submitToLychee() was called with MEI data, but that's not implemented yet!`);
-        }
-        else {
+        } else if (lowercaseFormat === 'mei') {
+            log.info('submitToLychee() was called with MEI data, but that\'s not implemented yet!');
+        } else {
             log.error('submitToLychee() received an unknown "format" argument.');
         }
     },
@@ -188,9 +190,17 @@ const emitters = {
         if (path.indexOf(';') > -1 || path.indexOf(')') > -1 || path.indexOf("'") > -1) {
             // TODO: blacklisting like this isn't sufficient
             log.error('The pathname is invalid');
-        }
-        else {
-            const code = `session.set_repo_dir(${path}, run_outbound=True)`;
+        } else {
+            let cleanedPath;
+            if ((path[0] === "'" && path[path.length - 1] === "'") ||
+                (path[0] === '"' && path[path.length - 1] === '"')
+            ) {
+                cleanedPath = path;
+            } else {
+                cleanedPath = `'${path}'`;
+            }
+
+            const code = `session.set_repo_dir(${cleanedPath}, run_outbound=True)`;
             fujian.sendWS(code);
         }
     },
@@ -198,6 +208,10 @@ const emitters = {
      */
     lyLoadDefaultRepo() {
         emitters.lySetRepoDir('"programs/hgdemo"');
+    },
+
+    lyLoadSandboxRepo() {
+        emitters.lySetRepoDir('""');
     },
 
     doLilyPondPDF() {

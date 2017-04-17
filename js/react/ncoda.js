@@ -61,7 +61,7 @@ export const MainScreen = React.createClass({
         signals.emitters.lyLoadDefaultRepo();
     },
     handleTempOpen() {
-        signals.emitters.lySetRepoDir('');
+        signals.emitters.lyLoadSandboxRepo();
     },
     render() {
         return (

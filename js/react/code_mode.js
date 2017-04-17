@@ -91,7 +91,7 @@ class CodeMode extends React.Component {
         this.setState({ editorValue: withThis });
     }
     handleSubmit() {
-        if (this.props.codeLanguage === 'Lilypond') {
+        if (this.props.codeLanguage === 'lilypond') {
             this.props.submitFunction(this.state.editorValue, 'lilypond');
         } else {
             this.props.submitFunction(this.state.editorValue);
