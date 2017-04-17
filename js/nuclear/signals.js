@@ -58,23 +58,6 @@ const emitters = {
     fujianStopWS() {
         fujian.stopWS();
     },
-    /** lyInitializeSession(): Initialize a session management object in Lychee.
-     *
-     * Runs this code:
-     * >>> import lychee
-     * >>> _JULIUS_SESSION = lychee.workflow.session.InteractiveSession()
-     *
-     * NB: the "ly" prefix is for signals doing something with Lychee
-     */
-    lyInitializeSession() {
-        fujian.sendWS(
-`if 'lychee' not in globals():
-    import lychee
-if '_JULIUS_SESSION' not in globals():
-    import lychee.workflow.session
-    _JULIUS_SESSION = lychee.workflow.session.InteractiveSession()\n`
-        );
-    },
     /** lyGetSectionById(): Run the outbound steps to get MEI data for a specific section.
      *
      * Parameters:
@@ -86,19 +69,19 @@ if '_JULIUS_SESSION' not in globals():
     lyGetSectionById(sectId, revision) {
         if (revision) {
             fujian.sendWS(
-                `lychee.signals.ACTION_START.emit(views_info="${sectId}", revision="${revision}")\n`
+                `session.run_outbound(views_info="${sectId}", revision="${revision}")\n`
             );
         }
         else if (sectId) {
             fujian.sendWS(
-                `lychee.signals.ACTION_START.emit(views_info="${sectId}")\n`
+                `session.run_outbound(views_info="${sectId}")\n`
             );
         }
         else {
             log.error('lyGetSectionById() is missing required "sectId" argument');
         }
     },
-    submitToLychee(data, format) {
+    submitToLychee(data, format, inboundOnly = false) {
         // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
         // currently-active score/section.
         //
@@ -121,7 +104,12 @@ if '_JULIUS_SESSION' not in globals():
                 // make sure all the "\" chars are escaped
                 data = data.replace(/\\/g, '\\\\');
                 // put the Python command around it
-                const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='LilyPond', doc="""${data}""", views_info="${xmlid}")`;
+                let code;
+                if (inboundOnly) {
+                    code = `session.run_inbound(dtype='LilyPond', doc="""${data}""", sect_id="${xmlid}")`;
+                } else {
+                    code = `session.run_workflow(dtype='LilyPond', doc="""${data}""", views_info="${xmlid}")`;
+                }
                 fujian.sendWS(code);
             }
             else {
@@ -129,10 +117,7 @@ if '_JULIUS_SESSION' not in globals():
             }
         }
         else if ('mei' === format) {
-            // Prolly gonna crash, but YOLO.
             log.info(`submitToLychee() was called with MEI data, but that's not implemented yet!`);
-            // const code = `import lychee\nlychee.signals.ACTION_START.emit(dtype='MEI', doc="""${data}""")`;
-            // fujian.sendWS(code);
         }
         else {
             log.error('submitToLychee() received an unknown "format" argument.');
@@ -166,8 +151,7 @@ if '_JULIUS_SESSION' not in globals():
         else {
             who = 'None';
         }
-        const code = `import lychee\nlychee.signals.outbound.${direction}_FORMAT.emit(dtype=${dtype}, who=${who}${extra})`;
-        fujian.sendWS(code);
+        fujian.sendWS(`session.registrar.${direction}(dtype=${dtype}, who=${who})`);
     },
     /** Emit Lychee's "outbound.REGISTER_FORMAT" signal.
      *
@@ -178,10 +162,10 @@ if '_JULIUS_SESSION' not in globals():
      */
     registerOutboundFormat(dtype, who, outbound) {
         if (outbound) {
-            emitters._regOutboundFormat('REGISTER', dtype, who, ', outbound=True');
+            emitters._regOutboundFormat('register', dtype, who, ', outbound=True');
         }
         else {
-            emitters._regOutboundFormat('REGISTER', dtype, who);
+            emitters._regOutboundFormat('register', dtype, who);
         }
     },
     /** Emit Lychee's "outbound.UNREGISTER_FORMAT" signal.
@@ -190,7 +174,7 @@ if '_JULIUS_SESSION' not in globals():
      * @param {str} who - The "who" argument provided on registration.
      */
     unregisterOutboundFormat(dtype, who) {
-        emitters._regOutboundFormat('UNREGISTER', dtype, who);
+        emitters._regOutboundFormat('unregister', dtype, who);
     },
 
     /** Change the repository directory.
@@ -206,26 +190,14 @@ if '_JULIUS_SESSION' not in globals():
             log.error('The pathname is invalid');
         }
         else {
-            const code =
-`if _JULIUS_SESSION:
-    _JULIUS_SESSION.set_repo_dir('${path}', run_outbound=True)
-else:
-    raise RuntimeError('you set repo dir before you made a _JULIUS_SESSION')
-`;
+            const code = `session.set_repo_dir(${path}, run_outbound=True)`;
             fujian.sendWS(code);
         }
     },
     /** Load the default demo repository.'
      */
     lyLoadDefaultRepo() {
-        const code =
-`if _JULIUS_SESSION:
-    _JULIUS_SESSION.set_repo_dir('programs/hgdemo')
-    lychee.signals.ACTION_START.emit()
-else:
-    raise RuntimeError('you set repo dir before you made a _JULIUS_SESSION')
-`;
-        fujian.sendWS(code);
+        emitters.lySetRepoDir('"programs/hgdemo"');
     },
 };
 
