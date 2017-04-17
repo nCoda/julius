@@ -58,7 +58,7 @@ export const ScoreViewUnwrapped = React.createClass({
     },
 
     render() {
-        const pdf = this.props.pdfPath || 'js/react/tests/dummy_multi.pdf';
+        const pdf = this.props.pdfPath || 'js/react/tests/pdf_render_directions.pdf';
 
         return (
             <Tabs defaultActiveKey={this.state.key} onSelect={this.handleSelect} justify>
