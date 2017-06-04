@@ -67,13 +67,15 @@ export default class PDFViewer extends React.Component {
 
     downloadPDF() {
         let uri = '';
-        if (this.props.file.startsWith('http')) { // if an absolute URL, no changes needed
-            uri = this.props.file;
+        let pdfDir = this.props.file;
+
+        if (pdfDir.startsWith('http') || pdfDir.startsWith('/')) { // if an absolute URL, no changes needed
+            uri = pdfDir;
         } else { // prefix with base uri if needed
             uri = document.baseURI;
             uri = uri.slice(0, uri.lastIndexOf('.')); // slice off '.html#/...'
             uri = uri.slice(0, uri.lastIndexOf('/') + 1); // slice off anything after final /
-            uri = `${uri}${this.props.file}`;
+            uri = `${uri}${pdfDir}`;
         }
 
         const tempLink = document.createElement('a');
