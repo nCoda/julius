@@ -31,7 +31,7 @@ import { signals } from '../nuclear/signals';
 import { store } from '../stores';
 import { actions as docActions } from '../stores/document';
 import { actions as lilyActions } from '../stores/lilypond';
-import { actions as metaActions, getters as metaGetters } from '../stores/meta';
+import { actions as metaActions, getters as metaGetters, types as metaTypes } from '../stores/meta';
 import { actions as uiActions } from '../stores/ui';
 
 
@@ -57,14 +57,24 @@ export const ERROR_MESSAGES = {
     wsAlreadyOpen: 'WebSocket connection to Fujian was already open.',
     wsNotReady: 'Fujian WebSocket connection is not ready. Data not sent.',
     wsSyntaxError: 'SyntaxError while sending data to Fujian (probably a Unicode problem?)',
-    outboundConv: 'Error during outbound conversion',
 };
+
+
+const FUJIAN_ACTIONS = {
+    // When Fujian admits an FSA (Flux Standard Action) they are mapped from the action name to
+    // the actual JavaScript constant with this object.
+
+    'document.types.UPDATE_SECTION_DATA': docTypes.UPDATE_SECTION_DATA,
+    'document.types.WILL_UPDATE_SECTIONS': docTypes.WILL_UPDATE_SECTIONS,
+    'document.types.UPDATED_SECTIONS': docTypes.UPDATED_SECTIONS,
+    'meta.types.WRITE_STDIO': metaTypes.WRITE_STDIO,
+};
+
 
 export const FUJIAN_SIGNALS = {
     // Functions that handle signals sent by Lychee. Essentially this maps a Lychee signal name to
     // a NuclearJS signal in Julius. Each function is called with the JSON "response" object sent
     // by Fujian.
-    //
 
     // TODO: add tests
     'outbound.CONVERSION_ERROR': (response) => {
@@ -303,10 +313,16 @@ export class Fujian {
             );
         }
 
-        if (response.signal && FUJIAN_SIGNALS[response.signal]) {
-            FUJIAN_SIGNALS[response.signal](response);
-        } else if (response.type && FUJIAN_SIGNALS[response.type]) {
-            FUJIAN_SIGNALS[response.type](response);
+        if (response.is_fsa === true) {
+            // ideally Fujian gives us an FSA
+            delete response.is_fsa;
+            response.type = FUJIAN_ACTIONS[response.type];
+            store.dispatch(response);
+        } else if (response.is_fsa === false) {
+            // sometimes Fujian must make a function call
+            if (FUJIAN_SIGNALS[response.signal]) {
+                FUJIAN_SIGNALS[response.signal](response);
+            }
         }
 
         if (doStdio || metaGetters.logLevel(store.getState()) === log.LEVELS.DEBUG) {
