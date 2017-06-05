@@ -131,54 +131,6 @@ const emitters = {
         fujian.sendAjax(code);
     },
 
-    // Registering outbound formats with Lychee
-    _regOutboundFormat(direction, dtype, who, extra) {
-        // You must call this through registerOutboundFormat() or unregisterOutboundFormat().
-        // --> the "extra" param is just a string where you can put stuff for an extra argument to the signal
-        //
-        if ('string' !== typeof dtype) {
-            const msg = `Calling ${direction}_FORMAT requires a string for "dtype".`;
-            log.warn(msg);
-            return;
-        }
-
-        if (!extra) {
-            extra = '';
-        }
-
-        dtype = `'${dtype}'`;
-        if ('string' === typeof who) {
-            who = `'${who}'`;
-        }
-        else {
-            who = 'None';
-        }
-        fujian.sendWS(`session.registrar.${direction}(dtype=${dtype}, who=${who})`);
-    },
-    /** Emit Lychee's "outbound.REGISTER_FORMAT" signal.
-     *
-     * @param {str} dtype - Which dtype to register for outbound conversion.
-     * @param {str} who - An identifier for the component requiring the registration.
-     * @param {bool} outbound - Whether to run the "outbound" conversion immediately, producing
-     *     data in this format without requiring a change in the document.
-     */
-    registerOutboundFormat(dtype, who, outbound) {
-        if (outbound) {
-            emitters._regOutboundFormat('register', dtype, who, ', outbound=True');
-        }
-        else {
-            emitters._regOutboundFormat('register', dtype, who);
-        }
-    },
-    /** Emit Lychee's "outbound.UNREGISTER_FORMAT" signal.
-     *
-     * @param {str} dtype - Which dtype to unregister.
-     * @param {str} who - The "who" argument provided on registration.
-     */
-    unregisterOutboundFormat(dtype, who) {
-        emitters._regOutboundFormat('unregister', dtype, who);
-    },
-
     /** Change the repository directory.
      *
      * @param {string} path - Pathname to use for the repository.

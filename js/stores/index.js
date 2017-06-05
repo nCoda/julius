@@ -26,6 +26,7 @@ import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import createLogger from 'redux-logger';
 
 import { reducer as documentStore } from './document';
+import fujian from './fujian';
 import lilypond from './lilypond';
 import { getters as metaGetters, LOG_LEVELS, reducer as meta } from './meta';
 import ui from './ui';
@@ -35,6 +36,7 @@ import text_editors from './text_editors';
 
 const REDUCERS_OBJECT = {
     document: documentStore,
+    fujian,
     lilypond,
     meta,
     ui,

@@ -32,26 +32,23 @@ import { hashHistory, Router, IndexRoute, Route } from 'react-router';
 // Create the Redux structure (as early as possible)
 import { store } from './stores';
 
-// log!
-import log from './util/log';
-
 // Julius React components
-import NCoda from './react/ncoda';
-import {MainScreen, Colophon} from './react/ncoda';
-// import StructureView from './react/structure_view';
+import { Colophon, MainScreen, NCoda } from './react/ncoda';
 import CodeScoreView from './react/code_score_view';
-// import revisions from './react/revisions_view';
 
 // Set the default log level and connect to Fujian.
+import { actions as fujianActions } from './stores/fujian';
 import { actions as metaActions, LOG_LEVELS } from './stores/meta';
+
 metaActions.setLogLevel(LOG_LEVELS.DEBUG);
 
-import signals from './nuclear/signals';
-signals.emitters.fujianStartWS();
+import { emitters } from './nuclear/signals';
+
+emitters.fujianStartWS();
 
 // Initialize a Lychee session object.
 // (Runs only when the WebSocket connection is ready).
-signals.emitters.registerOutboundFormat('document', 'ncoda-init', false);
+fujianActions.registerOutboundFormat('document', 'ncoda-init', false);
 
 
 // Render the react-router components -----------------------------------------
@@ -72,9 +69,9 @@ ReactDOM.render((
     <Provider store={store}>
         <Router history={hashHistory}>
             <Route path="/" component={NCoda}>
-                <IndexRoute component={MainScreen}/>
-                <Route path="codescore" component={CodeScoreView}/>
-                <Route path="colophon" component={Colophon}/>
+                <IndexRoute component={MainScreen} />
+                <Route path="codescore" component={CodeScoreView} />
+                <Route path="colophon" component={Colophon} />
             </Route>
         </Router>
     </Provider>

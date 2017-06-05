@@ -33,7 +33,8 @@ import TerminalView from './terminal_view';
 
 import { signals } from '../nuclear/signals';
 
-import { store } from '../stores';
+import { store } from '../stores';  // eslint-disable-line no-unused-vars
+import { actions as fujianActions } from '../stores/fujian';
 import { getters as lilyGetters } from '../stores/lilypond';
 
 import SplitPane from 'react-split-pane';
@@ -52,13 +53,13 @@ const CodeScoreView = React.createClass({
     },
 
     componentWillMount() {
-        signals.emitters.registerOutboundFormat('document', 'codescoreview', false);
-        signals.emitters.registerOutboundFormat('lilypond', 'codescoreview', false);
+        fujianActions.registerOutboundFormat('document', 'codescoreview', false);
+        fujianActions.registerOutboundFormat('lilypond', 'codescoreview', false);
     },
 
     componentWillUnmount() {
-        signals.emitters.unregisterOutboundFormat('document', 'codescoreview');
-        signals.emitters.unregisterOutboundFormat('lilypond', 'codescoreview');
+        fujianActions.unregisterOutboundFormat('document', 'codescoreview');
+        fujianActions.unregisterOutboundFormat('lilypond', 'codescoreview');
     },
 
     render() {

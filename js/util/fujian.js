@@ -26,11 +26,10 @@
 import Immutable from 'immutable';
 
 import { log } from './log';
-import { signals } from '../nuclear/signals';
 
 import { store } from '../stores';
-import { actions as docActions } from '../stores/document';
-import { actions as lilyActions } from '../stores/lilypond';
+import { types as docTypes } from '../stores/document';
+import { types as lilyTypes } from '../stores/lilypond';
 import { actions as metaActions, getters as metaGetters, types as metaTypes } from '../stores/meta';
 import { actions as uiActions } from '../stores/ui';
 

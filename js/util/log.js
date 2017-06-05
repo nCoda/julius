@@ -37,7 +37,10 @@ function levelSetter() {
         level = newLevel;
     }
 }
-store.subscribe(levelSetter);
+if (store && typeof store.subscribe === 'function') {
+    // the "if" is here to prevent problems with circular imports
+    store.subscribe(levelSetter);
+}
 
 
 // actual logging functions
@@ -68,7 +71,7 @@ export const log = {
         }
     },
 
-    LEVELS: LEVELS,
+    LEVELS,
 };
 
 

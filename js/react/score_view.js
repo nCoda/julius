@@ -29,6 +29,7 @@ import { connect } from 'react-redux';
 
 import { emitters as signals } from '../nuclear/signals';
 import { getters as docGetters } from '../stores/document';
+import { actions as fujianActions } from '../stores/fujian';
 import { getters as lilyGetters } from '../stores/lilypond';
 import { getters as vrvGetters } from '../stores/verovio';
 import { VidaView } from '../lib/vida';
@@ -117,7 +118,7 @@ export const VerovioViewUnwrapped = React.createClass({
     },
 
     componentWillMount() {
-        signals.registerOutboundFormat('verovio', 'ScoreView');
+        fujianActions.registerOutboundFormat('verovio', 'ScoreView');
         if (!this.props.section) {
             signals.lyGetSectionById(this.props.cursor.last());
         }
@@ -155,7 +156,7 @@ export const VerovioViewUnwrapped = React.createClass({
     },
 
     componentWillUnmount() {
-        signals.unregisterOutboundFormat('verovio', 'ScoreView');
+        fujianActions.unregisterOutboundFormat('verovio', 'ScoreView');
         if (this.state.view) {
             this.state.view.destroy();
             this.setState({view: null});
