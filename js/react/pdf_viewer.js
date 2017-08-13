@@ -36,7 +36,7 @@
 
 import React from 'react';
 import PDFJS from 'pdfjs-dist';
-import { ButtonGroup, Button } from 'amazeui-react';
+import { Button } from 'amazeui-react';
 
 
 export default class PDFViewer extends React.Component {
@@ -132,26 +132,24 @@ export default class PDFViewer extends React.Component {
         return (
             <div className="nc-pdfviewer" ref={node => this.node = node}>
                 <div className="nc-pdfviewer-toolbar nc-toolbar">
-                    <ButtonGroup className="nc-pdfviewer-btns">
-                        <Button
-                            amSize="sm"
-                            amStyle="link"
-                            title="Download PDF"
-                            className="nc-pdf-download-btn"
-                            onClick={() => this.downloadPDF()}
-                        >
-                            <i className="am-icon-download" /> Download PDF
-                        </Button>
-                        <Button
-                            amSize="sm"
-                            amStyle="link"
-                            title="Refresh PDF"
-                            className="nc-pdf-refresh-btn"
-                            onClick={() => this.refresh()}
-                        >
-                            <i className="am-icon-refresh" /> Refresh PDF
-                        </Button>
-                    </ButtonGroup>
+                    <Button
+                        amSize="sm"
+                        amStyle="link"
+                        title="Download PDF"
+                        className="nc-pdf-download-btn"
+                        onClick={() => this.downloadPDF()}
+                    >
+                        <i className="am-icon-download" /> Download PDF
+                    </Button>
+                    <Button
+                        amSize="sm"
+                        amStyle="link"
+                        title="Refresh PDF"
+                        className="nc-pdf-refresh-btn"
+                        onClick={() => this.refresh()}
+                    >
+                        <i className="am-icon-refresh" /> Refresh PDF
+                    </Button>
                 </div>
                 <div className="nc-content-wrap">
                     <div className={classes} />
