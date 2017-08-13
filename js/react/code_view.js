@@ -25,14 +25,15 @@
 import React from 'react';
 
 import { Tabs } from 'amazeui-react';
-import CodeMode from './code_mode';
+import CodeModeLilypond from './code_mode_lilypond';
+import CodeModePython from './code_mode_python';
+import CodeModeMEI from './code_mode_mei';
 
 
 const CodeView = React.createClass({
     propTypes: {
         submitToLychee: React.PropTypes.func.isRequired,
         submitToPyPy: React.PropTypes.func.isRequired,
-        submitToMEI: React.PropTypes.func.isRequired,
         lilyCurrent: React.PropTypes.string,
     },
     getDefaultProps() {
@@ -57,28 +58,24 @@ const CodeView = React.createClass({
 
         return (
             <Tabs defaultActiveKey={this.state.currentTab} onSelect={this.handleSelect} justify>
-                <Tabs.Item eventKey="1" title={"Python"} className={py}>
-                    <CodeMode
-                        codeLanguage={py}
+                <Tabs.Item eventKey="1" title={'Python'} className={py}>
+                    <CodeModePython
                         submitFunction={this.props.submitToPyPy}
                         active={this.state.currentTab === '1'}
                     />
                 </Tabs.Item>
-                <Tabs.Item eventKey="2" title={"LilyPond"} className={ly}>
-                    <CodeMode
-                        codeLanguage={ly}
+                <Tabs.Item eventKey="2" title={'LilyPond'} className={ly}>
+                    <CodeModeLilypond
                         submitFunction={this.props.submitToLychee}
                         active={this.state.currentTab === '2'}
                         initialValue={this.props.lilyCurrent}
                     />
                 </Tabs.Item>
-                {/*<Tabs.Item eventKey="3" title={"MEI"} className={mei}>
-                    <CodeMode
-                        codeLanguage={mei}
+                <Tabs.Item eventKey="3" title={'MEI'} className={mei}>
+                    <CodeModeMEI
                         active={this.state.currentTab === '3'}
-                        submitFunction={this.props.submitToMEI}
                     />
-                </Tabs.Item>*/}
+                </Tabs.Item>
             </Tabs>
         );
     },

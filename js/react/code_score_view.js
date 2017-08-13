@@ -60,11 +60,6 @@ const CodeScoreView = React.createClass({
         signals.emitters.unregisterOutboundFormat('lilypond', 'codescoreview');
     },
 
-    submitToMEI() {
-      // placeholder
-        console.log('submitToMEI placeholder function triggered');
-    },
-
     render() {
         return (
             <div id="nc-csv-frame">
@@ -87,7 +82,6 @@ const CodeScoreView = React.createClass({
                                 lilyCurrent={this.props.lilyCurrent || ''}
                                 submitToLychee={signals.emitters.submitToLychee}
                                 submitToPyPy={signals.emitters.submitToPyPy}
-                                submitToMEI={this.submitToMEI}
                             />
                         </div>
                         <div className="ncoda-scoreview pane-container">
