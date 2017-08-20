@@ -44,12 +44,18 @@ import { actions as metaActions, getters as metaGetters } from '../stores/meta';
 import { actions as uiActions } from '../stores/ui';
 
 
-const FUJIAN_WS_URL = 'ws://localhost:1987/websocket/';
-const FUJIAN_AJAX_URL = 'http://localhost:1987';
-const WS_CLOSE_CODE = 1000;
+export const FUJIAN_WS_URL = 'ws://localhost:1987/websocket/';
+export const FUJIAN_AJAX_URL = 'http://localhost:1987';
+export const WS_CLOSE_CODE = 1000;
 // const fujian ... created and exported after class definition
 
-const ERROR_MESSAGES = {
+export const WS_STATUS = {
+    CONNECTING: 'Connecting to Fujian via WebSocket.',
+    OPEN: 'WebSocket connection to Fujian is open.',
+    CLOSED: 'WebSocket connection fo Fujian is closed.',
+};
+
+export const ERROR_MESSAGES = {
     // These error messages are in a module-level constant for two reasons: (1) to ease testing
     // when we know the expected error message; and (2) to ease translation of the messages
     websocketError: 'The WebSocket connection to Fujian encountered an error.',
@@ -63,7 +69,7 @@ const ERROR_MESSAGES = {
     outboundConv: 'Error during outbound conversion',
 };
 
-const FUJIAN_SIGNALS = {
+export const FUJIAN_SIGNALS = {
     // Functions that handle signals sent by Lychee. Essentially this maps a Lychee signal name to
     // a NuclearJS signal in Julius. Each function is called with the JSON "response" object sent
     // by Fujian.
@@ -139,75 +145,62 @@ const FUJIAN_SIGNALS = {
  * Fujian server, this is not the intended behaviour. We recommend always using the Fujian instance
  * held in the module-level "fujian" variable.
  */
-class Fujian {
+export class Fujian {
 
     /** Create a Fujian instance. A WebSocket connection is *not* automatically opened.
      *
      * @constructor
      */
     constructor() {
-        this._ws = null;  // holds the WebSocket connection
+        this._fujian = null;  // holds the WebSocket connection
+        this.startWS = this.startWS.bind(this);
+        this.stopWS = this.stopWS.bind(this);
+        this.statusWS = this.statusWS.bind(this);
+        this.sendAjax = this.sendAjax.bind(this);
+        this._sendWSWhenReady = this._sendWSWhenReady.bind(this);
+        this.sendWS = this.sendWS.bind(this);
     }
 
-    /** Open a connection to the Fujian PyPy server.
-     *
-     * @returns {undefined}
-     */
+    /** Open a connection to Fujian. */
     startWS() {
-        if ('closed' === this.statusWS()) {
-            // prepare the message queue
+        if (this.statusWS() === WS_STATUS.CLOSED) {
             this._sendWhenReady = Immutable.List();
-            // make a new connection if there isn't one, or the existing one is closed
             this._fujian = new WebSocket(FUJIAN_WS_URL);
             this._fujian.onmessage = Fujian._receiveWS;
             this._fujian.onerror = Fujian._errorWS;
             this._fujian.onopen = this._sendWSWhenReady;
-            // Put a reference to this Fujian instance on our WebSocket object so it's accessible
-            // from the "onopen" event handler.
-            this._fujian._fujian = this;
-        }
-        else {
+        } else {
             log.info(ERROR_MESSAGES.wsAlreadyOpen);
         }
     }
 
-    /** Close an existing connection to the Fujian PyPy server.
-     *
-     * @returns {undefined}
-     */
+    /** Close an existing connection to Fujian. */
     stopWS() {
         const status = this.statusWS();
-        if ('open' === status || 'connecting' === status) {
+        if (status === WS_STATUS.OPEN || status === WS_STATUS.CONNECTING) {
             this._fujian.close(WS_CLOSE_CODE);
             this._fujian = null;
-        }
-        else {
+        } else {
             log.info('WebSocket connection to Fujian was not running.');
         }
     }
 
     /** Check the status of the WebSocket connection.
      *
-     * @returns {string} Either "connecting", "open", or "closed" depending on the availability of
-     *    the WebSocket connection.
+     * @returns {string} - One of the WS_STATUS constants.
      */
     statusWS() {
-        let status = 'closed';
-        if (this._fujian) {
-            if (0 === this._fujian.readyState) {
-                status = 'connecting';
-            }
-            else if (1 === this._fujian.readyState) {
-                status = 'open';
-            }
+        if (this._fujian && this._fujian.readyState === 0) {
+            return WS_STATUS.CONNECTING;
+        } else if (this._fujian && this._fujian.readyState === 1) {
+            return WS_STATUS.OPEN;
         }
-        return status;
+        return WS_STATUS.CLOSED;
     }
 
     /** Send some Python code to Fujian with an AJAX request.
      *
      * @param {string} code - The Python code to send to Fujian.
-     * @returns {undefined}
      *
      * We prefer AJAX requests for code written by the user. While user code may cause several Lychee
      * signals to be emitted, there are determined start and end times for execution of user code,
@@ -228,23 +221,22 @@ class Fujian {
         metaActions.writeToStdio('stdin', code);
     }
 
-    /** A callback for the "onopen" WebSocket event that sends queued messages.
+    /** Send queued messages for Fujian.
      *
-     * This function should be called after the WebSocket connection is ready. It takes the contents
-     * of the "this._sendWhenReady" List
+     * This is a callback for the "onopen" WebSocket event, called when the WebSocket connection
+     * is ready. It send the contents of the "this._sendWhenReady" List one at a time.
      */
     _sendWSWhenReady() {
         // We have to make a copy of _sendWhenReady and set that to null *first* or else sendWS()
         // will simply re-queue the message.
-        const messages = this._fujian._sendWhenReady;
-        this._fujian._sendWhenReady = null;
-        messages.forEach((message) => this._fujian.sendWS.call(this._fujian, message));
+        const messages = this._sendWhenReady;
+        this._sendWhenReady = null;
+        messages.forEach(message => this.sendWS(message));
     }
 
-    /** Send some Python code to Fujian over the WebSocket connection.
+    /** Send a message to Fujian over the WebSocket connection.
      *
-     * @param {string} code - The Python code to send to Fujian.
-     * @returns {undefined}
+     * @param {string} code - The message to send to Fujian.
      *
      * We prefer the WebSocket for Julius/nCoda-related data, such as emitting a signal, since the
      * WebSocket connection offers less overhead and a closer analogy to an all-client-side app.
@@ -256,7 +248,7 @@ class Fujian {
      *    there was an uncaught exception. For user-provided code use the AJAX connection.
      */
     sendWS(code) {
-        if (null !== this._sendWhenReady) {
+        if (this._sendWhenReady !== null) {
             // We try to prevent data loss and preserve the order of messages by checking whether
             // the queue has already been sent. If we simply checked the connection status, there
             // is a possibility that sendWS() will be called after the connection is ready but
@@ -266,21 +258,17 @@ class Fujian {
             // Because _sendWSWhenReady() sets _sendWhenReady to null, we can determine whether that
             // function has already been run.
             this._sendWhenReady = this._sendWhenReady.push(code);
-        }
-        else if ('open' === this.statusWS()) {
+        } else if (this.statusWS() === WS_STATUS.OPEN) {
             try {
                 this._fujian.send(code);
-            }
-            catch (err) {
-                if ('SyntaxError' === err.name) {
+            } catch (err) {
+                if (err.name === 'SyntaxError') {
                     log.error(ERROR_MESSAGES.wsSyntaxError);
-                }
-                else {
+                } else {
                     throw err;
                 }
             }
-        }
-        else {
+        } else {
             log.error(ERROR_MESSAGES.wsNotReady);
         }
     }
@@ -289,7 +277,6 @@ class Fujian {
      *
      * @param {string} data - The string sent by Fujian that contains response data.
      * @param {boolean} doStdio - Whether to output stdout and stderr data.
-     * @returns {undefined}
      *
      * When data arrives over either the WebSocket or AJAX connection, call this function to parse
      * and handle the response.
@@ -301,16 +288,15 @@ class Fujian {
         let response;
         try {
             response = JSON.parse(data);
-        }
-        catch (err) {
-            if ('SyntaxError' === err.name) {
+        } catch (err) {
+            if (err.name === 'SyntaxError') {
                 log.error(ERROR_MESSAGES.fjnBadJson);
                 return;
             }
             throw err;
         }
 
-        if ('string' === typeof response.traceback && response.traceback.length > 0) {
+        if (typeof response.traceback === 'string' && response.traceback.length > 0) {
             doStdio = true;  /* eslint no-param-reassign: 0 */
             // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
             metaActions.writeToStdio('stdout', response.traceback);
@@ -324,25 +310,21 @@ class Fujian {
             );
         }
 
-        if (response.signal) {
-            if (FUJIAN_SIGNALS[response.signal]) {
-                FUJIAN_SIGNALS[response.signal](response);
-            }
-        } else if (response.type) {
-            if (FUJIAN_SIGNALS[response.type]) {
-                FUJIAN_SIGNALS[response.type](response);
-            }
+        if (response.signal && FUJIAN_SIGNALS[response.signal]) {
+            FUJIAN_SIGNALS[response.signal](response);
+        } else if (response.type && FUJIAN_SIGNALS[response.type]) {
+            FUJIAN_SIGNALS[response.type](response);
         }
 
         if (doStdio || metaGetters.logLevel(store.getState()) === log.LEVELS.DEBUG) {
-            if ('string' === typeof response.stdout && response.stdout.length > 0) {
+            if (typeof response.stdout === 'string' && response.stdout.length > 0) {
                 metaActions.writeToStdio('stdout', response.stdout);
             }
-            if ('string' === typeof response.stderr && response.stderr.length > 0) {
+            if (typeof response.stderr === 'string' && response.stderr.length > 0) {
                 // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
                 metaActions.writeToStdio('stdout', response.stderr);
             }
-            if ('string' === typeof response.return && response.return.length > 0) {
+            if (typeof response.return === 'string' && response.return.length > 0) {
                 log.info(ERROR_MESSAGES.fjnRetVal);
                 log.info(response.return);
             }
@@ -352,7 +334,6 @@ class Fujian {
     /** Called when a message arrives from Fujian over the WebSocket connection.
      *
      * @param {MessageEvent} event - Containing the data arriving from Fujian.
-     * @returns {undefined}
      *
      * This function calls Fujian._commonReceiver().
      */
@@ -363,7 +344,6 @@ class Fujian {
     /** Callback for an error in the WebSocket connection.
      *
      * @param {Event} event - The error event.
-     * @returns {undefined}
      */
     static _errorWS(event) {
         log.error(ERROR_MESSAGES.websocketError);
@@ -373,7 +353,6 @@ class Fujian {
     /** Callback for an aborted AJAX request.
      *
      * @param {ProgressEvent} event - The abort event.
-     * @returns {undefined}
      */
     static _abortAjax(event) {
         log.error(ERROR_MESSAGES.ajaxAbort);
@@ -383,7 +362,6 @@ class Fujian {
     /** Callback for an erroring AJAX request.
      *
      * @param {ProgressEvent} event - The error event.
-     * @returns {undefined}
      */
     static _errorAjax(event) {
         log.error(ERROR_MESSAGES.ajaxError);
@@ -393,7 +371,6 @@ class Fujian {
     /** Called when Fujian completes an AJAX request.
      *
      * @param {MessageEvent} event - Containing the data arriving from Fujian.
-     * @returns {undefined}
      *
      * This function calls Fujian._commonReceiver().
      */
@@ -403,5 +380,5 @@ class Fujian {
 }
 
 
-const fujian = new Fujian();
-export {fujian, Fujian, ERROR_MESSAGES, FUJIAN_WS_URL, FUJIAN_AJAX_URL};
+export const fujian = new Fujian();
+export default Fujian;
