@@ -35,25 +35,34 @@ import log from '../log';
 const fujian = require('../fujian.js');  // TODO: get rid of this import
 import {
     WS_CLOSE_CODE,
+    WS_RESTART_DELAY,
     WS_STATUS,
 } from '../fujian';
 
 
 describe("Fujian class' instance methods", () => {
+    const xhrMock = {
+        addEventListener: jest.genMockFn(),
+        open: jest.genMockFn(),
+        send: jest.genMockFn(),
+    };
+
+    beforeAll(() => {
+        window.setTimeout = jest.fn();
+        window.WebSocket = jest.genMockFn();
+        window.XMLHttpRequest = () => xhrMock;
+    });
+
     beforeEach(() => {
         log.error.mockClear();
         log.warn.mockClear();
         log.info.mockClear();
         log.debug.mockClear();
-        //
-        window.WebSocket = jest.genMockFn();
-        window.xhrMock = {
-            addEventListener: jest.genMockFn(),
-            open: jest.genMockFn(),
-            send: jest.genMockFn(),
-        };
-        window.XMLHttpRequest = () => window.xhrMock;
-        //
+        window.setTimeout.mockClear();
+        window.WebSocket.mockClear();
+        xhrMock.addEventListener.mockClear();
+        xhrMock.open.mockClear();
+        xhrMock.send.mockClear();
         store.dispatch({ type: 'RESET' });
     });
 
@@ -67,24 +76,24 @@ describe("Fujian class' instance methods", () => {
             expect(typeof actual.sendAjax === 'function').toBeTruthy();
             expect(typeof actual._sendWSWhenReady === 'function').toBeTruthy();
             expect(typeof actual.sendWS === 'function').toBeTruthy();
+            expect(typeof actual._errorWS === 'function').toBeTruthy();
+            expect(Immutable.List.isList(actual._sendWhenReady)).toBeTruthy();
         });
     });
 
     describe('startWS()', () => {
-        it('startWS() can set up a new WebSocket connection', () => {
+        it('sets up a new WebSocket connection', () => {
             const actual = new fujian.Fujian();
             actual.statusWS = () => WS_STATUS.CLOSED;
             actual.startWS();
             expect(window.WebSocket).toBeCalledWith(fujian.FUJIAN_WS_URL);
             expect(actual._fujian).toBe(window.WebSocket.mock.instances[0]);
             expect(actual._fujian.onmessage).toBe(fujian.Fujian._receiveWS);
-            expect(actual._fujian.onerror).toBe(fujian.Fujian._errorWS);
+            expect(actual._fujian.onerror).toBe(actual._errorWS);
             expect(actual._fujian.onopen).toBe(actual._sendWSWhenReady);
-            expect(Immutable.List.isList(actual._sendWhenReady)).toBeTruthy();
         });
 
-        it('startWS() can deal with an existing WebSocket connection', () => {
-            // second call to startWS(): it should tell log.info() that a connection was already open
+        it('shows an INFO message if there is an existing WebSocket connection', () => {
             const actual = new fujian.Fujian();
             actual.statusWS = () => WS_STATUS.OPEN;
             actual.startWS();
@@ -157,12 +166,11 @@ describe("Fujian class' instance methods", () => {
             const code = 'some code';
             actual.sendAjax(code);
 
-            const xhr = window.xhrMock;
-            expect(xhr.addEventListener).toBeCalledWith('error', fujian.Fujian._errorAjax);
-            expect(xhr.addEventListener).toBeCalledWith('abort', fujian.Fujian._abortAjax);
-            expect(xhr.addEventListener).toBeCalledWith('load', fujian.Fujian._loadAjax);
-            expect(xhr.open).toBeCalledWith('POST', fujian.FUJIAN_AJAX_URL);
-            expect(xhr.send).toBeCalledWith(code);
+            expect(xhrMock.addEventListener).toBeCalledWith('error', fujian.Fujian._errorAjax);
+            expect(xhrMock.addEventListener).toBeCalledWith('abort', fujian.Fujian._abortAjax);
+            expect(xhrMock.addEventListener).toBeCalledWith('load', fujian.Fujian._loadAjax);
+            expect(xhrMock.open).toBeCalledWith('POST', fujian.FUJIAN_AJAX_URL);
+            expect(xhrMock.send).toBeCalledWith(code);
             const theStore = store.getState();
             expect(metaGetters.stdin(theStore)).toBe(`${code}<br>`);
         });
@@ -249,6 +257,42 @@ describe("Fujian class' instance methods", () => {
 
             expect(actual._fujian.send).not.toBeCalled();
             expect(actual._sendWhenReady.get(0)).toBe(code);
+        });
+    });
+
+    describe('_errorWS()', () => {
+        it('sets a timeout to call startWS()', () => {
+            const actual = new fujian.Fujian();
+            actual._errorWS();
+            expect(window.setTimeout).toBeCalledWith(actual.startWS, WS_RESTART_DELAY);
+        });
+
+        it('sets the WebSocket instance to "null"', () => {
+            const actual = new fujian.Fujian();
+            actual._errorWS();
+            expect(actual._fujian).toBe(null);
+        });
+
+        it('does not overwrite _sendWhenReady if it already exists', () => {
+            const actual = new fujian.Fujian();
+            const expected = Immutable.List(['one', 'two', 'three']);
+            actual._sendWhenReady = expected;
+            actual._errorWS();
+            expect(actual._sendWhenReady).toBe(expected);
+        });
+
+        it('calls log.error() when the connection was already initialized', () => {
+            const actual = new fujian.Fujian();
+            actual._sendWhenReady = null;
+            actual._errorWS();
+            expect(log.error).toBeCalledWith(fujian.ERROR_MESSAGES.websocketError);
+        });
+
+        it('creates a new List for _sendWhenReady, if it was null', () => {
+            const actual = new fujian.Fujian();
+            actual._sendWhenReady = null;
+            actual._errorWS();
+            expect(Immutable.List.isList(actual._sendWhenReady)).toBeTruthy();
         });
     });
 });
@@ -398,14 +442,6 @@ describe('The response loading callbacks', () => {
 
 describe('The error and abort callbacks', () => {
     beforeEach(() => { log.error.mockClear(); });
-
-    it('Fujian._errorWS() calls log.error() with the stuff', () => {
-        const event = 5;
-        fujian.Fujian._errorWS(event);
-        expect(log.error.mock.calls.length).toBe(2);
-        expect(log.error).toBeCalledWith(fujian.ERROR_MESSAGES.websocketError);
-        expect(log.error).toBeCalledWith(event);
-    });
 
     it('Fujian._abortAjax() calls log.error() with the stuff', () => {
         const event = 5;

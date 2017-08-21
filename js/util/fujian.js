@@ -22,20 +22,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-// NOTE: List of public methods
-//
-// If your text editor's symbol list is as ineffective as mine, you may not catch all of these...
-// - Fujian.constructor()
-// - Fujian.startWS()
-// - Fujian.stopWS()
-// - Fujian.statusWS()
-// - Fujian.sendWS()
-// - Fujian.sendAjax()
 
 import Immutable from 'immutable';
 
-import {log} from './log';
-import {signals} from '../nuclear/signals';
+import { log } from './log';
+import { signals } from '../nuclear/signals';
 
 import { store } from '../stores';
 import { actions as docActions } from '../stores/document';
@@ -47,7 +38,7 @@ import { actions as uiActions } from '../stores/ui';
 export const FUJIAN_WS_URL = 'ws://localhost:1987/websocket/';
 export const FUJIAN_AJAX_URL = 'http://localhost:1987';
 export const WS_CLOSE_CODE = 1000;
-// const fujian ... created and exported after class definition
+export const WS_RESTART_DELAY = 500;  // half a second
 
 export const WS_STATUS = {
     CONNECTING: 'Connecting to Fujian via WebSocket.',
@@ -62,7 +53,7 @@ export const ERROR_MESSAGES = {
     ajaxAbort: 'The AJAX request to Fujian was aborted.',
     ajaxError: 'The AJAX request to Fujian encountered an error.',
     fjnBadJson: 'SyntaxError while decoding a message from Fujian',
-    fjnRetVal: 'PyPy additionally returned the following:',
+    fjnRetVal: 'Python additionally returned the following:',
     wsAlreadyOpen: 'WebSocket connection to Fujian was already open.',
     wsNotReady: 'Fujian WebSocket connection is not ready. Data not sent.',
     wsSyntaxError: 'SyntaxError while sending data to Fujian (probably a Unicode problem?)',
@@ -153,21 +144,23 @@ export class Fujian {
      */
     constructor() {
         this._fujian = null;  // holds the WebSocket connection
+        this._sendWhenReady = Immutable.List();
+
         this.startWS = this.startWS.bind(this);
         this.stopWS = this.stopWS.bind(this);
         this.statusWS = this.statusWS.bind(this);
         this.sendAjax = this.sendAjax.bind(this);
         this._sendWSWhenReady = this._sendWSWhenReady.bind(this);
         this.sendWS = this.sendWS.bind(this);
+        this._errorWS = this._errorWS.bind(this);
     }
 
     /** Open a connection to Fujian. */
     startWS() {
         if (this.statusWS() === WS_STATUS.CLOSED) {
-            this._sendWhenReady = Immutable.List();
             this._fujian = new WebSocket(FUJIAN_WS_URL);
             this._fujian.onmessage = Fujian._receiveWS;
-            this._fujian.onerror = Fujian._errorWS;
+            this._fujian.onerror = this._errorWS;
             this._fujian.onopen = this._sendWSWhenReady;
         } else {
             log.info(ERROR_MESSAGES.wsAlreadyOpen);
@@ -343,11 +336,21 @@ export class Fujian {
 
     /** Callback for an error in the WebSocket connection.
      *
-     * @param {Event} event - The error event.
+     * This method sets up the Fujian instance to reinitialize the WebSocket connection.
+     * Messages already queued for Fujian in _sendWhenReady are retained. If _sendWhenReady
+     * is null, a new Immutable.List is created there.
+     *
+     * If the WebSocket connection had been successfully initialized, this method
      */
-    static _errorWS(event) {
-        log.error(ERROR_MESSAGES.websocketError);
-        log.error(event);
+    _errorWS() {
+        this._fujian = null;
+        if (!Immutable.List.isList(this._sendWhenReady)) {
+            log.error(ERROR_MESSAGES.websocketError);
+            this._sendWhenReady = Immutable.List();
+        }
+        if (window && typeof window.setTimeout === 'function') {
+            window.setTimeout(this.startWS, WS_RESTART_DELAY);
+        }
     }
 
     /** Callback for an aborted AJAX request.
