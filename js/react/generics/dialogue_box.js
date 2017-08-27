@@ -34,7 +34,7 @@ import { actions as uiActions, getters as uiGetters } from '../../stores/ui';
 
 /** DialgoueBox: Display alerts using amazeUI modal components
  *
- * No props - everything is passed in through NuclearJS
+ * No props - everything is passed in through Redux
  *
  * Tests in tests/test_generics.js
  */

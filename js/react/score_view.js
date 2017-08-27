@@ -23,11 +23,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
+import { Tabs } from 'amazeui-react';
 import Immutable from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { emitters as signals } from '../nuclear/signals';
 import { getters as docGetters } from '../stores/document';
 import { actions as fujianActions } from '../stores/fujian';
 import { getters as lilyGetters } from '../stores/lilypond';
@@ -35,7 +35,6 @@ import { getters as vrvGetters } from '../stores/verovio';
 import { VidaView } from '../lib/vida';
 
 import PDFViewer from './pdf_viewer';
-import { Tabs } from 'amazeui-react';
 
 export const ScoreViewUnwrapped = React.createClass({
     displayName: 'ScoreView',
@@ -73,11 +72,9 @@ export const ScoreViewUnwrapped = React.createClass({
         );
     },
 });
-export const ScoreView = connect((state) => {
-    return {
-        pdfPath: lilyGetters.pdfPath(state),
-    };
-})(ScoreViewUnwrapped);
+export const ScoreView = connect(state => ({
+    pdfPath: lilyGetters.pdfPath(state),
+}))(ScoreViewUnwrapped);
 
 
 const ICON_CLASSES = {
@@ -96,8 +93,8 @@ const ICON_CLASSES = {
  * @param {ImmutableList} cursor - The document cursor.
  * @param {string} section - The Verovio MEI <section> to render.
  *
- * State
- * -----
+ * On the Component
+ * ----------------
  * @param {VidaView} view - The VidaView instance.
  */
 export const VerovioViewUnwrapped = React.createClass({
@@ -110,21 +107,17 @@ export const VerovioViewUnwrapped = React.createClass({
     },
 
     getDefaultProps() {
-        return {section: ''};
-    },
-
-    getInitialState() {
-        return {view: null};
-    },
-
-    componentWillMount() {
-        fujianActions.registerOutboundFormat('verovio', 'ScoreView');
-        if (!this.props.section) {
-            signals.lyGetSectionById(this.props.cursor.last());
-        }
+        return {
+            section: '',
+        };
     },
 
     componentDidMount() {
+        fujianActions.registerOutboundFormat('verovio', 'ScoreView');
+        if (!this.props.section) {
+            fujianActions.getSectionByID(this.props.cursor.last());
+        }
+
         if (this.props.controller && this.refs.verovioFrame) {
             const newView = new VidaView({
                 parentElement: this.refs.verovioFrame,
@@ -137,16 +130,15 @@ export const VerovioViewUnwrapped = React.createClass({
                 newView.refreshVerovio(this.props.section);
             }
 
-            this.setState({view: newView});
-        }
-        else {
+            this.view = newView;
+        } else {
             console.error('ScoreView: missing VidaController or the <div>');
         }
     },
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.section !== nextProps.section && this.state.view) {
-            this.state.view.refreshVerovio(nextProps.section);
+        if (this.props.section !== nextProps.section && this.view) {
+            this.view.refreshVerovio(nextProps.section);
         }
     },
 
@@ -157,9 +149,9 @@ export const VerovioViewUnwrapped = React.createClass({
 
     componentWillUnmount() {
         fujianActions.unregisterOutboundFormat('verovio', 'ScoreView');
-        if (this.state.view) {
-            this.state.view.destroy();
-            this.setState({view: null});
+        if (this.view) {
+            this.view.destroy();
+            this.view = null;
         }
     },
 

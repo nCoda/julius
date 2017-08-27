@@ -23,57 +23,69 @@
 // ------------------------------------------------------------------------------------------------
 
 import React from 'react';
-
 import { Tabs } from 'amazeui-react';
+
 import CodeModeLilypond from './code_mode_lilypond';
 import CodeModePython from './code_mode_python';
 import CodeModeMEI from './code_mode_mei';
 
 
+const TABS = {
+    MEI: 3,
+    LILYPOND: 2,
+    PYTHON: 1,
+};
+
+
 const CodeView = React.createClass({
     propTypes: {
-        submitToLychee: React.PropTypes.func.isRequired,
-        submitToPyPy: React.PropTypes.func.isRequired,
         lilyCurrent: React.PropTypes.string,
+        renderPDF: React.PropTypes.func.isRequired,
+        submitLilyPond: React.PropTypes.func.isRequired,
+        submitPython: React.PropTypes.func.isRequired,
     },
+
     getDefaultProps() {
         return {
             lilyCurrent: '',
+            renderPDF: () => {},
+            submitLilyPond: () => {},
+            submitPython: () => {},
         };
     },
+
     getInitialState() {
         return {
-            currentTab: '2', // Lilypond tab
+            currentTab: TABS.LILYPOND,
         };
     },
+
     handleSelect(key) {
         this.setState({
             currentTab: key,
         });
     },
-    render() {
-        const ly = 'lilypond';
-        const py = 'python';
-        const mei = 'mei';
 
+    render() {
         return (
             <Tabs defaultActiveKey={this.state.currentTab} onSelect={this.handleSelect} justify>
-                <Tabs.Item eventKey="1" title={'Python'} className={py}>
+                <Tabs.Item eventKey={TABS.PYTHON} title="Python" className="python">
                     <CodeModePython
-                        submitFunction={this.props.submitToPyPy}
-                        active={this.state.currentTab === '1'}
+                        submitFunction={this.props.submitPython}
+                        active={this.state.currentTab === TABS.PYTHON}
                     />
                 </Tabs.Item>
-                <Tabs.Item eventKey="2" title={'LilyPond'} className={ly}>
+                <Tabs.Item eventKey={TABS.LILYPOND} title="LilyPond" className="lilypond">
                     <CodeModeLilypond
-                        submitFunction={this.props.submitToLychee}
-                        active={this.state.currentTab === '2'}
+                        renderPDF={this.props.renderPDF}
+                        submitFunction={this.props.submitLilyPond}
+                        active={this.state.currentTab === TABS.LILYPOND}
                         initialValue={this.props.lilyCurrent}
                     />
                 </Tabs.Item>
-                <Tabs.Item eventKey="3" title={'MEI'} className={mei}>
+                <Tabs.Item eventKey=TABS.MEI title="MEI" className="mei">
                     <CodeModeMEI
-                        active={this.state.currentTab === '3'}
+                        active={this.state.currentTab === TABS.MEI}
                     />
                 </Tabs.Item>
             </Tabs>

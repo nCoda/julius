@@ -24,32 +24,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
+import Immutable from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
+import SplitPane from 'react-split-pane';
+
+import { store } from '../stores';  // eslint-disable-line no-unused-vars
+import { getters as documentGetters } from '../stores/document';
+import { actions as fujianActions } from '../stores/fujian';
+import { getters as lilyGetters } from '../stores/lilypond';
 
 import CodeView from './code_view';
 import { ScoreView } from './score_view';
 import TerminalView from './terminal_view';
 
-import { signals } from '../nuclear/signals';
-
-import { store } from '../stores';  // eslint-disable-line no-unused-vars
-import { actions as fujianActions } from '../stores/fujian';
-import { getters as lilyGetters } from '../stores/lilypond';
-
-import SplitPane from 'react-split-pane';
-
 import SaveButton from './save_button';
 
-/** CodeScoreView
- *
- * Props
- * -----
- * @param {string} lilyCurrent - "latest" LilyPond version of the active <section> (from Redux)
- */
 const CodeScoreView = React.createClass({
     propTypes: {
+        // A cursor pointing to the currently active <section>.
+        cursor: React.PropTypes.instanceOf(Immutable.List),
+        // The "latest" LilyPond version of the active <section> (from Redux).
         lilyCurrent: React.PropTypes.string,
+    },
+
+    getDefaultProps() {
+        return {
+            cursor: Immutable.List(),
+            lilyCurrent: '',
+        };
     },
 
     componentWillMount() {
@@ -60,6 +63,10 @@ const CodeScoreView = React.createClass({
     componentWillUnmount() {
         fujianActions.unregisterOutboundFormat('document', 'codescoreview');
         fujianActions.unregisterOutboundFormat('lilypond', 'codescoreview');
+    },
+
+    submitLilyPond(doc) {
+        fujianActions.submitLilyPond(doc, this.props.cursor.last());
     },
 
     render() {
@@ -83,8 +90,9 @@ const CodeScoreView = React.createClass({
                         <div className="ncoda-text-editor pane-container">
                             <CodeView
                                 lilyCurrent={this.props.lilyCurrent || ''}
-                                submitToLychee={signals.emitters.submitToLychee}
-                                submitToPyPy={signals.emitters.submitToPyPy}
+                                renderPDF={fujianActions.renderLilyPondPDF}
+                                submitLilyPond={this.submitLilyPond}
+                                submitPython={fujianActions.submitPython}
                             />
                         </div>
                         <div className="ncoda-scoreview pane-container">
@@ -115,6 +123,7 @@ const CodeScoreView = React.createClass({
 
 const CodeScoreViewWrapper = connect((state) => {
     return {
+        cursor: documentGetters.cursor(state),
         lilyCurrent: lilyGetters.current(state),
     };
 })(CodeScoreView);

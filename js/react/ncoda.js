@@ -28,14 +28,13 @@ import { Button, ButtonCheck, Dropdown, Icon, Nav, NavItem, Topbar } from 'amaze
 import React from 'react';
 import { Link } from 'react-router';
 
-import { actions as uiActions } from '../stores/ui';
+import { actions as fujianActions } from '../stores/fujian';
 import { actions as metaActions, LOG_LEVELS } from '../stores/meta';
+import { actions as uiActions } from '../stores/ui';
 
 import { log } from '../util/log';
-import signals from '../nuclear/signals';
 import { DialogueBox, OffCanvas } from './generics';
-import { Icon as NCIcon } from './svg_icons';
-import { Logo } from './svg_icons';
+import { Icon as NCIcon, Logo } from './svg_icons';
 
 
 export const MainScreen = React.createClass({
@@ -46,22 +45,19 @@ export const MainScreen = React.createClass({
                 title: 'Select an existing project folder or create a new one',
                 properties: ['openDirectory', 'createDirectory'],
             });
-            signals.emitters.lySetRepoDir(dir);
+            fujianActions.setRepoDir(dir[0]);
         } else {
-            // this is a much worse solution than the native dialogue above
             uiActions.showModal(
-                'question',
-                'Please enter the repository directory',
-                'This can break pretty easily, so be careful!',
-                (answer) => signals.emitters.lySetRepoDir(answer),
+                'error',
+                'Cannot choose a directory unless running in Electron.',
             );
         }
     },
     handleDefaultOpen() {
-        signals.emitters.lyLoadDefaultRepo();
+        fujianActions.loadDefaultRepo();
     },
     handleTempOpen() {
-        signals.emitters.lyLoadSandboxRepo();
+        fujianActions.loadSandboxRepo();
     },
     render() {
         return (
@@ -263,13 +259,13 @@ const DeveloperMenu = React.createClass({
     handleClick(event) {
         switch (event.target.id) {
         case 'devel-0':
-            signals.emitters.fujianStartWS();
+            fujianActions.fujianStartWS();
             break;
         case 'devel-1':
-            signals.emitters.fujianRestartWS();
+            fujianActions.fujianRestartWS();
             break;
         case 'devel-2':
-            signals.emitters.fujianStopWS();
+            fujianActions.fujianStopWS();
             break;
         case 'devel-3':
             metaActions.setLogLevel(LOG_LEVELS.DEBUG);
