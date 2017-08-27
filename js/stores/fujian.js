@@ -24,8 +24,12 @@
 
 import Immutable from 'immutable';
 
-import { fujian } from '../util/fujian';
+import Fujian from '../util/fujian';
 import { store } from './index';
+
+
+const CONNECTION = new Fujian();
+
 
 /** Fujian Store
  *  ------------
@@ -39,17 +43,81 @@ import { store } from './index';
  */
 
 export const types = {
+    FUJIAN_RESTART_WS: 'Restart WebSocket connection to Fujian.',
+    FUJIAN_START_WS: 'Start WebSocket connection to Fujian.',
+    FUJIAN_STOP_WS: 'Stop WebSocket connection to Fujian.',
+    GET_SECTION_BY_ID: 'fujian.GET_SECTION_BY_ID',
     REGISTER_OUTBOUND_FORMAT: 'fujian.REGISTER_OUTBOUND_FORMAT',
+    SET_REPO_DIR: 'fujian.SET_REPO_DIR',
+    SUBMIT_LILYPOND: 'fujian.SUBMIT_LILYPOND',
     UNREGISTER_OUTBOUND_FORMAT: 'fujian.UNREGISTER_OUTBOUND_FORMAT',
 };
 
 
 export const actions = {
-    registerOutboundFormat(dtype, who, runNow) {
+    fujianStartWS() {
+        store.dispatch({ type: types.FUJIAN_START_WS });
+    },
+
+    fujianRestartWS() {
+        store.dispatch({ type: types.FUJIAN_RESTART_WS });
+    },
+
+    fujianStopWS() {
+        store.dispatch({ type: types.FUJIAN_STOP_WS });
+    },
+
+    getSectionByID(viewsInfo, revision) {
+        if (typeof viewsInfo === 'string') {
+            const payload = { viewsInfo };
+            if (typeof reivision === 'string') {
+                payload.revision = revision;
+            }
+
+            store.dispatch({
+                type: types.GET_SECTION_BY_ID,
+                payload,
+            });
+        }
+    },
+
+    loadDefaultRepo() {
+        store.dispatch({
+            type: types.SET_REPO_DIR,
+            payload: { repoDir: 'programs/hgdemo', runOutbound: true },
+        });
+    },
+
+    loadSandboxRepo() {
+        store.dispatch({
+            type: types.SET_REPO_DIR,
+            payload: { repoDir: '', runOutbound: true },
+        });
+    },
+
+    registerOutboundFormat(dtype, who, runNow = false) {
         if (typeof dtype === 'string' && typeof who === 'string' && typeof runNow === 'boolean') {
             store.dispatch({
                 type: types.REGISTER_OUTBOUND_FORMAT,
                 payload: { dtype, runNow, who },
+            });
+        }
+    },
+
+    setRepoDir(repoDir, runOutbound = true) {
+        if (typeof repoDir === 'string' && typeof runOutbound === 'boolean') {
+            store.dispatch({
+                type: types.SET_REPO_DIR,
+                payload: { repoDir, runOutbound },
+            });
+        }
+    },
+
+    submitLilyPond(doc, sectID) {
+        if (typeof doc === 'string' && typeof sectID === 'string') {
+            store.dispatch({
+                type: types.SUBMIT_LILYPOND,
+                payload: { doc, sectID },
             });
         }
     },
@@ -68,9 +136,25 @@ export const actions = {
 export default function reducer(state = Immutable.Map(), action) {
     switch (action.type) {
 
+    case types.FUJIAN_START_WS:
+        CONNECTION.startWS();
+        break;
+
+    case types.FUJIAN_RESTART_WS:
+        CONNECTION.stopWS();
+        CONNECTION.startWS();
+        break;
+
+    case types.FUJIAN_STOP_WS:
+        CONNECTION.stopWS();
+        break;
+
+    case types.GET_SECTION_BY_ID:
     case types.REGISTER_OUTBOUND_FORMAT:
+    case types.SET_REPO_DIR:
+    case types.SUBMIT_LILYPOND:
     case types.UNREGISTER_OUTBOUND_FORMAT:
-        fujian.sendWS(JSON.stringify(action));
+        CONNECTION.sendWS(JSON.stringify(action));
         break;
 
     case 'RESET':

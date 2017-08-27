@@ -23,11 +23,12 @@
 // ------------------------------------------------------------------------------------------------
 
 
+/* eslint-disable no-underscore-dangle */
+
 import Immutable from 'immutable';
 
 import { log } from './log';
-
-import { store } from '../stores';
+import store from '../stores';
 import { types as docTypes } from '../stores/document';
 import { types as lilyTypes } from '../stores/lilypond';
 import { actions as metaActions, getters as metaGetters, types as metaTypes } from '../stores/meta';
@@ -58,15 +59,15 @@ export const ERROR_MESSAGES = {
     wsSyntaxError: 'SyntaxError while sending data to Fujian (probably a Unicode problem?)',
 };
 
-
-const FUJIAN_ACTIONS = {
+export const FUJIAN_ACTIONS = {
     // When Fujian admits an FSA (Flux Standard Action) they are mapped from the action name to
     // the actual JavaScript constant with this object.
 
     'document.types.UPDATE_SECTION_DATA': docTypes.UPDATE_SECTION_DATA,
     'document.types.WILL_UPDATE_SECTIONS': docTypes.WILL_UPDATE_SECTIONS,
     'document.types.UPDATED_SECTIONS': docTypes.UPDATED_SECTIONS,
-    'meta.types.WRITE_STDIO': metaTypes.WRITE_STDIO,
+    'meta.types.WRITE_STDERR': metaTypes.WRITE_STDOUT,  // until stderr shows in UI
+    'meta.types.WRITE_STDOUT': metaTypes.WRITE_STDOUT,
 };
 
 
@@ -76,65 +77,16 @@ export const FUJIAN_SIGNALS = {
     // by Fujian.
 
     // TODO: add tests
-    'outbound.CONVERSION_ERROR': (response) => {
-        // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
-        let message;
-        if (response.msg) {
-            message = `${ERROR_MESSAGES.outboundConv}: ${response.msg}`;
-        }
-        else {
-            message = ERROR_MESSAGES.outboundConv;
-        }
-        metaActions.writeToStdio('stdout', message);
-        log.error(message);
-    },
-
-    // TODO: add tests
-    'outbound.CONVERSION_FINISHED': (response) => {
-        // everything else
-        switch (response.dtype) {
-            case 'lilypond':
-            case 'verovio':
-                docActions.updateSectionData(response.dtype, response.placement, response.document);
-                break;
-
-            case 'document':
-                let document;
-                try {
-                    document = JSON.parse(response.document);
-                }
-                catch (err) {
-                    if ('SyntaxError' === err.name) {
-                        log.error(ERROR_MESSAGES.fjnBadJson);
-                        return;
-                    }
-                    throw err;
-                }
-                docActions.updateSections(document);
-                break;
-
-            default:
-                return;
-        }
-    },
-
-    // TODO: add tests
-    'LOG_MESSAGE': (response) => {
+    LOG_MESSAGE: (response) => {
         if (response.status === 'failure') {
             if (response.message === 'Lychee-MEI file has different version than us') {
                 log.info(response.message);
-            }
-            else if (response.level === 'CRITICAL') {
+            } else if (response.level === 'CRITICAL') {
                 log.error(response.message);
-            }
-            else {
+            } else {
                 log.warn(response.message);
             }
         }
-    },
-
-    'lilypond_pdf': (response) => {
-        lilyActions.updatePDF(response.meta, response.payload);
     },
 };
 
@@ -159,9 +111,9 @@ export class Fujian {
         this.stopWS = this.stopWS.bind(this);
         this.statusWS = this.statusWS.bind(this);
         this.sendAjax = this.sendAjax.bind(this);
-        this._sendWSWhenReady = this._sendWSWhenReady.bind(this);
         this.sendWS = this.sendWS.bind(this);
         this._errorWS = this._errorWS.bind(this);
+        this._sendWSWhenReady = this._sendWSWhenReady.bind(this);
     }
 
     /** Open a connection to Fujian. */
@@ -204,9 +156,9 @@ export class Fujian {
      *
      * @param {string} code - The Python code to send to Fujian.
      *
-     * We prefer AJAX requests for code written by the user. While user code may cause several Lychee
-     * signals to be emitted, there are determined start and end times for execution of user code,
-     * much as AJAX requests have known end points.
+     * We prefer AJAX requests for code written by the user. While user code may cause several
+     * Lychee signals to be emitted, there are determined start and end times for execution of
+     * user code, much as AJAX requests have known end points.
      *
      * NOTE: Stdout and stderr are printed by default when received as part of an AJAX request. For
      *    nCoda- or Julius-specific backend code, use the WebSocket connection, which only prints
@@ -300,7 +252,8 @@ export class Fujian {
 
         if (typeof response.traceback === 'string' && response.traceback.length > 0) {
             doStdio = true;  /* eslint no-param-reassign: 0 */
-            // NB: we are indeed using stdout() for stderr data, until stderr appears somewhere in the UI
+            // NB: we are indeed using stdout() for stderr data, until stderr
+            // appears somewhere in the UI
             metaActions.writeToStdio('stdout', response.traceback);
             uiActions.showModal(
                 'error',
@@ -317,7 +270,7 @@ export class Fujian {
             delete response.is_fsa;
             response.type = FUJIAN_ACTIONS[response.type];
             store.dispatch(response);
-        } else if (response.is_fsa === false) {
+        } else if (response.is_fsa === false && FUJIAN_SIGNALS[response.signal]) {
             // sometimes Fujian must make a function call
             if (FUJIAN_SIGNALS[response.signal]) {
                 FUJIAN_SIGNALS[response.signal](response);
@@ -398,5 +351,4 @@ export class Fujian {
 }
 
 
-export const fujian = new Fujian();
 export default Fujian;

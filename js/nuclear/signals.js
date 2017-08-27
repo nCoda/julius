@@ -36,10 +36,9 @@ here for two reasons:
        our Redux "action" functions helps to signify the impermanent nature of this module.
 */
 
-import Immutable from 'immutable';
 
-import {log} from '../util/log';
-import {fujian} from '../util/fujian';
+import { log } from '../util/log';
+import { fujian } from '../util/fujian';
 
 import store from '../stores';
 import { getters as docGetters } from '../stores/document';
@@ -47,38 +46,6 @@ import { getters as docGetters } from '../stores/document';
 
 // "emitters" is NuclearJS "actions."
 const emitters = {
-    // Fujian PyPy Server (currently doesn't affect NuclearJS)
-    fujianStartWS() {
-        fujian.startWS();
-    },
-    fujianRestartWS() {
-        fujian.stopWS();
-        fujian.startWS();
-    },
-    fujianStopWS() {
-        fujian.stopWS();
-    },
-    /** lyGetSectionById(): Run the outbound steps to get MEI data for a specific section.
-     *
-     * Parameters:
-     * -----------
-     * @param {string} sectId - The @xml:id value of the <section> to request.
-     * @param {string} revision - Optional changeset identifier if you wish to receive "historical"
-     *     data from the document.
-     */
-    lyGetSectionById(sectId, revision) {
-        if (revision) {
-            fujian.sendWS(
-                `session.run_outbound(views_info="${sectId}", revision="${revision}")\n`
-            );
-        } else if (sectId) {
-            fujian.sendWS(
-                `session.run_outbound(views_info="${sectId}")\n`
-            );
-        } else {
-            log.info('lyGetSectionById() is missing "sectId" argument; nothing will happen');
-        }
-    },
     submitToLychee(data, format, inboundOnly = false) {
         // Given some "data" and a "format," send the data to Lychee via Fujian as an update to the
         // currently-active score/section.
@@ -93,7 +60,7 @@ const emitters = {
             return;
         }
 
-        const lowercaseFormat = format && format.toLowerCase();
+        const lowercaseFormat = (format || '') && format.toLowerCase();
 
         if (lowercaseFormat === 'lilypond') {
             // First check there is no """ in the string, which would cause the string to terminate
@@ -129,41 +96,6 @@ const emitters = {
         // For code being submitted by the human user.
         //
         fujian.sendAjax(code);
-    },
-
-    /** Change the repository directory.
-     *
-     * @param {string} path - Pathname to use for the repository.
-     *
-     * This is equivalent to "opening" an existing project, or creating a new one. This does *not*
-     * move an existing repository directory.
-     */
-    lySetRepoDir(path) {
-        if (path.indexOf(';') > -1 || path.indexOf(')') > -1 || path.indexOf("'") > -1) {
-            // TODO: blacklisting like this isn't sufficient
-            log.error('The pathname is invalid');
-        } else {
-            let cleanedPath;
-            if ((path[0] === "'" && path[path.length - 1] === "'") ||
-                (path[0] === '"' && path[path.length - 1] === '"')
-            ) {
-                cleanedPath = path;
-            } else {
-                cleanedPath = `'${path}'`;
-            }
-
-            const code = `session.set_repo_dir(${cleanedPath}, run_outbound=True)`;
-            fujian.sendWS(code);
-        }
-    },
-    /** Load the default demo repository.'
-     */
-    lyLoadDefaultRepo() {
-        emitters.lySetRepoDir('"programs/hgdemo"');
-    },
-
-    lyLoadSandboxRepo() {
-        emitters.lySetRepoDir('""');
     },
 
     doLilyPondPDF() {

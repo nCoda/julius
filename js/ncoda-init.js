@@ -41,10 +41,7 @@ import { actions as fujianActions } from './stores/fujian';
 import { actions as metaActions, LOG_LEVELS } from './stores/meta';
 
 metaActions.setLogLevel(LOG_LEVELS.DEBUG);
-
-import { emitters } from './nuclear/signals';
-
-emitters.fujianStartWS();
+fujianActions.fujianStartWS();
 
 // Initialize a Lychee session object.
 // (Runs only when the WebSocket connection is ready).
