@@ -26,6 +26,7 @@ import Immutable from 'immutable';
 
 import { Fujian } from '../util/fujian';
 import { store } from './index';
+import { getters as docGetters } from './document';
 
 
 const CONNECTION = new Fujian();
@@ -48,6 +49,7 @@ export const types = {
     FUJIAN_STOP_WS: 'Stop WebSocket connection to Fujian.',
     GET_SECTION_BY_ID: 'fujian.GET_SECTION_BY_ID',
     REGISTER_OUTBOUND_FORMAT: 'fujian.REGISTER_OUTBOUND_FORMAT',
+    RENDER_LILYPOND_PDF: 'fujian.RENDER_LILYPOND_PDF',
     SET_REPO_DIR: 'fujian.SET_REPO_DIR',
     SUBMIT_LILYPOND: 'fujian.SUBMIT_LILYPOND',
     SUBMIT_PYTHON: 'fujian.SUBMIT_PYTHON',
@@ -103,6 +105,14 @@ export const actions = {
                 payload: { dtype, runNow, who },
             });
         }
+    },
+
+    renderLilyPondPDF() {
+        const sectID = docGetters.cursor(store.getState()).last();
+        store.dispatch({
+            type: types.RENDER_LILYPOND_PDF,
+            payload: { sectID },
+        });
     },
 
     setRepoDir(repoDir, runOutbound = true) {
@@ -161,6 +171,7 @@ export default function reducer(state = Immutable.Map(), action) {
 
     case types.GET_SECTION_BY_ID:
     case types.REGISTER_OUTBOUND_FORMAT:
+    case types.RENDER_LILYPOND_PDF:
     case types.SET_REPO_DIR:
     case types.SUBMIT_LILYPOND:
     case types.UNREGISTER_OUTBOUND_FORMAT:

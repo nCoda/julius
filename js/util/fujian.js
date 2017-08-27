@@ -66,28 +66,9 @@ export const FUJIAN_ACTIONS = {
     'document.types.UPDATE_SECTION_DATA': docTypes.UPDATE_SECTION_DATA,
     'document.types.WILL_UPDATE_SECTIONS': docTypes.WILL_UPDATE_SECTIONS,
     'document.types.UPDATED_SECTIONS': docTypes.UPDATED_SECTIONS,
+    'lilypond.types.UPDATE_PDF': lilyTypes.UPDATE_PDF,
     'meta.types.WRITE_STDERR': metaTypes.WRITE_STDOUT,  // until stderr shows in UI
     'meta.types.WRITE_STDOUT': metaTypes.WRITE_STDOUT,
-};
-
-
-export const FUJIAN_SIGNALS = {
-    // Functions that handle signals sent by Lychee. Essentially this maps a Lychee signal name to
-    // a NuclearJS signal in Julius. Each function is called with the JSON "response" object sent
-    // by Fujian.
-
-    // TODO: add tests
-    LOG_MESSAGE: (response) => {
-        if (response.status === 'failure') {
-            if (response.message === 'Lychee-MEI file has different version than us') {
-                log.info(response.message);
-            } else if (response.level === 'CRITICAL') {
-                log.error(response.message);
-            } else {
-                log.warn(response.message);
-            }
-        }
-    },
 };
 
 
@@ -268,11 +249,6 @@ export class Fujian {
             delete response.is_fsa;
             response.type = FUJIAN_ACTIONS[response.type];
             store.dispatch(response);
-        } else if (response.is_fsa === false && FUJIAN_SIGNALS[response.signal]) {
-            // sometimes Fujian must make a function call
-            if (FUJIAN_SIGNALS[response.signal]) {
-                FUJIAN_SIGNALS[response.signal](response);
-            }
         }
 
         if (doStdio || metaGetters.logLevel(store.getState()) === log.LEVELS.DEBUG) {
