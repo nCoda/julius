@@ -50,6 +50,7 @@ export const types = {
     REGISTER_OUTBOUND_FORMAT: 'fujian.REGISTER_OUTBOUND_FORMAT',
     SET_REPO_DIR: 'fujian.SET_REPO_DIR',
     SUBMIT_LILYPOND: 'fujian.SUBMIT_LILYPOND',
+    SUBMIT_PYTHON: 'fujian.SUBMIT_PYTHON',
     UNREGISTER_OUTBOUND_FORMAT: 'fujian.UNREGISTER_OUTBOUND_FORMAT',
 };
 
@@ -122,6 +123,15 @@ export const actions = {
         }
     },
 
+    submitPython(code) {
+        if (typeof code === 'string') {
+            store.dispatch({
+                type: types.SUBMIT_PYTHON,
+                payload: code,
+            });
+        }
+    },
+
     unregisterOutboundFormat(dtype, who) {
         if (typeof dtype === 'string' && typeof who === 'string') {
             store.dispatch({
@@ -155,6 +165,10 @@ export default function reducer(state = Immutable.Map(), action) {
     case types.SUBMIT_LILYPOND:
     case types.UNREGISTER_OUTBOUND_FORMAT:
         CONNECTION.sendWS(JSON.stringify(action));
+        break;
+
+    case types.SUBMIT_PYTHON:
+        CONNECTION.sendAjax(action.payload);
         break;
 
     case 'RESET':

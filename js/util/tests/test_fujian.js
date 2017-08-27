@@ -171,8 +171,6 @@ describe("Fujian class' instance methods", () => {
             expect(xhrMock.addEventListener).toBeCalledWith('load', fujian.Fujian._loadAjax);
             expect(xhrMock.open).toBeCalledWith('POST', fujian.FUJIAN_AJAX_URL);
             expect(xhrMock.send).toBeCalledWith(code);
-            const theStore = store.getState();
-            expect(metaGetters.stdin(theStore)).toBe(`${code}<br>`);
         });
     });
 

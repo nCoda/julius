@@ -25,6 +25,7 @@
 import Immutable from 'immutable';
 
 import { store } from './index';
+import { types as fujianTypes } from './fujian';
 
 
 /**
@@ -143,22 +144,23 @@ export function reducer(state = makeInitialState(), action) {
         return state.set('log_level', action.payload);
 
     case types.WRITE_STDIN:
+    case fujianTypes.SUBMIT_PYTHON:
         return state.setIn(
-                ['stdio', 'stdin'],
-                state.getIn(['stdio', 'stdin']) + action.payload,
-            );
+            ['stdio', 'stdin'],
+            state.getIn(['stdio', 'stdin']) + action.payload,
+        );
 
     case types.WRITE_STDOUT:
         return state.setIn(
-                ['stdio', 'stdout'],
-                state.getIn(['stdio', 'stdout']) + action.payload,
-            );
+            ['stdio', 'stdout'],
+            state.getIn(['stdio', 'stdout']) + action.payload,
+        );
 
     case types.WRITE_STDERR:
         return state.setIn(
-                ['stdio', 'stderr'],
-                state.getIn(['stdio', 'stderr']) + action.payload,
-            );
+            ['stdio', 'stderr'],
+            state.getIn(['stdio', 'stderr']) + action.payload,
+        );
 
     case 'RESET':
         return makeInitialState();

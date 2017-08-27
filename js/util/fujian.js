@@ -171,8 +171,6 @@ export class Fujian {
         request.addEventListener('load', Fujian._loadAjax);
         request.open('POST', FUJIAN_AJAX_URL);
         request.send(code);
-
-        metaActions.writeToStdio('stdin', code);
     }
 
     /** Send queued messages for Fujian.
