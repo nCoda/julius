@@ -48,17 +48,14 @@ const logger = createLogger({
     stateTransformer: (state) => {
         const newState = {};
 
-        for (const key of Object.keys(state)) {
+        Object.keys(state).forEach((key) => {
             newState[key] = state[key].toJS();
-        }
+        });
 
         return newState;
     },
 
-    predicate: (getState) => {
-        // Check the log level to decide whether to print messages.
-        return metaGetters.logLevel(getState()) === LOG_LEVELS.DEBUG;
-    },
+    predicate: getState => metaGetters.logLevel(getState()) === LOG_LEVELS.DEBUG,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
