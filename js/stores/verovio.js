@@ -4,7 +4,7 @@
 // Program Description:    User interface for the nCoda music notation editor.
 //
 // Filename:               js/stores/verovio.js
-// Purpose:                Redux store that holds Verovio-ready representations of the active document.
+// Purpose:                Redux store with Verovio-ready representations of the active document.
 //
 // Copyright (C) 2017 Andrew Horwitz, Christopher Antila
 //
@@ -25,7 +25,7 @@
 import Immutable from 'immutable';
 import { VidaController } from '../lib/vida';
 
-import store from './index';
+import { store } from './index';
 import { getters as docGetters, types as docTypes } from './document';
 
 /**
@@ -48,7 +48,7 @@ import { getters as docGetters, types as docTypes } from './document';
  * Values of the "Data Map" described above.
  *
  * @param {string} latest - The most recent representation of the section provided by Lychee.
- * @param {string} working - The section as it is currently (or was most recently) shown in CodeView.
+ * @param {string} working - The section as it is currently (or most recently) shown in CodeView.
  *
  * I predict we'll need to keep multiple revisions in each Section Map. For now, the "latest" will
  * represent a "known good" condition of the document that we obtained from Lychee. The "working"
@@ -84,15 +84,15 @@ export const getters = {
      */
     working(state) {
         const section = state.verovio.getIn(['data', docGetters.cursor(state).first(), 'working'], '');
-        return section ? section : getters.current(state);
+        return section || getters.current(state);
     },
 
     /** vidaController() - Give the global VidaController instance. */
-    vidaController(state) {
+    vidaController() {
         if (globalController === null) {
             globalController = new VidaController({
                 workerLocation: 'js/lib/verovioWorker.js',
-                verovioLocation: '../verovio-toolkit-0.9.9.js'
+                verovioLocation: '../verovio-toolkit-0.9.9.js',
             });
         }
         return globalController;
@@ -101,20 +101,20 @@ export const getters = {
 
 
 export function makeInitialState() {
-    return Immutable.Map({data: Immutable.Map()});
+    return Immutable.Map({ data: Immutable.Map() });
 }
 
 
 export function makeEmptySection() {
-    return Immutable.Map({latest: '', working: ''});
+    return Immutable.Map({ latest: '', working: '' });
 }
 
 
 export const verifiers = {
     /** updatedSections() - For the UPDATED_SECTIONS action type.
      *
-     * @param {ImmutableList} newSections - @xml:id of <section> we now have in the document.
-     * @param {ImmutableMap} prev - Previous state of the "verovio" store.
+     * @param {Immutable.List} newSections - @xml:id of <section> we now have in the document.
+     * @param {Immutable.Map} prev - Previous state of the "verovio" store.
      *
      * Sections that are in "prev" but not "newSections" will be removed.
      * Sections that are not in not in "prev" but are in "newSections" will be added.
@@ -125,41 +125,41 @@ export const verifiers = {
         // remove sections
         post = post.filter((value, key) => newSections.includes(key));
         // add sections
-        for (const sectionID of newSections.values()) {
+        newSections.forEach((sectionID) => {
             if (!post.has(sectionID)) {
                 post = post.set(sectionID, makeEmptySection());
             }
-        }
+        });
 
-        return Immutable.Map({data: post});
+        return Immutable.Map({ data: post });
     },
-}
+};
 
 
 export default function reducer(state = makeInitialState(), action) {
     switch (action.type) {
-        case docTypes.UPDATED_SECTIONS:
-            return verifiers.updatedSections(docGetters.sectionIDs(store.getState()), state);
+    case docTypes.UPDATED_SECTIONS:
+        return verifiers.updatedSections(docGetters.sectionIDs(store.getState()), state);
 
-        case docTypes.UPDATE_SECTION_DATA:
-            if (action.error !== true) {
-                if (action.meta && action.meta.dtype && action.meta.dtype === 'verovio') {
-                    // TODO: don't assume "action.meta.placement" is valid
-                    return state.setIn(['data', action.meta.placement, 'latest'], action.payload);
-                }
-            }
-            break;
+    case docTypes.UPDATE_SECTION_DATA:
+        if (action.error === true ||
+            !(action.meta && action.meta.dtype && action.meta.dtype === 'verovio')
+        ) {
+            return state;
+        }
+        // TODO: don't assume "action.meta.placement" is valid
+        return state.setIn(['data', action.meta.placement, 'latest'], action.payload);
 
-        case types.UPDATE_WORKING:
-            if (action.error !== true) {
-                const cursor = docsGetters.cursor(store.getState());
-                return state.setIn(['data', cursor.last(), 'working']);
-            }
-            break;
+    case types.UPDATE_WORKING:
+        if (action.error === true) {
+            return state;
+        }
+        return state.setIn(['data', docGetters.cursor(store.getState()), 'working']);
 
-        case 'RESET':
-            return makeInitialState();
+    case 'RESET':
+        return makeInitialState();
+
+    default:
+        return state;
     }
-
-    return state;
 }

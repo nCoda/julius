@@ -57,7 +57,7 @@ export const actions = {
             LOG_LEVELS.WARN === level ||
             LOG_LEVELS.INFO === level ||
             LOG_LEVELS.DEBUG === level) {
-            store.dispatch({type: types.SET_LOG_LEVEL, payload: level});
+            store.dispatch({ type: types.SET_LOG_LEVEL, payload: level });
         }
     },
 
@@ -69,17 +69,19 @@ export const actions = {
      */
     writeToStdio(stream, content) {
         if (content && typeof content === 'string') {
-            content = `${content}\n`;
+            const payload = `${content}\n`;
             switch (stream) {
-                case 'stdin':
-                    store.dispatch({type: types.WRITE_STDIN, payload: content});
-                    break;
-                case 'stdout':
-                    store.dispatch({type: types.WRITE_STDOUT, payload: content});
-                    break;
-                case 'stderr':
-                    store.dispatch({type: types.WRITE_STDERR, payload: content});
-                    break;
+            case 'stdin':
+                store.dispatch({ type: types.WRITE_STDIN, payload });
+                break;
+            case 'stdout':
+                store.dispatch({ type: types.WRITE_STDOUT, payload });
+                break;
+            case 'stderr':
+                store.dispatch({ type: types.WRITE_STDERR, payload });
+                break;
+            default:
+                break;
             }
         }
     },
@@ -130,39 +132,40 @@ export const getters = {
 export function makeInitialState() {
     return Immutable.Map({
         log_level: LOG_LEVELS.WARN,
-        stdio: Immutable.Map({stdin: '', stdout: '', stderr: ''}),
+        stdio: Immutable.Map({ stdin: '', stdout: '', stderr: '' }),
     });
 }
 
 
 export function reducer(state = makeInitialState(), action) {
     switch (action.type) {
-        case types.SET_LOG_LEVEL:
-            return state.set('log_level', action.payload);
+    case types.SET_LOG_LEVEL:
+        return state.set('log_level', action.payload);
 
-        case types.WRITE_STDIN:
-            return state.setIn(
+    case types.WRITE_STDIN:
+        return state.setIn(
                 ['stdio', 'stdin'],
                 state.getIn(['stdio', 'stdin']) + action.payload,
             );
 
-        case types.WRITE_STDOUT:
-            return state.setIn(
+    case types.WRITE_STDOUT:
+        return state.setIn(
                 ['stdio', 'stdout'],
                 state.getIn(['stdio', 'stdout']) + action.payload,
             );
 
-        case types.WRITE_STDERR:
-            return state.setIn(
+    case types.WRITE_STDERR:
+        return state.setIn(
                 ['stdio', 'stderr'],
                 state.getIn(['stdio', 'stderr']) + action.payload,
             );
 
-        case 'RESET':
-            return makeInitialState();
-    }
+    case 'RESET':
+        return makeInitialState();
 
-    return state;
+    default:
+        return state;
+    }
 }
 
 

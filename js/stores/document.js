@@ -35,7 +35,8 @@ import { store } from './index';
  *     should be considered the position of active editing. The List contains a series of strings
  *     that are the @xml:id of <section> elements, starting with a top-level <section> and
  *     descending through the hierarchy.
- *     NOTE: for the MVP there is only one section, and the "cursor" is created on demand, so this field is not used
+ *     NOTE: for the MVP there is only one section, and the "cursor" is created on demand,
+ *           so this field is not used
  * @param {ImmutableMap} sections - The "Sections Map" described below.
  *
  *
@@ -92,12 +93,11 @@ export const actions = {
     updateSections(doc) {
         if (doc && typeof doc === 'object' && doc.sections && typeof doc.sections === 'object') {
             const current = store.getState().document.get('sections');
-            store.dispatch({type: types.WILL_UPDATE_SECTIONS, payload: doc.sections});
+            store.dispatch({ type: types.WILL_UPDATE_SECTIONS, payload: doc.sections });
             if (!current.equals(store.getState().document.get('sections'))) {
-                store.dispatch({type: types.UPDATED_SECTIONS});
+                store.dispatch({ type: types.UPDATED_SECTIONS });
             }
-        }
-        else {
+        } else {
             store.dispatch({
                 type: types.WILL_UPDATE_SECTIONS,
                 error: true,
@@ -112,7 +112,7 @@ export const actions = {
         if (dtype && placement && doc) {
             store.dispatch({
                 type: types.UPDATE_SECTION_DATA,
-                meta: {dtype, placement},
+                meta: { dtype, placement },
                 payload: doc,
             });
         }
@@ -130,9 +130,7 @@ export const getters = {
         if (getters.cursorIsValid(state)) {
             return Immutable.List([state.document.getIn(['sections', 'score_order']).first()]);
         }
-        else {
-            return Immutable.List();
-        }
+        return Immutable.List();
     },
 
     /** cursorIsValid() - Returns true when the cursor points to a section we know about. */
@@ -157,9 +155,7 @@ export const getters = {
         if (getters.cursorIsValid(state)) {
             return state.document.getIn(['sections', state.document.getIn(['sections', 'score_order']).first()]);
         }
-        else {
-            return makeEmtpySection();
-        }
+        return makeEmptySection();
     },
 
     /** sectionIDs() - Immutable.List of the unordered @xml:id of all <section> in the document.
@@ -169,12 +165,20 @@ export const getters = {
             if (Immutable.List.isList(value)) {
                 return reduction;
             }
-            else {
-                return reduction.push(value.get('xmlid'));
-            }
+            return reduction.push(value.get('xmlid'));
         }, Immutable.List());
     },
 };
+
+
+export function makeEmptySections() {
+    return Immutable.Map({ score_order: Immutable.List() });
+}
+
+
+export function makeEmptySection() {
+    return Immutable.Map({ label: '', xmlid: '' });
+}
 
 
 export function makeInitialState() {
@@ -185,23 +189,13 @@ export function makeInitialState() {
 }
 
 
-export function makeEmptySections() {
-    return Immutable.Map({score_order: Immutable.List()});
-}
-
-
-export function makeEmptySection() {
-    return Immutable.Map({label: '', xmlid: ''});
-}
-
-
 export const verifiers = {
     /** section() - For one section.
      *
      * Used by the sections() verifier.
      */
     section(next, previous = makeEmptySection()) {
-        let post = previous.toJS();
+        const post = previous.toJS();
 
         if (next.xmlid && typeof next.xmlid === 'string') {
             post.xmlid = next.xmlid;
@@ -221,44 +215,39 @@ export const verifiers = {
     sections(next) {
         let post = makeEmptySections();
 
-        for (const key of Object.keys(next)) {
+        Object.keys(next).forEach((key) => {
             if (key === 'score_order') {
                 if (next.score_order && Array.isArray(next.score_order)) {
                     // TODO: this only works with non-hierarchic scores
                     let errored = false;
-                    for (const xmlid of next.score_order) {
+                    next.score_order.forEach((xmlid) => {
                         if (!next[xmlid]) {
                             errored = true;
                         }
-                    }
+                    });
                     if (errored) {
                         // TODO: handle this error properly
                         console.error('The score_order has a nonexistant section');
                         return makeEmptySections();
                     }
-                    else {
-                        post = post.set('score_order', Immutable.List(next.score_order));
-                    }
-                }
-                else {
+                    post = post.set('score_order', Immutable.List(next.score_order));
+                } else {
                     // TODO: handle this error properly
                     console.error('The score_order is an invalid format');
                     return makeEmptySections();
                 }
-            }
-            else {
+            } else {
                 next[key].xmlid = key;
                 const converted = verifiers.section(next[key]);
                 if (key === converted.get('xmlid')) {
                     post = post.set(key, converted);
-                }
-                else {
+                } else {
                     // TODO: handle this error properly
                     console.error('An @xml:id was wrong');
                     return makeEmptySections();
                 }
             }
-        }
+        });
 
         return post;
     },
@@ -267,13 +256,17 @@ export const verifiers = {
 
 export function reducer(state = makeInitialState(), action) {
     switch (action.type) {
-        case types.WILL_UPDATE_SECTIONS:
-            if (action.error !== true) {
-                return state.set('sections', verifiers.sections(action.payload));
-            }
+    case types.WILL_UPDATE_SECTIONS:
+        if (action.error !== true) {
+            return state.set('sections', verifiers.sections(action.payload));
+        }
+        break;
 
-        case 'RESET':
-            return makeInitialState();
+    case 'RESET':
+        return makeInitialState();
+
+    default:
+        return state;
     }
 
     return state;

@@ -22,6 +22,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
+import Immutable from 'immutable';
+import { store } from './index';
+
 // Template Documentation
 // ----------------------
 // Technically, Redux only uses one store. In practice, we talk about and treat the store as several
@@ -98,7 +101,6 @@ export const types = {
 };
 
 
-
 // Actions.
 //
 // Required. Plain JavaScript object. Members are functions that either cause, or may cause,
@@ -119,10 +121,9 @@ export const actions = {
         // dispatched either way, but the reducer will do something different depending on whether
         // the "error" member is there.
         if (store.getState().hotdogs.get('nr_cooked_weiners') >= howMany) {
-            store.dispatch({type: types.EAT, payload: howMany});
-        }
-        else {
-            store.dispatch({type: types.EAT, payload: 'Not enough cooked hot dogs.', error: true});
+            store.dispatch({ type: types.EAT, payload: howMany });
+        } else {
+            store.dispatch({ type: types.EAT, payload: 'Not enough cooked hot dogs.', error: true });
         }
     },
 
@@ -145,34 +146,38 @@ export const actions = {
         // function entirely. In this case, you could even dispatch types.COOK from the "bbq" store.
         //
         // Don't do it!
-        store.dispatch({type: types.COOK, payload: howMany});
+        store.dispatch({ type: types.COOK, payload: howMany });
     },
 
     applyCondiment(whichOne) {
         // Let's say it takes a remote API call to apply condiments, and the API returns a Promise.
         // Note that the Promise is also returned, just in case this function's caller wants to do
         // something when the action completes.
-        if (store.getState().hotdogs.hasIn(['condiments', whichOne])) {
-            // We dispatch the same action type for success and failure; it's the "error" member
-            // of the Flux Standard Action that tells the reducer what happened.
-            return apiModule.applyCondiment(whichOne)
-                .then(() => store.dispatch({type: types.APPLY_CONDIMENT, payload: whichOne}))
-                .catch(() => store.dispatch({type: types.APPLY_CONDIMENT, error: true}));
+        if (!store.getState().hotdogs.hasIn(['condiments', whichOne])) {
+            return Promise.reject();
         }
+        // We dispatch the same action type for success and failure; it's the "error" member
+        // of the Flux Standard Action that tells the reducer what happened.
+        return apiModule.applyCondiment(whichOne)
+            .then(() => store.dispatch({ type: types.APPLY_CONDIMENT, payload: whichOne }))
+            .catch(() => store.dispatch({ type: types.APPLY_CONDIMENT, error: true }));
     },
 
     buyMoreWeiners() {
         // This is just to show a common pattern: we have the "requested_more" member in this store
-        // to tell us whether a request to buy more weiners has already been submitted. This prevents
-        // multiple simultaneous requests for the same thing.
-        if (!store.getState().hotdogs.get('requested_more')) {
-            // so we tell the store we requested more weiners
-            store.dispatch({type: types.REQUEST_WEINERS});
-            // *then* we submit the request
-            return apiModule.buyWeiners()
-                .then(() => store.dispatch({type: types.RECEIVE_WEINERS}))
-                .catch((err) => store.dispatch({type: types.RECEIVE_WEINERS, payload: err.msg, error: true}))
+        // to tell us whether a request to buy more weiners has already been submitted.
+        // This prevents multiple simultaneous requests for the same thing.
+        if (store.getState().hotdogs.get('requested_more')) {
+            return Promise.reject();
         }
+        // so we tell the store we requesting more weiners
+        store.dispatch({ type: types.REQUEST_WEINERS });
+        // *then* we submit the request
+        return apiModule.buyWeiners()
+            .then(() => store.dispatch({ type: types.RECEIVE_WEINERS }))
+            .catch(err => store.dispatch(
+                { type: types.RECEIVE_WEINERS, payload: err.msg, error: true }
+            ));
     },
 };
 
@@ -189,7 +194,7 @@ export const actions = {
 export const getters = {
     weinersRemaining(state) {
         // Use two other getters to figure it out.
-        return numOfCookedHotdogs(state) + numOfUncookedHotdogs(state);
+        return getters.numOfCookedHotdogs(state) + getters.numOfUncookedHotdogs(state);
     },
 
     numOfCookedHotdogs(state) {
@@ -208,11 +213,11 @@ export const getters = {
         // servings remain. (It's better to use reduce() for this type of thing, but this is
         // probably easier to read).
         const post = [];
-        for (const eachCondiment of state.hotdogs.get('condiments')) {
-            if (eachCondiment.get('servings_left') < 10) {
-                post.push(eachCondiment.get('name'));
+        state.hotdogs.get('condiments').forEach((condiment) => {
+            if (condiment.get('servings_left') < 10) {
+                post.push(condiment.get('name'));
             }
-        }
+        });
         return Immutable.List(post);
     },
 };
@@ -276,11 +281,13 @@ export const verifiers = {
             ['name', 'string'],
         ];
 
-        for (const field of fieldNames) {
+        fieldNames.forEach((field) => {
+            const fieldName = field[0];
+            const fieldType = field[1];
             if (nextCondiment.get(fieldName) && typeof nextCondiment.get(fieldName) === fieldType) {
                 post[fieldName] = nextCondiment.get(fieldName);
             }
-        }
+        });
 
         // For other fields, we want to do a more detailed verification.
         if (Number.isInteger(nextCondiment.get('servings_left'))) {
@@ -332,45 +339,40 @@ export default function reducer(state = makeInitialState(), action) {
     // Note that there's no way to clear the "error_message" in this store as written.
 
     switch (action.type) {
-        case types.COOK:
-            state = state.set('nr_cooked_weiners', state.get('nr_cooked_weiners') + action.payload);
-            state = state.set('nr_uncooked_weiners', state.get('nr_uncooked_weiners') - action.payload);
-            break;
+    case types.COOK:
+        return state
+            .set('nr_cooked_weiners', state.get('nr_cooked_weiners') + action.payload)
+            .set('nr_uncooked_weiners', state.get('nr_uncooked_weiners') - action.payload);
 
-        case types.EAT:
-            if (action.error === true) {
-                state = state.set('error_message', action.payload);
-            }
-            else {
-                state = state.set('nr_cooked_weiners', state.get('nr_cooked_weiners') - action.payload);
-            }
-            break;
+    case types.EAT:
+        if (action.error === true) {
+            return state.set('error_message', action.payload);
+        }
+        return state.set('nr_cooked_weiners', state.get('nr_cooked_weiners') - action.payload);
 
-        case types.APPLY_CONDIMENT:
-            // The reducer helper handles everything. With "return" we don't need "break."
-            return applyCondiment(state, action);
+    case types.APPLY_CONDIMENT:
+        // The reducer helper handles everything. With "return" we don't need "break."
+        return applyCondiment(state, action);
 
-        case types.REQUEST_WEINERS:
-            state = state.set('requested_more', true);
-            break;
+    case types.REQUEST_WEINERS:
+        return state.set('requested_more', true);
 
-        case types.RECEIVE_WEINERS:
-            if (action.error === true) {
-                return state.set('requested_more', false);
-            }
-            else {
-                state = state.set('requested_more', false);
-                // let's say we always receive one pack of eight weiners
-                state = state.set('nr_uncooked_weiners', state.get('nr_uncooked_weiners') + 8);
-            }
-            break;
+    case types.RECEIVE_WEINERS:
+        if (action.error === true) {
+            return state.set('requested_more', false);
+        }
+        // let's say we always receive one pack of eight weiners
+        return state
+            .set('requested_more', false)
+            .set('nr_uncooked_weiners', state.get('nr_uncooked_weiners') + 8);
 
-        case 'RESET':
-            // NOTE: that *every* store must implement the "RESET" action type, and must return the
-            //       initial condition of the store.
-            return makeInitialState();
+    case 'RESET':
+        // NOTE: that *every* store must implement the "RESET" action type, and must return the
+        //       initial condition of the store.
+        return makeInitialState();
+
+    default:
+        // This one is important!
+        return state;
     }
-
-    // this one is important!
-    return state;
 }

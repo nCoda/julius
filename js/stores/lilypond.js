@@ -24,7 +24,7 @@
 
 import Immutable from 'immutable';
 
-import store from './index';
+import { store } from './index';
 import { getters as docGetters, types as docTypes } from './document';
 
 /**
@@ -86,20 +86,18 @@ export const actions = {
      * @param {string} xmlid
      * @param {string} doc
      */
-    updateWorking(xmlild, doc) {
+    updateWorking(xmlid, doc) {
         if (store.getState().lilypond.hasIn(['data', xmlid])) {
             if (doc && typeof doc === 'string') {
-                store.dispatch({type: types.UPDATE_WORKING, payload: doc});
-            }
-            else {
+                store.dispatch({ type: types.UPDATE_WORKING, payload: doc });
+            } else {
                 store.dispatch({
                     type: types.UPDATE_WORKING,
                     error: true,
                     payload: new Error('Invalid LilyPond'),
                 });
             }
-        }
-        else {
+        } else {
             store.dispatch({
                 type: types.UPDATE_WORKING,
                 error: true,
@@ -128,26 +126,26 @@ export const getters = {
      */
     working(state) {
         const section = state.lilypond.getIn(['data', docGetters.cursor(state).first(), 'working'], '');
-        return section ? section : current(state);
+        return section || getters.current(state);
     },
 };
 
 
 export function makeInitialState() {
-    return Immutable.Map({data: Immutable.Map()});
+    return Immutable.Map({ data: Immutable.Map() });
 }
 
 
 export function makeEmptySection() {
-    return Immutable.Map({latest: '', pdf_path: '', working: ''});
+    return Immutable.Map({ latest: '', pdf_path: '', working: '' });
 }
 
 
 export const verifiers = {
     /** updatedSections() - For the UPDATED_SECTIONS action type.
      *
-     * @param {ImmutableList} newSections - @xml:id of <section> we now have in the document.
-     * @param {ImmutableMap} prev - Previous state of the "lilypond" store.
+     * @param {Immutable.List} newSections - @xml:id of <section> we now have in the document.
+     * @param {Immutable.Map} prev - Previous state of the "lilypond" store.
      *
      * Sections that are in "prev" but not "newSections" will be removed.
      * Sections that are not in not in "prev" but are in "newSections" will be added.
@@ -158,43 +156,46 @@ export const verifiers = {
         // remove sections
         post = post.filter((value, key) => newSections.includes(key));
         // add sections
-        for (const sectionID of newSections.values()) {
+        newSections.forEach((sectionID) => {
             if (!post.has(sectionID)) {
                 post = post.set(sectionID, makeEmptySection());
             }
-        }
+        });
 
-        return Immutable.Map({data: post});
+        return Immutable.Map({ data: post });
     },
-}
+};
 
 
 export default function reducer(state = makeInitialState(), action) {
     switch (action.type) {
-        case docTypes.UPDATED_SECTIONS:
-            return verifiers.updatedSections(docGetters.sectionIDs(store.getState()), state);
+    case docTypes.UPDATED_SECTIONS:
+        return verifiers.updatedSections(docGetters.sectionIDs(store.getState()), state);
 
-        case docTypes.UPDATE_SECTION_DATA:
-            if (action.error !== true) {
-                if (action.meta && action.meta.dtype && action.meta.dtype === 'lilypond') {
-                    // TODO: don't assume "action.meta.placement" is valid
-                    return state.setIn(['data', action.meta.placement, 'latest'], action.payload);
-                }
+    case docTypes.UPDATE_SECTION_DATA:
+        if (action.error !== true) {
+            if (action.meta && action.meta.dtype && action.meta.dtype === 'lilypond') {
+                // TODO: don't assume "action.meta.placement" is valid
+                return state.setIn(['data', action.meta.placement, 'latest'], action.payload);
             }
-            break;
+        }
+        break;
 
-        case types.UPDATE_PDF:
-            return state.setIn(['data', action.meta, 'pdf_path'], action.payload);
+    case types.UPDATE_PDF:
+        return state.setIn(['data', action.meta, 'pdf_path'], action.payload);
 
-        case types.UPDATE_WORKING:
-            if (action.error !== true) {
-                const cursor = docsGetters.cursor(store.getState());
-                return state.setIn(['data', cursor.last(), 'working']);
-            }
-            break;
+    case types.UPDATE_WORKING:
+        if (action.error !== true) {
+            const cursor = docGetters.cursor(store.getState());
+            return state.setIn(['data', cursor.last(), 'working']);
+        }
+        break;
 
-        case 'RESET':
-            return makeInitialState();
+    case 'RESET':
+        return makeInitialState();
+
+    default:
+        return state;
     }
 
     return state;

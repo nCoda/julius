@@ -24,7 +24,7 @@
 
 import Immutable from 'immutable';
 
-import Fujian from '../util/fujian';
+import { Fujian } from '../util/fujian';
 import { store } from './index';
 
 

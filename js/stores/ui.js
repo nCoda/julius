@@ -24,7 +24,7 @@
 
 import Immutable from 'immutable';
 
-import store from './index';
+import { store } from './index';
 
 
 /**
@@ -59,11 +59,11 @@ export const actions = {
      *     this is called with the user's input; otherwise with no arguments.
      */
     showModal(type, message, detail, callback) {
-        store.dispatch({type: types.SHOW_MODAL, payload: {type, message, detail, callback}});
+        store.dispatch({ type: types.SHOW_MODAL, payload: { type, message, detail, callback } });
     },
 
     hideModal() {
-        store.dispatch({type: types.HIDE_MODAL});
+        store.dispatch({ type: types.HIDE_MODAL });
     },
 };
 
@@ -91,20 +91,20 @@ export const getters = {
 };
 
 
-export function makeInitialState() {
-    return Immutable.Map({
-        modal: makeEmptyModal(),
-    });
-}
-
-
 export function makeEmptyModal() {
     return Immutable.Map({
         displayed: false,
         type: 'info',
         message: '',
         detail: '',
-        callback: () => {},
+        callback: () => { },
+    });
+}
+
+
+export function makeInitialState() {
+    return Immutable.Map({
+        modal: makeEmptyModal(),
     });
 }
 
@@ -120,11 +120,11 @@ export const verifiers = {
             ['callback', 'function'],
         ];
 
-        for (const field of fieldNames) {
+        fieldNames.forEach((field) => {
             if (settings[field[0]] && typeof settings[field[0]] === field[1]) {
                 post[field[0]] = settings[field[0]];
             }
-        }
+        });
 
         if (['debug', 'error', 'info', 'question', 'warn'].includes(settings.type)) {
             post.type = settings.type;
@@ -137,15 +137,16 @@ export const verifiers = {
 
 export default function reducer(state = makeInitialState(), action) {
     switch (action.type) {
-        case types.SHOW_MODAL:
-            return state.set('modal', verifiers.modal(action.payload));
+    case types.SHOW_MODAL:
+        return state.set('modal', verifiers.modal(action.payload));
 
-        case types.HIDE_MODAL:
-            return state.set('modal', makeEmptyModal());
+    case types.HIDE_MODAL:
+        return state.set('modal', makeEmptyModal());
 
-        case 'RESET':
-            return makeInitialState();
+    case 'RESET':
+        return makeInitialState();
+
+    default:
+        return state;
     }
-
-    return state;
 }
