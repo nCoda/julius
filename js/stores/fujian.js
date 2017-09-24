@@ -125,10 +125,14 @@ export const actions = {
     },
 
     submitLilyPond(doc, sectID) {
-        if (typeof doc === 'string' && typeof sectID === 'string') {
+        if (typeof doc === 'string') {
+            const submitSectionID = typeof sectID === 'string'
+                ? sectID
+                : ''
+                ;
             store.dispatch({
                 type: types.SUBMIT_LILYPOND,
-                payload: { doc, sectID },
+                payload: { doc, sectID: submitSectionID },
             });
         }
     },
