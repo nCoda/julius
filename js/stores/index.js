@@ -30,6 +30,7 @@ import lilypond from './lilypond';
 import { getters as metaGetters, LOG_LEVELS, reducer as meta } from './meta';
 import ui from './ui';
 import verovio from './verovio';
+import text_editors from './text_editors';
 
 
 const REDUCERS_OBJECT = {
@@ -38,6 +39,7 @@ const REDUCERS_OBJECT = {
     meta,
     ui,
     verovio,
+    text_editors,
 };
 
 const logger = createLogger({

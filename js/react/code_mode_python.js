@@ -27,14 +27,14 @@ import React from 'react';
 import CodeEditorWithToolbar from './generics/code_editor_with_toolbar';
 import SubmitCodeButton from './submit_code_button';
 
-export default class CodeModePython extends React.Component {
+import { connect } from 'react-redux';
+import { getters as editorGetters } from '../stores/text_editors';
+
+class CodeModePythonUnwrapped extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.setEditorValue = this.setEditorValue.bind(this);
-        this.state = {
-            editorValue: this.props.initialValue,
-        };
     }
 
     setEditorValue(editorValue) {
@@ -42,7 +42,7 @@ export default class CodeModePython extends React.Component {
     }
 
     handleSubmit() {
-        this.props.submitFunction(this.state.editorValue);
+        this.props.submitFunction(this.props.editorValue);
     }
 
     render() {
@@ -50,9 +50,10 @@ export default class CodeModePython extends React.Component {
             <CodeEditorWithToolbar
                 active={this.props.active}
                 editorMode="python"
+                editorName="python"
                 submitFunction={this.handleSubmit}
                 setEditorValue={this.setEditorValue}
-                editorValue={this.state.editorValue}
+                editorValue={this.props.editorValue}
             >
                 <SubmitCodeButton
                     hoverText="Run Python"
@@ -65,11 +66,17 @@ export default class CodeModePython extends React.Component {
         );
     }
 }
-CodeModePython.propTypes = {
-    initialValue: React.PropTypes.string,  // initial value for the editor
+CodeModePythonUnwrapped.propTypes = {
+    editorValue: React.PropTypes.string,  // text contents of editor
     submitFunction: React.PropTypes.func.isRequired, // to submit code to Lychee
     active: React.PropTypes.bool.isRequired, // is parent tab active?
 };
-CodeModePython.defaultProps = {
-    initialValue: '',
+CodeModePythonUnwrapped.defaultProps = {
+    editorValue: '',
 };
+
+const CodeModePython = connect(state => ({
+    editorValue: editorGetters.current(state, 'python'),
+}))(CodeModePythonUnwrapped);
+
+export default CodeModePython;

@@ -33,6 +33,7 @@ const CodeModeMEIUnwrapped = ({ active, editorValue }) => (
     <CodeEditorWithToolbar
         active={active}
         editorMode="xml"
+        editorName="mei"
         editorValue={editorValue}
         editorReadOnly
     >

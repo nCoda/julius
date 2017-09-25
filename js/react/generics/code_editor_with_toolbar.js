@@ -26,6 +26,8 @@ import React from 'react';
 
 import CodeMirror from 'react-codemirror';
 
+import { actions as editorActions } from '../../stores/text_editors';
+
 import 'codemirror/mode/python/python';
 import 'codemirror/mode/stex/stex'; // for LilyPond
 import 'codemirror/mode/xml/xml';
@@ -49,6 +51,7 @@ export default class CodeEditorWithToolbar extends React.Component {
 
     componentDidMount() {
         this.pullFocus();
+        editorActions.setEditorContent(this.props.editorValue);
     }
 
     shouldComponentUpdate(nextProps) {
@@ -91,6 +94,9 @@ export default class CodeEditorWithToolbar extends React.Component {
         if (this.props.setEditorValue) {
             this.props.setEditorValue(withThis);
         }
+        if (!this.props.editorReadOnly) {
+            editorActions.setEditorContent(this.props.editorName, withThis);
+        }
     }
 
     render() {
@@ -129,18 +135,17 @@ export default class CodeEditorWithToolbar extends React.Component {
 }
 CodeEditorWithToolbar.propTypes = {
     active: React.PropTypes.bool.isRequired, // is parent tab active?
+    editorName: React.PropTypes.oneOf(['python', 'lilypond', 'mei']).isRequired, // name for Redux store
     editorMode: React.PropTypes.oneOf(['python', 'stex', 'xml']), // for code highlighting (stex for Lilypond)
     submitFunction: React.PropTypes.func, // to submit code changes to Lychee
-    setEditorValue: React.PropTypes.func, // to set editor values as state of parent component
     editorValue: React.PropTypes.string, // text contents of editor
     editorReadOnly: React.PropTypes.bool, // is text editable or read-only?
     children: React.PropTypes.node, // contents of toolbar (buttons, explanatory text...)
 };
 CodeEditorWithToolbar.defaultProps = {
+    editorName: 'other',
     editorMode: 'python',
     submitFunction: () => {},
-    setEditorFunction: () => {},
-    setEditorValue: () => {},
     editorValue: '',
     editorReadOnly: false,
 };

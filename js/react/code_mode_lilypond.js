@@ -29,43 +29,39 @@ import SubmitCodeButton from './submit_code_button';
 
 import { emitters as signals } from '../nuclear/signals';
 
-export default class CodeModeLilypond extends React.Component {
+import { connect } from 'react-redux';
+import { getters as editorGetters, actions as editorActions } from '../stores/text_editors';
+
+
+class CodeModeLilypondUnwrapped extends React.Component {
     constructor(props) {
         super(props);
-        this.setEditorValue = this.setEditorValue.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSubmitPDF = this.handleSubmitPDF.bind(this);
-        this.state = {
-            editorValue: this.props.initialValue,
-        };
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
-            this.setState({ editorValue: nextProps.initialValue });
+            editorActions.setEditorContent('lilypond', nextProps.initialValue);
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps) {
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
             return true;
         }
         if (this.props.active !== nextProps.active) {
             return true;
         }
-        return nextState.editorValue !== this.state.editorValue;
-    }
-
-    setEditorValue(editorValue) {
-        this.setState({ editorValue });
+        return nextProps.editorValue !== this.props.editorValue;
     }
 
     handleSubmit() {
-        this.props.submitFunction(this.state.editorValue, 'lilypond');
+        this.props.submitFunction(this.props.editorValue, 'lilypond');
     }
 
     handleSubmitPDF() {
-        signals.submitToLychee(this.state.editorValue, 'lilypond', true);
+        signals.submitToLychee(this.props.editorValue, 'lilypond', true);
         signals.doLilyPondPDF();
     }
 
@@ -74,9 +70,9 @@ export default class CodeModeLilypond extends React.Component {
             <CodeEditorWithToolbar
                 active={this.props.active}
                 editorMode="stex"
+                editorName="lilypond"
                 submitFunction={this.handleSubmit}
-                setEditorValue={this.setEditorValue}
-                editorValue={this.state.editorValue}
+                editorValue={this.props.editorValue}
             >
                 <SubmitCodeButton
                     hoverText="Submit Lilypond"
@@ -96,11 +92,19 @@ export default class CodeModeLilypond extends React.Component {
         );
     }
 }
-CodeModeLilypond.propTypes = {
+CodeModeLilypondUnwrapped.propTypes = {
+    editorValue: React.PropTypes.string,  // text contents of editor
     initialValue: React.PropTypes.string,  // initial value for the editor
     submitFunction: React.PropTypes.func.isRequired,  // to submit code to Lychee
     active: React.PropTypes.bool.isRequired, // is parent tab active?
 };
-CodeModeLilypond.defaultProps = {
+CodeModeLilypondUnwrapped.defaultProps = {
+    editorValue: '',
     initialValue: '',
 };
+
+const CodeModeLilypond = connect(state => ({
+    editorValue: editorGetters.current(state, 'lilypond'),
+}))(CodeModeLilypondUnwrapped);
+
+export default CodeModeLilypond;
