@@ -63,10 +63,11 @@
 
     button, a {
         padding: 0 @global-padding-sm;
-    }
-
-    button:hover, a:hover {
         text-decoration: none;
+
+        &:hover, &:focus {
+            text-decoration: inherit;
+        }
     }
 
     // siblings of toolbars - content areas
