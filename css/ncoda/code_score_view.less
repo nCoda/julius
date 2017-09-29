@@ -133,5 +133,23 @@
     }
 }
 
+.nc-save-btn {
+    display: inline-block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1001;
+    padding: @global-padding;
+    color: @white;
+    font-size: @font-size-sm;
+    text-decoration: none;
+
+    &:hover, &:focus {
+        color: @link-hover-color;
+        background-color: transparent;
+        text-decoration: inherit;
+    }
+}
+
 /* ********************************************************************************************* */
 /* See split_panes.less for pane and resizer styling */

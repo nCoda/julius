@@ -38,6 +38,7 @@ import { getters as lilyGetters } from '../stores/lilypond';
 
 import SplitPane from 'react-split-pane';
 
+import SaveButton from './save_button';
 
 /** CodeScoreView
  *
@@ -63,6 +64,7 @@ const CodeScoreView = React.createClass({
     render() {
         return (
             <div id="nc-csv-frame">
+                <SaveButton />
                 <SplitPane
                     split="horizontal"
                     minSize={20} // sizes apply to top half (Code and Score panes)
