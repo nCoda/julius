@@ -30,8 +30,6 @@ const BrowserWindow = electron.BrowserWindow;
 const Menu = electron.Menu;
 const app = electron.app;
 
-const installExtension = require('electron-devtools-installer-offline').default;
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow = null;
@@ -264,10 +262,4 @@ if (process.platform === 'win32') {
 app.on('ready', function () {
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
-
-    installExtension(installExtension.REACT_DEVELOPER_TOOLS)
-        .then((name) => console.log(`Added Extension:  ${name}`));
-
-    installExtension(installExtension.REDUX_DEVTOOLS)
-        .then((name) => console.log(`Added Extension:  ${name}`));
 })
