@@ -361,6 +361,9 @@ export const NCoda = React.createClass({
         this.setState({develMenuShown: !this.state.develMenuShown});
     },
     render() {
+        const webFrame = window.require('electron').webFrame;
+        webFrame.registerURLSchemeAsPrivileged('file');
+
         return (
             <div id="ncoda">
                 <GlobalHeader
