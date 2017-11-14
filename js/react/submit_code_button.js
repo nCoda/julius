@@ -3,7 +3,7 @@
 // Program Name:           Julius
 // Program Description:    User interface for the nCoda music notation editor.
 //
-// Filename:               js/react/code_mode.js
+// Filename:               js/react/submit_code_button.js
 // Purpose:                React button for submitting code for code modes in CodeView.
 //
 // Copyright (C) 2017 Sienna M. Wood

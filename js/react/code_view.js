@@ -83,7 +83,7 @@ const CodeView = React.createClass({
                         initialValue={this.props.lilyCurrent}
                     />
                 </Tabs.Item>
-                <Tabs.Item eventKey=TABS.MEI title="MEI" className="mei">
+                <Tabs.Item eventKey={TABS.MEI} title="MEI" className="mei">
                     <CodeModeMEI
                         active={this.state.currentTab === TABS.MEI}
                     />

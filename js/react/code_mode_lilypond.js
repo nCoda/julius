@@ -27,8 +27,6 @@ import React from 'react';
 import CodeEditorWithToolbar from './generics/code_editor_with_toolbar';
 import SubmitCodeButton from './submit_code_button';
 
-import { emitters as signals } from '../nuclear/signals';
-
 import { connect } from 'react-redux';
 import { getters as editorGetters, actions as editorActions } from '../stores/text_editors';
 
@@ -37,7 +35,6 @@ class CodeModeLilypondUnwrapped extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSubmitPDF = this.handleSubmitPDF.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -60,11 +57,6 @@ class CodeModeLilypondUnwrapped extends React.Component {
         this.props.submitFunction(this.props.editorValue, 'lilypond');
     }
 
-    handleSubmitPDF() {
-        signals.submitToLychee(this.props.editorValue, 'lilypond', true);
-        signals.doLilyPondPDF();
-    }
-
     render() {
         return (
             <CodeEditorWithToolbar
@@ -84,7 +76,7 @@ class CodeModeLilypondUnwrapped extends React.Component {
                 <SubmitCodeButton
                     hoverText="Render LilyPond document to the PDF tab."
                     codeLanguage="lilypond"
-                    onClick={this.handleSubmitPDF}
+                    onClick={this.props.renderPDF}
                 >
                     {'Render to PDF'}
                 </SubmitCodeButton>
@@ -97,10 +89,12 @@ CodeModeLilypondUnwrapped.propTypes = {
     initialValue: React.PropTypes.string,  // initial value for the editor
     submitFunction: React.PropTypes.func.isRequired,  // to submit code to Lychee
     active: React.PropTypes.bool.isRequired, // is parent tab active?
+    renderPDF: React.PropTypes.func,
 };
 CodeModeLilypondUnwrapped.defaultProps = {
     editorValue: '',
     initialValue: '',
+    renderPDF: () => {},
 };
 
 const CodeModeLilypond = connect(state => ({
