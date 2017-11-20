@@ -343,7 +343,7 @@ describe('The response loading callbacks', () => {
             const dataObj = {stdout: 'out', stderr: 'err', return: 'ret', traceback: 'back',
                 signal: 'outbound.CONVERSION_ERROR'};
             const data = JSON.stringify(dataObj);
-            const expectedStdout = `${dataObj.traceback}<br>${fujian.ERROR_MESSAGES.outboundConv}<br>${dataObj.stdout}<br>${dataObj.stderr}<br>`;
+            const expectedStdout = `${dataObj.traceback}<br>${dataObj.stdout}<br>${dataObj.stderr}<br>`;
 
             fujian.Fujian._commonReceiver(data, doStdio);
 
