@@ -50,6 +50,7 @@ export const types = {
     GET_SECTION_BY_ID: 'fujian.GET_SECTION_BY_ID',
     REGISTER_OUTBOUND_FORMAT: 'fujian.REGISTER_OUTBOUND_FORMAT',
     RENDER_LILYPOND_PDF: 'fujian.RENDER_LILYPOND_PDF',
+    SAVE_TEXT_EDITOR: 'fujian.SAVE_TEXT_EDITOR',
     SET_REPO_DIR: 'fujian.SET_REPO_DIR',
     SUBMIT_LILYPOND: 'fujian.SUBMIT_LILYPOND',
     SUBMIT_PYTHON: 'fujian.SUBMIT_PYTHON',
@@ -115,6 +116,26 @@ export const actions = {
         });
     },
 
+    /** Save the contents of the text editor without passing them through Lychee.
+     *
+     * @param {string} key - By which this text editor window identifies itself.
+     * @param {string} value - The editor contents.
+     */
+    saveTextEditor(key, value) {
+        if (typeof key !== 'string' || typeof value !== 'string') {
+            return;
+        } else if (!key || !value) {
+            return;
+        }
+
+        const sectID = docGetters.cursor(store.getState()).last();
+
+        store.dispatch({
+            type: types.SAVE_TEXT_EDITOR,
+            payload: { key, sectID, value },
+        });
+    },
+
     setRepoDir(repoDir, runOutbound = true) {
         if (typeof repoDir === 'string' && typeof runOutbound === 'boolean') {
             store.dispatch({
@@ -176,6 +197,7 @@ export default function reducer(state = Immutable.Map(), action) {
     case types.GET_SECTION_BY_ID:
     case types.REGISTER_OUTBOUND_FORMAT:
     case types.RENDER_LILYPOND_PDF:
+    case types.SAVE_TEXT_EDITOR:
     case types.SET_REPO_DIR:
     case types.SUBMIT_LILYPOND:
     case types.UNREGISTER_OUTBOUND_FORMAT:
