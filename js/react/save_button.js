@@ -22,11 +22,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
-import React from 'react';
 import { Button } from 'amazeui-react';
-// import { actions as fujianActions } from '../stores/fujian';
-
+import React from 'react';
 import { connect } from 'react-redux';
+
+import { actions as fujianActions } from '../stores/fujian';
 
 
 class SaveButtonUnwrapped extends React.Component {
@@ -39,8 +39,7 @@ class SaveButtonUnwrapped extends React.Component {
 
     handleSave() {
         this.props.editorMap.forEach((value, key) => {
-            // fujianActions.saveTextEditor(key, value);
-            console.log(`${key}: ${value}`);
+            fujianActions.saveTextEditor(key, value);
         });
     }
 
