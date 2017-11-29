@@ -23,12 +23,13 @@
 // ------------------------------------------------------------------------------------------------
 
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { actions as fujianActions } from '../stores/fujian';
+import { getters as editorGetters, actions as editorActions } from '../stores/text_editors';
 
 import CodeEditorWithToolbar from './generics/code_editor_with_toolbar';
 import SubmitCodeButton from './submit_code_button';
-
-import { connect } from 'react-redux';
-import { getters as editorGetters, actions as editorActions } from '../stores/text_editors';
 
 
 class CodeModeLilypondUnwrapped extends React.Component {
@@ -55,6 +56,7 @@ class CodeModeLilypondUnwrapped extends React.Component {
 
     handleSubmit() {
         this.props.submitFunction(this.props.editorValue, 'lilypond');
+        fujianActions.saveTextEditor('lilypond', this.props.editorValue);
     }
 
     render() {
