@@ -24,9 +24,9 @@
 
 import React from 'react';
 import { Button } from 'amazeui-react';
-// import { actions as fujianActions } from '../stores/fujian';
 
 import { connect } from 'react-redux';
+import { getters as editorGetters } from '../stores/text_editors';
 
 
 class SaveButtonUnwrapped extends React.Component {
@@ -38,9 +38,8 @@ class SaveButtonUnwrapped extends React.Component {
     }
 
     handleSave() {
-        this.props.editorMap.forEach((value, key) => {
-            // fujianActions.saveTextEditor(key, value);
-            console.log(`${key}: ${value}`);
+        this.props.editorList.forEach((editor) => {
+            console.log(`${editor.name}: ${editor.content}`);
         });
     }
 
@@ -60,15 +59,19 @@ class SaveButtonUnwrapped extends React.Component {
 }
 
 SaveButtonUnwrapped.propTypes = {
-    editorMap: React.PropTypes.object,  // text contents of editor
+    // text contents of code editors
+    editorList: React.PropTypes.arrayOf(React.PropTypes.shape({
+        name: React.PropTypes.string,
+        content: React.PropTypes.string,
+    })),
 };
+
 SaveButtonUnwrapped.defaultProps = {
-    editorMap: {},
+    editorList: {},
 };
 
 const SaveButton = connect(state => ({
-    editorMap: state.text_editors,
-
+    editorList: editorGetters.all(state),
 }))(SaveButtonUnwrapped);
 
 export default SaveButton;
