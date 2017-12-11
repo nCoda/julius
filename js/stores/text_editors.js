@@ -47,6 +47,12 @@ export const getters = {
     current(state, editorName) {
         return state.text_editors.getIn([editorName]);
     },
+
+    /** getSaveStatus() - one of these strings: 'saved', 'unsaved', 'saving', 'disabled'
+     */
+    getSaveStatus(state) {
+        return 'disabled';
+    },
 };
 
 export function makeInitialState() {

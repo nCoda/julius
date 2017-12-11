@@ -32,6 +32,32 @@
 }
 
 /* ********************************************************************************************* */
+/* Save status indicator (top right corner) */
+
+.nc-savestatus {
+    display: inline-block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1001;
+    padding: @global-padding;
+    color: @global-info;
+    font-size: @font-size-sm;
+
+    &.saved {
+        color: @global-success;
+    }
+
+    &.saving {
+        color: @global-warning;
+    }
+
+    &.unsaved {
+        color: @global-danger;
+    }
+}
+
+/* ********************************************************************************************* */
 /* CodeView - CodeMirror text editor pane */
 
 .ncoda-text-editor {
