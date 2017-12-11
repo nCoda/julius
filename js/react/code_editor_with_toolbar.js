@@ -26,7 +26,10 @@ import React from 'react';
 
 import CodeMirror from 'react-codemirror';
 
-import { actions as editorActions } from '../../stores/text_editors';
+import debounce from 'lodash/debounce';
+
+import { actions as editorActions } from '../stores/text_editors';
+import { actions as fujianActions } from '../stores/fujian';
 
 import 'codemirror/mode/python/python';
 import 'codemirror/mode/stex/stex'; // for LilyPond
@@ -42,7 +45,7 @@ export default class CodeEditorWithToolbar extends React.Component {
         this.onFocus = this.onFocus.bind(this);
         this.pullFocus = this.pullFocus.bind(this);
         this.handleExtraKey = this.handleExtraKey.bind(this);
-        this.handleEditorChange = this.handleEditorChange.bind(this);
+        this.handleEditorChange = debounce(this.handleEditorChange.bind(this), 300);
         this.setRef = this.setRef.bind(this);
         this.state = {
             focused: false,
@@ -91,11 +94,9 @@ export default class CodeEditorWithToolbar extends React.Component {
     }
 
     handleEditorChange(withThis) {
-        if (this.props.setEditorValue) {
-            this.props.setEditorValue(withThis);
-        }
         if (!this.props.editorReadOnly) {
             editorActions.setEditorContent(this.props.editorName, withThis);
+            fujianActions.saveTextEditor(this.props.editorName, withThis);
         }
     }
 

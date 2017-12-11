@@ -28,7 +28,7 @@ import { connect } from 'react-redux';
 import { actions as fujianActions } from '../stores/fujian';
 import { getters as editorGetters } from '../stores/text_editors';
 
-import CodeEditorWithToolbar from './generics/code_editor_with_toolbar';
+import CodeEditorWithToolbar from './code_editor_with_toolbar';
 import SubmitCodeButton from './submit_code_button';
 
 

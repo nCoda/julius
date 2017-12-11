@@ -24,7 +24,7 @@
 
 import React from 'react';
 
-import CodeEditorWithToolbar from './generics/code_editor_with_toolbar';
+import CodeEditorWithToolbar from './code_editor_with_toolbar';
 
 import { connect } from 'react-redux';
 import { getters as vrvGetters } from '../stores/verovio';
