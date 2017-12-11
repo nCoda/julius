@@ -22,6 +22,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ------------------------------------------------------------------------------------------------
 
+/* NOTE to my future self:
+ * The data flow is convoluted. Here's (approximately) what (I think) happens:
+ * - The "editorValue" prop of <CodeModeLilypondUnwrapped> is the only textual
+ *   content sent on to <CodeEditorWithToolbar>.
+ * - The "editorValue" comes from the "text_editors" store.
+ * - The "text_editors" store first knows about the editor's value because of
+ *   the call to editorActions.setEditorContent() in this component's
+ *   componentWillReceiveProps().
+ * - This component knows what the editor's contents should be because of the
+ *   "initialValue" prop passed down by its parent.
+ * - The "initialValue" comes from the "lilypond" store, where Lychee (incorrectly)
+ *   provides only the text-editor-ready view and it is stored (incorrectly) by
+ *   Julius as the "latest" view in the store.
+ * - And this component's componentWillReceiveProps() will only set
+ *   the "text_editors" store when the "initialValue" prop happens to have been
+ *   an empty string before it was provided with another value (presumably after
+ *   being given the new value by Lychee). If the "initialValue" prop is not
+ *   an empty string to start with, then I believe the text editor in the
+ *   interface will never be given any text to display.
+ * - And before you start thinking that it's okay for the text editor component
+ *   to be primarily responsible for determining what's in the text editor store,
+ *   that's wrong. Functional reactive programming is about having the store do
+ *   all the thinking. If the text editor is connected to the store, then the
+ *   component tells the store when it's changed, the store updates its state,
+ *   and only *then* can the React component change its view.
+ *
+ * Yikes-fully yours,
+ * Christopher.
+ */
+
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -39,6 +69,7 @@ class CodeModeLilypondUnwrapped extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        // NOTE: Don't change this function without reading the note above.
         if (this.props.initialValue === '' && this.props.initialValue !== nextProps.initialValue) {
             editorActions.setEditorContent('lilypond', nextProps.initialValue);
         }
