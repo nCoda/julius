@@ -45,7 +45,9 @@ export const MainScreen = React.createClass({
                 title: 'Select an existing project folder or create a new one',
                 properties: ['openDirectory', 'createDirectory'],
             });
-            fujianActions.setRepoDir(dir[0]);
+            if (Array.isArray(dir) && dir.length > 0) {
+                fujianActions.setRepoDir(dir[0]);
+            }
         } else {
             uiActions.showModal(
                 'error',
