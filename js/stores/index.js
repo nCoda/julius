@@ -29,6 +29,7 @@ import { reducer as documentStore } from './document';
 import fujian from './fujian';
 import lilypond from './lilypond';
 import { getters as metaGetters, LOG_LEVELS, reducer as meta } from './meta';
+import python from './python';
 import textEditors from './text_editors';
 import ui from './ui';
 import verovio from './verovio';
@@ -39,6 +40,7 @@ const REDUCERS_OBJECT = {
     fujian,
     lilypond,
     meta,
+    python,
     ui,
     verovio,
     text_editors: textEditors,
