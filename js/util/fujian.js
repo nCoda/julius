@@ -30,6 +30,8 @@ import Immutable from 'immutable';
 import { log } from './log';
 import store from '../stores';
 import { types as docTypes } from '../stores/document';
+// TODO: figure out why I can't import this properly
+// import { types as fjnTypes } from '../stores/fujian';
 import { types as lilyTypes } from '../stores/lilypond';
 import { actions as metaActions, getters as metaGetters, types as metaTypes } from '../stores/meta';
 import { actions as uiActions } from '../stores/ui';
@@ -66,6 +68,7 @@ export const FUJIAN_ACTIONS = {
     'document.types.UPDATE_SECTION_DATA': docTypes.UPDATE_SECTION_DATA,
     'document.types.WILL_UPDATE_SECTIONS': docTypes.WILL_UPDATE_SECTIONS,
     'document.types.UPDATED_SECTIONS': docTypes.UPDATED_SECTIONS,
+    'fujian.SAVE_COMPLETED': 'fujian.SAVE_COMPLETED',  // TODO: use the constant from "Fujian" store
     'lilypond.types.UPDATE_PDF': lilyTypes.UPDATE_PDF,
     'meta.types.WRITE_STDERR': metaTypes.WRITE_STDOUT,  // until stderr shows in UI
     'meta.types.WRITE_STDOUT': metaTypes.WRITE_STDOUT,

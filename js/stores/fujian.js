@@ -50,7 +50,15 @@ export const types = {
     GET_SECTION_BY_ID: 'fujian.GET_SECTION_BY_ID',
     REGISTER_OUTBOUND_FORMAT: 'fujian.REGISTER_OUTBOUND_FORMAT',
     RENDER_LILYPOND_PDF: 'fujian.RENDER_LILYPOND_PDF',
+
+    // Emitted by Fujian after the editor contents are saved. Payload is
+    // an Object with the "key" and "sectID" that were sent to Fujian
+    // with the SAVE_TEXT_EDITOR action.
+    SAVE_COMPLETED: 'fujian.SAVE_COMPLETED',
+
+    // Triggers Fujian to save the contents of a text editor.
     SAVE_TEXT_EDITOR: 'fujian.SAVE_TEXT_EDITOR',
+
     SET_REPO_DIR: 'fujian.SET_REPO_DIR',
     SUBMIT_LILYPOND: 'fujian.SUBMIT_LILYPOND',
     SUBMIT_PYTHON: 'fujian.SUBMIT_PYTHON',
