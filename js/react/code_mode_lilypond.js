@@ -86,7 +86,7 @@ class CodeModeLilypondUnwrapped extends React.Component {
     }
 
     handleSubmit() {
-        this.props.submitFunction(this.props.editorValue, 'lilypond');
+        this.props.submitFunction(this.props.editorValue);
         fujianActions.saveTextEditor('lilypond', this.props.editorValue);
     }
 

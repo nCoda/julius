@@ -58,11 +58,13 @@ const CodeScoreView = React.createClass({
     componentWillMount() {
         fujianActions.registerOutboundFormat('document', 'codescoreview', false);
         fujianActions.registerOutboundFormat('lilypond', 'codescoreview', false);
+        fujianActions.registerOutboundFormat('python', 'codescoreview', false);
     },
 
     componentWillUnmount() {
         fujianActions.unregisterOutboundFormat('document', 'codescoreview');
         fujianActions.unregisterOutboundFormat('lilypond', 'codescoreview');
+        fujianActions.unregisterOutboundFormat('python', 'codescoreview');
     },
 
     submitLilyPond(doc) {

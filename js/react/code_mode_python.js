@@ -25,8 +25,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import store from '../stores';
 import { actions as fujianActions } from '../stores/fujian';
 import { getters as editorGetters } from '../stores/text_editors';
+import { getters as pythonGetters } from '../stores/python';
 
 import CodeEditorWithToolbar from './code_editor_with_toolbar';
 import SubmitCodeButton from './submit_code_button';
@@ -36,16 +38,12 @@ class CodeModePythonUnwrapped extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.setEditorValue = this.setEditorValue.bind(this);
-    }
-
-    setEditorValue(editorValue) {
-        this.setState({ editorValue });
     }
 
     handleSubmit() {
-        this.props.submitFunction(this.props.editorValue);
-        fujianActions.saveTextEditor('lilypond', this.props.editorValue);
+        const editorContents = editorGetters.current(store.getState(), 'python');
+        this.props.submitFunction(editorContents);
+        fujianActions.saveTextEditor('python', editorContents);
     }
 
     render() {
@@ -55,7 +53,6 @@ class CodeModePythonUnwrapped extends React.Component {
                 editorMode="python"
                 editorName="python"
                 submitFunction={this.handleSubmit}
-                setEditorValue={this.setEditorValue}
                 editorValue={this.props.editorValue}
             >
                 <SubmitCodeButton
@@ -79,7 +76,7 @@ CodeModePythonUnwrapped.defaultProps = {
 };
 
 const CodeModePython = connect(state => ({
-    editorValue: editorGetters.current(state, 'python'),
+    editorValue: pythonGetters.working(state),
 }))(CodeModePythonUnwrapped);
 
 export default CodeModePython;
