@@ -4,7 +4,7 @@
 // Program Description:    User interface for the nCoda music notation editor.
 //
 // Filename:               js/stores/text_editors.js
-// Purpose:                Redux store for the text editors of the current project in nCoda.
+// Purpose:                Redux store for the text editors of the current project.
 //
 // Copyright (C) 2017 Sienna M. Wood
 //
@@ -50,8 +50,19 @@ export const getters = {
 
     /** getSaveStatus() - one of these strings: 'saved', 'unsaved', 'saving', 'disabled'
      */
-    getSaveStatus(state) {
+    getSaveStatus() {
         return 'disabled';
+    },
+
+    all(state) {
+        const editorList = [];
+        state.text_editors.keySeq().toArray().forEach((name) => {
+            editorList.push({
+                name,
+                content: state.text_editors.getIn([name]),
+            });
+        });
+        return editorList;
     },
 };
 

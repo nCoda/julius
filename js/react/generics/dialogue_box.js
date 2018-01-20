@@ -59,21 +59,30 @@ export const DialogueBoxUnwrapped = React.createClass({
     },
 
     getInitialState() {
-        return {answer: ''};
+        return { answer: '' };
     },
 
-    componentDidMount: function() {
+    componentDidMount() {
         this._documentKeyupListener = window.addEventListener('keyup', this.handleKeyUp);
     },
-    componentWillUnmount: function() {
+    componentDidUpdate() {
+        this.blurActiveElement();
+    },
+    componentWillUnmount() {
         this._documentKeyupListener.off();
     },
+    blurActiveElement() {
+        if (this.props.displayed) {
+            document.activeElement.blur();
+        }
+    },
     handleInputChange(text) {
-        this.setState({answer: text});
+        this.setState({ answer: text });
     },
     handleKeyUp(e) {
         // 'enter' (keyCode 13) will close window, but not if 'shift' is also pressed
-        // ('shift-enter' is used for submitting code in the CodeMode component and must be blocked here)
+        // ('shift-enter' is used for submitting code in the CodeMode components and
+        //  must be blocked here)
         if (e.keyCode === 13 && !e.shiftKey) {
             this.handleClick();
         }
@@ -85,8 +94,7 @@ export const DialogueBoxUnwrapped = React.createClass({
             const answer = this.state.answer;
             log.debug(`QuestionBox answered with "${answer}".`);
             this.props.callback(answer);
-        }
-        else {
+        } else {
             this.props.callback();
         }
     },
@@ -98,35 +106,36 @@ export const DialogueBoxUnwrapped = React.createClass({
     },
     render() {
         if (!this.props.displayed) {
-            return <div style={{display: 'none'}}/>;
+            return <div style={{ display: 'none' }} />;
         }
 
-        let iconClass, type;
+        let iconClass;
+        let type;
         let modalType = 'alert';
 
         switch (this.props.type) {
-            case 'error':
-                iconClass = 'exclamation-triangle';
-                type = 'Error';
-                break;
-            case 'warn':
-                iconClass = 'exclamation-circle';
-                type = 'Warning';
-                break;
-            case 'debug':
-                iconClass = 'bug';
-                type = 'Developer Message';
-                break;
-            case 'question':
-                iconClass = 'question-circle';
-                type = 'Question';
-                modalType = 'prompt';
-                break;
-            case 'info':
-            default:
-                iconClass = 'info-circle';
-                type = 'Information';
-                break;
+        case 'error':
+            iconClass = 'exclamation-triangle';
+            type = 'Error';
+            break;
+        case 'warn':
+            iconClass = 'exclamation-circle';
+            type = 'Warning';
+            break;
+        case 'debug':
+            iconClass = 'bug';
+            type = 'Developer Message';
+            break;
+        case 'question':
+            iconClass = 'question-circle';
+            type = 'Question';
+            modalType = 'prompt';
+            break;
+        case 'info':
+        default:
+            iconClass = 'info-circle';
+            type = 'Information';
+            break;
         }
 
         let answer;
@@ -148,7 +157,7 @@ export const DialogueBoxUnwrapped = React.createClass({
                 onConfirm={this.handleConfirm}
                 onCancel={this.handleCancel}
                 onRequestClose={this.handleClick}
-                title={<Icon icon={iconClass} amSize="md" alt={type}/>}
+                title={<Icon icon={iconClass} amSize="md" alt={type} />}
             >
                 <h1>{this.props.message}</h1>
                 <p>{this.props.detail}</p>
