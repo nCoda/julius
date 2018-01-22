@@ -39,7 +39,7 @@ import { Icon as NCIcon, Logo } from './svg_icons';
 
 export const MainScreen = React.createClass({
     handleOpen() {
-        if (require) {
+        if (window && typeof window.require === 'function') {
             const remote = window.require('electron').remote;
             const dir = remote.dialog.showOpenDialog({
                 title: 'Select an existing project folder or create a new one',
@@ -346,6 +346,11 @@ export const NCoda = React.createClass({
     getInitialState() {
         return ({menuShown: false, develMenuShown: false, activeView: 'default'});
     },
+    componentDidMount() {
+        if (window && typeof window.require === 'function') {
+            window.require('electron').webFrame.registerURLSchemeAsPrivileged('file');
+        }
+    },
     showOrHideGlobalMenu() {
         // If the global menu is shown, hide it.
         // If the global menu is hiddent, show it.
@@ -359,9 +364,6 @@ export const NCoda = React.createClass({
         this.setState({develMenuShown: !this.state.develMenuShown});
     },
     render() {
-        const webFrame = window.require('electron').webFrame;
-        webFrame.registerURLSchemeAsPrivileged('file');
-
         return (
             <div id="ncoda">
                 <GlobalHeader
