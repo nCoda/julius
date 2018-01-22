@@ -53,6 +53,7 @@
         ]
     },
     "scripts": {
+        "build": "python3 build_app",
         "start": "python3 devserver",
         "test": "jest"
     },

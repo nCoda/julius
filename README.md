@@ -134,3 +134,13 @@ The "js" directory of the Julius repository is subdivided into three:
 
 Tests for a module belong in a subdirectory of that module. For example, the tests for
 ``js/nuclear/getters.js`` are in ``js/nuclear/tests/getters.js``.
+
+## Build for Deployment ##
+
+Use the following command to build _Julius_ for deployment (production):
+
+```bash
+$ npm run build
+```
+
+This command builds a redistributable bundle for the build platform.
