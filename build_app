@@ -12,8 +12,8 @@ import shutil
 import subprocess
 
 APP_NAME = 'nCoda'
-APP_VERSION = datetime.today().strftime('%y%m-%d.%H%M')
-EXECUTABLE_NAME = APP_NAME.lower()
+APP_VERSION = datetime.utcnow().strftime('%y%m-%d.%H%M')
+EXECUTABLE_NAME = 'julius'
 OUTPUT_DIRECTORY = 'build'
 
 
