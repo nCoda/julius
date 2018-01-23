@@ -30,7 +30,8 @@ _COMPILE_WITH_LESSC = [
 
 _PATH_TO_BROWSERIFY = 'node_modules/.bin/browserify'
 _PATH_TO_LESSC = 'node_modules/.bin/lessc'
-_PATH_TO_PACKAGER = '/usr/bin/electron-packager'
+_PATH_TO_PACKAGER_1 = '/usr/bin/electron-packager'
+_PATH_TO_PACKAGER_2 = 'node_modules/.bin/electron-packager'
 
 
 def the_script():
@@ -50,9 +51,11 @@ def the_script():
         raise SystemExit(1)
 
     # see if we can find/use electron-packager
-    packager = pathlib.Path(_PATH_TO_PACKAGER)
+    packager = pathlib.Path(_PATH_TO_PACKAGER_1)
     if not packager.exists():
-        print('Could not find "electron-packager" so we will not run it.')
+        packager = pathlib.Path(_PATH_TO_PACKAGER_2)
+        if not packager.exists():
+            print('Could not find "electron-packager" so we will not run it.')
 
     # make sure we delete the previously-generated files
     for _, js_asset_path in _COMPILE_WITH_BROWSERIFY:
@@ -116,7 +119,7 @@ def the_script():
 
         result = subprocess.call(
             [
-                _PATH_TO_PACKAGER,
+                str(packager),
                 '.',
                 APP_NAME,
                 '--app-version', APP_VERSION,
