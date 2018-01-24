@@ -13,14 +13,14 @@ jobs:
             git submodule update
       
       - restore_cache:
-          key: v1-npm-{{ checksum "package.json" }}
+          key: v1-yarn-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies.
-          command: npm install
+          command: yarn
       - save_cache:
           paths:
             - "node_modules"
-          key: v1-npm-{{ checksum "package.json" }}
+          key: v1-yarn-{{ checksum "yarn.lock" }}
           when: on_success
       
       - run:
