@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:6
+    steps:
+      - checkout
+
+      - run:
+          name: Finish checking out.
+          command: |
+            git submodule init lib/vida
+            git submodule update
+      
+      - restore_cache:
+          key: v1-npm-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies.
+          command: npm install
+      - save_cache:
+          paths:
+            - "node_modules"
+          key: v1-npm-{{ checksum "package.json" }}
+          when: on_success
+      
+      - run:
+          name: Run the tests.
+          command: npm test
