@@ -3229,9 +3229,9 @@ less-plugin-clean-css@1.5.1:
   dependencies:
     clean-css "^3.0.1"
 
-less@2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/less/-/less-2.7.1.tgz#6cbfea22b3b830304e9a5fb371d54fa480c9d7cf"
+less@^2.7.3:
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/less/-/less-2.7.3.tgz#cc1260f51c900a9ec0d91fb6998139e02507b63b"
   optionalDependencies:
     errno "^0.1.1"
     graceful-fs "^4.1.2"
@@ -3239,6 +3239,7 @@ less@2.7.1:
     mime "^1.2.11"
     mkdirp "^0.5.0"
     promise "^7.1.1"
+    request "2.81.0"
     source-map "^0.5.3"
 
 leven@^2.1.0:
