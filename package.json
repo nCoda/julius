@@ -11,6 +11,7 @@
     },
     "devDependencies": {
         "amazeui-react": "1.2.x",
+        "babel-core": "6",
         "babel-jest": "^22.1.0",
         "babel-plugin-add-module-exports": "0.2.1",
         "babel-plugin-syntax-object-rest-spread": "6.13.x",
