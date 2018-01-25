@@ -35,6 +35,10 @@ import ui from './ui';
 import verovio from './verovio';
 
 
+// This will be truthy when running the tests.
+const inTheTests = process && process.env && process.env.npm_lifecycle_event === 'test';
+
+
 const REDUCERS_OBJECT = {
     document: documentStore,
     fujian,
@@ -60,13 +64,13 @@ const logger = createLogger({
     predicate: getState => metaGetters.logLevel(getState()) === LOG_LEVELS.DEBUG,
 });
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = (window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+
+const enhancers = !inTheTests ? composeEnhancers(applyMiddleware(logger)) : undefined;
 
 export const store = createStore(
     combineReducers(REDUCERS_OBJECT),
-    composeEnhancers(
-        applyMiddleware(logger),
-    ),
+    enhancers,
 );
 
 export default store;
