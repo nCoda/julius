@@ -7,7 +7,7 @@
     "repository": "ssh://vcs@goldman.ncodamusic.org/diffusion/JL/julius.git",
     "main": "js/electron_main.js",
     "dependencies": {
-        "electron": "1.3.4"
+        "electron": "1.7.11"
     },
     "devDependencies": {
         "amazeui-react": "1.2.x",
