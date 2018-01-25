@@ -33,7 +33,6 @@
         "less": "2.7.1",
         "less-plugin-clean-css": "1.5.1",
         "lodash": "^4.17.4",
-        "moment": "2.14.x",
         "pdfjs-dist": "^1.6.230",
         "react": "15.3.1",
         "react-addons-test-utils": "15.3.1",
