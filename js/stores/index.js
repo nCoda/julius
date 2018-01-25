@@ -23,7 +23,7 @@
 // ------------------------------------------------------------------------------------------------
 
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
-import createLogger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 
 import { reducer as documentStore } from './document';
 import fujian from './fujian';
