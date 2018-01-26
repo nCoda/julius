@@ -1598,13 +1598,6 @@ electron-download@^3.0.1:
     semver "^5.3.0"
     sumchecker "^1.2.0"
 
-electron-prebuilt@^1.4.13:
-  version "1.4.13"
-  resolved "https://registry.yarnpkg.com/electron-prebuilt/-/electron-prebuilt-1.4.13.tgz#0a0e4d7bf895a242061ccfab29394dcda1da33d2"
-  dependencies:
-    electron-download "^3.0.1"
-    extract-zip "^1.0.3"
-
 electron@1.7.11:
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/electron/-/electron-1.7.11.tgz#993b6aa79e0e79a7cfcc369f4c813fbd9a0b08d9"
