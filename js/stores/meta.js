@@ -6,7 +6,7 @@
 // Filename:               js/stores/meta.js
 // Purpose:                A meta store for assorted things that don't fit in other stores.
 //
-// Copyright (C) 2017 Christopher Antila
+// Copyright (C) 2017, 2018 Christopher Antila
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -151,6 +151,9 @@ export function reducer(state = makeInitialState(), action) {
         );
 
     case types.WRITE_STDOUT:
+        if (action.payload.indexOf('Lychee-MEI file has different version than us') >= 0) {
+            return state;
+        }
         return state.setIn(
             ['stdio', 'stdout'],
             state.getIn(['stdio', 'stdout']) + action.payload,
